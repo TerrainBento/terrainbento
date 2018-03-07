@@ -19,7 +19,6 @@ Model Base Class
 
 Boundary Condition Helpers
 ------------------------------------------
-
  .. toctree::
     :maxdepth: 4
 
@@ -28,7 +27,6 @@ Boundary Condition Helpers
 
 Derived Models
 ------------------------------------------
-
  .. toctree::
     :maxdepth: 4
 
