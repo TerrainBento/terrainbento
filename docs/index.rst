@@ -8,6 +8,12 @@ Welcome to TerrainBento's documentation!
 
 Text!
 
+.. toctree::
+   :maxdepth: 2
+
+   source/modules
+
+
 Model Base Class
 ------------------------------------------
 
@@ -28,7 +34,7 @@ Derived Models
  .. toctree::
     :maxdepth: 2
 
-    source/derived_terrainbento.models
+    source/terrainbento.derived_models
 
 
 Indices
