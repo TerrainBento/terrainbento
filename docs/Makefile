@@ -18,10 +18,10 @@ help:
 .PHONY: help Makefile
 
 pre-hook:
-	$(SPHINXAPIDOC) -f --module-first -o source/ ../terrainbento $(SPHINXEXCLUDE)
+	$(SPHINXAPIDOC) --module-first --no-headings --private -o source/ ../terrainbento $(SPHINXEXCLUDE)
 
 html: pre-hook
-		$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) "$(SOURCEDIR)" $(BUILDDIR)/html
+		$(SPHINXBUILD) -b html "$(SOURCEDIR)" $(BUILDDIR)/html
 		@echo
 		@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
