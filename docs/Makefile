@@ -10,7 +10,6 @@ SOURCEDIR     = .
 BUILDDIR      = _build
 SPHINXEXCLUDE = $(shell find ../terrainbento/* -name tests -or -name examples)
 
-ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(SPHINXOPTS) .
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -22,7 +21,7 @@ pre-hook:
 	$(SPHINXAPIDOC) -f --module-first -o source/ ../terrainbento $(SPHINXEXCLUDE)
 
 html: pre-hook
-		$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+		$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) "$(SOURCEDIR)" $(BUILDDIR)/html
 		@echo
 		@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
