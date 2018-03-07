@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-erosion_model.py: generic base class for an erosion model.
+Base class for common functions of terrainbento models.
 
-Created on Thu Dec 24 12:28:31 2015
+TEXT
 
-@author: gtucker
 """
+
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
 from landlab import load_params

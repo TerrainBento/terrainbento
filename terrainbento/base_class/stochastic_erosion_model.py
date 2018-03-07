@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-stochastic_erosion_model.py: generic base class for an erosion model
-that uses stochastic hydrology.
+Base class for terrainbento models using stochastic hydrology.
 
-@author: gtucker
-@author: Katherine Barnhart
+TEXT here.
 """
 
 from terrainbento.base_class import _ErosionModel

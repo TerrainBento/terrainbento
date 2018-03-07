@@ -1,13 +1,17 @@
-#from .base_class import _ErosionModel
-#from .base_class import _StochasticErosionModel
+"""
+Public classes of the terrainbento package.
+
+terrainbento has two types of public classes: derived models and boundary
+condition handlers. Derived models are models that have inherited from the
+``_ErosionModel`` base class. Boundary condition handlers are helper classes
+that have been designed to modify model boundary conditions during a model run.
+"""
 
 from .boundary_condition_handlers import PrecipChanger
-
 from .boundary_condition_handlers import SingleNodeBaselevelHandler
 from .boundary_condition_handlers import CaptureNodeBaselevelHandler
 
 from .derived_models import Basic
-
 from .derived_models import BasicTh
 from .derived_models import BasicDd
 from .derived_models import BasicHy
@@ -17,7 +21,6 @@ from .derived_models import BasicVs
 from .derived_models import BasicSa
 from .derived_models import BasicRt
 from .derived_models import BasicCv
-
 from .derived_models import BasicHyTh
 from .derived_models import BasicDdHy
 from .derived_models import BasicStTh
@@ -36,5 +39,4 @@ from .derived_models import BasicHyRt
 from .derived_models import BasicChRt
 from .derived_models import BasicRtVs
 from .derived_models import BasicRtSa
-
 from .derived_models import BasicChRtTh
