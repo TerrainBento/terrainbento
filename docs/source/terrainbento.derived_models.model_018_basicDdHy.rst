@@ -1,6 +1,11 @@
 terrainbento\.derived\_models\.model\_018\_basicDdHy package
 ============================================================
 
+.. automodule:: terrainbento.derived_models.model_018_basicDdHy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ terrainbento\.derived\_models\.model\_018\_basicDdHy\.model\_018\_basicDdHy modu
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.derived_models.model_018_basicDdHy
-    :members:
-    :undoc-members:
-    :show-inheritance:

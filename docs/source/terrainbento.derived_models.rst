@@ -1,6 +1,11 @@
 terrainbento\.derived\_models package
 =====================================
 
+.. automodule:: terrainbento.derived_models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -36,10 +41,3 @@ Subpackages
     terrainbento.derived_models.model_C00_basicRtSa
     terrainbento.derived_models.model_CCC_basicCv
 
-Module contents
----------------
-
-.. automodule:: terrainbento.derived_models
-    :members:
-    :undoc-members:
-    :show-inheritance:

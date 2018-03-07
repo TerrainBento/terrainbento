@@ -1,6 +1,11 @@
 terrainbento\.derived\_models\.model\_110\_basicHySt package
 ============================================================
 
+.. automodule:: terrainbento.derived_models.model_110_basicHySt
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ terrainbento\.derived\_models\.model\_110\_basicHySt\.model\_110\_basicHySt modu
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.derived_models.model_110_basicHySt
-    :members:
-    :undoc-members:
-    :show-inheritance:

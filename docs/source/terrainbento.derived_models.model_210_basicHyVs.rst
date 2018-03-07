@@ -1,6 +1,11 @@
 terrainbento\.derived\_models\.model\_210\_basicHyVs package
 ============================================================
 
+.. automodule:: terrainbento.derived_models.model_210_basicHyVs
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ terrainbento\.derived\_models\.model\_210\_basicHyVs\.model\_210\_basicHyVs modu
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.derived_models.model_210_basicHyVs
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,6 +1,11 @@
 terrainbento package
 ====================
 
+.. automodule:: terrainbento
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -10,10 +15,3 @@ Subpackages
     terrainbento.boundary_condition_handlers
     terrainbento.derived_models
 
-Module contents
----------------
-
-.. automodule:: terrainbento
-    :members:
-    :undoc-members:
-    :show-inheritance:

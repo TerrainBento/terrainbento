@@ -1,6 +1,11 @@
 terrainbento\.base\_class package
 =================================
 
+.. automodule:: terrainbento.base_class
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -21,10 +26,3 @@ terrainbento\.base\_class\.stochastic\_erosion\_model module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.base_class
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,6 +1,11 @@
 terrainbento\.boundary\_condition\_handlers package
 ===================================================
 
+.. automodule:: terrainbento.boundary_condition_handlers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -29,10 +34,3 @@ terrainbento\.boundary\_condition\_handlers\.single\_node\_baselevel\_handler mo
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.boundary_condition_handlers
-    :members:
-    :undoc-members:
-    :show-inheritance:

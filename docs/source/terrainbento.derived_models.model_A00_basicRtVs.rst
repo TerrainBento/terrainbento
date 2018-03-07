@@ -1,6 +1,11 @@
 terrainbento\.derived\_models\.model\_A00\_basicRtVs package
 ============================================================
 
+.. automodule:: terrainbento.derived_models.model_A00_basicRtVs
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ terrainbento\.derived\_models\.model\_A00\_basicRtVs\.model\_A00\_basicRtVs modu
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.derived_models.model_A00_basicRtVs
-    :members:
-    :undoc-members:
-    :show-inheritance:

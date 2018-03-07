@@ -1,6 +1,11 @@
 terrainbento\.derived\_models\.model\_108\_basicDdSt package
 ============================================================
 
+.. automodule:: terrainbento.derived_models.model_108_basicDdSt
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ terrainbento\.derived\_models\.model\_108\_basicDdSt\.model\_108\_basicDdSt modu
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.derived_models.model_108_basicDdSt
-    :members:
-    :undoc-members:
-    :show-inheritance:

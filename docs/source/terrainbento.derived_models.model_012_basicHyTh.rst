@@ -1,6 +1,11 @@
 terrainbento\.derived\_models\.model\_012\_basicHyTh package
 ============================================================
 
+.. automodule:: terrainbento.derived_models.model_012_basicHyTh
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ terrainbento\.derived\_models\.model\_012\_basicHyTh\.model\_012\_basicHyTh modu
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.derived_models.model_012_basicHyTh
-    :members:
-    :undoc-members:
-    :show-inheritance:

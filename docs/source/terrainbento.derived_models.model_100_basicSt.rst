@@ -1,6 +1,11 @@
 terrainbento\.derived\_models\.model\_100\_basicSt package
 ==========================================================
 
+.. automodule:: terrainbento.derived_models.model_100_basicSt
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -13,10 +18,3 @@ terrainbento\.derived\_models\.model\_100\_basicSt\.model\_100\_basicSt module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: terrainbento.derived_models.model_100_basicSt
-    :members:
-    :undoc-members:
-    :show-inheritance:
