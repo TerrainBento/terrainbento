@@ -21,7 +21,7 @@ from terrainbento.boundary_condition_handlers import PrecipChanger
 
 DAYS_PER_YEAR = 365.25
 
-class _ErosionModel(object):
+class ErosionModel(object):
     """
     An ErosionModel is a basic model for erosion and landscape evolution in
     a watershed, as represented by an input DEM.

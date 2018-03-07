@@ -13,14 +13,14 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 FastscapeEroder, DepthDependentDiffuser,
                                 ExponentialWeatherer)
 import numpy as np
 
 
-class BasicSa(_ErosionModel):
+class BasicSa(ErosionModel):
     """
     A BasicSa computes erosion using linear diffusion, basic
     stream power, and Q~A.

@@ -14,14 +14,14 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 FastscapeEroder, DepthDependentTaylorDiffuser,
                                 ExponentialWeatherer)
 import numpy as np
 
 
-class BasicChSa(_ErosionModel):
+class BasicChSa(ErosionModel):
     """
     A BasicChSa model computes erosion using depth-dependent cubic diffusion
     with a soil layer, basic stream power, and Q~A.

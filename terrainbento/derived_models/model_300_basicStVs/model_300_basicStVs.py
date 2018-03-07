@@ -27,14 +27,14 @@ PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _StochasticErosionModel
+from terrainbento.base_class import StochasticErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 StreamPowerEroder, LinearDiffuser)
 
 import numpy as np
 
 
-class BasicStVs(_StochasticErosionModel):
+class BasicStVs(StochasticErosionModel):
     """
     A BasicStVs generates a random sequency of
     runoff events across a topographic surface, calculating the resulting

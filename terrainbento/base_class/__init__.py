@@ -9,5 +9,5 @@ model initialization, input, and output. The second base class,
 includes the common functions for models that use stochastic hydrology.
 """
 
-from .erosion_model import _ErosionModel
-from .stochastic_erosion_model import _StochasticErosionModel
+from .erosion_model import ErosionModel
+from .stochastic_erosion_model import StochasticErosionModel

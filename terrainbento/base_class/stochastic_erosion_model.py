@@ -5,7 +5,7 @@ Base class for terrainbento models using stochastic hydrology.
 TEXT here.
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 
 from landlab.components import (PrecipitationDistribution)
 
@@ -15,7 +15,7 @@ import textwrap
 
 _STRING_LENGTH = 80
 
-class _StochasticErosionModel(_ErosionModel):
+class StochasticErosionModel(ErosionModel):
     """
     An StochasticErosionModel is a basic model for erosion and landscape
     evolution in a watershed, as represented by an input DEM.

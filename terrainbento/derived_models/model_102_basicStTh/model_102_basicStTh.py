@@ -34,14 +34,14 @@ PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _StochasticErosionModel
+from terrainbento.base_class import StochasticErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 LinearDiffuser, StreamPowerSmoothThresholdEroder)
 
 import numpy as np
 
 
-class BasicStTh(_StochasticErosionModel):
+class BasicStTh(StochasticErosionModel):
     """
     A BasicThSt computes erosion using (1) unit stream
     power with a threshold, (2) linear nhillslope diffusion, and

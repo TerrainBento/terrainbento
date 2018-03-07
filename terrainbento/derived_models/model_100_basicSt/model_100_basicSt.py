@@ -46,13 +46,13 @@ PrecipitationDistribution, LinearDiffuser, FastscapeEroder
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _StochasticErosionModel
+from terrainbento.base_class import StochasticErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 LinearDiffuser, FastscapeEroder)
 import numpy as np
 
 
-class BasicSt(_StochasticErosionModel):
+class BasicSt(StochasticErosionModel):
     """
     A StochasticHortonianSPModel generates a random sequency of
     runoff events across a topographic surface, calculating the resulting

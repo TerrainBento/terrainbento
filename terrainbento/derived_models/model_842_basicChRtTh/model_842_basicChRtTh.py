@@ -13,13 +13,13 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 StreamPowerSmoothThresholdEroder, TaylorNonLinearDiffuser)
 import numpy as np
 
 
-class BasicChRtTh(_ErosionModel):
+class BasicChRtTh(ErosionModel):
     """
     A BasicChRt model computes erosion using cubic diffusion, basic stream
     power with two rock units, and Q~A.

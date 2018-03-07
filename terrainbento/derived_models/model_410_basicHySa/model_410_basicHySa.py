@@ -14,14 +14,14 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 Space, DepthDependentDiffuser,
                                 ExponentialWeatherer)
 import numpy as np
 
 
-class BasicHySa(_ErosionModel):
+class BasicHySa(ErosionModel):
     """
     A BasicHySa computes erosion using linear diffusion, hybrid alluvium,
     and Q~A.

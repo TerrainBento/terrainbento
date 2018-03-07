@@ -17,12 +17,12 @@ both.
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 ErosionDeposition, LinearDiffuser)
 import numpy as np
 
-class BasicHyRt(_ErosionModel):
+class BasicHyRt(ErosionModel):
     """
     A BasicHyRt computes erosion using linear diffusion, hybrid alluvium
     stream erosion, Q~A, and two lithologies: rock and till.

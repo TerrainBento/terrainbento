@@ -34,13 +34,13 @@ PrecipitationDistribution, LinearDiffuser, HybridAlluvium
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _StochasticErosionModel
+from terrainbento.base_class import StochasticErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 LinearDiffuser, ErosionDeposition)
 
 import numpy as np
 
-class BasicHySt(_StochasticErosionModel):
+class BasicHySt(StochasticErosionModel):
     """
     A BasicHySt computes erosion using (1) hybrid alluvium river erosion,
     (2) linear nhillslope diffusion, and

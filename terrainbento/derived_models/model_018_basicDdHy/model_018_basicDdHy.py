@@ -10,12 +10,12 @@ LinearDiffuser, and HybridAlluvium
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 LinearDiffuser, ErosionDeposition)
 import numpy as np
 
-class BasicDdHy(_ErosionModel):
+class BasicDdHy(ErosionModel):
     """
     A BasicDdHy computes erosion using 1) the hybrid alluvium component
     with a threshold that varies with cumulative incision depth, the linear

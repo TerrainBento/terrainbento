@@ -12,13 +12,13 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 FastscapeEroder, TaylorNonLinearDiffuser)
 import numpy as np
 
 
-class BasicCh(_ErosionModel):
+class BasicCh(ErosionModel):
     """
     A BasicCh computes erosion using cubic diffusion, basic stream
     power, and Q~A.

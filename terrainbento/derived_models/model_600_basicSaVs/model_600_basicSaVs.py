@@ -13,14 +13,14 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 StreamPowerEroder, DepthDependentDiffuser,
                                 ExponentialWeatherer)
 import numpy as np
 
 
-class BasicSaVs(_ErosionModel):
+class BasicSaVs(ErosionModel):
     """
     A BasicSaVs computes erosion using depth-dependent linear diffusion, basic
     stream power, and Q ~ A exp( -c H S / A); H = soil thickness.

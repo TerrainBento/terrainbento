@@ -12,14 +12,14 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import _ErosionModel
+from terrainbento.base_class import ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 FastscapeEroder, LinearDiffuser)
 
 import numpy as np
 from scipy.interpolate import interp1d
 
-class BasicCv(_ErosionModel):
+class BasicCv(ErosionModel):
     """
     A BasicCV computes erosion using linear diffusion, basic stream
     power, and Q~A.
