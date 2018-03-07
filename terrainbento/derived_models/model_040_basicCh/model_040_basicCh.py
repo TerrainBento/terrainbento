@@ -12,7 +12,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from erosion_model.erosion_model import _ErosionModel
+from terrainbento.base_class import _ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 FastscapeEroder, TaylorNonLinearDiffuser)
 import numpy as np
@@ -73,9 +73,9 @@ class BasicCh(_ErosionModel):
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
         # Do some soil creep
-        self.diffuser.run_one_step(dt, 
+        self.diffuser.run_one_step(dt,
                                    dynamic_dt=True,
-                                   if_unstable='raise', 
+                                   if_unstable='raise',
                                    courant_factor=0.1)
 
         # calculate model time

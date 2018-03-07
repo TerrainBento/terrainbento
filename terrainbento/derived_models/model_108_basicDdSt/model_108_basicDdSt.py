@@ -35,7 +35,7 @@ PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
 @author: Katherine Barnhart
 """
 
-from erosion_model.stochastic_erosion_model import _StochasticErosionModel
+from terrainbento.base_class import _StochasticErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 LinearDiffuser, StreamPowerSmoothThresholdEroder)
 

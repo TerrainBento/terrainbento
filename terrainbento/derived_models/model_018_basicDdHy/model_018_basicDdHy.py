@@ -10,7 +10,7 @@ LinearDiffuser, and HybridAlluvium
 @author: Katherine Barnhart
 """
 
-from erosion_model.erosion_model import _ErosionModel
+from terrainbento.base_class import _ErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 LinearDiffuser, ErosionDeposition)
 import numpy as np

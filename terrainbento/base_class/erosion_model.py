@@ -17,7 +17,7 @@ import os
 import subprocess
 import dill
 import time as tm
-from .precip_changer import PrecipChanger
+from terrainbento.boundary_condition_handlers import PrecipChanger
 
 DAYS_PER_YEAR = 365.25
 

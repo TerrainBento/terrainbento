@@ -7,7 +7,7 @@ that uses stochastic hydrology.
 @author: Katherine Barnhart
 """
 
-from erosion_model import _ErosionModel
+from terrainbento.base_class import _ErosionModel
 
 from landlab.components import (PrecipitationDistribution)
 

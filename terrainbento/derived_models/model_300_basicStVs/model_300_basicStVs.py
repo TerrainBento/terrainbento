@@ -7,7 +7,7 @@ flow routing, and (3) a variable-source-area (VSA) runoff-generation model.
 Model 300 BasicStVs
 
 This model combines linear diffusion and basic stream power with stochastic
-variable source area (VSA) hydrology. It inherits from the ErosionModel 
+variable source area (VSA) hydrology. It inherits from the ErosionModel
 class. It calculates drainage area using the standard "D8" approach (assuming
 the input grid is a raster; "DN" if not), then modifies it by running a
 lake-filling component. It then iterates through a sequence of storm and
@@ -27,7 +27,7 @@ PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
 @author: Katherine Barnhart
 """
 
-from erosion_model.stochastic_erosion_model import _StochasticErosionModel
+from terrainbento.base_class import _StochasticErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 StreamPowerEroder, LinearDiffuser)
 
@@ -68,12 +68,12 @@ class BasicStVs(_StochasticErosionModel):
         # Add a field for discharge
         if 'surface_water__discharge' not in self.grid.at_node:
             self.grid.add_zeros('node', 'surface_water__discharge')
-        self.discharge = self.grid.at_node['surface_water__discharge']   
+        self.discharge = self.grid.at_node['surface_water__discharge']
 
-        # Add a field for subsurface discharge                                 
+        # Add a field for subsurface discharge
         if 'subsurface_water__discharge' not in self.grid.at_node:
             self.grid.add_zeros('node', 'subsurface_water__discharge')
-        self.qss = self.grid.at_node['subsurface_water__discharge']  
+        self.qss = self.grid.at_node['subsurface_water__discharge']
 
         # Get the transmissivity parameter
         # transmissivity is hydraulic condiuctivity times soil thickness
@@ -111,7 +111,7 @@ class BasicStVs(_StochasticErosionModel):
 
         # Subsurface discharge: zero where slope is flat
         self.qss[np.where(self.slope <= 0.0)[0]] = 0.0
-        self.qss[np.where(self.slope > 0.0)[0]] = (tls 
+        self.qss[np.where(self.slope > 0.0)[0]] = (tls
                     * (1.0 - np.exp(-pa[np.where(self.slope > 0.0)[0]] / tls)))
 
         # Surface discharge = total minus subsurface
@@ -126,10 +126,10 @@ class BasicStVs(_StochasticErosionModel):
         """
         Advance model for one time-step of duration dt.
         """
-        
+
         # Route flow
         self.flow_router.run_one_step()
-        
+
         # Get IDs of flooded nodes, if any
         flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
 
@@ -138,13 +138,13 @@ class BasicStVs(_StochasticErosionModel):
 
         # Do some soil creep
         self.diffuser.run_one_step(dt)
-        
+
         # calculate model time
         self.model_time += dt
-        
+
         # Lower outlet
         self.update_outlet(dt)
-        
+
         # Check walltime
         self.check_walltime()
 

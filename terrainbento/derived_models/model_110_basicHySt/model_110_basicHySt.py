@@ -10,7 +10,7 @@ surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
 flow routing, and (3) Hortonian infiltration model. Includes stream-power
 erosion plus linear diffusion.
 
-The hydrology uses calculation of drainage area using the standard "D8" 
+The hydrology uses calculation of drainage area using the standard "D8"
 approach (assuming the input grid is a raster; "DN" if not), then modifies it
 by running a lake-filling component. It then iterates through a sequence of
 storm and interstorm periods. Storm depth is drawn at random from a gamma
@@ -23,8 +23,8 @@ $R = P - I (1 - \exp ( -P / I ))$
 where $I$ is the soil infiltration capacity. At the sub-grid scale, soil
 infiltration capacity is assumed to have an exponential distribution of which
 $I$ is the mean. Hence, there are always some spots within any given grid cell
-that will generate runoff. This approach yields a smooth transition from 
-near-zero runoff (when $I>>P$) to $R \approx P$ (when $P>>I$), without a 
+that will generate runoff. This approach yields a smooth transition from
+near-zero runoff (when $I>>P$) to $R \approx P$ (when $P>>I$), without a
 "hard threshold."
 
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
@@ -34,7 +34,7 @@ PrecipitationDistribution, LinearDiffuser, HybridAlluvium
 @author: Katherine Barnhart
 """
 
-from erosion_model.stochastic_erosion_model import _StochasticErosionModel
+from terrainbento.base_class import _StochasticErosionModel
 from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
                                 LinearDiffuser, ErosionDeposition)
 
@@ -43,15 +43,15 @@ import numpy as np
 class BasicHySt(_StochasticErosionModel):
     """
     A BasicHySt computes erosion using (1) hybrid alluvium river erosion,
-    (2) linear nhillslope diffusion, and 
+    (2) linear nhillslope diffusion, and
     (3) generation of a random sequence of runoff events across a topographic
     surface.
-    
+
     Examples
     --------
     >>> from erosion_model import StochasticRainDepthDepThresholdModel
     >>> my_pars = {}
-    >>> my_pars['dt'] = 1.0 
+    >>> my_pars['dt'] = 1.0
     >>> my_pars['run_duration'] = 1.0
     >>> my_pars['infiltration_capacity'] = 1.0
     >>> my_pars['K_sp'] = 1.0
@@ -80,7 +80,7 @@ class BasicHySt(_StochasticErosionModel):
         linear_diffusivity = ((self._length_factor ** 2)
                               * self.get_parameter_from_exponent(
                                       'linear_diffusivity')) # L^2/T
-        
+
         v_s = (self._length_factor)*self.get_parameter_from_exponent('v_s') # has units length per time
 
         # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
@@ -100,7 +100,7 @@ class BasicHySt(_StochasticErosionModel):
         # Add a field for discharge
         if 'surface_water__discharge' not in self.grid.at_node:
             self.grid.add_zeros('node', 'surface_water__discharge')
-        self.discharge = self.grid.at_node['surface_water__discharge']                                    
+        self.discharge = self.grid.at_node['surface_water__discharge']
 
         # Get the infiltration-capacity parameter
         infiltration_capacity = (self._length_factor
@@ -140,14 +140,14 @@ class BasicHySt(_StochasticErosionModel):
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
         if self.rain_rate > 0.0 and self.infilt > 0.0:
-            runoff = self.rain_rate - (self.infilt * 
-                                       (1.0 - 
+            runoff = self.rain_rate - (self.infilt *
+                                       (1.0 -
                                         np.exp(-self.rain_rate / self.infilt)))
             if runoff < 0:
-                runoff = 0        
+                runoff = 0
         else:
             runoff = self.rain_rate
-        self.discharge[:] = runoff * self.area        
+        self.discharge[:] = runoff * self.area
         return runoff
 
     def run_one_step(self, dt):
@@ -156,7 +156,7 @@ class BasicHySt(_StochasticErosionModel):
         """
         # Route flow
         self.flow_router.run_one_step()
-        
+
         # Get IDs of flooded nodes, if any
         flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
 
@@ -168,7 +168,7 @@ class BasicHySt(_StochasticErosionModel):
 
         # calculate model time
         self.model_time += dt
-        
+
         # Lower outlet
         self.update_outlet(dt)
 
@@ -191,4 +191,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
