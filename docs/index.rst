@@ -6,7 +6,7 @@
 Welcome to TerrainBento's documentation!
 ========================================
 
-Lore Ipsum
+Text!
 
 Model Base Class
 ------------------------------------------
@@ -14,23 +14,23 @@ Model Base Class
 .. toctree::
    :maxdepth: 4
 
-   source.terrainbento.erosion_model
-   source.terrainbento.stochastic_erosion_model
+   source/terrainbento.erosion_model
+   source/terrainbento.stochastic_erosion_model
 
 Boundary Condition Helpers
 ------------------------------------------
  .. toctree::
     :maxdepth: 4
 
-    source.terrainbento.precip_changer
-    source.terrainbento.baselevel_handler
+    source/terrainbento.precip_changer
+    source/terrainbento.baselevel_handler
 
 Derived Models
 ------------------------------------------
  .. toctree::
     :maxdepth: 4
 
-    source.terrainbento.models
+    source/terrainbento.models
 
 
 Indices
