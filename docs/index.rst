@@ -14,26 +14,26 @@ Model Base Class
 .. toctree::
    :maxdepth: 4
 
-   terrainbento.erosion_model
-   terrainbento.stochastic_erosion_model
+   source.terrainbento.erosion_model
+   source.terrainbento.stochastic_erosion_model
 
 Boundary Condition Helpers
 ------------------------------------------
  .. toctree::
     :maxdepth: 4
 
-    terrainbento.precip_changer
-    terrainbento.baselevel_handler
+    source.terrainbento.precip_changer
+    source.terrainbento.baselevel_handler
 
 Derived Models
 ------------------------------------------
  .. toctree::
     :maxdepth: 4
 
-    terrainbento.models
+    source.terrainbento.models
 
 
-Indices and tables
+Indices
 ==================
 
 * :ref:`genindex`
