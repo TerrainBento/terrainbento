@@ -1,10 +1,10 @@
-from .erosion_model import _ErosionModel
-from .stochastic_erosion_model import _StochasticErosionModel
+from .base_class import _ErosionModel
+from .base_class import _StochasticErosionModel
 
-from .precip_changer import PrecipChanger
+from .boundary_condition_handlers import PrecipChanger
 
-from .baselevel_handler import SingleNodeBaselevelHandler
-from .baselevel_handler import CaptureNodeBaselevelHandler
+from .boundary_condition_handlers import SingleNodeBaselevelHandler
+from .boundary_condition_handlers import CaptureNodeBaselevelHandler
 
 from .models import Basic
 
