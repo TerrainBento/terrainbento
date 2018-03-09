@@ -22,8 +22,7 @@ import sys
 import terrainbento
 
 from datetime import date
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.append(os.path.abspath('../terrainbento'))
+sys.path.insert(0, '.')
 
 # -- General configuration ------------------------------------------------
 
