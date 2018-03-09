@@ -14,9 +14,4 @@ setup(name='terrainbento',
       license='MIT',
       packages=['terrainbento'],
       long_description=open('README.md').read(),
-      zip_safe=False,
-      install_requires=['scipy>=0.12',
-                        'dill',
-                        'numpy',
-                        'landlab']
-                        )
+      zip_safe=False])
