@@ -19,6 +19,13 @@
 #
 import os
 import sys
+
+
+import mock
+autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
+for mod_name in autodoc_mock_imports:
+    sys.modules[mod_name] = mock.Mock()
+
 import terrainbento
 
 from datetime import date
@@ -48,7 +55,6 @@ extensions = ['sphinx.ext.autodoc',
 if os.getenv('READTHEDOCS'):
     template_bridge = 'landlab_ext.MyTemplateLoader'
 
-autodoc_mock_imports = ['landlab', 'landlab.io', 'dill', 'numpy', 'scipy', 'yaml']
 
 # sphinx napoleon specifications
 #napoleon_include_private_with_doc = True
