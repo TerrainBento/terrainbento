@@ -1,4 +1,5 @@
 scipy
+pyyaml
 numpy
 dill
 landlab
