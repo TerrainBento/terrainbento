@@ -23,6 +23,7 @@ import terrainbento
 
 from datetime import date
 sys.path.insert(0, os.path.abspath('.'))
+#sys.path.append(os.path.abspath('../terrainbento'))
 
 # -- General configuration ------------------------------------------------
 
@@ -47,6 +48,8 @@ extensions = ['sphinx.ext.autodoc',
 
 if os.getenv('READTHEDOCS'):
     template_bridge = 'landlab_ext.MyTemplateLoader'
+
+autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy']
 
 # sphinx napoleon specifications
 #napoleon_include_private_with_doc = True
