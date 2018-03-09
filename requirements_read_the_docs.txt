@@ -1,4 +1,2 @@
 numpy
 scipy
-landlab --install-option="--no-deps" \
-	--install-option="--no-compile"
