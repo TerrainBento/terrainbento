@@ -16,7 +16,7 @@ setup(name='terrainbento',
       long_description=open('README.md').read(),
       zip_safe=False,
       install_requires=['scipy>=0.12',
-                        'pyyaml',
+                        'dill',
                         'numpy',
                         'landlab']
                         )
