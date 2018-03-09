@@ -21,10 +21,10 @@ import os
 import sys
 
 
-import mock
+from unittest.mock import MagicMock
 autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 for mod_name in autodoc_mock_imports:
-    sys.modules[mod_name] = mock.Mock()
+    sys.modules[mod_name] = MagicMock()
 
 import terrainbento
 
