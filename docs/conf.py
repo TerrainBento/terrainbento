@@ -48,7 +48,7 @@ extensions = ['sphinx.ext.autodoc',
 if os.getenv('READTHEDOCS'):
     template_bridge = 'landlab_ext.MyTemplateLoader'
 
-autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
+autodoc_mock_imports = ['landlab', 'landlab.io', 'dill', 'numpy', 'scipy', 'yaml']
 
 # sphinx napoleon specifications
 #napoleon_include_private_with_doc = True
