@@ -1,6 +1,8 @@
-from setuptools import setup
 
+from setuptools import setup
 import versioneer
+
+import os
 
 setup(name='terrainbento',
       version=versioneer.get_version(),
@@ -11,4 +13,10 @@ setup(name='terrainbento',
       author_email='barnhark@colorado.edu',
       license='MIT',
       packages=['terrainbento'],
-      zip_safe=False)
+      long_description=open('README.md').read(),
+      zip_safe=False,
+      install_requires=['scipy>=0.12',
+                        'pyyaml',
+                        'numpy',
+                        'landlab']
+                        )
