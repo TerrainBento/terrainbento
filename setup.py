@@ -1,5 +1,5 @@
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import versioneer
 
 import os
@@ -14,4 +14,7 @@ setup(name='terrainbento',
       license='MIT',
       packages=['terrainbento'],
       long_description=open('README.md').read(),
-      zip_safe=False)
+      zip_safe=False,
+      packages=find_packages(),
+      package_data={'': ['tests/*txt', 'data/*asc', 'data/*nc',
+                         'preciptest.in']})
