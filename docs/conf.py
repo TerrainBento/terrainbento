@@ -29,7 +29,7 @@ for mod_name in autodoc_mock_imports:
 # mock landlab for terrainbento import
 orig_import = __import__
 def import_mock(name, *args):
-    if name == 'landlab':
+    if name.startswith('landlab'):
         return MagicMock()
     return orig_import(name, *args)
 
