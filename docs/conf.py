@@ -33,7 +33,7 @@ def import_mock(name, *args):
         return MagicMock()
     return orig_import(name, *args)
 
-with patch('__builtin__.__import__', side_effect=import_mock):
+with patch('builtins.__import__', side_effect=import_mock):
     import terrainbento
 
 from datetime import date
