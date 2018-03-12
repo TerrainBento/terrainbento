@@ -37,6 +37,7 @@ with patch('builtins.__import__', side_effect=import_mock):
     import terrainbento
 
 from datetime import date
+sys.path.insert(0, os.path.abspath('sphinxext'))
 sys.path.insert(0, '.')
 
 # -- General configuration ------------------------------------------------
