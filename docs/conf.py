@@ -20,13 +20,20 @@
 import os
 import sys
 
-
 from unittest.mock import MagicMock
 autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 for mod_name in autodoc_mock_imports:
     sys.modules[mod_name] = MagicMock()
 
-import terrainbento
+# mock landlab for terrainbento import
+orig_import = __import__
+def import_mock(name, *args):
+    if name == 'landlab':
+        return MagicMock()
+    return orig_import(name, *args)
+
+with mock.patch('__builtin__.__import__', side_effect=import_mock):
+    import terrainbento
 
 from datetime import date
 sys.path.insert(0, '.')
