@@ -20,7 +20,7 @@
 import os
 import sys
 
-# autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
+autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 
 # from unittest.mock import MagicMock, patch
 # for mod_name in autodoc_mock_imports:
