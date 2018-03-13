@@ -1,4 +1,4 @@
-scipy
-numpy
-dill
-landlab
+# scipy
+# numpy
+# dill
+# landlab
