@@ -20,27 +20,27 @@
 import os
 import sys
 
-autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
+# autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 
-from unittest.mock import MagicMock, patch
-for mod_name in autodoc_mock_imports:
-    sys.modules[mod_name] = MagicMock()
+# from unittest.mock import MagicMock, patch
+# for mod_name in autodoc_mock_imports:
+#     sys.modules[mod_name] = MagicMock()
 
 # mock landlab for terrainbento import
-orig_import = __import__
-def import_mock(name, *args):
-    if name.startswith('terrainbento'):
-        return orig_import(name, *args)
-    return MagicMock()
+# orig_import = __import__
+# def import_mock(name, *args):
+#     if name.startswith('terrainbento'):
+#         return orig_import(name, *args)
+#     return MagicMock()
 
-with patch('builtins.__import__', side_effect=import_mock):
-    import terrainbento
-    # The short X.Y version.
-    version = terrainbento.__version__
-    # The full version, including alpha/beta/rc tags.
-    release = terrainbento.__version__
+# with patch('builtins.__import__', side_effect=import_mock):
+#     import terrainbento
+#     # The short X.Y version.
+#     version = terrainbento.__version__
+#     # The full version, including alpha/beta/rc tags.
+#     release = terrainbento.__version__
 
-del landlab, dill, numpy, scipy, yaml
+# del landlab, dill, numpy, scipy, yaml
 
 from datetime import date
 sys.path.insert(0, os.path.abspath('sphinxext'))
