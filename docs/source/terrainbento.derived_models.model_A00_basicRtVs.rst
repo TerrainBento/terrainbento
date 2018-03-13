@@ -6,9 +6,6 @@ Model BasicRtVs
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicRtVs
 ----------------------------------------------------------------------------------
 

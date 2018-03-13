@@ -6,9 +6,6 @@ Model BasicHySa
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicHySa
 ----------------------------------------------------------------------------------
 

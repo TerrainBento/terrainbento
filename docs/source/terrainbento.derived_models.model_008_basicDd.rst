@@ -6,9 +6,6 @@ Model BasicDd
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicDd
 ------------------------------------------------------------------------------
 

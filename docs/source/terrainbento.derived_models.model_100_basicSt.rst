@@ -6,9 +6,6 @@ Model BasicSt
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicSt
 ------------------------------------------------------------------------------
 

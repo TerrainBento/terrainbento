@@ -6,9 +6,6 @@ TerrainBento Boundary Condition Handlers
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Single Node Baselevel Handler
 ------------------------------------------------------------------------------------
 

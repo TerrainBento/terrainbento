@@ -6,9 +6,6 @@ Model BasicHyVs
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicHyVs
 ----------------------------------------------------------------------------------
 

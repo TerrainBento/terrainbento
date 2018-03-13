@@ -6,9 +6,6 @@ Model BasicChSa
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicChSa
 ----------------------------------------------------------------------------------
 

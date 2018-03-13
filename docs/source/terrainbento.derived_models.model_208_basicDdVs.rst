@@ -6,9 +6,6 @@ Model BasicDdVs
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicDdVs
 ----------------------------------------------------------------------------------
 

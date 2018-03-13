@@ -6,9 +6,6 @@ Model BasicCv
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicCv
 ------------------------------------------------------------------------------
 

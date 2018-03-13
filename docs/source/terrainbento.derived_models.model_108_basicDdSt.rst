@@ -6,9 +6,6 @@ Model BasicDdSt
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicDdSt
 ----------------------------------------------------------------------------------
 
