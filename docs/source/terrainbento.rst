@@ -1,5 +1,5 @@
-terrainbento package
-====================
+The ``TerrainBento`` package
+============================
 
 .. automodule:: terrainbento
     :members:
@@ -14,4 +14,3 @@ Subpackages
     terrainbento.base_class
     terrainbento.boundary_condition_handlers
     terrainbento.derived_models
-
