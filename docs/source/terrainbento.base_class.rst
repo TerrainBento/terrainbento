@@ -6,9 +6,6 @@ TerrainBento Base Classes
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Erosion Model
 ------------------------------------------------
 

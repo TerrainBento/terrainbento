@@ -6,9 +6,6 @@ Model BasicThVs
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicThVs
 ----------------------------------------------------------------------------------
 

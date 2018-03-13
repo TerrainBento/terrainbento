@@ -6,9 +6,6 @@ Model BasicRtTh
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicRtTh
 ----------------------------------------------------------------------------------
 

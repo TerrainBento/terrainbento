@@ -6,9 +6,6 @@ Model BasicHyTh
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicHyTh
 ----------------------------------------------------------------------------------
 

@@ -6,9 +6,6 @@ Model BasicRtSa
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicRtSa
 ----------------------------------------------------------------------------------
 

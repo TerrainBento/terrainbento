@@ -6,9 +6,6 @@ Model BasicTh
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicTh
 ------------------------------------------------------------------------------
 
