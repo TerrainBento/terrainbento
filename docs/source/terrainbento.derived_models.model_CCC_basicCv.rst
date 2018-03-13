@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_CCC\_basicCv package
+Model BasicCv
 ==========================================================
 
 .. automodule:: terrainbento.derived_models.model_CCC_basicCv
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_CCC\_basicCv package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_CCC\_basicCv\.model\_CCC\_basicCv module
+Model BasicCv
 ------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_CCC_basicCv.model_CCC_basicCv
     :members:
     :undoc-members:
     :show-inheritance:
-
-

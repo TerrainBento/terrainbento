@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_108\_basicDdSt package
+Model BasicDdSt
 ============================================================
 
 .. automodule:: terrainbento.derived_models.model_108_basicDdSt
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_108\_basicDdSt package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_108\_basicDdSt\.model\_108\_basicDdSt module
+Model BasicDdSt
 ----------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_108_basicDdSt.model_108_basicDdSt
     :members:
     :undoc-members:
     :show-inheritance:
-
-

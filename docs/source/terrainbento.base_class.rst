@@ -1,4 +1,4 @@
-terrainbento\.base\_class package
+TerrainBento Base Classes
 =================================
 
 .. automodule:: terrainbento.base_class
@@ -9,7 +9,7 @@ terrainbento\.base\_class package
 Submodules
 ----------
 
-terrainbento\.base\_class\.erosion\_model module
+Erosion Model
 ------------------------------------------------
 
 .. automodule:: terrainbento.base_class.erosion_model
@@ -17,12 +17,10 @@ terrainbento\.base\_class\.erosion\_model module
     :undoc-members:
     :show-inheritance:
 
-terrainbento\.base\_class\.stochastic\_erosion\_model module
+Stochastic Erosion Model
 ------------------------------------------------------------
 
 .. automodule:: terrainbento.base_class.stochastic_erosion_model
     :members:
     :undoc-members:
     :show-inheritance:
-
-
