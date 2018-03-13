@@ -22,27 +22,29 @@ import sys
 
 autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 
-from unittest.mock import MagicMock, patch
-for mod_name in autodoc_mock_imports:
-    sys.modules[mod_name] = MagicMock()
+# from unittest.mock import MagicMock, patch
+# for mod_name in autodoc_mock_imports:
+#     sys.modules[mod_name] = MagicMock()
 
 # mock landlab for terrainbento import
-orig_import = __import__
-def import_mock(name, *args):
-    if name.startswith('terrainbento'):
-        return orig_import(name, *args)
-    return MagicMock()
+# orig_import = __import__
+# def import_mock(name, *args):
+#     if name.startswith('terrainbento'):
+#         return orig_import(name, *args)
+#     return MagicMock()
 
-with patch('builtins.__import__', side_effect=import_mock):
-    import terrainbento
-    # The short X.Y version.
-    version = terrainbento.__version__
-    # The full version, including alpha/beta/rc tags.
-    release = terrainbento.__version__
+# with patch('builtins.__import__', side_effect=import_mock):
+#     import terrainbento
+#     # The short X.Y version.
+#     version = terrainbento.__version__
+#     # The full version, including alpha/beta/rc tags.
+#     release = terrainbento.__version__
 
-del landlab, dill, numpy, scipy, yaml
+# del landlab, dill, numpy, scipy, yaml
 
 from datetime import date
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                os.pardir)))
 sys.path.insert(0, os.path.abspath('sphinxext'))
 sys.path.insert(0, '.')
 
@@ -128,7 +130,7 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinxdoc'
+# html_theme = 'sphinxdoc'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -143,7 +145,7 @@ html_logo = 'images/terrainbento_logo.png'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -162,7 +164,7 @@ html_static_path = ['_static']
 
 numpydoc_class_members_toctree = False
 numpydoc_show_class_members = False
-html_style = 'landlab.css'
+# html_style = 'landlab.css'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
