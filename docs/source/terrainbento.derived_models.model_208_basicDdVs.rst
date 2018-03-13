@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_208\_basicDdVs package
+Model BasicDdVs
 ============================================================
 
 .. automodule:: terrainbento.derived_models.model_208_basicDdVs
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_208\_basicDdVs package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_208\_basicDdVs\.model\_208\_basicDdVs module
+Model BasicDdVs
 ----------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_208_basicDdVs.model_208_basicDdVs
     :members:
     :undoc-members:
     :show-inheritance:
-
-

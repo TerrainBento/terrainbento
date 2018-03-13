@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_800\_basicRt package
+Model BasicRt
 ==========================================================
 
 .. automodule:: terrainbento.derived_models.model_800_basicRt
@@ -16,5 +16,3 @@ terrainbento\.derived\_models\.model\_800\_basicRt\.model\_800\_basicRt module
     :members:
     :undoc-members:
     :show-inheritance:
-
-

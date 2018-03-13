@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_842\_basicChRtTh package
+Model BasicChRtTh
 ==============================================================
 
 .. automodule:: terrainbento.derived_models.model_842_basicChRtTh
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_842\_basicChRtTh package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_842\_basicChRtTh\.model\_842\_basicChRtTh module
+Model BasicChRtTh
 --------------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_842_basicChRtTh.model_842_basicChRtTh
     :members:
     :undoc-members:
     :show-inheritance:
-
-

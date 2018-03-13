@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_010\_basicHy package
+Model BasicHy
 ==========================================================
 
 .. automodule:: terrainbento.derived_models.model_010_basicHy
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_010\_basicHy package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_010\_basicHy\.model\_010\_basicHy module
+Model BasicHy
 ------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_010_basicHy.model_010_basicHy
     :members:
     :undoc-members:
     :show-inheritance:
-
-

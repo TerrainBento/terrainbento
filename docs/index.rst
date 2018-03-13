@@ -18,22 +18,21 @@ Model Base Class
 ------------------------------------------
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 4
 
    source/terrainbento.base_class
 
 Boundary Condition Handlers
 ------------------------------------------
  .. toctree::
-    :maxdepth: 5
+    :maxdepth: 4
 
     source/terrainbento.boundary_condition_handlers
 
 Derived Models
 ------------------------------------------
  .. toctree::
-    :maxdepth: 5
-
+    :maxdepth: 4
     source/terrainbento.derived_models
 
 

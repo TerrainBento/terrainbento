@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_100\_basicSt package
+Model BasicSt
 ==========================================================
 
 .. automodule:: terrainbento.derived_models.model_100_basicSt
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_100\_basicSt package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_100\_basicSt\.model\_100\_basicSt module
+Model BasicSt
 ------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_100_basicSt.model_100_basicSt
     :members:
     :undoc-members:
     :show-inheritance:
-
-

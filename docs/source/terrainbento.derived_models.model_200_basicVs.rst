@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_200\_basicVs package
+Model BasicVs
 ==========================================================
 
 .. automodule:: terrainbento.derived_models.model_200_basicVs
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_200\_basicVs package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_200\_basicVs\.model\_200\_basicVs module
+Model BasicVs
 ------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_200_basicVs.model_200_basicVs
     :members:
     :undoc-members:
     :show-inheritance:
-
-
