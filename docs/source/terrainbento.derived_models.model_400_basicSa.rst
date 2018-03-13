@@ -6,9 +6,6 @@ Model BasicSa
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicSa
 ------------------------------------------------------------------------------
 

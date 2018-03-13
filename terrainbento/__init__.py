@@ -1,5 +1,5 @@
 """
-Public classes of the terrainbento package.
+Public classes of the ``terrainbento`` package.
 
 terrainbento has two types of public classes: derived models and boundary
 condition handlers. Derived models are models that have inherited from the
