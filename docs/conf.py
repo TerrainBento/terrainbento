@@ -70,10 +70,6 @@ extensions = ['sphinx.ext.autodoc',
               'numpydoc',
               'sphinx.ext.autosummary']
 
-if os.getenv('READTHEDOCS'):
-    template_bridge = 'landlab_ext.MyTemplateLoader'
-
-
 # sphinx napoleon specifications
 #napoleon_include_private_with_doc = True
 #napoleon_include_special_with_doc = True
