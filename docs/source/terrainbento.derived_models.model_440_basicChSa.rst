@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_440\_basicChSa package
+Model BasicChSa
 ============================================================
 
 .. automodule:: terrainbento.derived_models.model_440_basicChSa
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_440\_basicChSa package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_440\_basicChSa\.model\_440\_basicChSa module
+Model BasicChSa
 ----------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_440_basicChSa.model_440_basicChSa
     :members:
     :undoc-members:
     :show-inheritance:
-
-

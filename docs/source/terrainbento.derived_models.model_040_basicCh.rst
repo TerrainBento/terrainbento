@@ -1,4 +1,4 @@
-terrainbento\.derived\_models\.model\_040\_basicCh package
+Model BasicCh
 ==========================================================
 
 .. automodule:: terrainbento.derived_models.model_040_basicCh
@@ -9,12 +9,10 @@ terrainbento\.derived\_models\.model\_040\_basicCh package
 Submodules
 ----------
 
-terrainbento\.derived\_models\.model\_040\_basicCh\.model\_040\_basicCh module
+Model BasicCh
 ------------------------------------------------------------------------------
 
 .. automodule:: terrainbento.derived_models.model_040_basicCh.model_040_basicCh
     :members:
     :undoc-members:
     :show-inheritance:
-
-
