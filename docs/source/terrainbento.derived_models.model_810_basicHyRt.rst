@@ -6,9 +6,6 @@ Model BasicHyRt
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicHyRt
 ----------------------------------------------------------------------------------
 

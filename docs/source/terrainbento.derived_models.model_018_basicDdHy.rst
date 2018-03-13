@@ -6,9 +6,6 @@ Model BasicDdHy
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicDdHy
 ----------------------------------------------------------------------------------
 

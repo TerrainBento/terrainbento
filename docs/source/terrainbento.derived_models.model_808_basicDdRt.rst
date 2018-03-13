@@ -6,9 +6,6 @@ Model BasicDdRt
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicDdRt
 ----------------------------------------------------------------------------------
 

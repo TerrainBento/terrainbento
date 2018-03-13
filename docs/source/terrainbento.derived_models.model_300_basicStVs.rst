@@ -6,9 +6,6 @@ Model BasicStVs
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicStVs
 ----------------------------------------------------------------------------------
 

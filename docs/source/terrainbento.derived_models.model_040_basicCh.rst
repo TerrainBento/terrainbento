@@ -6,9 +6,6 @@ Model BasicCh
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicCh
 ------------------------------------------------------------------------------
 

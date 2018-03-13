@@ -6,9 +6,6 @@ Model BasicSaVs
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicSaVs
 ----------------------------------------------------------------------------------
 

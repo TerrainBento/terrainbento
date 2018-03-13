@@ -6,9 +6,6 @@ Model BasicChRtTh
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicChRtTh
 --------------------------------------------------------------------------------------
 

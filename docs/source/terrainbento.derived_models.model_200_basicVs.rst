@@ -6,9 +6,6 @@ Model BasicVs
     :undoc-members:
     :show-inheritance:
 
-Submodules
-----------
-
 Model BasicVs
 ------------------------------------------------------------------------------
 
