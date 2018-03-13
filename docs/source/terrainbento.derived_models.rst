@@ -9,6 +9,7 @@ models with one, two, or three components.
     :undoc-members:
     :show-inheritance:
 
+
 Base Model
 -----------
 
@@ -21,6 +22,7 @@ One Component Models
 --------------------
 
 .. toctree::
+
     terrainbento.derived_models.model_002_basicTh
     terrainbento.derived_models.model_008_basicDd
     terrainbento.derived_models.model_010_basicHy
@@ -31,10 +33,12 @@ One Component Models
     terrainbento.derived_models.model_800_basicRt
     terrainbento.derived_models.model_CCC_basicCv
 
+
 Two Component Models
 --------------------
 
 .. toctree::
+
     terrainbento.derived_models.model_012_basicHyTh
     terrainbento.derived_models.model_018_basicDdHy
     terrainbento.derived_models.model_102_basicStTh
@@ -58,5 +62,6 @@ Two Component Models
 Three Component Models
 -----------
 
-    .. toctree::
+.. toctree::
+
     terrainbento.derived_models.model_842_basicChRtTh
