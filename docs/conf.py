@@ -43,8 +43,6 @@ autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 # del landlab, dill, numpy, scipy, yaml
 
 from datetime import date
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                os.pardir)))
 sys.path.insert(0, os.path.abspath('sphinxext'))
 sys.path.insert(0, '.')
 
