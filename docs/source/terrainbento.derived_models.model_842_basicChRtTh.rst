@@ -1,5 +1,5 @@
 Model BasicChRtTh
-==============================================================
+=================
 
 .. automodule:: terrainbento.derived_models.model_842_basicChRtTh
     :members:
@@ -7,7 +7,7 @@ Model BasicChRtTh
     :show-inheritance:
 
 Model BasicChRtTh
---------------------------------------------------------------------------------------
+-----------------
 
 .. automodule:: terrainbento.derived_models.model_842_basicChRtTh.model_842_basicChRtTh
     :members:

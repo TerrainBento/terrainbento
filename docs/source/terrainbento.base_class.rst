@@ -1,5 +1,5 @@
-TerrainBento Base Classes
-=================================
+``terrainbento`` Model Base Classes
+===================================
 
 .. automodule:: terrainbento.base_class
     :members:
@@ -7,7 +7,7 @@ TerrainBento Base Classes
     :show-inheritance:
 
 Erosion Model
-------------------------------------------------
+-------------
 
 .. automodule:: terrainbento.base_class.erosion_model
     :members:
@@ -15,7 +15,7 @@ Erosion Model
     :show-inheritance:
 
 Stochastic Erosion Model
-------------------------------------------------------------
+------------------------
 
 .. automodule:: terrainbento.base_class.stochastic_erosion_model
     :members:

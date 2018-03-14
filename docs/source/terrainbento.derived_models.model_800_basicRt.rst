@@ -1,5 +1,5 @@
 Model BasicRt
-==========================================================
+=============
 
 .. automodule:: terrainbento.derived_models.model_800_basicRt
     :members:
@@ -7,7 +7,7 @@ Model BasicRt
     :show-inheritance:
 
 Model BasicRt
-------------------------------------------------------------------------------
+-------------
 
 .. automodule:: terrainbento.derived_models.model_800_basicRt.model_800_basicRt
     :members:

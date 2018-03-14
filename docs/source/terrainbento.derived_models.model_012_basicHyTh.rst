@@ -1,5 +1,5 @@
 Model BasicHyTh
-============================================================
+===============
 
 .. automodule:: terrainbento.derived_models.model_012_basicHyTh
     :members:
@@ -7,7 +7,7 @@ Model BasicHyTh
     :show-inheritance:
 
 Model BasicHyTh
-----------------------------------------------------------------------------------
+---------------
 
 .. automodule:: terrainbento.derived_models.model_012_basicHyTh.model_012_basicHyTh
     :members:

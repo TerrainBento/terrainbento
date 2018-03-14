@@ -1,5 +1,5 @@
 Derived Models
-=====================================
+==============
 
 Presently ``TerrainBento`` has four types of derived models: the basic model and
 models with one, two, or three components.
@@ -11,7 +11,7 @@ models with one, two, or three components.
 
 
 Base Model
------------
+----------
 
 .. toctree::
 
@@ -60,7 +60,7 @@ Two Component Models
 
 
 Three Component Models
------------
+----------------------
 
 .. toctree::
 

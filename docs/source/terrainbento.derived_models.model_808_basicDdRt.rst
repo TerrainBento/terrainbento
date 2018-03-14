@@ -1,5 +1,5 @@
 Model BasicDdRt
-============================================================
+===============
 
 .. automodule:: terrainbento.derived_models.model_808_basicDdRt
     :members:
@@ -7,7 +7,7 @@ Model BasicDdRt
     :show-inheritance:
 
 Model BasicDdRt
-----------------------------------------------------------------------------------
+---------------
 
 .. automodule:: terrainbento.derived_models.model_808_basicDdRt.model_808_basicDdRt
     :members:

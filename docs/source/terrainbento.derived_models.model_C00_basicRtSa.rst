@@ -1,5 +1,5 @@
 Model BasicRtSa
-============================================================
+===============
 
 .. automodule:: terrainbento.derived_models.model_C00_basicRtSa
     :members:
@@ -7,7 +7,7 @@ Model BasicRtSa
     :show-inheritance:
 
 Model BasicRtSa
-----------------------------------------------------------------------------------
+---------------
 
 .. automodule:: terrainbento.derived_models.model_C00_basicRtSa.model_C00_basicRtSa
     :members:

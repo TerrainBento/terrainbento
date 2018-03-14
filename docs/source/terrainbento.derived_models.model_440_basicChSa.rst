@@ -1,5 +1,5 @@
 Model BasicChSa
-============================================================
+===============
 
 .. automodule:: terrainbento.derived_models.model_440_basicChSa
     :members:
@@ -7,7 +7,7 @@ Model BasicChSa
     :show-inheritance:
 
 Model BasicChSa
-----------------------------------------------------------------------------------
+---------------
 
 .. automodule:: terrainbento.derived_models.model_440_basicChSa.model_440_basicChSa
     :members:

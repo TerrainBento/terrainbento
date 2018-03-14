@@ -1,5 +1,5 @@
 Model BasicSa
-==========================================================
+=============
 
 .. automodule:: terrainbento.derived_models.model_400_basicSa
     :members:
@@ -7,7 +7,7 @@ Model BasicSa
     :show-inheritance:
 
 Model BasicSa
-------------------------------------------------------------------------------
+-------------
 
 .. automodule:: terrainbento.derived_models.model_400_basicSa.model_400_basicSa
     :members:

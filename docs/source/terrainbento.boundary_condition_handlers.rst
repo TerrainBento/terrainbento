@@ -1,5 +1,5 @@
 TerrainBento Boundary Condition Handlers
-===================================================
+========================================
 
 .. automodule:: terrainbento.boundary_condition_handlers
     :members:
@@ -7,7 +7,7 @@ TerrainBento Boundary Condition Handlers
     :show-inheritance:
 
 Single Node Baselevel Handler
-------------------------------------------------------------------------------------
+-----------------------------
 
 .. automodule:: terrainbento.boundary_condition_handlers.single_node_baselevel_handler
     :members:
@@ -15,7 +15,7 @@ Single Node Baselevel Handler
     :show-inheritance:
 
 Captured Node Baselevel Handler
--------------------------------------------------------------------------------------
+-------------------------------
 
 .. automodule:: terrainbento.boundary_condition_handlers.capture_node_baselevel_handler
     :members:
@@ -23,7 +23,7 @@ Captured Node Baselevel Handler
     :show-inheritance:
 
 Precipitation Changer
--------------------------------------------------------------------
+----------------------
 
 .. automodule:: terrainbento.boundary_condition_handlers.precip_changer
     :members:

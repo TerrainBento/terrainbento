@@ -1,5 +1,5 @@
 Model BasicDdHy
-============================================================
+===============
 
 .. automodule:: terrainbento.derived_models.model_018_basicDdHy
     :members:
@@ -7,7 +7,7 @@ Model BasicDdHy
     :show-inheritance:
 
 Model BasicDdHy
-----------------------------------------------------------------------------------
+---------------
 
 .. automodule:: terrainbento.derived_models.model_018_basicDdHy.model_018_basicDdHy
     :members:
