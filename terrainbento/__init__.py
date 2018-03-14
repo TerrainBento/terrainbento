@@ -1,7 +1,7 @@
 """
 Public classes of the ``terrainbento`` package.
 
-terrainbento has two types of public classes: derived models and boundary
+``terrainbento`` has two types of public classes: derived models and boundary
 condition handlers. Derived models are models that have inherited from the
 ``ErosionModel`` base class. Boundary condition handlers are helper classes
 that have been designed to modify model boundary conditions during a model run.
