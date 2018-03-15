@@ -113,7 +113,7 @@ class PrecipChanger(object):
 
         if current_time > self.stop_time:
             current_time = self.stop_time
-                    
+
         frac_wet, mean_depth = self.get_current_precip_params(current_time)
 
         mean_intensity = depth_to_intensity(mean_depth, self.time_unit)

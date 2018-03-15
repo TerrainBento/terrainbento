@@ -16,9 +16,9 @@ from scipy.interpolate import interp1d
 class SingleNodeBaselevelHandler():
     """SingleNodeBaselevelHandler controls elevation for a single open
     boundary node, referred to here as the *outlet*."""
-    
-    def __init__(self, params):
-        
+
+    def __init__(self, grid, params):
+
         # Read and remember baselevel control param, if present
         try:
             self.outlet_lowering_rate = self.params['outlet_lowering_rate']
@@ -48,5 +48,3 @@ class SingleNodeBaselevelHandler():
         except KeyError:
 
             self.outlet_elevation_obj = None
-
-
