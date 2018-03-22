@@ -50,11 +50,6 @@ class Basic(ErosionModel):
         else:
             raise ValueError('A value for K_sp or K_ss  must be provided.')
 
-
-        # run the sink filler, only on initiation.
-        sink_filler = SinkFiller(self.grid, apply_slope=True, fill_slope=1e-3)
-        sink_filler.run_one_step()
-
         # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
         self.flow_router = FlowAccumulator(self.grid,
                                            flow_director='D8',
