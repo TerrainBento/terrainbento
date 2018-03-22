@@ -14,9 +14,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                StreamPowerSmoothThresholdEroder,
-                                LinearDiffuser)
+from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
 import numpy as np
 
 
@@ -56,11 +54,6 @@ class BasicDd(ErosionModel):
                 self.K = (self._length_factor**(1./3.))*K_ss # K_ss has units Lengtg^(1/3) per Time
         else:
             raise ValueError('A value for K_sp or K_ss  must be provided.')
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros('node', 'erosion__threshold')

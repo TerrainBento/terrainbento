@@ -14,8 +14,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                FastscapeEroder, DepthDependentDiffuser,
+from landlab.components import (FastscapeEroder, DepthDependentDiffuser,
                                 ExponentialWeatherer)
 import numpy as np
 
@@ -48,11 +47,6 @@ class BasicSa(ErosionModel):
         soil_transport_decay_depth = (self._length_factor)*self.params['soil_transport_decay_depth']  # has units length
         max_soil_production_rate = (self._length_factor)*self.params['max_soil_production_rate'] # has units length per time
         soil_production_decay_depth = (self._length_factor)*self.params['soil_production_decay_depth']   # has units length
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,

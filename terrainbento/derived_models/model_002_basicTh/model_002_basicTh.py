@@ -5,17 +5,14 @@ power with a smoothed threshold, and discharge proportional to drainage area.
 
 Model 002 BasicTh
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerSmoothThresholdEroder, LinearDiffuser
+Landlab components used: LinearDiffuser, StreamPowerSmoothThresholdEroder
 
 @author: gtucker
 @author: Katherine Barnhart
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                StreamPowerSmoothThresholdEroder,
-                                LinearDiffuser)
+from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 import numpy as np
 
 
@@ -54,11 +51,6 @@ class BasicTh(ErosionModel):
                 self.K = (self._length_factor**(1./3.))*K_ss # K_ss has units Lengtg^(1/3) per Time
         else:
             raise ValueError('A value for K_sp or K_ss  must be provided.')
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(self.grid,

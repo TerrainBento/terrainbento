@@ -18,8 +18,7 @@ both.
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                ErosionDeposition, LinearDiffuser)
+from landlab.components import ErosionDeposition, LinearDiffuser
 import numpy as np
 
 class BasicHyRt(ErosionModel):
@@ -54,11 +53,6 @@ class BasicHyRt(ErosionModel):
                                  rock_thresh_br=0.0,
                                  till_thresh_br=0.0,
                                  contact_width=contact_zone__width)
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder=DepressionFinderAndRouter)
 
         # Handle solver option
         try:

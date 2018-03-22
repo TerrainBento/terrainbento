@@ -35,8 +35,7 @@ PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
 """
 
 from terrainbento.base_class import StochasticErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                LinearDiffuser, StreamPowerSmoothThresholdEroder)
+from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 
 import numpy as np
 
@@ -80,11 +79,6 @@ class BasicStTh(StochasticErosionModel):
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
         threshold = self._length_factor*self.get_parameter_from_exponent('erosion__threshold') # has units length/time
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # instantiate rain generator
         self.instantiate_rain_generator()
