@@ -1,4 +1,4 @@
-{% set name = "landlab" %}
+{% set name = "terrainbento" %}
 {% set data = load_setup_py_data() %}
 
 package:
