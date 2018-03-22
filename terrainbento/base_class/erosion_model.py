@@ -163,15 +163,6 @@ class ErosionModel(object):
             self.baselevel_handler = BaselevelHandlerClass(self.grid,
                                                            self.params)
 
-        # Handle option for time-varying precipitation
-        try:
-            self.opt_var_precip = self.params['opt_var_precip']
-        except KeyError:
-            self.opt_var_precip = False
-
-        if self.opt_var_precip:
-            self.setup_time_varying_precip()
-
         # Handle option to save if walltime is to short
         self.opt_save = self.params.get('opt_save') or False
 
@@ -246,53 +237,6 @@ class ErosionModel(object):
             grid = read_netcdf(topo_file_name)
             z = grid.at_node[name]
         return (grid, z)
-
-    def setup_time_varying_precip(self):
-        """Set up to handle time variation in precipitation and related
-        parameters.
-        """
-        # get fraction of wet days and rate of change from parameters
-        frac_wet_days = self.params['intermittency_factor']
-        frac_wet_rate = self.params['intermittency_factor_rate_of_change']
-
-        # get mean storm intensity and rate of change from parameters
-        # these have units of length per time, so convert using the length
-        # factor
-        mdd = self.params['mean_storm__intensity'] / DAYS_PER_YEAR * self._length_factor
-        mdd_roc = self.params['mean_depth_rate_of_change'] / DAYS_PER_YEAR * self._length_factor
-
-        # get precip shape factor.
-        c = self.params['precip_shape_factor']
-
-        # if infiltration capacity is provided, set it.
-        try:
-            ic = self.params['infiltration_capacity'] * self._length_factor
-        except KeyError:
-            ic = None
-
-        # if m_sp is provided, set it
-        try:
-            m = self.params['m_sp']
-        except KeyError:
-            m = None
-
-        # if precip-stop time is provided, set it, otherwise use the
-        # total run time.
-        try:
-            stop_time = self.params['precip_stop_time']
-
-        except KeyError:
-            stop_time = self.params['run_duration']
-
-        self.pc = PrecipChanger(starting_frac_wet_days=frac_wet_days,
-                                frac_wet_days_rate_of_change=frac_wet_rate,
-                                starting_daily_mean_depth=mdd,
-                                mean_depth_rate_of_change=mdd_roc,
-                                precip_shape_factor=c,
-                                time_unit='year',
-                                infiltration_capacity=ic,
-                                m=m,
-                                stop_time=stop_time)
 
     def get_parameter_from_exponent(self, param_name, raise_error=True):
         """Return absolute parameter value from provided exponent.
