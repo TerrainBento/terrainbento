@@ -160,8 +160,13 @@ class ErosionModel(object):
         if BaselevelHandlerClass is None:
             self.baselevel_handler = None
         else:
-            self.baselevel_handler = BaselevelHandlerClass(self.grid,
-                                                           self.params)
+            self.baselevel_handler = []
+            if isinstance(BaselevelHandlerClass, list):
+                for comp in BaselevelHandlerClass:
+                    self.baselevel_handler.append(comp(self.grid, self.params))
+            else:
+                self.baselevel_handler.append(BaselevelHandlerClass(self.grid, 
+                                                                    self.params))
 
         # Handle option to save if walltime is to short
         self.opt_save = self.params.get('opt_save') or False
@@ -411,9 +416,10 @@ class ErosionModel(object):
             # lower topography
             self.z[nodes_to_lower] = self.outlet_elevation_obj(self.model_time)
 
-        # Let the baselevel handler work if it exists.
+        # Run each of the baselevel handlers. 
         if self.baselevel_handler is not None:
-            self.baselevel_handler.run_one_step(dt)
+            for i in range(len(self.baselevel_handler)):
+                self.baselevel_handler[i].run_one_step(dt)
 
     def pickle_self(self):
         """Pickle model object."""
