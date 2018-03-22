@@ -16,28 +16,24 @@ from scipy.interpolate import interp1d
 class SingleNodeBaselevelHandler():
     """SingleNodeBaselevelHandler controls elevation for a single open
     boundary node, referred to here as the *outlet*."""
-    
-    def __init__(self, params):
-        
-        # Read and remember baselevel control param, if present
-        try:
-            self.outlet_lowering_rate = self.params['outlet_lowering_rate']
-        except KeyError:
-            self.outlet_lowering_rate = 0.0
+
+    def __init__(self,
+                 grid,
+                 outlet_lowering_rate = 0.0,
+                 outlet_lowering_file_path = None,
+                 modern_outlet_elevation = None,
+                 **kwargs):
 
         # Read and remember baselevel control param, if present
         try:
-            file_name = params['outlet_lowering_file_path']
-
-            final_outlet_elevation = params['modern_outlet_elevation']
             starting_outlet_elevation = self.z[self.outlet_node]
 
-            elev_change_df = np.loadtxt(file_name, skiprows=1, delimiter =',')
+            elev_change_df = np.loadtxt(outlet_lowering_file_path, skiprows=1, delimiter =',')
             time = elev_change_df[:, 0]
             elev_change = elev_change_df[:, 1]
 
             scaling_factor = (np.abs(starting_outlet_elevation
-                                     - final_outlet_elevation)
+                                     - modern_outlet_elevation)
                               / np.abs(elev_change[0] - elev_change[-1]))
 
             outlet_elevation = ((scaling_factor * elev_change_df[:, 1])
@@ -48,5 +44,3 @@ class SingleNodeBaselevelHandler():
         except KeyError:
 
             self.outlet_elevation_obj = None
-
-
