@@ -17,7 +17,7 @@ from scipy.integrate import quad
 DAYS_PER_YEAR = 365.25
 
 
-def integrand(p, Ic, lam, c, m):
+def _integrand(p, Ic, lam, c, m):
     """Calculates (p-Ic)^m f(p) as fn of precip intensity, where f(p) is
     a Weibull distribution.
 
@@ -25,12 +25,12 @@ def integrand(p, Ic, lam, c, m):
     return (((p - Ic) ** m) * (c / lam) * ((p / lam) ** (c - 1.0))
             * np.exp(-((p / lam) ** c)))
 
-def scale_fac(pmean, c):
+def _scale_fac(pmean, c):
     """Converts mean precip intensity into scale factor lambda."""
     return pmean * (1.0 / gamma(1.0 + 1.0 / c))
 
 
-def depth_to_intensity(depth, time_unit):
+def _depth_to_intensity(depth, time_unit):
     """Convert daily precip water depth to intensity using given time units."""
     if time_unit == 'year':
         intensity = depth * DAYS_PER_YEAR
@@ -45,26 +45,63 @@ class PrecipChanger(object):
     parameters in Erosion Modeling Suite (EMS).
     """
 
-    def __init__(self, starting_frac_wet_days,
-                 frac_wet_days_rate_of_change,
-                 starting_daily_mean_depth, mean_depth_rate_of_change,
-                 precip_shape_factor, time_unit='year',
-                 infiltration_capacity=None, m=None, stop_time=None):
+    def __init__(self,
+                 grid,
+                 intermittency_factor = 0.3,
+                 intermittency_factor_rate_of_change = 0.001,
+                 mean_storm__intensity = 0.3,
+                 mean_depth_rate_of_change = 0.001,
+                 precip_shape_factor = 0.65,
+                 time_unit = 'year',
+                 infiltration_capacity = None,
+                 m_sp = None,
+                 precip_stop_time = None,
+                 **kwargs):
+
         """Initialize a PrecipChanger object.
         """
-        self.starting_frac_wet_days = starting_frac_wet_days
-        self.frac_wet_days_rate_of_change = frac_wet_days_rate_of_change
-        self.starting_daily_mean_depth = starting_daily_mean_depth
-        self.mean_depth_rate_of_change = mean_depth_rate_of_change
+
+        # get length factor.
+        try:
+            feet_to_meters = kwargs['feet_to_meters']
+        except KeyError:
+            feet_to_meters = False
+        try:
+            meters_to_feet = kwargs['meters_to_feet']
+        except KeyError:
+            meters_to_feet = False
+
+        # create prefactor for unit converstion
+        if feet_to_meters and meters_to_feet:
+            raise ValueError('Both "feet_to_meters" and "meters_to_feet" are'
+                             'set as True. This is not realistic.')
+        else:
+            if feet_to_meters:
+                self._length_factor = 1.0/3.28084
+            elif meters_to_feet:
+                self._length_factor = 3.28084
+            else:
+                self._length_factor = 1.0
+
+        if stop_time is None:
+            stop_time = kwargs['run_duration']
+
+        self.starting_frac_wet_days = intermittency_factor
+        self.frac_wet_days_rate_of_change = intermittency_factor_rate_of_change
+
+        self.starting_daily_mean_depth = mean_storm__intensity / DAYS_PER_YEAR * self._length_factor
+        self.mean_depth_rate_of_change = mean_depth_rate_of_change / DAYS_PER_YEAR * self._length_factor
         self.precip_shape_factor = precip_shape_factor
         self.time_unit = time_unit
-        self.infilt_cap = infiltration_capacity
-        self.m = m
+        try:
+            self.infilt_cap = infiltration_capacity * self._length_factor
+        except TypeError:
+            self.infilt_cap = infiltration_capacity
+        self.m = m_sp
         self.stop_time = stop_time
 
         if self.infilt_cap is not None:
             (self.starting_psi, abserr) = self._calculate_starting_psi()
-
 
     def _calculate_starting_psi(self):
         """Calculate and store for later the factor psi, which represents the
@@ -80,10 +117,10 @@ class PrecipChanger(object):
         distribution representing the probability distribution of daily
         precipitation intensity.
         """
-        mean_intensity = depth_to_intensity(self.starting_daily_mean_depth,
+        mean_intensity = _depth_to_intensity(self.starting_daily_mean_depth,
                                             self.time_unit)
-        lam = scale_fac(mean_intensity, self.precip_shape_factor)
-        psi = quad(integrand, self.infilt_cap, np.inf,
+        lam = _scale_fac(mean_intensity, self.precip_shape_factor)
+        psi = quad(_integrand, self.infilt_cap, np.inf,
                          args=(self.infilt_cap, lam, self.precip_shape_factor,
                                self.m))
         return psi
@@ -113,12 +150,12 @@ class PrecipChanger(object):
 
         if current_time > self.stop_time:
             current_time = self.stop_time
-                    
+
         frac_wet, mean_depth = self.get_current_precip_params(current_time)
 
-        mean_intensity = depth_to_intensity(mean_depth, self.time_unit)
-        lam = scale_fac(mean_intensity, self.precip_shape_factor)
-        (psi, abserr) = quad(integrand, self.infilt_cap, np.inf,
+        mean_intensity = _depth_to_intensity(mean_depth, self.time_unit)
+        lam = _scale_fac(mean_intensity, self.precip_shape_factor)
+        (psi, abserr) = quad(_integrand, self.infilt_cap, np.inf,
                          args=(self.infilt_cap, lam, self.precip_shape_factor,
                                self.m))
         adj_fac = ((frac_wet * psi)
