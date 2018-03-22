@@ -38,12 +38,14 @@ install:
 - export PATH="$CONDA_PREFIX/bin:$PATH"
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
-- conda install python=$TRAVIS_PYTHON_VERSION
+- conda create -n _testing python=$TRAVIS_PYTHON_VERSION
+- source activate _testing
 - conda install -q conda-build=3.0 anaconda-client coverage sphinx
 - conda install -q numpy=1.11
 - conda install -q landlab -c landlab -c conda-forge
 - pip install coveralls
 - conda info -a && conda list
+
 script:
 - conda build -q .conda-recipe --old-build-string
 - |
