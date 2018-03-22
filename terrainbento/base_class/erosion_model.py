@@ -71,11 +71,16 @@ class ErosionModel(object):
                                                        name='topographic__elevation',
                                                        halo=1)
             self.opt_watershed = True
-
+            self._starting_topography = 'inputDEM'
+            
         except KeyError:
             # this routine will set self.opt_watershed internally
-            self.setup_rectangular_grid(self.params)
-
+            if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
+                self.setup_hexagonal_grid(self.params)
+                self._starting_topography = 'HexModelGrid'
+            else:
+                self.setup_rectangular_grid(self.params)
+                self._starting_topography = 'RasterModelGrid'
         try:
             feet_to_meters = self.params['feet_to_meters']
         except KeyError:
@@ -160,20 +165,76 @@ class ErosionModel(object):
         if BaselevelHandlerClass is None:
             self.baselevel_handler = None
         else:
-            self.baselevel_handler = BaselevelHandlerClass(self.grid,
-                                                           self.params)
-
-        # Handle option for time-varying precipitation
-        try:
-            self.opt_var_precip = self.params['opt_var_precip']
-        except KeyError:
-            self.opt_var_precip = False
-
-        if self.opt_var_precip:
-            self.setup_time_varying_precip()
+            self.baselevel_handler = []
+            if isinstance(BaselevelHandlerClass, list):
+                for comp in BaselevelHandlerClass:
+                    self.baselevel_handler.append(comp(self.grid, self.params))
+            else:
+                self.baselevel_handler.append(BaselevelHandlerClass(self.grid, 
+                                                                    self.params))
 
         # Handle option to save if walltime is to short
         self.opt_save = self.params.get('opt_save') or False
+
+    def setup_hexagonal_grid(self, params):
+        """
+        """
+        """Create hexagonal grid based on input parameters.
+
+        Called if DEM is not used, or not found.
+
+        Examples
+        --------
+        >>> params = {'model_grid' : 'HexModelGrid', 
+        ...           'base_num_rows' : 6,
+        ...           'base_num_cols' : 9,
+        ...           'dx' : 10.0 }
+        >>> from erosion_model import _ErosionModel
+        >>> em = _ErosionModel(params=params)
+        """
+        
+        try:
+            nr = params['base_num_rows'] 
+            nc = params['base_num_cols'] 
+            dx = params['dx'] 
+            orientation = params.get('orientation', 'horizontal')
+            shape = params.get('orientation', 'hex') 
+            reorient_links = params.get('reorient_links', True)
+            
+        except KeyError:
+            print('Warning: no DEM or grid shape specified. '
+                  'Creating simple hex grid')
+            nr = 8
+            nc = 5
+            dx = 10
+            orientation = 'horizontal'
+            shape = 'hex'
+            reorient_links = True
+
+        if 'outlet_id' in params:
+            self.opt_watershed = True
+            self.outlet_node = params['outlet_id']
+            
+        # Create grid
+        from landlab import HexModelGrid
+        self.grid = HexModelGrid(nr, 
+                                 nc, 
+                                 dx, 
+                                 shape=shape,
+                                 orientation=orientation,
+                                 reorient_links=reorient_links)
+
+        # Create and initialize elevation field
+        self.z = self.grid.add_zeros('node', 'topographic__elevation')
+        if 'random_seed' in params:
+            seed = params['random_seed']
+        else:
+            seed = 0
+        np.random.seed(seed)
+        rs = np.random.rand(len(self.grid.core_nodes))
+        self.z[self.grid.core_nodes] = rs
+
+        # Set boundary conditions
 
     def setup_rectangular_grid(self, params):
         """Create rectangular grid based on input parameters.
@@ -246,53 +307,6 @@ class ErosionModel(object):
             grid = read_netcdf(topo_file_name)
             z = grid.at_node[name]
         return (grid, z)
-
-    def setup_time_varying_precip(self):
-        """Set up to handle time variation in precipitation and related
-        parameters.
-        """
-        # get fraction of wet days and rate of change from parameters
-        frac_wet_days = self.params['intermittency_factor']
-        frac_wet_rate = self.params['intermittency_factor_rate_of_change']
-
-        # get mean storm intensity and rate of change from parameters
-        # these have units of length per time, so convert using the length
-        # factor
-        mdd = self.params['mean_storm__intensity'] / DAYS_PER_YEAR * self._length_factor
-        mdd_roc = self.params['mean_depth_rate_of_change'] / DAYS_PER_YEAR * self._length_factor
-
-        # get precip shape factor.
-        c = self.params['precip_shape_factor']
-
-        # if infiltration capacity is provided, set it.
-        try:
-            ic = self.params['infiltration_capacity'] * self._length_factor
-        except KeyError:
-            ic = None
-
-        # if m_sp is provided, set it
-        try:
-            m = self.params['m_sp']
-        except KeyError:
-            m = None
-
-        # if precip-stop time is provided, set it, otherwise use the
-        # total run time.
-        try:
-            stop_time = self.params['precip_stop_time']
-
-        except KeyError:
-            stop_time = self.params['run_duration']
-
-        self.pc = PrecipChanger(starting_frac_wet_days=frac_wet_days,
-                                frac_wet_days_rate_of_change=frac_wet_rate,
-                                starting_daily_mean_depth=mdd,
-                                mean_depth_rate_of_change=mdd_roc,
-                                precip_shape_factor=c,
-                                time_unit='year',
-                                infiltration_capacity=ic,
-                                m=m,
-                                stop_time=stop_time)
 
     def get_parameter_from_exponent(self, param_name, raise_error=True):
         """Return absolute parameter value from provided exponent.
@@ -467,9 +481,10 @@ class ErosionModel(object):
             # lower topography
             self.z[nodes_to_lower] = self.outlet_elevation_obj(self.model_time)
 
-        # Let the baselevel handler work if it exists.
+        # Run each of the baselevel handlers. 
         if self.baselevel_handler is not None:
-            self.baselevel_handler.run_one_step(dt)
+            for i in range(len(self.baselevel_handler)):
+                self.baselevel_handler[i].run_one_step(dt)
 
     def pickle_self(self):
         """Pickle model object."""
@@ -531,7 +546,7 @@ def main():
         print('Must include input file name on command line')
         sys.exit(1)
 
-    erosion_model = _ErosionModel(input_file=infile)
+    erosion_model = ErosionModel(input_file=infile)
     erosion_model.run()
 
 
