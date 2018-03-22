@@ -16,8 +16,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                ErosionDeposition, LinearDiffuser)
+from landlab.components import ErosionDeposition, LinearDiffuser
 import numpy as np
 
 
@@ -49,11 +48,6 @@ class BasicHyVs(ErosionModel):
                                     * self.params['K_hydraulic_conductivity']) # has units length per time
 
         v_sc = self.get_parameter_from_exponent('v_sc') # normalized settling velocity. Unitless.
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # set methods and fields. K's and sp_crits need to be field names
         method = 'simple_stream_power'

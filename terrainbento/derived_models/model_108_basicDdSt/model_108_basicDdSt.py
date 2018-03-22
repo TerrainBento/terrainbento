@@ -36,8 +36,7 @@ PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
 """
 
 from terrainbento.base_class import StochasticErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                LinearDiffuser, StreamPowerSmoothThresholdEroder)
+from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 
 import numpy as np
 
@@ -85,11 +84,6 @@ class BasicDdSt(StochasticErosionModel):
 
         # Get the parameter for rate of threshold increase with erosion depth
         self.thresh_change_per_depth = self.params['thresh_change_per_depth']
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # instantiate rain generator
         self.instantiate_rain_generator()

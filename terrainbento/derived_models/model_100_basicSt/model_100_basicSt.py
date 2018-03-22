@@ -47,8 +47,7 @@ PrecipitationDistribution, LinearDiffuser, FastscapeEroder
 """
 
 from terrainbento.base_class import StochasticErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                LinearDiffuser, FastscapeEroder)
+from landlab.components import LinearDiffuser, FastscapeEroder
 import numpy as np
 
 
@@ -85,10 +84,6 @@ class BasicSt(StochasticErosionModel):
         else:
             raise ValueError('A value for K_sp or K_ss  must be provided.')
 
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
         # instantiate rain generator
         self.instantiate_rain_generator()
 

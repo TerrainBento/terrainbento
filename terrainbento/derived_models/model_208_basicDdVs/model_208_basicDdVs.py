@@ -17,9 +17,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                StreamPowerSmoothThresholdEroder,
-                                LinearDiffuser)
+from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
 import numpy as np
 
 
@@ -49,12 +47,6 @@ class BasicDdVs(ErosionModel):
         K_hydraulic_conductivity = (self._length_factor)*self.params['K_hydraulic_conductivity'] # has units length per time
 
         self.threshold_value = self._length_factor*self.get_parameter_from_exponent('erosion__threshold') # has units length/time
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
-
 
         # Add a field for effective drainage area
         if 'effective_drainage_area' in self.grid.at_node:

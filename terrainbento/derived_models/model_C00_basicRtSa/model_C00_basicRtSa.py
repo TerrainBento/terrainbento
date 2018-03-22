@@ -6,17 +6,15 @@ proportional to drainage area.
 
 Model C00 BasicSaRt
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         FastscapeStreamPower, DepthDependentDiffuser,
-                         ExponentialWeatherer
+Landlab components used: FlowRouter, FastscapeStreamPower,
+DepthDependentDiffuser, ExponentialWeatherer
 
 @author: gtucker
 @author: Katherine Barnhart
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                FastscapeEroder, DepthDependentDiffuser,
+from landlab.components import (FastscapeEroder, DepthDependentDiffuser,
                                 ExponentialWeatherer)
 import numpy as np
 
@@ -48,11 +46,6 @@ class BasicRtSa(ErosionModel):
                                  self.K_rock_sp,
                                  self.K_till_sp,
                                  contact_zone__width)
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,
