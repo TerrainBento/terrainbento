@@ -71,11 +71,16 @@ class ErosionModel(object):
                                                        name='topographic__elevation',
                                                        halo=1)
             self.opt_watershed = True
-
+            self._starting_topography = 'inputDEM'
+            
         except KeyError:
             # this routine will set self.opt_watershed internally
-            self.setup_rectangular_grid(self.params)
-
+            if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
+                self.setup_hexagonal_grid(self.params)
+                self._starting_topography = 'HexModelGrid'
+            else:
+                self.setup_rectangular_grid(self.params)
+                self._starting_topography = 'RasterModelGrid'
         try:
             feet_to_meters = self.params['feet_to_meters']
         except KeyError:
@@ -161,7 +166,7 @@ class ErosionModel(object):
             self.baselevel_handler = None
         else:
             self.baselevel_handler = BaselevelHandlerClass(self.grid,
-                                                           self.params)
+                                                           **self.params)
 
         # Handle option for time-varying precipitation
         try:
@@ -174,6 +179,66 @@ class ErosionModel(object):
 
         # Handle option to save if walltime is to short
         self.opt_save = self.params.get('opt_save') or False
+
+    def setup_hexagonal_grid(self, params):
+        """
+        """
+        """Create hexagonal grid based on input parameters.
+
+        Called if DEM is not used, or not found.
+
+        Examples
+        --------
+        >>> params = {'model_grid' : 'HexModelGrid', 
+        ...           'base_num_rows' : 6,
+        ...           'base_num_cols' : 9,
+        ...           'dx' : 10.0 }
+        >>> from erosion_model import _ErosionModel
+        >>> em = _ErosionModel(params=params)
+        """
+        
+        try:
+            nr = params['base_num_rows'] 
+            nc = params['base_num_cols'] 
+            dx = params['dx'] 
+            orientation = params.get('orientation', 'horizontal')
+            shape = params.get('orientation', 'hex') 
+            reorient_links = params.get('reorient_links', True)
+            
+        except KeyError:
+            print('Warning: no DEM or grid shape specified. '
+                  'Creating simple hex grid')
+            nr = 8
+            nc = 5
+            dx = 10
+            orientation = 'horizontal'
+            shape = 'hex'
+            reorient_links = True
+
+        if 'outlet_id' in params:
+            self.opt_watershed = True
+            self.outlet_node = params['outlet_id']
+            
+        # Create grid
+        from landlab import HexModelGrid
+        self.grid = HexModelGrid(nr, 
+                                 nc, 
+                                 dx, 
+                                 shape=shape,
+                                 orientation=orientation,
+                                 reorient_links=reorient_links)
+
+        # Create and initialize elevation field
+        self.z = self.grid.add_zeros('node', 'topographic__elevation')
+        if 'random_seed' in params:
+            seed = params['random_seed']
+        else:
+            seed = 0
+        np.random.seed(seed)
+        rs = np.random.rand(len(self.grid.core_nodes))
+        self.z[self.grid.core_nodes] = rs
+
+        # Set boundary conditions
 
     def setup_rectangular_grid(self, params):
         """Create rectangular grid based on input parameters.
@@ -531,7 +596,7 @@ def main():
         print('Must include input file name on command line')
         sys.exit(1)
 
-    erosion_model = _ErosionModel(input_file=infile)
+    erosion_model = ErosionModel(input_file=infile)
     erosion_model.run()
 
 
