@@ -13,8 +13,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                FastscapeEroder, TaylorNonLinearDiffuser)
+from landlab.components import FastscapeEroder, TaylorNonLinearDiffuser
 import numpy as np
 
 
@@ -36,11 +35,6 @@ class BasicCh(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.K_sp = self.get_parameter_from_exponent('K_sp')
         linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,

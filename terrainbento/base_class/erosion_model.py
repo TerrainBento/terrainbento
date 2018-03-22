@@ -10,6 +10,9 @@ from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
 from landlab import load_params
 from landlab.io.netcdf import write_raster_netcdf
+
+from landlab.components import FlowAccumulator
+
 import numpy as np
 from scipy.interpolate import interp1d
 import sys
@@ -61,7 +64,6 @@ class ErosionModel(object):
             self.save_model_name = 'saved_model.model'
 
         # Read the topography data and create a grid
-
         if ((self.params.get('number_of_node_rows') is not None) and
             (self.params.get('DEM_filename') is not None)):
             raise ValueError('Both a DEM filename and number_of_node_rows have '
@@ -72,7 +74,7 @@ class ErosionModel(object):
                                                        halo=1)
             self.opt_watershed = True
             self._starting_topography = 'inputDEM'
-            
+
         except KeyError:
             # this routine will set self.opt_watershed internally
             if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
@@ -81,6 +83,21 @@ class ErosionModel(object):
             else:
                 self.setup_rectangular_grid(self.params)
                 self._starting_topography = 'RasterModelGrid'
+
+        # get flow direction, and depression finding options
+        self.flow_director = params.get('flow_director', 'FlowDirectorSteepest')
+        self.depression_finder = params.get('depression_finder', None)
+
+        # Instantiate a FlowAccumulator
+        if ((self.depression_finder is not None) and
+            (self.flow_director == 'FlowDirectorSteepest')):
+            self.flow_router = FlowAccumulator(self.grid,
+                                               routing = 'D4',
+                                               **self.params)
+        else:
+            self.flow_router = FlowAccumulator(self.grid, **self.params)
+
+
         try:
             feet_to_meters = self.params['feet_to_meters']
         except KeyError:
@@ -108,6 +125,8 @@ class ErosionModel(object):
             self.save_first_timestep = self.params['save_first_timestep']
         except KeyError:
             self.save_first_timestep = False
+
+
 
         # instantiate model time.
         self.model_time = 0.
@@ -170,7 +189,7 @@ class ErosionModel(object):
                 for comp in BaselevelHandlerClass:
                     self.baselevel_handler.append(comp(self.grid, self.params))
             else:
-                self.baselevel_handler.append(BaselevelHandlerClass(self.grid, 
+                self.baselevel_handler.append(BaselevelHandlerClass(self.grid,
                                                                     self.params))
 
         # Handle option to save if walltime is to short
@@ -185,22 +204,22 @@ class ErosionModel(object):
 
         Examples
         --------
-        >>> params = {'model_grid' : 'HexModelGrid', 
+        >>> params = {'model_grid' : 'HexModelGrid',
         ...           'base_num_rows' : 6,
         ...           'base_num_cols' : 9,
         ...           'dx' : 10.0 }
         >>> from erosion_model import _ErosionModel
         >>> em = _ErosionModel(params=params)
         """
-        
+
         try:
-            nr = params['base_num_rows'] 
-            nc = params['base_num_cols'] 
-            dx = params['dx'] 
+            nr = params['base_num_rows']
+            nc = params['base_num_cols']
+            dx = params['dx']
             orientation = params.get('orientation', 'horizontal')
-            shape = params.get('orientation', 'hex') 
+            shape = params.get('orientation', 'hex')
             reorient_links = params.get('reorient_links', True)
-            
+
         except KeyError:
             print('Warning: no DEM or grid shape specified. '
                   'Creating simple hex grid')
@@ -214,12 +233,12 @@ class ErosionModel(object):
         if 'outlet_id' in params:
             self.opt_watershed = True
             self.outlet_node = params['outlet_id']
-            
+
         # Create grid
         from landlab import HexModelGrid
-        self.grid = HexModelGrid(nr, 
-                                 nc, 
-                                 dx, 
+        self.grid = HexModelGrid(nr,
+                                 nc,
+                                 dx,
                                  shape=shape,
                                  orientation=orientation,
                                  reorient_links=reorient_links)
@@ -481,7 +500,7 @@ class ErosionModel(object):
             # lower topography
             self.z[nodes_to_lower] = self.outlet_elevation_obj(self.model_time)
 
-        # Run each of the baselevel handlers. 
+        # Run each of the baselevel handlers.
         if self.baselevel_handler is not None:
             for i in range(len(self.baselevel_handler)):
                 self.baselevel_handler[i].run_one_step(dt)

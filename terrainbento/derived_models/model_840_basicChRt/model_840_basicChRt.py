@@ -14,8 +14,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                FastscapeEroder, TaylorNonLinearDiffuser)
+from landlab.components import FastscapeEroder, TaylorNonLinearDiffuser
 import numpy as np
 
 
@@ -44,11 +43,6 @@ class BasicChRt(ErosionModel):
                                  self.K_rock_sp,
                                  self.K_till_sp,
                                  contact_zone__width)
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,

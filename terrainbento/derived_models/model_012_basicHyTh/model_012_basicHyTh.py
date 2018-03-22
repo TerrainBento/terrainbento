@@ -12,8 +12,8 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 import numpy as np
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                ErosionDeposition, LinearDiffuser)
+from landlab.components import ErosionDeposition, LinearDiffuser
+
 class BasicHyTh(ErosionModel):
     """
     A BasicThHy model computes erosion of sediment and bedrock
@@ -56,11 +56,6 @@ class BasicHyTh(ErosionModel):
         # Threshold value, with dimensions of L/T.
         sp_crit = (self._length_factor
                    * self.get_parameter_from_exponent('erosion__threshold'))
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         #make area_field and/or discharge_field depending on discharge_method
 #        area_field = self.grid.at_node['drainage_area']

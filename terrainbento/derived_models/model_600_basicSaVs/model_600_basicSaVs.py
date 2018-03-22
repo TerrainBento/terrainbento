@@ -14,8 +14,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                StreamPowerEroder, DepthDependentDiffuser,
+from landlab.components import (StreamPowerEroder, DepthDependentDiffuser,
                                 ExponentialWeatherer)
 import numpy as np
 
@@ -67,11 +66,6 @@ class BasicSaVs(ErosionModel):
 
         soil_thickness[:] = initial_soil_thickness
         bedrock_elev[:] = self.z - initial_soil_thickness
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Add a field for effective drainage area
         if 'effective_drainage_area' in self.grid.at_node:

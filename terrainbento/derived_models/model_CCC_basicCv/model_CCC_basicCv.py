@@ -5,16 +5,14 @@ power, and discharge proportional to drainage area.
 
 Model 000 Basic
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         FastscapeStreamPower, LinearDiffuser
+Landlab components used: FastscapeStreamPower, LinearDiffuser
 
 @author: gtucker
 @author: Katherine Barnhart
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                FastscapeEroder, LinearDiffuser)
+from landlab.components import FastscapeEroder, LinearDiffuser
 
 import numpy as np
 from scipy.interpolate import interp1d
@@ -46,11 +44,6 @@ class BasicCv(ErosionModel):
         time = [0, self.climate_constant_date, self.params['run_duration']]
         K = [K_sp*self.climate_factor, K_sp, K_sp]
         self.K_through_time = interp1d(time, K)
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,

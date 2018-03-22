@@ -11,8 +11,7 @@ LinearDiffuser, and HybridAlluvium
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                LinearDiffuser, ErosionDeposition)
+from landlab.components import LinearDiffuser, ErosionDeposition
 import numpy as np
 
 class BasicDdHy(ErosionModel):
@@ -40,11 +39,6 @@ class BasicDdHy(ErosionModel):
         v_s = self.get_parameter_from_exponent('v_sc') # unitless
         self.sp_crit = (self._length_factor  # L/T
                 * self.get_parameter_from_exponent('erosion__threshold'))
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros('node', 'erosion__threshold')

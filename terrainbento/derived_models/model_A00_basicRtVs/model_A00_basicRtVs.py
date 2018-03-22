@@ -6,16 +6,14 @@ effective drainage area.
 
 Model A00 BasicVsRt
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerEroder, LinearDiffuser
+Landlab components used: FlowRouter, StreamPowerEroder, LinearDiffuser
 
 @author: gtucker
 @author: Katherine Barnhart
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                StreamPowerEroder, LinearDiffuser)
+from landlab.components import StreamPowerEroder, LinearDiffuser
 import numpy as np
 
 
@@ -47,11 +45,6 @@ class BasicRtVs(ErosionModel):
                                  self.K_rock_sp,
                                  self.K_till_sp,
                                  contact_zone__width)
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Add a field for effective drainage area
         if 'effective_drainage_area' in self.grid.at_node:
