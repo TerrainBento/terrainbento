@@ -17,23 +17,31 @@ class CaptureNodeBaselevelHandler():
     """CaptureNodeBaselevelHandler turns a given node into an open boundary and
     drives its elevation."""
 
-    def __init__(self, grid, params):
+    def __init__(self,
+                 grid,
+                 capture_node = None,
+                 capture_start_time = None,
+                 capture_stabilize_time = None
+                 run_duration = None,
+                 capture_incision_rate = None,
+                 post_stabilization_incision_rate = None,
+                 **kwargs):
 
         self.grid = grid
         self.z = grid.at_node['topographic__elevation']
-        self.node = params['capture_node']
-        self.start = params['capture_start_time']
+        self.node = capture_node
+        self.start = capture_start_time
         try:
-            self.stop = params['capture_stabilize_time']
+            self.stop = capture_stabilize_time
         except KeyError:
-            self.stop = params['run_duration']
+            self.stop = run_duration
 
         try:
-            self.post_stabilization_incision_rate = params['post_stabilization_incision_rate']
+            self.post_stabilization_incision_rate = post_stabilization_incision_rate
         except KeyError:
             self.post_stabilization_incision_rate = 0
 
-        self.rate = params['capture_incision_rate']
+        self.rate = capture_incision_rate
         self.current_time = 0.0
         self.grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
 
