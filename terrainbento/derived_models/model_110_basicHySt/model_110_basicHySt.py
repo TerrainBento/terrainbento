@@ -35,8 +35,7 @@ PrecipitationDistribution, LinearDiffuser, HybridAlluvium
 """
 
 from terrainbento.base_class import StochasticErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                LinearDiffuser, ErosionDeposition)
+from landlab.components import LinearDiffuser, ErosionDeposition
 
 import numpy as np
 
@@ -82,11 +81,6 @@ class BasicHySt(StochasticErosionModel):
                                       'linear_diffusivity')) # L^2/T
 
         v_s = (self._length_factor)*self.get_parameter_from_exponent('v_s') # has units length per time
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         #set methods and fields.
         method = 'simple_stream_power'

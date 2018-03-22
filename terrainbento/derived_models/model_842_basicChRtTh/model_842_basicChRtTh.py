@@ -14,8 +14,8 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                StreamPowerSmoothThresholdEroder, TaylorNonLinearDiffuser)
+from landlab.components import (StreamPowerSmoothThresholdEroder,
+                                TaylorNonLinearDiffuser)
 import numpy as np
 
 
@@ -48,11 +48,6 @@ class BasicChRtTh(ErosionModel):
                                  rock_erosion__threshold,
                                  till_erosion__threshold,
                                  contact_zone__width)
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # Instantiate a StreamPowerSmoothThresholdEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(self.grid,

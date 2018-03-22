@@ -28,8 +28,7 @@ PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
 """
 
 from terrainbento.base_class import StochasticErosionModel
-from landlab.components import (FlowAccumulator, DepressionFinderAndRouter,
-                                StreamPowerEroder, LinearDiffuser)
+from landlab.components import StreamPowerEroder, LinearDiffuser
 
 import numpy as np
 
@@ -56,11 +55,6 @@ class BasicStVs(StochasticErosionModel):
 
         soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
         K_hydraulic_conductivity = (self._length_factor)*self.params['K_hydraulic_conductivity'] # has units length per time
-
-        # Instantiate a FlowAccumulator with DepressionFinderAndRouter using D8 method
-        self.flow_router = FlowAccumulator(self.grid,
-                                           flow_director='D8',
-                                           depression_finder = DepressionFinderAndRouter)
 
         # instantiate rain generator
         self.instantiate_rain_generator()
