@@ -175,6 +175,11 @@ class ErosionModel(object):
         # Handle option to save if walltime is to short
         self.opt_save = self.params.get('opt_save') or False
 
+    def setup_hexagonal_grid(self, params):
+        """
+        """
+        
+        
     def setup_rectangular_grid(self, params):
         """Create rectangular grid based on input parameters.
 
