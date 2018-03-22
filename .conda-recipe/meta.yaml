@@ -1,0 +1,37 @@
+{% set name = "landlab" %}
+{% set data = load_setup_py_data() %}
+
+package:
+  name: {{ name }}
+  version: {{ data.get('version') }}
+
+source:
+  path: ..
+
+requirements:
+  build:
+    - setuptools
+    - python
+    - numpy 1.11.*
+
+  run:
+    - python
+    - numpy >=1.11,<1.14
+    - scipy
+    - dill
+    - nose
+    - numpydoc
+    - six
+    - pyyaml
+    - landlab
+
+test:
+  requires:
+    - terrainbento
+    - numpy
+    - scipy
+
+build:
+  number: 0
+  string: {{ environ.get('BUILD_STR', '') }}
+  script: python setup.py install --single-version-externally-managed --record record.txt
