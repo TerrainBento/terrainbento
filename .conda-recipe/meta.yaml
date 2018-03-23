@@ -12,15 +12,12 @@ requirements:
   build:
     - setuptools
     - python
-    - numpy 1.11.*
-    - scipy
 
   run:
     - python
-    - numpy >=1.11,<1.14
+    - numpy
     - scipy
-    - nose
-    - numpydoc
+    - dill
     - six
     - pyyaml
     - landlab
@@ -28,10 +25,8 @@ requirements:
 test:
   requires:
     - terrainbento
-    - numpy <1.14
-    - scipy
-    - numpy
-    - pyyaml
+    - nose
+    - numpydoc
 
 build:
   number: 0
