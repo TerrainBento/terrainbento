@@ -13,12 +13,12 @@ requirements:
     - setuptools
     - python
     - numpy 1.11.*
+    - scipy
 
   run:
     - python
     - numpy >=1.11,<1.14
     - scipy
-    - dill
     - nose
     - numpydoc
     - six
@@ -30,8 +30,9 @@ test:
     - terrainbento
     - numpy <1.14
     - scipy
+    - numpy
+    - pyyaml
 
 build:
   number: 0
   string: {{ environ.get('BUILD_STR', '') }}
-  script: python setup.py install --single-version-externally-managed --record record.txt
