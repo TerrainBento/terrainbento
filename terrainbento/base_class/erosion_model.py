@@ -208,8 +208,8 @@ class ErosionModel(object):
         ...           'base_num_rows' : 6,
         ...           'base_num_cols' : 9,
         ...           'dx' : 10.0 }
-        >>> from erosion_model import _ErosionModel
-        >>> em = _ErosionModel(params=params)
+        >>> from terrainbento import ErosionModel
+        >>> em = ErosionModel(params=params)
         """
 
         try:
@@ -265,8 +265,8 @@ class ErosionModel(object):
         >>> params = { 'number_of_node_rows' : 6,
         ...            'number_of_node_columns' : 9,
         ...            'node_spacing' : 10.0 }
-        >>> from erosion_model import _ErosionModel
-        >>> em = _ErosionModel(params=params)
+        >>> from terrainbento import ErosionModel
+        >>> em = ErosionModel(params=params)
         """
         try:
             nr = params['number_of_node_rows']

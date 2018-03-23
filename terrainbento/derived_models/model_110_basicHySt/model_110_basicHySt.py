@@ -48,19 +48,28 @@ class BasicHySt(StochasticErosionModel):
 
     Examples
     --------
-    >>> from erosion_model import StochasticRainDepthDepThresholdModel
+    >>> from terrainbento import BasicHySt
     >>> my_pars = {}
     >>> my_pars['dt'] = 1.0
     >>> my_pars['run_duration'] = 1.0
     >>> my_pars['infiltration_capacity'] = 1.0
-    >>> my_pars['K_sp'] = 1.0
-    >>> my_pars['threshold_sp'] = 1.0
+    >>> my_pars['K_stochastic_sp'] = 1.0
+    >>> my_pars['m_sp'] = 0.5
+    >>> my_pars['n_sp'] = 1.0
+    >>> my_pars['erosion__threshold'] = 1.0
     >>> my_pars['linear_diffusivity'] = 0.01
-    >>> my_pars['mean_storm_duration'] = 0.002
-    >>> my_pars['mean_interstorm_duration'] = 0.008
+    >>> my_pars['mean_storm__intensity'] = 0.002
+    >>> my_pars['intermittency_factor'] = 0.008
     >>> my_pars['mean_storm_depth'] = 0.025
-    >>> srt = StochasticRainDepthDepThresholdModel(params=my_pars)
-    Warning: no DEM specified; creating 4x5 raster grid
+    >>> my_pars['random_seed'] = 907
+    >>> my_pars['precip_shape_factor'] = 0.65
+    >>> my_pars['number_of_sub_time_steps'] = 10
+    >>> my_pars['v_s'] = 0.01
+    >>> my_pars['F_f'] = 0.1
+    >>> my_pars['phi'] = 0.3
+    >>> my_pars['solver'] = 'adaptive'
+    >>> srt = BasicHySt(params=my_pars)
+    Warning: no DEM or grid shape specified. Creating simple raster grid
     """
 
     def __init__(self, input_file=None, params=None,
