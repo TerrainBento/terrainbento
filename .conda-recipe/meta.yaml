@@ -28,7 +28,7 @@ requirements:
 test:
   requires:
     - terrainbento
-    - numpy
+    - numpy <1.14
     - scipy
 
 build:
