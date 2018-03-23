@@ -42,7 +42,13 @@ install:
 - source activate _testing
 - conda install -q conda-build=3.0 anaconda-client coverage sphinx
 - conda install -q numpy=1.11
-- conda install -q landlab -c landlab -c conda-forge
+#- conda install -q landlab -c landlab -c conda-forge
+- git clone https://github.com/landlab/landlab.git
+- cd landlab
+- python setup.py develop
+- conda install --yes --file=requirements.txt
+- python setup.py develop
+- cd ..
 - pip install coveralls
 - conda info -a && conda list
 
