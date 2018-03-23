@@ -43,17 +43,10 @@ install:
 - conda install -q conda-build=3.0 anaconda-client coverage sphinx
 - conda install -q numpy=1.11
 - pip install coveralls
-#- conda install -q landlab -c landlab -c conda-forge
-- git clone https://github.com/landlab/landlab.git
-- cd landlab
-- python setup.py develop
-- conda install --yes --file=requirements.txt
-- python setup.py develop
-- cd ..
 - conda info -a && conda list
 
 script:
-- conda build -q .conda-recipe --old-build-string
+- conda build -q .conda-recipe -c landlab --old-build-string
 #- |
 # if [[ "$BUILD_DOCS" == "1" && "$TRAVIS_OS_NAME" == "linux" ]]; then
 #   conda install -q terrainbento --use-local -c $(dirname $(conda build --output ./.conda-recipe/ --old-build-string))
