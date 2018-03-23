@@ -20,7 +20,8 @@ requirements:
     - dill
     - six
     - pyyaml
-    - landlab
+    - nose
+    - landlab >=1.3
 
 test:
   requires:
