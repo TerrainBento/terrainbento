@@ -13,8 +13,8 @@ os:
 sudo: false
 filter_secrets: false
 before_install:
-  - conda update -n base conda
-  - pip install --upgrade pip
+- conda update -n base conda
+- pip install --upgrade pip
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     brew remove --force $(brew list)
