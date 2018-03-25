@@ -13,6 +13,8 @@ os:
 sudo: false
 filter_secrets: false
 before_install:
+  - conda update -n base conda
+  - pip install --upgrade pip
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     brew remove --force $(brew list)
@@ -50,7 +52,6 @@ script:
 - conda build -q .conda-recipe --old-build-string
 - |
  if [[ "$BUILD_DOCS" == "1" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-   pip install numpydoc
    conda install -q terrainbento --use-local -c $(dirname $(conda build --output ./.conda-recipe/ --old-build-string))
    (cd docs && make html)
  fi
