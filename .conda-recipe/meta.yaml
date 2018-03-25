@@ -20,6 +20,7 @@ requirements:
     - dill
     - six
     - pyyaml
+    - numpydoc
     - nose
     - landlab >=1.3
 
@@ -27,7 +28,6 @@ test:
   requires:
     - terrainbento
     - nose
-    - numpydoc
 
 build:
   number: 0
