@@ -46,11 +46,12 @@ install:
 - conda info -a && conda list
 
 script:
-- conda build -q .conda-recipe -c landlab --old-build-string
+- conda config --add channels landlab
+- conda build -q .conda-recipe --old-build-string
 - |
  if [[ "$BUILD_DOCS" == "1" && "$TRAVIS_OS_NAME" == "linux" ]]; then
    pip install numpydoc
-   conda install -q terrainbento --use-local -c $(dirname $(conda build --output ./.conda-recipe/ --old-build-string)) landlab
+   conda install -q terrainbento --use-local -c $(dirname $(conda build --output ./.conda-recipe/ --old-build-string))
    (cd docs && make html)
  fi
 virtualenv:
