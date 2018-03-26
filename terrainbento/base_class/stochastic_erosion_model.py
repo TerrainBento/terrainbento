@@ -28,12 +28,13 @@ class StochasticErosionModel(ErosionModel):
                  BaselevelHandlerClass=None):
         """Initialize the _BaseSt base class."""
 
-        # Call _StochasticErosionModel init
-        super(_StochasticErosionModel, self).__init__(input_file=input_file,
+        # Call StochasticErosionModel init
+        super(StochasticErosionModel, self).__init__(input_file=input_file,
                                                       params=params,
                                                       BaselevelHandlerClass=BaselevelHandlerClass)
 
-        self.opt_stochastic_duration = (self.params['opt_stochastic_duration'])
+        self.opt_stochastic_duration = self.params.get('opt_stochastic_duration', False)
+
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the dt may
         # change. Thus, rather than writing routines to reconstruct the time
@@ -88,7 +89,6 @@ class StochasticErosionModel(ErosionModel):
     def instantiate_rain_generator(self):
         """Instantiate RainGenerator."""
         # Handle option for duration.
-        self.opt_stochastic_duration = (self.params['opt_stochastic_duration'])
         if self.opt_stochastic_duration:
             self.rain_generator = \
                 PrecipitationDistribution(mean_storm_duration=self.params['mean_storm_duration'],
@@ -454,7 +454,7 @@ def main():
         print('Must include input file name on command line')
         sys.exit(1)
 
-    em = _StochasticErosionModel(input_file=infile)
+    em = StochasticErosionModel(input_file=infile)
     em.run()
 
 

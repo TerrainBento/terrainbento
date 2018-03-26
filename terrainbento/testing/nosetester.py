@@ -9,19 +9,19 @@ from nose.plugins.base import Plugin
 
 
 def show_system_info():
-    import landlab
+    import terrainbento
     import nose
 
-    print('landlab version %s' % landlab.__version__)
-    landlab_dir = os.path.dirname(landlab.__file__)
-    print('landlab is installed in %s' % landlab_dir)
+    print('terrainbento version %s' % terrainbento.__version__)
+    terrainbento_dir = os.path.dirname(terrainbento.__file__)
+    print('terrainbento is installed in %s' % terrainbento_dir)
 
     print('Python version %s' % sys.version.replace('\n', ''))
     print('nose version %d.%d.%d' % nose.__versioninfo__)
 
 
 class TerrainBentoDoctest(doctests.Doctest):
-    name = 'landlabdoctest'
+    name = 'terrainbentodoctest'
     score = 1000
     doctest_ignore = ('setup.py', )
 
@@ -32,7 +32,7 @@ class TerrainBentoDoctest(doctests.Doctest):
 
     def configure(self, options, config):
         options.doctestOptions = ["+ELLIPSIS", "+NORMALIZE_WHITESPACE"]
-        super(LandlabDoctest, self).configure(options, config)
+        super(TerrainBentoDoctest, self).configure(options, config)
 
 
 class TerrainBentoTester(Tester):

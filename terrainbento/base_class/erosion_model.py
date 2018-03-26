@@ -9,7 +9,7 @@ TEXT
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
 from landlab import load_params
-from landlab.io.netcdf import write_raster_netcdf
+from landlab.io.netcdf import write_raster_netcdf, write_netcdf
 
 from landlab.components import FlowAccumulator
 
@@ -126,7 +126,7 @@ class ErosionModel(object):
         except KeyError:
             self.save_first_timestep = False
 
-
+        self.opt_var_precip = self.params.get('opt_var_precip', False)
 
         # instantiate model time.
         self.model_time = 0.
@@ -190,7 +190,7 @@ class ErosionModel(object):
                     self.baselevel_handler.append(comp(self.grid, self.params))
             else:
                 self.baselevel_handler.append(BaselevelHandlerClass(self.grid,
-                                                                    self.params))
+                                                                    **self.params))
 
         # Handle option to save if walltime is to short
         self.opt_save = self.params.get('opt_save') or False
@@ -208,17 +208,15 @@ class ErosionModel(object):
         ...           'base_num_rows' : 6,
         ...           'base_num_cols' : 9,
         ...           'dx' : 10.0 }
-        >>> from erosion_model import _ErosionModel
-        >>> em = _ErosionModel(params=params)
+        >>> from terrainbento import ErosionModel
+        >>> em = ErosionModel(params=params)
         """
 
         try:
-            nr = params['base_num_rows']
-            nc = params['base_num_cols']
-            dx = params['dx']
-            orientation = params.get('orientation', 'horizontal')
-            shape = params.get('orientation', 'hex')
-            reorient_links = params.get('reorient_links', True)
+            nr = params['number_of_node_rows']
+            nc = params['number_of_node_columns']
+            dx = params['node_spacing']
+ 
 
         except KeyError:
             print('Warning: no DEM or grid shape specified. '
@@ -226,14 +224,18 @@ class ErosionModel(object):
             nr = 8
             nc = 5
             dx = 10
-            orientation = 'horizontal'
-            shape = 'hex'
-            reorient_links = True
+            
+        orientation = params.get('orientation', 'horizontal')
+        shape = params.get('orientation', 'hex')
+        reorient_links = params.get('reorient_links', True)
 
         if 'outlet_id' in params:
             self.opt_watershed = True
             self.outlet_node = params['outlet_id']
-
+        else:
+            self.opt_watershed = False
+            self.outlet_node = 0
+            
         # Create grid
         from landlab import HexModelGrid
         self.grid = HexModelGrid(nr,
@@ -265,8 +267,8 @@ class ErosionModel(object):
         >>> params = { 'number_of_node_rows' : 6,
         ...            'number_of_node_columns' : 9,
         ...            'node_spacing' : 10.0 }
-        >>> from erosion_model import _ErosionModel
-        >>> em = _ErosionModel(params=params)
+        >>> from terrainbento import ErosionModel
+        >>> em = ErosionModel(params=params)
         """
         try:
             nr = params['number_of_node_rows']
@@ -401,8 +403,10 @@ class ErosionModel(object):
         self.calculate_cumulative_change()
         filename = self.params['output_filename'] + str(self.iteration).zfill(4) \
                     + '.nc'
-        write_raster_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
-
+        try:
+            write_raster_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
+        except NotImplementedError:
+            write_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
     def run_one_step(self, dt):
         """
         Run each component for one time step.

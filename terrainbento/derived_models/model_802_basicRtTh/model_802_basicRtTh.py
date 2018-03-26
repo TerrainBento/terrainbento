@@ -14,7 +14,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 """
 
 from terrainbento.base_class import ErosionModel
-from landlab.components import StreamPowerSmoothThresholdEroder LinearDiffuser
+from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
 import numpy as np
 
 
