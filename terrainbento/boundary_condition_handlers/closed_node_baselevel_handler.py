@@ -32,24 +32,24 @@ class ClosedNodeBaselevelHandler():
                  **kwargs):
 
         self.grid = grid
-    
+
         self.outlet_lowering_rate = self.params.get('outlet_lowering_rate',  0.0)
-    
+
         try:
             file_name = self.params['outlet_lowering_file_path']
-    
+
             model_end_elevation = self.params['model_end_elevation']
-    
+
             model_start_elevation = self.z[self.outlet_node]
-    
+
             elev_change_df = np.loadtxt(file_name, skiprows=1, delimiter =',')
             time = elev_change_df[:, 0]
             elev_change = elev_change_df[:, 1]
             scaling_factor = np.abs(model_start_elevation-model_end_elevation)/np.abs(elev_change[0]-elev_change[-1])
             outlet_elevation = (scaling_factor*elev_change_df[:, 1]) + model_start_elevation
-    
+
             self.outlet_elevation_obj = interp1d(time, outlet_elevation)
-    
+
         except KeyError:
             self.outlet_elevation_obj = None
 

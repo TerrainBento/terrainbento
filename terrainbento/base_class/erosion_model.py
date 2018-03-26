@@ -100,6 +100,25 @@ class ErosionModel(object):
 
         """
         #######################################################################
+        # get parameters
+        #######################################################################
+        # Import input file or parameter dictionary, checking that at least
+        # one but not both were supplied.
+        if input_file is None and params is None:
+            raise ValueError(('ErosionModel requires one of `input_file` or '
+                              '`params` dictionary but neither were supplied.'))
+        elif input_file is not None and params is not None:
+            raise ValueError(('ErosionModel requires one of `input_file` or '
+                              '`params` dictionary but both were supplied.'))
+        else:
+            # parameter dictionary
+            if input_file is None:
+                self.params = params
+            # read from file.
+            else:
+                self.params = load_params(input_file)
+       
+        #######################################################################
         # Get the pickled instance name.
         #######################################################################
         self.save_model_name = self.params.get('pickle_name', 'saved_model.model')
@@ -113,26 +132,9 @@ class ErosionModel(object):
         # otherwise initialize as normal.
         #######################################################################
         else:
-            # Import input file or parameter dictionary, checking that at least
-            # one but not both were supplied.
-            if input_file is None and params is None:
-                raise ValueError(('ErosionModel requires one of `input_file` or '
-                                  '`params` dictionary but neither were supplied.'))
-            elif input_file is not None and params is not None:
-                raise ValueError(('ErosionModel requires one of `input_file` or '
-                                  '`params` dictionary but both were supplied.'))
-            else:
-                # parameter dictionary
-                if input_file is None:
-                    self.params = params
-                # read from file.
-                else:
-                    self.params = load_params(input_file)
-
-
             # identify if initial conditions should be saved.
             # default behavior is to not save the first timestep
-            self.save_first_timestep = self.params('save_first_timestep', False)
+            self.save_first_timestep = self.params.get('save_first_timestep', False)
 
             # instantiate model time.
             self.model_time = 0.

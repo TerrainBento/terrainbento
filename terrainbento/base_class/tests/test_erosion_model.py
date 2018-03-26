@@ -31,11 +31,11 @@ def test_create_pickle():
     pass
 
 def test_HexModelGrid():
-"""Test HexModelGrid."""
+    """Test HexModelGrid."""
     pass
 
 def test_RasterModelGrid():
-"""Test RasterModelGrid."""
+    """Test RasterModelGrid."""
     pass
 
 def test_DEM():
