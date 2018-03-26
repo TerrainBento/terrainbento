@@ -89,8 +89,16 @@ def _depth_to_intensity(depth, time_unit):
 
 
 class PrecipChanger(object):
-    """Class PrecipChanger handles time-varying precipitation and related
+    """PrecipChanger handles time-varying precipitation.
+
+    Methods
+    --------
+
+
+     and related
     parameters in Erosion Modeling Suite (EMS).
+
+
     """
 
     def __init__(self,
@@ -191,5 +199,8 @@ class PrecipChanger(object):
         return adj_fac
 
     def run_one_step(self, dt):
-        """ """
+        """Run one step method.
+
+        For PrecipChanger, nothing is done.
+        """
         pass

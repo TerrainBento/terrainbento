@@ -44,6 +44,7 @@ class ErosionModel(object):
     run_for
     run
     finalize
+    
     get_parameter_from_exponent
     calculate_cumulative_change
     update_boundary_conditions
@@ -53,7 +54,6 @@ class ErosionModel(object):
     pickle_self
     unpickle_self
 
-    __init__
     __set_state__
     __get_state__
 
