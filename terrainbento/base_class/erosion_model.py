@@ -22,6 +22,13 @@ from terrainbento.boundary_condition_handlers import PrecipChanger
 
 DAYS_PER_YEAR = 365.25
 
+_SUPPORTED_BOUNDARY_HANDLERS = ['NormalFault',
+                                'PrecipChanger',
+                                'CaptureNodeBaselevelHandler',
+                                'ClosedNodeBaselevelHandler',
+                                'SingleNodeBaselevelHandler']                         
+
+
 class ErosionModel(object):
     """
     Base class providing common functionality for TerrainBento models.
@@ -237,10 +244,23 @@ class ErosionModel(object):
                 self.boundary_handler = {}
                 if isinstance(BoundaryHandlers, list):
                     for comp in BoundaryHandlers:
-                        self.boundary_handler[comp.__name__] = comp(self.grid, **self.params)
+                        self.setup_boundary_handler(comp)
                 else:
-                    self.boundary_handler[BoundaryHandlers.__name__] = BoundaryHandlers(self.grid, **self.params)
-
+                    self.BoundaryHandlers(comp)
+    
+    def setup_boundary_handler(self, handler):
+        """
+        
+        """
+        name = handler.__name__
+        if name in _SUPPORTED_BOUNDARY_HANDLERS:
+            handler_params = self.params[name]
+            self.boundary_handler[name] = handler(self.grid, **handler_params)
+        else:
+            raise ValueError(('Only supported boundary condition handlers are '
+                              'permitted. These include:'
+                              '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
+        
     def setup_hexagonal_grid(self, params):
         """
         """
