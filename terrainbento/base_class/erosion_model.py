@@ -34,6 +34,30 @@ class ErosionModel(object):
     simply handles I/O and setup. Derived classes are meant to include
     Landlab components to model actual erosion processes.
 
+    Methods
+    -------
+    read_topography
+    setup_hexagonal_grid
+    setup_raster_grid
+    
+    run_one_step
+    run_for
+    run
+    finalize
+    get_parameter_from_exponent
+    calculate_cumulative_change
+    update_boundary_conditions
+    write_output
+    check_walltime
+    
+    pickle_self
+    unpickle_self
+    
+    __init__
+    __set_state__
+    __get_state__
+
+
     """
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """
@@ -54,6 +78,8 @@ class ErosionModel(object):
             Default value is 'saved_model.model'
         load_from_pickle : boolean, optional
             Default is False
+
+
 
         DEM_filename
 
@@ -142,7 +168,7 @@ class ErosionModel(object):
                     self.setup_hexagonal_grid(self.params)
                     self._starting_topography = 'HexModelGrid'
                 else:
-                    self.setup_rectangular_grid(self.params)
+                    self.setup_raster_grid(self.params)
                     self._starting_topography = 'RasterModelGrid'
 
             # Set DEM boundaries
@@ -202,28 +228,6 @@ class ErosionModel(object):
             ###################################################################
             # Boundary Conditions
             ###################################################################
-            # Read and remember baselevel control param, if present
-            self.outlet_lowering_rate = self.params.get('outlet_lowering_rate',  0.0)
-            try:
-                file_name = self.params['outlet_lowering_file_path']
-
-                modern_outlet_elevation = self.params['modern_outlet_elevation']
-                postglacial_outlet_elevation = self.z[self.outlet_node]
-
-                elev_change_df = np.loadtxt(file_name, skiprows=1, delimiter =',')
-                time = elev_change_df[:, 0]
-                elev_change = elev_change_df[:, 1]
-
-                scaling_factor = np.abs(postglacial_outlet_elevation-modern_outlet_elevation)/np.abs(elev_change[0]-elev_change[-1])
-
-                outlet_elevation = (scaling_factor*elev_change_df[:, 1]) + postglacial_outlet_elevation
-
-                self.outlet_elevation_obj = interp1d(time, outlet_elevation)
-
-            except KeyError:
-                self.outlet_elevation_obj = None
-
-            # BoundaryHandlers
             if BoundaryHandlers is None:
                 self.boundary_handler = None
             else:
@@ -296,18 +300,18 @@ class ErosionModel(object):
 
         # Set boundary conditions
 
-    def setup_rectangular_grid(self, params):
-        """Create rectangular grid based on input parameters.
+    def setup_raster_grid(self, params):
+        """Create raster grid based on input parameters.
 
         Called if DEM is not used, or not found.
-        
+
         Parameters
         ----------
         number_of_node_rows
         number_of_node_columns
         node_spacing
         outlet_id
-        
+
         Examples
         --------
         >>> params = { 'number_of_node_rows' : 6,
@@ -366,16 +370,16 @@ class ErosionModel(object):
 
     def read_topography(self, topo_file_name, name, halo):
         """Read and return topography from file.
-        
+
         Parameters
         ----------
         topo_file_name
         name
         halo
-        
+
         Examples
         --------
-        
+
         """
         try:
             (grid, z) = read_esri_ascii(topo_file_name,
@@ -388,13 +392,13 @@ class ErosionModel(object):
 
     def get_parameter_from_exponent(self, param_name, raise_error=True):
         """Return absolute parameter value from provided exponent.
-        
+
         Parameters
         ----------
         parameter_name : str
         raise_error : boolean
             Raise an error if parameter doesn not exist. Default is True.
-            
+
         Examples
         --------
         """
@@ -522,49 +526,11 @@ class ErosionModel(object):
         if os.path.exists(self.save_model_name):
             os.remove(self.save_model_name)
 
-    def update_outlet(self, dt):
+    def update_boundary_conditions(self, dt):
         """
         Update outlet level
         """
-        # determine which nodes to lower
-        if self.opt_watershed:
-            # if we are dealing with a watershed, then lower only the outlet node
-            nodes_to_lower = self.outlet_node
-        else:
-            # if we are dealing with a rectangular grid, then raise only the core nodes
-            nodes_to_lower = self.grid.status_at_node == 0
 
-        # next, lower the correct nodes the desired amount
-
-        # first, if we do not have an outlet elevation object
-        if self.outlet_elevation_obj is None:
-
-            # calculate lowering amount and subtract
-            if self.opt_watershed:
-                self.z[nodes_to_lower] -= self.outlet_lowering_rate * dt
-            else:
-                # if this is not a watershed, we are raising the core nodes
-                self.z[nodes_to_lower] += self.outlet_lowering_rate * dt
-
-            # if bedrock_elevation exists as a field, lower it also
-            if 'bedrock__elevation' in self.grid.at_node.keys():
-                if self.opt_watershed:
-                    self.grid.at_node['bedrock__elevation'][nodes_to_lower] -= self.outlet_lowering_rate * dt
-                else:
-                    self.grid.at_node['bedrock__elevation'][nodes_to_lower] += self.outlet_lowering_rate * dt
-                    
-        # if there is an outlet elevation object
-        else:
-            # if bedrock_elevation exists as a field, lower it also
-            # calcuate the topographic change required to match the current time's value for
-            # outlet elevation. This must be done in case bedrock elevation exists, and must
-            # be done before the topography is lowered
-            if 'bedrock__elevation' in self.grid.at_node.keys():
-                topo_change = self.z[nodes_to_lower] - self.outlet_elevation_obj(self.model_time)
-                self.grid.at_node['bedrock__elevation'][nodes_to_lower] -= topo_change
-
-            # lower topography
-            self.z[nodes_to_lower] = self.outlet_elevation_obj(self.model_time)
 
         # Run each of the baselevel handlers.
         if self.boundary_handler is not None:
@@ -575,7 +541,7 @@ class ErosionModel(object):
         """Pickle model object."""
         with open(self.save_model_name, 'wb') as f:
             dill.dump(self, f)
-            
+
     def unpickle_self(self):
         """Unpickle model object."""
         with open(self.save_model_name, 'rb') as f:
