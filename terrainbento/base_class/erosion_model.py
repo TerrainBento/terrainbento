@@ -238,8 +238,6 @@ class ErosionModel(object):
                 else:
                     self.boundary_handler[BoundaryHandlers.__name__] = BoundaryHandlers(self.grid, **self.params)
 
-
-
     def setup_hexagonal_grid(self, params):
         """
         """
