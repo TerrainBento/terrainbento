@@ -57,7 +57,7 @@ script:
 virtualenv:
   system_site_packages: false
 after_success:
-- |
+-  |
  if [[ "$COVERALLS" == "1" ]]; then
-   COVERALLS_REPO_TOKEN=GPzz5lrNDJuA4MQNPWFT6gomXijaPZ7bS coveralls
+   coveralls
  fi
