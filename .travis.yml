@@ -59,5 +59,8 @@ virtualenv:
 after_success:
 - |
  if [[ "$COVERALLS" == "1" ]]; then
+   pwd
+   cd terrainbento
+   python scripts/test-installed-terrainbento.py
    coveralls
  fi
