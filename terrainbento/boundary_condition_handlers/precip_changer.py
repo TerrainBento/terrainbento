@@ -112,7 +112,7 @@ class PrecipChanger(object):
                  infiltration_capacity = None,
                  m_sp = None,
                  precip_stop_time = None,
-                 length_factor = 1.0
+                 length_factor = 1.0,
                  **kwargs):
 
         """Initialize a PrecipChanger object.
