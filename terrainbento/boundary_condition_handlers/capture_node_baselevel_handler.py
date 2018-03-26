@@ -1,13 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-capture_node_baselevel_handler.py: implements "external" stream capture in an
-EMS model by taking control of a specified node, turning it into an open
-boundary, and driving its elevation.
-
-Created on Wed Nov 15 10:36:07 2017
-
-@author: gtucker
+CaptureNodeBaselevelHandler implements "external" stream capture.
 """
 
 from landlab import FIXED_VALUE_BOUNDARY
@@ -15,7 +9,10 @@ from landlab import FIXED_VALUE_BOUNDARY
 
 class CaptureNodeBaselevelHandler():
     """CaptureNodeBaselevelHandler turns a given node into an open boundary and
-    drives its elevation."""
+    drives its elevation.
+
+
+    """
 
     def __init__(self,
                  grid,
@@ -46,7 +43,9 @@ class CaptureNodeBaselevelHandler():
         self.grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
 
     def run_one_step(self, dt):
+        """
 
+        """
         if self.current_time >= self.start and self.current_time < self.stop:
             self.z[self.node] -= self.rate * dt
             print('Lowered cap node by ' + str(self.rate*dt) + ' to ' + str(self.z[self.node]))

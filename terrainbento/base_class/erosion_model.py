@@ -39,7 +39,7 @@ class ErosionModel(object):
     read_topography
     setup_hexagonal_grid
     setup_raster_grid
-    
+
     run_one_step
     run_for
     run
@@ -49,10 +49,10 @@ class ErosionModel(object):
     update_boundary_conditions
     write_output
     check_walltime
-    
+
     pickle_self
     unpickle_self
-    
+
     __init__
     __set_state__
     __get_state__
