@@ -60,7 +60,8 @@ after_success:
 - |
  if [[ "$COVERALLS" == "1" ]]; then
    pwd
-   cd terrainbento
+   ls
    python scripts/test-installed-terrainbento.py
+   ls
    coveralls
  fi
