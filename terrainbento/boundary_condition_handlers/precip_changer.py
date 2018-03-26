@@ -113,11 +113,10 @@ class PrecipChanger(object):
                  m_sp = None,
                  precip_stop_time = None,
                  length_factor = 1.0
-                 **params):
+                 **kwargs):
 
         """Initialize a PrecipChanger object.
         """
-        self.params = params
 
         if precip_stop_time is None:
             stop_time = kwargs['run_duration']

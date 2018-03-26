@@ -31,18 +31,18 @@ Model Base Class
 Boundary Condition Handlers
 ---------------------------
 
- .. toctree::
-    :maxdepth: 2
+.. toctree::
+   :maxdepth: 2
 
-    source/terrainbento.boundary_condition_handlers
+   source/terrainbento.boundary_condition_handlers
 
 Derived Models
 --------------
 
- .. toctree::
-    :maxdepth: 3
+.. toctree::
+   :maxdepth: 3
 
-    source/terrainbento.derived_models
+   source/terrainbento.derived_models
 
 
 Indices
