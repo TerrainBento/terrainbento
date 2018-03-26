@@ -28,3 +28,11 @@ docs/_build
 docs/_static
 docs/_templates
 test-results\.xml
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
