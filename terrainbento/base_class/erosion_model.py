@@ -81,9 +81,7 @@ class ErosionModel(object):
 
         # if pickled instance exists and should be loaded, load it.
         if (self.load_from_pickle) and (os.path.exists(self.save_model_name)):
-            with open(self.save_model_name, 'rb') as f:
-                model = dill.load(f)
-                self.__setstate__(model)
+            self.unpickle_self()
 
         #######################################################################
         # otherwise initialize as normal.
@@ -147,7 +145,6 @@ class ErosionModel(object):
                 else:
                     self.setup_rectangular_grid(self.params)
                     self._starting_topography = 'RasterModelGrid'
-
 
             # Set DEM boundaries
             if self.opt_watershed:
@@ -304,7 +301,14 @@ class ErosionModel(object):
         """Create rectangular grid based on input parameters.
 
         Called if DEM is not used, or not found.
-
+        
+        Parameters
+        ----------
+        number_of_node_rows
+        number_of_node_columns
+        node_spacing
+        outlet_id
+        
         Examples
         --------
         >>> params = { 'number_of_node_rows' : 6,
@@ -362,7 +366,18 @@ class ErosionModel(object):
                                                           south_closed)
 
     def read_topography(self, topo_file_name, name, halo):
-        """Read and return topography from file, as a Landlab grid and field."""
+        """Read and return topography from file.
+        
+        Parameters
+        ----------
+        topo_file_name
+        name
+        halo
+        
+        Examples
+        --------
+        
+        """
         try:
             (grid, z) = read_esri_ascii(topo_file_name,
                                         name=name,
@@ -374,6 +389,15 @@ class ErosionModel(object):
 
     def get_parameter_from_exponent(self, param_name, raise_error=True):
         """Return absolute parameter value from provided exponent.
+        
+        Parameters
+        ----------
+        parameter_name : str
+        raise_error : boolean
+            Raise an error if parameter doesn not exist. Default is True.
+            
+        Examples
+        --------
         """
         if (param_name in self.params) and (param_name+'_exp' in self.params):
             raise ValueError('Parameter file includes both absolute value and'
@@ -425,13 +449,6 @@ class ErosionModel(object):
         self.grid.at_node['cumulative_erosion__depth'] = \
             self.grid.at_node['topographic__elevation'] - \
             self.grid.at_node['initial_topographic__elevation']
-        max_cc = np.amax(self.grid.at_node['cumulative_erosion__depth'])
-        min_cc = np.amin(self.grid.at_node['cumulative_erosion__depth'])
-        print('Maximum cumulative topo change:')
-        print(max_cc)
-        print('Minimum cumulative topo change:')
-        print(min_cc)
-
 
     def write_output(self, params, field_names=None):
         """Write output to file (currently netCDF)."""
@@ -536,6 +553,7 @@ class ErosionModel(object):
                     self.grid.at_node['bedrock__elevation'][nodes_to_lower] -= self.outlet_lowering_rate * dt
                 else:
                     self.grid.at_node['bedrock__elevation'][nodes_to_lower] += self.outlet_lowering_rate * dt
+                    
         # if there is an outlet elevation object
         else:
             # if bedrock_elevation exists as a field, lower it also
@@ -557,7 +575,13 @@ class ErosionModel(object):
     def pickle_self(self):
         """Pickle model object."""
         with open(self.save_model_name, 'wb') as f:
-                    dill.dump(self, f)
+            dill.dump(self, f)
+            
+    def unpickle_self(self):
+        """Unpickle model object."""
+        with open(self.save_model_name, 'rb') as f:
+            model = dill.load(f)
+        self.__setstate__(model)
 
     def check_walltime(self, wall_threshold=0, dynamic_cut_off_time=False, cut_off_time=0):
         """Check walltime and save model out if near end of time."""
