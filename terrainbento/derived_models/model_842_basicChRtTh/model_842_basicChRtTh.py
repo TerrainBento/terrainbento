@@ -25,7 +25,7 @@ class BasicChRtTh(ErosionModel):
     power with two rock units, and Q~A.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=BoundaryHandlers):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicChRt model."""
 
         # Call ErosionModel's init
