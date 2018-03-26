@@ -24,7 +24,7 @@ parser.add_option('-m', '--mode', action='store', dest='mode', default='fast',
 try:
     import terrainbento
 except ImportError:
-    print('Unable to import terrainbento. You may not have landlab installed.')
+    print('Unable to import terrainbento. You may not have terrainbento installed.')
     print('Here is your sys.path')
     print(os.linesep.join(sys.path))
     raise
