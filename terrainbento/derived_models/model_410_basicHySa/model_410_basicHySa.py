@@ -53,10 +53,10 @@ class BasicHySa(ErosionModel):
         soil_production_decay_depth = (self._length_factor)*self.params['soil_production_decay_depth']   # has units length
 
         #set methods and fields. K's and sp_crits need to be field names
-        method = 'simple_stream_power'
-        discharge_method = 'discharge_field'
-        area_field = None
-        discharge_field = 'surface_water__discharge'
+        method = self.params.get('space_method', 'simple_stream_power')
+        discharge_method = self.params.get('discharge_method', 'discharge_field')
+        area_field = self.params.get('area_field', None)
+        discharge_field = self.params.get('discharge_field', 'surface_water__discharge')
 
         # Instantiate a SPACE component
         self.eroder = Space(self.grid,
