@@ -21,7 +21,7 @@ class CaptureNodeBaselevelHandler():
                  grid,
                  capture_node = None,
                  capture_start_time = None,
-                 capture_stabilize_time = None
+                 capture_stabilize_time = None,
                  run_duration = None,
                  capture_incision_rate = None,
                  post_stabilization_incision_rate = None,

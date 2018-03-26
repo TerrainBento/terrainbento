@@ -17,14 +17,6 @@ help:
 
 .PHONY: help Makefile
 
-pre-hook:
-	$(SPHINXAPIDOC) --module-first --no-headings --private -o source/ ../terrainbento $(SPHINXEXCLUDE)
-
-html: pre-hook
-		$(SPHINXBUILD) -b html "$(SOURCEDIR)" $(BUILDDIR)/html
-		@echo
-		@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
-
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile

@@ -83,7 +83,7 @@ class PrecipChanger(object):
             else:
                 self._length_factor = 1.0
 
-        if stop_time is None:
+        if precip_stop_time is None:
             stop_time = kwargs['run_duration']
 
         self.starting_frac_wet_days = intermittency_factor

@@ -27,3 +27,6 @@ var/
 docs/_build
 docs/_static
 docs/_templates
+test-results\.xml
+
+\.coverage
