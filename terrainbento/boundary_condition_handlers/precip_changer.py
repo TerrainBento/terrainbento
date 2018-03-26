@@ -161,3 +161,7 @@ class PrecipChanger(object):
         adj_fac = ((frac_wet * psi)
                     / (self.starting_frac_wet_days * self.starting_psi))
         return adj_fac
+
+    def run_one_step(self, dt):
+        """ """
+        pass
