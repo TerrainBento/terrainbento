@@ -1,12 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-precip_changer.py: module to handle changes in precipitation frequency and/or
-intensity over time.
-
-Created on Wed Oct  4 19:20:10 2017
-
-@author: gtucker
+PrecipChanger controls precipitation frequency and/or intensity over time.
 """
 
 import numpy as np
@@ -18,24 +13,77 @@ DAYS_PER_YEAR = 365.25
 
 
 def _integrand(p, Ic, lam, c, m):
-    """Calculates (p-Ic)^m f(p) as fn of precip intensity, where f(p) is
-    a Weibull distribution.
+    """Calculates the value of
 
-    Called by the 'quad' integration function."""
+    .. math::
+        (p-I_{c})^{m} f(p)
+
+    where .. math::`f(p)`` is a Weibull distribution.
+
+    Called by the scipy 'quad' numerical integration function.
+
+    Parameters
+    ----------
+    p : float
+        Precipitation intensity
+    Ic : float
+        Infiltration capacity
+    lam : float
+        Weibull distribution scale factor
+    c : float
+        Weibull distribution shape factor
+    m : float
+        Drainage area exponent
+
+    Examples
+    --------
+    from numpy.testing import assert_almost_equal
+    integrand = _integrand(5.0, 1.0, 0.5, 0.5, 0.5)
+    assert_almost_equal(integrand, 0.026771349117364424)
+    """
     return (((p - Ic) ** m) * (c / lam) * ((p / lam) ** (c - 1.0))
             * np.exp(-((p / lam) ** c)))
 
 def _scale_fac(pmean, c):
-    """Converts mean precip intensity into scale factor lambda."""
+    """Convert mean precipitation intensity into Weibull scale factor lambda.
+
+    Parameters
+    ----------
+    pmean : float
+        Mean precipitation intensity
+    c : float
+        Weibull distribution shape factor
+
+    Examples
+    --------
+    from numpy.testing import assert_almost_equal
+    scale_factor = _scale_fac(1.0, 0.6)
+    assert_almost_equal(scale_factor, 0.66463930045948338)
+    """
     return pmean * (1.0 / gamma(1.0 + 1.0 / c))
 
 
 def _depth_to_intensity(depth, time_unit):
-    """Convert daily precip water depth to intensity using given time units."""
+    """Convert daily precip water depth to intensity using given time units.
+
+    Parameters
+    --------
+    depth : float
+        Daily precipitation intensity
+    time_unit : str
+        Unit of time. Presently only 'year' is supported
+
+    Examples
+    --------
+    from numpy.testing import assert_almost_equal
+    intensity = _depth_to_intensity(2.0, 'year')
+    assert_almost_equal(intensity, 2*365.25)
+    """
     if time_unit == 'year':
         intensity = depth * DAYS_PER_YEAR
     else:
-        raise ValueError
+        raise NotImplementedError(('The PrecipChanger presently only supports '
+                                    'time units of year'))
 
     return intensity
 
