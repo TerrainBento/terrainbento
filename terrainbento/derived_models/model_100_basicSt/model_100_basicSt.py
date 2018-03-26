@@ -27,23 +27,18 @@ fraction of the time step duration dt, as specified by the parameter
 intermittency_factor. For example, if dt is 10 years and the intermittency
 factor is 0.25, then the stream power component is run for only 2.5 years.
 
-In either case, given a storm precipitation intensity $P$, the runoff
-production rate $R$ [L/T] is calculated using:
+In either case, given a storm precipitation intensity :math:`P`, the runoff
+production rate :math:`R` [L/T] is calculated using:
 
-$R = P - I (1 - \exp ( -P / I ))$
+.. math::
+    R = P - I (1 - \exp ( -P / I ))
 
-where $I$ is the soil infiltration capacity. At the sub-grid scale, soil
+where :math:`I` is the soil infiltration capacity. At the sub-grid scale, soil
 infiltration capacity is assumed to have an exponential distribution of which
 $I$ is the mean. Hence, there are always some spots within any given grid cell
 that will generate runoff. This approach yields a smooth transition from
-near-zero runoff (when $I>>P$) to $R \approx P$ (when $P>>I$), without a
-"hard threshold."
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-PrecipitationDistribution, LinearDiffuser, FastscapeEroder
-
-@author: gtucker
-@author: Katherine Barnhart
+near-zero runoff (when :math:`I>>P`) to :math:`R \approx P` (when :math`P>>I`),
+without a "hard threshold."
 """
 
 from terrainbento.base_class import StochasticErosionModel
