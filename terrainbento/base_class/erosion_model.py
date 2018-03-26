@@ -107,7 +107,6 @@ class ErosionModel(object):
             # identify if initial conditions should be saved.
             # default behavior is to not save the first timestep
             self.save_first_timestep = self.params('save_first_timestep', False)
-            self.opt_var_precip = self.params.get('opt_var_precip', False)
 
             # instantiate model time.
             self.model_time = 0.
