@@ -21,8 +21,7 @@ class BasicDdHy(ErosionModel):
     diffusion component.
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """
         Initialize the BasicDdHy
         """
@@ -30,7 +29,7 @@ class BasicDdHy(ErosionModel):
         # Call ErosionModel's init
         super(BasicDdHy, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         # Get Parameters and convert units if necessary:
         self.K_sp = self.get_parameter_from_exponent('K_sp')

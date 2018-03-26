@@ -27,14 +27,13 @@ class BasicThVs(ErosionModel):
     "VSA" stands for "variable source area".
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicThVs."""
 
         # Call ErosionModel's init
         super(BasicThVs, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         self.K_sp = self.get_parameter_from_exponent('K_sp')
         linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time

@@ -59,13 +59,13 @@ class BasicSt(StochasticErosionModel):
     """
 
     def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+                 BoundaryHandlers=None):
         """Initialize the StochasticDischargeHortonianModel."""
 
         # Call ErosionModel's init
         super(BasicSt, self).__init__(input_file=input_file,
                                       params=params,
-                                      BaselevelHandlerClass=BaselevelHandlerClass)
+                                      BoundaryHandlers=BoundaryHandlers)
 
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_stochastic_sp', raise_error=False)

@@ -24,75 +24,73 @@ DAYS_PER_YEAR = 365.25
 
 class ErosionModel(object):
     """
-    Base class providing common functionality for TerrainBento models. 
-    
+    Base class providing common functionality for TerrainBento models.
+
     An ErosionModel the skeleton for the basic models of terrain evolution in
-    TerrainBento. It can be initialized with an input DEM, a or parameters 
-    used for creation of a new model grid. 
+    TerrainBento. It can be initialized with an input DEM, a or parameters
+    used for creation of a new model grid.
 
     This is a base class that does not implement any processes, but rather
     simply handles I/O and setup. Derived classes are meant to include
     Landlab components to model actual erosion processes.
-    
+
     """
-    def __init__(self,
-                 input_file=None,
-                 params=None, BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """
         Parameters
         ----------
         input_file :
             df
-        params : 
+        params :
             dfa
-        BaseLevelHandlerClass : 
-        
-            
-            
-            
+        BoundaryHandlers :
+
+
+
+
         Other Parameters
         ----------------
         pickle_name : str, optional
             Default value is 'saved_model.model'
         load_from_pickle : boolean, optional
             Default is False
-            
+
         DEM_filename
-        
+
         number_of_node_rows
         number_of_node_columns
-        
-        
+
+
         meters_to_feet
         feet_to_meters
-        
+
         save_first_timestep
         outlet_id
-        
+
         Returns
         -------
         ErosionModel : object
-        
+
 
         """
-        ####################################################################### 
-        # Get the pickled instance name. 
+        #######################################################################
+        # Get the pickled instance name.
         #######################################################################
         self.save_model_name = self.params.get('pickle_name', 'saved_model.model')
         self.load_from_pickle = self.params.get('load_from_pickle', False)
-        
-        # if pickled instance exists and should be loaded, load it. 
+
+        # if pickled instance exists and should be loaded, load it.
         if (self.load_from_pickle) and (os.path.exists(self.save_model_name)):
             with open(self.save_model_name, 'rb') as f:
                 model = dill.load(f)
                 self.__setstate__(model)
-    
-        ####################################################################### 
-        # otherwise initialize as normal. 
+
+        #######################################################################
+        # otherwise initialize as normal.
         #######################################################################
         else:
             # Import input file or parameter dictionary, checking that at least
-            # one but not both were supplied. 
+            # one but not both were supplied.
             if input_file is None and params is None:
                 raise ValueError(('ErosionModel requires one of `input_file` or '
                                   '`params` dictionary but neither were supplied.'))
@@ -103,44 +101,44 @@ class ErosionModel(object):
                 # parameter dictionary
                 if input_file is None:
                     self.params = params
-                # read from file. 
+                # read from file.
                 else:
                     self.params = load_params(input_file)
-            
-            
+
+
             # identify if initial conditions should be saved.
             # default behavior is to not save the first timestep
             self.save_first_timestep = self.params('save_first_timestep', False)
             self.opt_var_precip = self.params.get('opt_var_precip', False)
-    
+
             # instantiate model time.
             self.model_time = 0.
-    
+
             # instantiate container for computational timestep:
             self.compute_time = [tm.time()]
-    
+
             # Handle option to save if walltime is to short
             self.opt_save = self.params.get('opt_save', False)
-    
+
             ###################################################################
             # create topography
             ###################################################################
-            
+
             # Read the topography data and create a grid
             # first, check to make sure both DEM and node-rows are not both
-            # specified. 
+            # specified.
             if ((self.params.get('number_of_node_rows') is not None) and
                 (self.params.get('DEM_filename') is not None)):
                 raise ValueError('Both a DEM filename and number_of_node_rows have '
                                  'been specified.')
-           
+
             if 'DEM_filename' in self.params:
                 (self.grid, self.z) = self.read_topography(self.params['DEM_filename'],
                                                            name='topographic__elevation',
                                                            halo=1)
                 self.opt_watershed = True
                 self._starting_topography = 'inputDEM'
-    
+
             else:
                 # this routine will set self.opt_watershed internally
                 if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
@@ -149,8 +147,8 @@ class ErosionModel(object):
                 else:
                     self.setup_rectangular_grid(self.params)
                     self._starting_topography = 'RasterModelGrid'
-        
-        
+
+
             # Set DEM boundaries
             if self.opt_watershed:
                 try:
@@ -162,25 +160,25 @@ class ErosionModel(object):
                     self.outlet_node = self.grid.set_watershed_boundary_condition(self.z,
                                                                                   nodata_value=-9999,
                                                                                   return_outlet_id=True)
-    
+
             # Add fields for initial topography and cumulative erosion depth
             z0 = self.grid.add_zeros('node', 'initial_topographic__elevation')
             z0[:] = self.z  # keep a copy of starting elevation
             self.grid.add_zeros('node', 'cumulative_erosion__depth')
-    
+
             # identify which nodes are data nodes:
             self.data_nodes = self.grid.at_node['topographic__elevation']!=-9999.
-            
+
             ###################################################################
             # instantiate flow direction and accumulation
             ###################################################################
             # get flow direction, and depression finding options
             self.flow_director = params.get('flow_director', 'FlowDirectorSteepest')
             self.depression_finder = params.get('depression_finder', None)
-    
+
             # Instantiate a FlowAccumulator, if DepressionFinder is provided
-            # AND director = Steepest, then we need routing to be D4, 
-            # otherwise, just passing params should be sufficient. 
+            # AND director = Steepest, then we need routing to be D4,
+            # otherwise, just passing params should be sufficient.
             if ((self.depression_finder is not None) and
                 (self.flow_director == 'FlowDirectorSteepest')):
                 self.flow_router = FlowAccumulator(self.grid,
@@ -188,7 +186,7 @@ class ErosionModel(object):
                                                    **self.params)
             else:
                 self.flow_router = FlowAccumulator(self.grid, **self.params)
-    
+
             ###################################################################
             # get internal length scale adjustement
             ###################################################################
@@ -204,43 +202,42 @@ class ErosionModel(object):
                     self._length_factor = 3.28084
                 else:
                     self._length_factor = 1.0
-    
+
             ###################################################################
             # Boundary Conditions
-            ################################################################### 
+            ###################################################################
             # Read and remember baselevel control param, if present
             self.outlet_lowering_rate = self.params.get('outlet_lowering_rate',  0.0)
             try:
                 file_name = self.params['outlet_lowering_file_path']
-    
+
                 modern_outlet_elevation = self.params['modern_outlet_elevation']
                 postglacial_outlet_elevation = self.z[self.outlet_node]
-    
+
                 elev_change_df = np.loadtxt(file_name, skiprows=1, delimiter =',')
                 time = elev_change_df[:, 0]
                 elev_change = elev_change_df[:, 1]
-    
+
                 scaling_factor = np.abs(postglacial_outlet_elevation-modern_outlet_elevation)/np.abs(elev_change[0]-elev_change[-1])
-    
+
                 outlet_elevation = (scaling_factor*elev_change_df[:, 1]) + postglacial_outlet_elevation
-    
+
                 self.outlet_elevation_obj = interp1d(time, outlet_elevation)
-    
+
             except KeyError:
                 self.outlet_elevation_obj = None
-            
-            # Baselevel Handlers
-            if BaselevelHandlerClass is None:
-                self.baselevel_handler = None
+
+            # BoundaryHandlers
+            if BoundaryHandlers is None:
+                self.boundary_handler = None
             else:
-                self.baselevel_handler = {}
-                if isinstance(BaselevelHandlerClass, list):
-                    for comp in BaselevelHandlerClass:
-                        self.baselevel_handler[comp.__name__] = comp(self.grid, **self.params)
+                self.boundary_handler = {}
+                if isinstance(BoundaryHandlers, list):
+                    for comp in BoundaryHandlers:
+                        self.boundary_handler[comp.__name__] = comp(self.grid, **self.params)
                 else:
-                    self.baselevel_handler[BaselevelHandlerClass.__name__] = BaselevelHandlerClass(self.grid,
-                                                                                                   **self.params)
-    
+                    self.boundary_handler[BoundaryHandlers.__name__] = BoundaryHandlers(self.grid, **self.params)
+
 
 
     def setup_hexagonal_grid(self, params):
@@ -264,7 +261,7 @@ class ErosionModel(object):
             nr = params['number_of_node_rows']
             nc = params['number_of_node_columns']
             dx = params['node_spacing']
- 
+
 
         except KeyError:
             print('Warning: no DEM or grid shape specified. '
@@ -272,7 +269,7 @@ class ErosionModel(object):
             nr = 8
             nc = 5
             dx = 10
-            
+
         orientation = params.get('orientation', 'horizontal')
         shape = params.get('shape', 'hex')
         reorient_links = params.get('reorient_links', True)
@@ -283,7 +280,7 @@ class ErosionModel(object):
         else:
             self.opt_watershed = False
             self.outlet_node = 0
-            
+
         # Create grid
         from landlab import HexModelGrid
         self.grid = HexModelGrid(nr,
@@ -456,7 +453,7 @@ class ErosionModel(object):
         except NotImplementedError:
             #write_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
             pass
-        
+
     def run_one_step(self, dt):
         """
         Run each component for one time step.
@@ -555,9 +552,9 @@ class ErosionModel(object):
             self.z[nodes_to_lower] = self.outlet_elevation_obj(self.model_time)
 
         # Run each of the baselevel handlers.
-        if self.baselevel_handler is not None:
-            for i in range(len(self.baselevel_handler)):
-                self.baselevel_handler[i].run_one_step(dt)
+        if self.boundary_handler is not None:
+            for handler_name in self.boundary_handler:
+                self.boundary_handler[handler_name].run_one_step(dt)
 
     def pickle_self(self):
         """Pickle model object."""

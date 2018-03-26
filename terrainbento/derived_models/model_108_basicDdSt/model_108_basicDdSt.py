@@ -71,14 +71,13 @@ class BasicDdSt(StochasticErosionModel):
     Warning: no DEM or grid shape specified. Creating simple raster grid
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicDdSt."""
 
         # Call ErosionModel's init
         super(BasicDdSt, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_stochastic_sp')
