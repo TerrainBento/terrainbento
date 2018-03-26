@@ -104,32 +104,12 @@ class PrecipChanger(object):
                  infiltration_capacity = None,
                  m_sp = None,
                  precip_stop_time = None,
-                 **kwargs):
+                 length_factor = 1.0
+                 **params):
 
         """Initialize a PrecipChanger object.
         """
-
-        # get length factor.
-        try:
-            feet_to_meters = kwargs['feet_to_meters']
-        except KeyError:
-            feet_to_meters = False
-        try:
-            meters_to_feet = kwargs['meters_to_feet']
-        except KeyError:
-            meters_to_feet = False
-
-        # create prefactor for unit converstion
-        if feet_to_meters and meters_to_feet:
-            raise ValueError('Both "feet_to_meters" and "meters_to_feet" are'
-                             'set as True. This is not realistic.')
-        else:
-            if feet_to_meters:
-                self._length_factor = 1.0/3.28084
-            elif meters_to_feet:
-                self._length_factor = 3.28084
-            else:
-                self._length_factor = 1.0
+        self.params = params
 
         if precip_stop_time is None:
             stop_time = kwargs['run_duration']

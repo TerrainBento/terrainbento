@@ -226,6 +226,7 @@ class ErosionModel(object):
                     self._length_factor = 3.28084
                 else:
                     self._length_factor = 1.0
+            self.params['length_factor'] = self._length_factor
 
             ###################################################################
             # Boundary Conditions
