@@ -6,7 +6,6 @@ env:
   global:
   - CONDA_PREFIX=$HOME/miniconda
   - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
-  - secure: wuv2O1M29pkfAjPbOK1MetIf3teDrG4VTepDOps2YFLMzcoJBlJeTqEneVcHb/q2dz5SefjxQQrbLjgZNOURiS1IT2z24srNDPbp8OAsv9nsqAGZO40eWecCRa+u+P+Wh0pZ8urz/ptTir0qFIQ/yz5hoEPx4ScktHkn23V+/fM=
 os:
 - linux
 - osx
@@ -58,4 +57,6 @@ script:
 virtualenv:
   system_site_packages: false
 after_success:
-- if [[ "$COVERALLS" == "1" ]]; then coveralls; fi
+- if [[ "$COVERALLS" == "1" ]]; then
+ COVERALLS_REPO_TOKEN=GPzz5lrNDJuA4MQNPWFT6gomXijaPZ7bS coveralls
+ fi
