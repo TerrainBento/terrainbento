@@ -120,8 +120,8 @@ class BasicHySa(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
-            erode_factor = self.pc.get_erodibility_adjustment_factor(self.model_time)
+        if 'PrecipChanger' in self.boundary_handler:
+            erode_factor = self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor(self.model_time)
             self.eroder.K_sed = self.K_sed * erode_factor
             self.eroder.K_br = self.K_br * erode_factor
 

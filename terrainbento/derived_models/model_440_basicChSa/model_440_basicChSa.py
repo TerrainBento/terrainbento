@@ -90,9 +90,9 @@ class BasicChSa(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
+        if 'PrecipChanger' in self.boundary_handler:
             self.eroder.K = (self.K_sp
-                             * self.pc.get_erodibility_adjustment_factor(self.model_time))
+                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor(self.model_time))
 
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 

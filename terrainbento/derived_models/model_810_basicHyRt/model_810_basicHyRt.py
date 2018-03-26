@@ -186,8 +186,8 @@ class BasicHyRt(ErosionModel):
                                          / self.contact_width)))
 
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
-            erode_factor = self.pc.get_erodibility_adjustment_factor(self.model_time)
+        if 'PrecipChanger' in self.boundary_handler:
+            erode_factor = self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor(self.model_time)
             self.till_erody_br = self.K_till_sp * erode_factor
             self.rock_erody_br = self.K_rock_sp * erode_factor
 

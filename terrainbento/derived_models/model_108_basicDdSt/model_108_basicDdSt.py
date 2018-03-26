@@ -184,8 +184,8 @@ class BasicDdSt(StochasticErosionModel):
         correctly for model BasicDdSt.
         """
         # (if we're varying precipitation parameters through time, update them)
-        if self.opt_var_precip:
-            self.intermittency_factor, self.mean_storm__intensity = self.pc.get_current_precip_params(self.model_time)
+        if 'PrecipChanger' in self.boundary_handler:
+            self.intermittency_factor, self.mean_storm__intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params(self.model_time)
 
         # If we're handling duration deterministically, as a set fraction of
         # time step duration, calculate a rainfall intensity. Otherwise,

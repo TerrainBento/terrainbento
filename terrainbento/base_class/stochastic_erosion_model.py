@@ -148,8 +148,8 @@ class StochasticErosionModel(ErosionModel):
 
         """
         # (if we're varying precipitation parameters through time, update them)
-        if self.opt_var_precip:
-            self.intermittency_factor, self.mean_storm__intensity = self.pc.get_current_precip_params(self.model_time)
+        if 'PrecipChanger' in self.boundary_handler:
+            self.intermittency_factor, self.mean_storm__intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params(self.model_time)
 
         if self.opt_stochastic_duration and self.rain_rate > 0.0:
 
