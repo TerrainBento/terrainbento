@@ -47,7 +47,7 @@ MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.component
                 'yaml', 'time', 'dill',
                 'numpy', 'numpy.testing',
                 'nose', 'nose.plugins', 'nose.plugins.base',
-                'doctest', 'Doctest', 'Tester',
+                'doctest', 'doctest', 'Doctest', 'Tester', 'doctest.Doctest',
                 'test', 'bench']
 
 TEST_MOCK_MODULES = ['TerrainBentoTester']
