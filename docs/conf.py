@@ -38,7 +38,8 @@ MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.component
                 'yaml', 'time', 'dill',
                 'numpy', 'numpy.testing',
                 'nose', 'nose.plugins', 'nose.plugins.base',
-                'doctest', 'Doctest', 'Tester']
+                'doctest', 'Doctest', 'Tester',
+                'test', 'bench']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 import terrainbento
