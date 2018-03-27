@@ -32,8 +32,8 @@ class ClosedNodeBaselevelHandler():
                  **kwargs):
 
         self.grid = grid
-
         self.outlet_lowering_rate = self.params.get('outlet_lowering_rate',  0.0)
+        self.model_time = 0.0
 
         try:
             file_name = self.params['outlet_lowering_file_path']
@@ -57,6 +57,8 @@ class ClosedNodeBaselevelHandler():
         """
 
         """
+        # increment model time
+        self.model_time += dt
 
         # determine which nodes to lower
         if self.modify_boundary_nodes:
