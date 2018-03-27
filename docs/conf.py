@@ -34,6 +34,7 @@ MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.component
                 'StreamPowerEroder', 'DepthDependentDiffuser',
                 'ExponentialWeatherer', 'DepthDependentTaylorDiffuser',
                 'scipy', 'scipy.interpolate', 'scipy.special', 'scipy.integrate',
+                'scipy.stats',
                 'yaml', 'time', 'dill', 'numpy']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
