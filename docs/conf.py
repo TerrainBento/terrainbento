@@ -20,14 +20,14 @@
 import os
 import sys
 
-from unittest.mock import MagicMock
+from mock import Mock as MagicMock
 
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
 
-MOCK_MODULES = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
+MOCK_MODULES = ['landlab', 'landlab.io' 'dill', 'numpy', 'scipy', 'yaml']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 import terrainbento
