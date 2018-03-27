@@ -42,6 +42,8 @@ MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.component
                 'test', 'bench']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
+autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
+
 import terrainbento
 
 # The short X.Y version.
