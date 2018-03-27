@@ -19,7 +19,6 @@
 #
 import os
 import sys
-import terrainbento
 
 autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 
