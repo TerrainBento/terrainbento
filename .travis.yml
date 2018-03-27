@@ -56,6 +56,7 @@ script:
 - |
   if [[ "$COVERALLS" == "1" ]]; then
     pip install coveralls
+    python scripts/test-installed-terrainbento.py
     coveralls
   fi
 virtualenv:
