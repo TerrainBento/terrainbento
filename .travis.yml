@@ -43,7 +43,6 @@ install:
 - source activate _testing
 - conda install -q conda-build=3.0 anaconda-client coverage sphinx
 - conda install -q numpy=1.11
-- pip install coveralls
 - conda info -a && conda list
 
 script:
@@ -54,10 +53,9 @@ script:
    conda install -q terrainbento --use-local -c $(dirname $(conda build --output ./.conda-recipe/ --old-build-string))
    (cd docs && make html)
  fi
- - |
+- |
   if [[ "$COVERALLS" == "1" ]]; then
-    pwd
-    ls
+    pip install coveralls
     coveralls
   fi
 virtualenv:
