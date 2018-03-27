@@ -47,10 +47,10 @@ autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 
 # with patch('builtins.__import__', side_effect=import_mock):
 #
-#     # The short X.Y version.
-#     version = terrainbento.__version__
-#     # The full version, including alpha/beta/rc tags.
-#     release = terrainbento.__version__
+# The short X.Y version.
+version = terrainbento.__version__
+# The full version, including alpha/beta/rc tags.
+release = terrainbento.__version__
 
 # del landlab, dill, numpy, scipy, yaml
 
