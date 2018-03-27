@@ -29,8 +29,11 @@ class Mock(MagicMock):
 
 MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.components',
                 'FlowAccumulator', 'PrecipitationDistribution',
-                'FastscapeEroder', 'LinearDiffuser',
-                'dill', 'numpy', 'scipy', 'yaml']
+                'FastscapeEroder', 'LinearDiffuser', 'StreamPowerSmoothThresholdEroder',
+                'ErosionDeposition', 'Space', 'TaylorNonLinearDiffuser',
+                'StreamPowerEroder', 'DepthDependentDiffuser',
+                'ExponentialWeatherer', 'DepthDependentTaylorDiffuser',
+                'dill', 'numpy', 'scipy', 'scipy.interpolate', 'yaml', 'time']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 import terrainbento
