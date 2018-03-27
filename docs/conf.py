@@ -27,6 +27,15 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
         return MagicMock()
 
+class MockTest(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+    def bench():
+        return MagicMock()
+    def test():
+        return MagicMock()
+
 MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.components',
                 'FlowAccumulator', 'PrecipitationDistribution',
                 'FastscapeEroder', 'LinearDiffuser', 'StreamPowerSmoothThresholdEroder',
@@ -39,8 +48,12 @@ MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.component
                 'numpy', 'numpy.testing',
                 'nose', 'nose.plugins', 'nose.plugins.base',
                 'doctest', 'Doctest', 'Tester',
-                'TerrainBentoTester', 'test', 'bench']
+                'test', 'bench']
+
+TEST_MOCK_MODULES = ['TerrainBentoTester']
+
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+sys.modules.update((mod_name, MockTest()) for mod_name in TEST_MOCK_MODULES)
 
 
 autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
