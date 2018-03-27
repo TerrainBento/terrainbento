@@ -4,14 +4,13 @@ import os
 import sys
 from doctest import Doctest
 from numpy.testing import Tester
+import nose
 from nose.plugins import doctests
 from nose.plugins.base import Plugin
 
+import terrainbento
 
 def show_system_info():
-    import terrainbento
-    import nose
-
     print('terrainbento version %s' % terrainbento.__version__)
     terrainbento_dir = os.path.dirname(terrainbento.__file__)
     print('terrainbento is installed in %s' % terrainbento_dir)
