@@ -33,7 +33,8 @@ MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.component
                 'ErosionDeposition', 'Space', 'TaylorNonLinearDiffuser',
                 'StreamPowerEroder', 'DepthDependentDiffuser',
                 'ExponentialWeatherer', 'DepthDependentTaylorDiffuser',
-                'dill', 'numpy', 'scipy', 'scipy.interpolate', 'yaml', 'time']
+                'scipy', 'scipy.interpolate', 'scipy.special',
+                'yaml', 'time', 'dill', 'numpy']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 import terrainbento
