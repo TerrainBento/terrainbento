@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import os
 import sys
-import doctest
+from doctest import Doctest
 from numpy.testing import Tester
 from nose.plugins import doctests
 from nose.plugins.base import Plugin
@@ -20,7 +20,7 @@ def show_system_info():
     print('nose version %d.%d.%d' % nose.__versioninfo__)
 
 
-class TerrainBentoDoctest(doctests.Doctest):
+class TerrainBentoDoctest(Doctest):
     name = 'terrainbentodoctest'
     score = 1000
     doctest_ignore = ('setup.py', )
