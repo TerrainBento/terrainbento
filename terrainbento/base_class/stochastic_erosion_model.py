@@ -24,14 +24,13 @@ class StochasticErosionModel(ErosionModel):
     Hydrology based modeles.
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the _BaseSt base class."""
 
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(input_file=input_file,
                                                       params=params,
-                                                      BaselevelHandlerClass=BaselevelHandlerClass)
+                                                      BoundaryHandlers=BoundaryHandlers)
 
         self.opt_stochastic_duration = self.params.get('opt_stochastic_duration', False)
 
@@ -149,8 +148,8 @@ class StochasticErosionModel(ErosionModel):
 
         """
         # (if we're varying precipitation parameters through time, update them)
-        if self.opt_var_precip:
-            self.intermittency_factor, self.mean_storm__intensity = self.pc.get_current_precip_params(self.model_time)
+        if 'PrecipChanger' in self.boundary_handler:
+            self.intermittency_factor, self.mean_storm__intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params()
 
         if self.opt_stochastic_duration and self.rain_rate > 0.0:
 

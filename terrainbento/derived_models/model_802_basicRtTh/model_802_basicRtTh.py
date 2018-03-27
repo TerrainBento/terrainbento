@@ -24,14 +24,13 @@ class BasicRtTh(ErosionModel):
     power with a smoothed threshold, Q~A, and two lithologies: rock and till.
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicThRt."""
 
         # Call ErosionModel's init
         super(BasicThRt, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         contact_zone__width = (self._length_factor)*self.params['contact_zone__width'] # has units length
         self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')
@@ -162,8 +161,8 @@ class BasicRtTh(ErosionModel):
                                          / self.contact_width)))
 
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
-            erode_factor = self.pc.get_erodibility_adjustment_factor(self.model_time)
+        if 'PrecipChanger' in self.boundary_handler:
+            erode_factor = self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor()
             self.till_erody = self.K_till_sp * erode_factor
             self.rock_erody = self.K_rock_sp * erode_factor
 

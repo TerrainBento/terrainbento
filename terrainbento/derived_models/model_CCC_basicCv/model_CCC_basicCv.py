@@ -26,12 +26,12 @@ class BasicCv(ErosionModel):
     """
 
     def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+                 BoundaryHandlers=None):
         """Initialize the BasicCv model."""
         # Call ErosionModel's init
         super(BasicCv, self).__init__(input_file=input_file,
                                       params=params,
-                                      BaselevelHandlerClass=BaselevelHandlerClass)
+                                      BoundaryHandlers=BoundaryHandlers)
 
 
         K_sp = self.get_parameter_from_exponent('K_sp')

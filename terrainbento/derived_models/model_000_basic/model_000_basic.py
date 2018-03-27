@@ -22,14 +22,12 @@ class Basic(ErosionModel):
     power, and Q~A.
     """
 
-    def __init__(self,
-                 input_file=None,
-                 params=None, BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the Basic model."""
         # Call ErosionModel's init
         super(Basic, self).__init__(input_file=input_file,
                                     params=params,
-                                    BaselevelHandlerClass=BaselevelHandlerClass)
+                                    BoundaryHandlers=BoundaryHandlers)
 
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_sp', raise_error=False)
@@ -71,9 +69,9 @@ class Basic(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
+        if 'PrecipChanger' in self.boundary_handler:
             self.eroder.K = (self.K
-                             * self.pc.get_erodibility_adjustment_factor(self.model_time))
+                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor())
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
         # Do some soil creep

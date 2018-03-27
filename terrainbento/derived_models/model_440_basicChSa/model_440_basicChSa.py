@@ -26,14 +26,13 @@ class BasicChSa(ErosionModel):
     with a soil layer, basic stream power, and Q~A.
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicChSa model."""
 
         # Call ErosionModel's init
         super(BasicChSa, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         self.K_sp = self.get_parameter_from_exponent('K_sp')
         linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
@@ -91,9 +90,9 @@ class BasicChSa(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
+        if 'PrecipChanger' in self.boundary_handler:
             self.eroder.K = (self.K_sp
-                             * self.pc.get_erodibility_adjustment_factor(self.model_time))
+                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor())
 
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 

@@ -29,14 +29,13 @@ class BasicHySa(ErosionModel):
     and consideres soil thickness in calculating hillslope diffusion.
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicSa."""
 
         # Call ErosionModel's init
         super(BasicHySa, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         self.K_br = self.get_parameter_from_exponent('K_rock_sp')
         self.K_sed = self.get_parameter_from_exponent('K_sed_sp')
@@ -53,10 +52,10 @@ class BasicHySa(ErosionModel):
         soil_production_decay_depth = (self._length_factor)*self.params['soil_production_decay_depth']   # has units length
 
         #set methods and fields. K's and sp_crits need to be field names
-        method = 'simple_stream_power'
-        discharge_method = 'discharge_field'
-        area_field = None
-        discharge_field = 'surface_water__discharge'
+        method = self.params.get('space_method', 'simple_stream_power')
+        discharge_method = self.params.get('discharge_method', 'discharge_field')
+        area_field = self.params.get('area_field', None)
+        discharge_field = self.params.get('discharge_field', 'surface_water__discharge')
 
         # Instantiate a SPACE component
         self.eroder = Space(self.grid,
@@ -121,8 +120,8 @@ class BasicHySa(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
-            erode_factor = self.pc.get_erodibility_adjustment_factor(self.model_time)
+        if 'PrecipChanger' in self.boundary_handler:
+            erode_factor = self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor()
             self.eroder.K_sed = self.K_sed * erode_factor
             self.eroder.K_br = self.K_br * erode_factor
 

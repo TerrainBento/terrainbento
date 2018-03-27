@@ -1,5 +1,5 @@
 Model BasicStTh
-============================================================
+===============
 
 .. automodule:: terrainbento.derived_models.model_102_basicStTh
     :members:
@@ -7,7 +7,7 @@ Model BasicStTh
     :show-inheritance:
 
 Model BasicStTh
-----------------------------------------------------------------------------------
+---------------
 
 .. automodule:: terrainbento.derived_models.model_102_basicStTh.model_102_basicStTh
     :members:

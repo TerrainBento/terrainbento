@@ -1,5 +1,5 @@
 Model BasicDdSt
-============================================================
+===============
 
 .. automodule:: terrainbento.derived_models.model_108_basicDdSt
     :members:
@@ -7,7 +7,7 @@ Model BasicDdSt
     :show-inheritance:
 
 Model BasicDdSt
-----------------------------------------------------------------------------------
+---------------
 
 .. automodule:: terrainbento.derived_models.model_108_basicDdSt.model_108_basicDdSt
     :members:

@@ -20,32 +20,56 @@
 import os
 import sys
 
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+class MockTest(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+    def bench():
+        return MagicMock()
+    def test():
+        return MagicMock()
+
+MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.components',
+                'FlowAccumulator', 'PrecipitationDistribution',
+                'FastscapeEroder', 'LinearDiffuser', 'StreamPowerSmoothThresholdEroder',
+                'ErosionDeposition', 'Space', 'TaylorNonLinearDiffuser',
+                'StreamPowerEroder', 'DepthDependentDiffuser',
+                'ExponentialWeatherer', 'DepthDependentTaylorDiffuser',
+                'scipy', 'scipy.interpolate', 'scipy.special', 'scipy.integrate',
+                'scipy.stats',
+                'yaml', 'time', 'dill',
+                'numpy', 'numpy.testing',
+                'nose', 'nose.plugins', 'nose.plugins.base',
+                'doctest', 'doctest', 'Doctest', 'Tester', 'doctest.Doctest',
+                'test', 'bench']
+
+TEST_MOCK_MODULES = ['TerrainBentoTester']
+
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+sys.modules.update((mod_name, MockTest()) for mod_name in TEST_MOCK_MODULES)
+
+
 autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 
-# from unittest.mock import MagicMock, patch
-# for mod_name in autodoc_mock_imports:
-#     sys.modules[mod_name] = MagicMock()
+import terrainbento
 
-# mock landlab for terrainbento import
-# orig_import = __import__
-# def import_mock(name, *args):
-#     if name.startswith('terrainbento'):
-#         return orig_import(name, *args)
-#     return MagicMock()
-
-# with patch('builtins.__import__', side_effect=import_mock):
-#     import terrainbento
-#     # The short X.Y version.
-#     version = terrainbento.__version__
-#     # The full version, including alpha/beta/rc tags.
-#     release = terrainbento.__version__
+# The short X.Y version.
+version = terrainbento.__version__
+# The full version, including alpha/beta/rc tags.
+release = terrainbento.__version__
 
 # del landlab, dill, numpy, scipy, yaml
 
 from datetime import date
 sys.path.insert(0, os.path.abspath('sphinxext'))
 sys.path.insert(0, '.')
-
 
 # -- General configuration ------------------------------------------------
 
@@ -159,6 +183,7 @@ html_logo = 'images/terrainbento_logo.png'
 numpydoc_class_members_toctree = False
 numpydoc_show_class_members = False
 # html_style = 'landlab.css'
+autoclass_content = 'both'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
@@ -215,8 +240,6 @@ texinfo_documents = [
      author, 'terrainbento', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
 
 # -- Options for Epub output ----------------------------------------------
 
