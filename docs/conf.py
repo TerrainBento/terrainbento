@@ -19,6 +19,7 @@
 #
 import os
 import sys
+import terrainbento
 
 autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 
@@ -34,7 +35,7 @@ autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 #     return MagicMock()
 
 # with patch('builtins.__import__', side_effect=import_mock):
-#     import terrainbento
+#
 #     # The short X.Y version.
 #     version = terrainbento.__version__
 #     # The full version, including alpha/beta/rc tags.
