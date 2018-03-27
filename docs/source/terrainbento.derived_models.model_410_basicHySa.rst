@@ -1,5 +1,5 @@
 Model BasicHySa
-============================================================
+===============
 
 .. automodule:: terrainbento.derived_models.model_410_basicHySa
     :members:
@@ -7,7 +7,7 @@ Model BasicHySa
     :show-inheritance:
 
 Model BasicHySa
-----------------------------------------------------------------------------------
+---------------
 
 .. automodule:: terrainbento.derived_models.model_410_basicHySa.model_410_basicHySa
     :members:

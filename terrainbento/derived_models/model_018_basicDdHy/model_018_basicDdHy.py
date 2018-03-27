@@ -21,8 +21,7 @@ class BasicDdHy(ErosionModel):
     diffusion component.
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """
         Initialize the BasicDdHy
         """
@@ -30,7 +29,7 @@ class BasicDdHy(ErosionModel):
         # Call ErosionModel's init
         super(BasicDdHy, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         # Get Parameters and convert units if necessary:
         self.K_sp = self.get_parameter_from_exponent('K_sp')
@@ -92,9 +91,9 @@ class BasicDdHy(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
+        if 'PrecipChanger' in self.boundary_handler:
             self.eroder.K = (self.K_sp
-                             * self.pc.get_erodibility_adjustment_factor(self.model_time))
+                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor())
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
         # Do some soil creep

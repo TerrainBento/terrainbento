@@ -72,14 +72,13 @@ class BasicHySt(StochasticErosionModel):
     Warning: no DEM or grid shape specified. Creating simple raster grid
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicHySt."""
 
         # Call ErosionModel's init
         super(BasicHySt, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         # Get Parameters:
         K = ((self._length_factor ** 0.5)  # K_stochastic [=] L^(1/2)  T^-(1/2)

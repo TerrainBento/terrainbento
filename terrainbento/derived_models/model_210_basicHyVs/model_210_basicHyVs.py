@@ -28,14 +28,13 @@ class BasicHyVs(ErosionModel):
     "VSA" stands for "variable source area".
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicHyVs."""
 
         # Call ErosionModel's init
         super(BasicHyVs, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         self.K_sp = self.get_parameter_from_exponent('K_sp')
         linear_diffusivity = ((self._length_factor ** 2)
@@ -126,9 +125,9 @@ class BasicHyVs(ErosionModel):
 
         # Do some erosion
         # (if we're varying K through time, update that first)
-        if self.opt_var_precip:
+        if 'PrecipChanger' in self.boundary_handler:
             self.eroder.K = (self.K_sp
-                             * self.pc.get_erodibility_adjustment_factor(self.model_time))
+                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor()))
         self.eroder.run_one_step(dt)
 
         # Do some soil creep

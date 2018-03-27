@@ -71,14 +71,13 @@ class BasicDdSt(StochasticErosionModel):
     Warning: no DEM or grid shape specified. Creating simple raster grid
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """Initialize the BasicDdSt."""
 
         # Call ErosionModel's init
         super(BasicDdSt, self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
 
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_stochastic_sp')
@@ -185,8 +184,8 @@ class BasicDdSt(StochasticErosionModel):
         correctly for model BasicDdSt.
         """
         # (if we're varying precipitation parameters through time, update them)
-        if self.opt_var_precip:
-            self.intermittency_factor, self.mean_storm__intensity = self.pc.get_current_precip_params(self.model_time)
+        if 'PrecipChanger' in self.boundary_handler:
+            self.intermittency_factor, self.mean_storm__intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params()
 
         # If we're handling duration deterministically, as a set fraction of
         # time step duration, calculate a rainfall intensity. Otherwise,

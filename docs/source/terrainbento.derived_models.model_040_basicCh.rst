@@ -1,5 +1,5 @@
 Model BasicCh
-==========================================================
+=============
 
 .. automodule:: terrainbento.derived_models.model_040_basicCh
     :members:
@@ -7,7 +7,7 @@ Model BasicCh
     :show-inheritance:
 
 Model BasicCh
-------------------------------------------------------------------------------
+-------------
 
 .. automodule:: terrainbento.derived_models.model_040_basicCh.model_040_basicCh
     :members:

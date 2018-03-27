@@ -41,14 +41,14 @@ class BasicStVs(StochasticErosionModel):
     """
 
     def __init__(self, input_file=None, params=None,
-                 BaselevelHandlerClass=None):
+                 BoundaryHandlers=None):
         """Initialize the StochasticDischargeHortonianModel."""
 
         # Call ErosionModel's init
         super(BasicStVs,
               self).__init__(input_file=input_file,
                                         params=params,
-                                        BaselevelHandlerClass=BaselevelHandlerClass)
+                                        BoundaryHandlers=BoundaryHandlers)
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_stochastic_sp')
         linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time

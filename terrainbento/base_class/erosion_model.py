@@ -2,8 +2,6 @@
 """
 Base class for common functions of terrainbento models.
 
-TEXT
-
 """
 
 from landlab.io import read_esri_ascii
@@ -24,176 +22,244 @@ from terrainbento.boundary_condition_handlers import PrecipChanger
 
 DAYS_PER_YEAR = 365.25
 
+_SUPPORTED_BOUNDARY_HANDLERS = ['NormalFault',
+                                'PrecipChanger',
+                                'CaptureNodeBaselevelHandler',
+                                'ClosedNodeBaselevelHandler',
+                                'SingleNodeBaselevelHandler']
+
+
 class ErosionModel(object):
     """
-    An ErosionModel is a basic model for erosion and landscape evolution in
-    a watershed, as represented by an input DEM.
+    Base class providing common functionality for TerrainBento models.
+
+    An ErosionModel the skeleton for the basic models of terrain evolution in
+    TerrainBento. It can be initialized with an input DEM, a or parameters
+    used for creation of a new model grid.
 
     This is a base class that does not implement any processes, but rather
     simply handles I/O and setup. Derived classes are meant to include
     Landlab components to model actual erosion processes.
+
+    Methods
+    -------
+    read_topography
+    setup_hexagonal_grid
+    setup_raster_grid
+
+    run_one_step
+    run_for
+    run
+    finalize
+
+    get_parameter_from_exponent
+    calculate_cumulative_change
+    update_boundary_conditions
+    write_output
+    check_walltime
+
+    pickle_self
+    unpickle_self
+
+    __set_state__
+    __get_state__
+
+
     """
-    def __init__(self,
-                 input_file=None,
-                 params=None, BaselevelHandlerClass=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """
-        Handles inputs, sets params.
+        Parameters
+        ----------
+        input_file :
+            df
+        params :
+            dfa
+        BoundaryHandlers :
+
+
+
+
+        Other Parameters
+        ----------------
+        pickle_name : str, optional
+            Default value is 'saved_model.model'
+        load_from_pickle : boolean, optional
+            Default is False
+
+
+
+        DEM_filename
+
+        number_of_node_rows
+        number_of_node_columns
+
+
+        meters_to_feet
+        feet_to_meters
+
+        save_first_timestep
+        outlet_id
+
+        Returns
+        -------
+        ErosionModel : object
+
 
         """
-
-        # Make sure user has given us an input file or parameter dictionary
-        # (but not both)
+        #######################################################################
+        # get parameters
+        #######################################################################
+        # Import input file or parameter dictionary, checking that at least
+        # one but not both were supplied.
         if input_file is None and params is None:
-            print('You must specify either an input_file or params dict')
-            sys.exit(1)
-        if input_file is not None and params is not None:
-            print('ErosionModel constructor takes EITHER')
-            print('input_file or params, but not both.')
-            sys.exit(1)
-
-        # If we have an input file, let's read it
-        if input_file is None:
-            self.params = params
+            raise ValueError(('ErosionModel requires one of `input_file` or '
+                              '`params` dictionary but neither were supplied.'))
+        elif input_file is not None and params is not None:
+            raise ValueError(('ErosionModel requires one of `input_file` or '
+                              '`params` dictionary but both were supplied.'))
         else:
-            self.params = load_params(input_file)
-
-        # if a pickled instance exists, load it instead of the standard init.
-        try:
-            self.save_model_name = self.params['pickle_name']
-        except KeyError:
-            self.save_model_name = 'saved_model.model'
-
-        # Read the topography data and create a grid
-        if ((self.params.get('number_of_node_rows') is not None) and
-            (self.params.get('DEM_filename') is not None)):
-            raise ValueError('Both a DEM filename and number_of_node_rows have '
-                             'been specified.')
-        try:
-            (self.grid, self.z) = self.read_topography(self.params['DEM_filename'],
-                                                       name='topographic__elevation',
-                                                       halo=1)
-            self.opt_watershed = True
-            self._starting_topography = 'inputDEM'
-
-        except KeyError:
-            # this routine will set self.opt_watershed internally
-            if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
-                self.setup_hexagonal_grid(self.params)
-                self._starting_topography = 'HexModelGrid'
+            # parameter dictionary
+            if input_file is None:
+                self.params = params
+            # read from file.
             else:
-                self.setup_rectangular_grid(self.params)
-                self._starting_topography = 'RasterModelGrid'
+                self.params = load_params(input_file)
 
-        # get flow direction, and depression finding options
-        self.flow_director = params.get('flow_director', 'FlowDirectorSteepest')
-        self.depression_finder = params.get('depression_finder', None)
+        #######################################################################
+        # Get the pickled instance name.
+        #######################################################################
+        self.save_model_name = self.params.get('pickle_name', 'saved_model.model')
+        self.load_from_pickle = self.params.get('load_from_pickle', False)
 
-        # Instantiate a FlowAccumulator
-        if ((self.depression_finder is not None) and
-            (self.flow_director == 'FlowDirectorSteepest')):
-            self.flow_router = FlowAccumulator(self.grid,
-                                               routing = 'D4',
-                                               **self.params)
+        # if pickled instance exists and should be loaded, load it.
+        if (self.load_from_pickle) and (os.path.exists(self.save_model_name)):
+            self.unpickle_self()
+
+        #######################################################################
+        # otherwise initialize as normal.
+        #######################################################################
         else:
-            self.flow_router = FlowAccumulator(self.grid, **self.params)
+            # identify if initial conditions should be saved.
+            # default behavior is to not save the first timestep
+            self.save_first_timestep = self.params.get('save_first_timestep', False)
 
+            # instantiate model time.
+            self.model_time = 0.
 
-        try:
-            feet_to_meters = self.params['feet_to_meters']
-        except KeyError:
-            feet_to_meters = False
-        try:
-            meters_to_feet = self.params['meters_to_feet']
-        except KeyError:
-            meters_to_feet = False
+            # instantiate container for computational timestep:
+            self.compute_time = [tm.time()]
 
-        # create prefactor for unit converstion
-        if feet_to_meters and meters_to_feet:
-            raise ValueError('Both "feet_to_meters" and "meters_to_feet" are'
-                             'set as True. This is not realistic.')
-        else:
-            if feet_to_meters:
-                self._length_factor = 1.0/3.28084
-            elif meters_to_feet:
-                self._length_factor = 3.28084
+            # Handle option to save if walltime is to short
+            self.opt_save = self.params.get('opt_save', False)
+
+            ###################################################################
+            # create topography
+            ###################################################################
+
+            # Read the topography data and create a grid
+            # first, check to make sure both DEM and node-rows are not both
+            # specified.
+            if ((self.params.get('number_of_node_rows') is not None) and
+                (self.params.get('DEM_filename') is not None)):
+                raise ValueError('Both a DEM filename and number_of_node_rows have '
+                                 'been specified.')
+
+            if 'DEM_filename' in self.params:
+                (self.grid, self.z) = self.read_topography(self.params['DEM_filename'],
+                                                           name='topographic__elevation',
+                                                           halo=1)
+                self.opt_watershed = True
+                self._starting_topography = 'inputDEM'
+
             else:
-                self._length_factor = 1.0
+                # this routine will set self.opt_watershed internally
+                if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
+                    self.setup_hexagonal_grid(self.params)
+                    self._starting_topography = 'HexModelGrid'
+                else:
+                    self.setup_raster_grid(self.params)
+                    self._starting_topography = 'RasterModelGrid'
 
-        # identify if initial conditions should be saved.
-        # default behavior is to not save the first timestep
-        try:
-            self.save_first_timestep = self.params['save_first_timestep']
-        except KeyError:
-            self.save_first_timestep = False
+            # Set DEM boundaries
+            if self.opt_watershed:
+                try:
+                    self.outlet_node = self.params['outlet_id']
+                    self.grid.set_watershed_boundary_condition_outlet_id(self.outlet_node,
+                                                                         self.z,
+                                                                         nodata_value=-9999)
+                except:
+                    self.outlet_node = self.grid.set_watershed_boundary_condition(self.z,
+                                                                                  nodata_value=-9999,
+                                                                                  return_outlet_id=True)
 
-        self.opt_var_precip = self.params.get('opt_var_precip', False)
+            # Add fields for initial topography and cumulative erosion depth
+            z0 = self.grid.add_zeros('node', 'initial_topographic__elevation')
+            z0[:] = self.z  # keep a copy of starting elevation
+            self.grid.add_zeros('node', 'cumulative_erosion__depth')
 
-        # instantiate model time.
-        self.model_time = 0.
+            # identify which nodes are data nodes:
+            self.data_nodes = self.grid.at_node['topographic__elevation']!=-9999.
 
-        # instantiate container for computational timestep:
-        self.compute_time = [tm.time()]
+            ###################################################################
+            # instantiate flow direction and accumulation
+            ###################################################################
+            # get flow direction, and depression finding options
+            self.flow_director = params.get('flow_director', 'FlowDirectorSteepest')
+            self.depression_finder = params.get('depression_finder', None)
 
-        # Set DEM boundaries
-        if self.opt_watershed:
-            try:
-                self.outlet_node = self.params['outlet_id']
-                self.grid.set_watershed_boundary_condition_outlet_id(self.outlet_node,
-                                                                     self.z,
-                                                                     nodata_value=-9999)
-            except:
-                self.outlet_node = self.grid.set_watershed_boundary_condition(self.z,
-                                                                              nodata_value=-9999,
-                                                                              return_outlet_id=True)
-
-        # Add fields for initial topography and cumulative erosion depth
-        z0 = self.grid.add_zeros('node', 'initial_topographic__elevation')
-        z0[:] = self.z  # keep a copy of starting elevation
-        self.grid.add_zeros('node', 'cumulative_erosion__depth')
-
-        # identify which nodes are data nodes:
-        self.data_nodes = self.grid.at_node['topographic__elevation']!=-9999.
-
-        # Read and remember baselevel control param, if present
-        try:
-            self.outlet_lowering_rate = self.params['outlet_lowering_rate']
-        except KeyError:
-            self.outlet_lowering_rate = 0.0
-
-        # Read and remember baselevel control param, if present
-        try:
-            file_name = self.params['outlet_lowering_file_path']
-
-            modern_outlet_elevation = self.params['modern_outlet_elevation']
-            postglacial_outlet_elevation = self.z[self.outlet_node]
-
-            elev_change_df = np.loadtxt(file_name, skiprows=1, delimiter =',')
-            time = elev_change_df[:, 0]
-            elev_change = elev_change_df[:, 1]
-
-            scaling_factor = np.abs(postglacial_outlet_elevation-modern_outlet_elevation)/np.abs(elev_change[0]-elev_change[-1])
-
-            outlet_elevation = (scaling_factor*elev_change_df[:, 1]) + postglacial_outlet_elevation
-
-            self.outlet_elevation_obj = interp1d(time, outlet_elevation)
-
-        except KeyError:
-            #self.outlet_lowering_rate = 0.0
-            self.outlet_elevation_obj = None
-
-        if BaselevelHandlerClass is None:
-            self.baselevel_handler = None
-        else:
-            self.baselevel_handler = []
-            if isinstance(BaselevelHandlerClass, list):
-                for comp in BaselevelHandlerClass:
-                    self.baselevel_handler.append(comp(self.grid, self.params))
+            # Instantiate a FlowAccumulator, if DepressionFinder is provided
+            # AND director = Steepest, then we need routing to be D4,
+            # otherwise, just passing params should be sufficient.
+            if ((self.depression_finder is not None) and
+                (self.flow_director == 'FlowDirectorSteepest')):
+                self.flow_router = FlowAccumulator(self.grid,
+                                                   routing = 'D4',
+                                                   **self.params)
             else:
-                self.baselevel_handler.append(BaselevelHandlerClass(self.grid,
-                                                                    **self.params))
+                self.flow_router = FlowAccumulator(self.grid, **self.params)
 
-        # Handle option to save if walltime is to short
-        self.opt_save = self.params.get('opt_save') or False
+            ###################################################################
+            # get internal length scale adjustement
+            ###################################################################
+            feet_to_meters = self.params.get('feet_to_meters', False)
+            meters_to_feet = self.params.get('meters_to_feet', False)
+            if feet_to_meters and meters_to_feet:
+                raise ValueError('Both "feet_to_meters" and "meters_to_feet" are'
+                                 'set as True. This is not realistic.')
+            else:
+                if feet_to_meters:
+                    self._length_factor = 1.0/3.28084
+                elif meters_to_feet:
+                    self._length_factor = 3.28084
+                else:
+                    self._length_factor = 1.0
+            self.params['length_factor'] = self._length_factor
+
+            ###################################################################
+            # Boundary Conditions
+            ###################################################################
+            if BoundaryHandlers is None:
+                self.boundary_handler = None
+            else:
+                self.boundary_handler = {}
+                if isinstance(BoundaryHandlers, list):
+                    for comp in BoundaryHandlers:
+                        self.setup_boundary_handler(comp)
+                else:
+                    self.BoundaryHandlers(comp)
+
+    def setup_boundary_handler(self, handler):
+        """
+
+        """
+        name = handler.__name__
+        if name in _SUPPORTED_BOUNDARY_HANDLERS:
+            handler_params = self.params[name]
+            self.boundary_handler[name] = handler(self.grid, **handler_params)
+        else:
+            raise ValueError(('Only supported boundary condition handlers are '
+                              'permitted. These include:'
+                              '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
 
     def setup_hexagonal_grid(self, params):
         """
@@ -216,7 +282,7 @@ class ErosionModel(object):
             nr = params['number_of_node_rows']
             nc = params['number_of_node_columns']
             dx = params['node_spacing']
- 
+
 
         except KeyError:
             print('Warning: no DEM or grid shape specified. '
@@ -224,9 +290,9 @@ class ErosionModel(object):
             nr = 8
             nc = 5
             dx = 10
-            
+
         orientation = params.get('orientation', 'horizontal')
-        shape = params.get('orientation', 'hex')
+        shape = params.get('shape', 'hex')
         reorient_links = params.get('reorient_links', True)
 
         if 'outlet_id' in params:
@@ -235,7 +301,7 @@ class ErosionModel(object):
         else:
             self.opt_watershed = False
             self.outlet_node = 0
-            
+
         # Create grid
         from landlab import HexModelGrid
         self.grid = HexModelGrid(nr,
@@ -257,10 +323,17 @@ class ErosionModel(object):
 
         # Set boundary conditions
 
-    def setup_rectangular_grid(self, params):
-        """Create rectangular grid based on input parameters.
+    def setup_raster_grid(self, params):
+        """Create raster grid based on input parameters.
 
         Called if DEM is not used, or not found.
+
+        Parameters
+        ----------
+        number_of_node_rows
+        number_of_node_columns
+        node_spacing
+        outlet_id
 
         Examples
         --------
@@ -319,7 +392,18 @@ class ErosionModel(object):
                                                           south_closed)
 
     def read_topography(self, topo_file_name, name, halo):
-        """Read and return topography from file, as a Landlab grid and field."""
+        """Read and return topography from file.
+
+        Parameters
+        ----------
+        topo_file_name
+        name
+        halo
+
+        Examples
+        --------
+
+        """
         try:
             (grid, z) = read_esri_ascii(topo_file_name,
                                         name=name,
@@ -331,6 +415,15 @@ class ErosionModel(object):
 
     def get_parameter_from_exponent(self, param_name, raise_error=True):
         """Return absolute parameter value from provided exponent.
+
+        Parameters
+        ----------
+        parameter_name : str
+        raise_error : boolean
+            Raise an error if parameter doesn not exist. Default is True.
+
+        Examples
+        --------
         """
         if (param_name in self.params) and (param_name+'_exp' in self.params):
             raise ValueError('Parameter file includes both absolute value and'
@@ -382,13 +475,6 @@ class ErosionModel(object):
         self.grid.at_node['cumulative_erosion__depth'] = \
             self.grid.at_node['topographic__elevation'] - \
             self.grid.at_node['initial_topographic__elevation']
-        max_cc = np.amax(self.grid.at_node['cumulative_erosion__depth'])
-        min_cc = np.amin(self.grid.at_node['cumulative_erosion__depth'])
-        print('Maximum cumulative topo change:')
-        print(max_cc)
-        print('Minimum cumulative topo change:')
-        print(min_cc)
-
 
     def write_output(self, params, field_names=None):
         """Write output to file (currently netCDF)."""
@@ -406,7 +492,9 @@ class ErosionModel(object):
         try:
             write_raster_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
         except NotImplementedError:
-            write_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
+            #write_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
+            pass
+
     def run_one_step(self, dt):
         """
         Run each component for one time step.
@@ -461,58 +549,27 @@ class ErosionModel(object):
         if os.path.exists(self.save_model_name):
             os.remove(self.save_model_name)
 
-    def update_outlet(self, dt):
+    def update_boundary_conditions(self, dt):
         """
         Update outlet level
         """
-        # determine which nodes to lower
-        if self.opt_watershed:
-            # if we are dealing with a watershed, then lower only the outlet node
-            nodes_to_lower = self.outlet_node
-        else:
-            # if we are dealing with a rectangular grid, then raise only the core nodes
-            nodes_to_lower = self.grid.status_at_node == 0
 
-        # next, lower the correct nodes the desired amount
-
-        # first, if we do not have an outlet elevation object
-        if self.outlet_elevation_obj is None:
-
-            # calculate lowering amount and subtract
-            if self.opt_watershed:
-                self.z[nodes_to_lower] -= self.outlet_lowering_rate * dt
-            else:
-                # if this is not a watershed, we are raising the core nodes
-                self.z[nodes_to_lower] += self.outlet_lowering_rate * dt
-
-            # if bedrock_elevation exists as a field, lower it also
-            if 'bedrock__elevation' in self.grid.at_node.keys():
-                if self.opt_watershed:
-                    self.grid.at_node['bedrock__elevation'][nodes_to_lower] -= self.outlet_lowering_rate * dt
-                else:
-                    self.grid.at_node['bedrock__elevation'][nodes_to_lower] += self.outlet_lowering_rate * dt
-        # if there is an outlet elevation object
-        else:
-            # if bedrock_elevation exists as a field, lower it also
-            # calcuate the topographic change required to match the current time's value for
-            # outlet elevation. This must be done in case bedrock elevation exists, and must
-            # be done before the topography is lowered
-            if 'bedrock__elevation' in self.grid.at_node.keys():
-                topo_change = self.z[nodes_to_lower] - self.outlet_elevation_obj(self.model_time)
-                self.grid.at_node['bedrock__elevation'][nodes_to_lower] -= topo_change
-
-            # lower topography
-            self.z[nodes_to_lower] = self.outlet_elevation_obj(self.model_time)
 
         # Run each of the baselevel handlers.
-        if self.baselevel_handler is not None:
-            for i in range(len(self.baselevel_handler)):
-                self.baselevel_handler[i].run_one_step(dt)
+        if self.boundary_handler is not None:
+            for handler_name in self.boundary_handler:
+                self.boundary_handler[handler_name].run_one_step(dt)
 
     def pickle_self(self):
         """Pickle model object."""
         with open(self.save_model_name, 'wb') as f:
-                    dill.dump(self, f)
+            dill.dump(self, f)
+
+    def unpickle_self(self):
+        """Unpickle model object."""
+        with open(self.save_model_name, 'rb') as f:
+            model = dill.load(f)
+        self.__setstate__(model)
 
     def check_walltime(self, wall_threshold=0, dynamic_cut_off_time=False, cut_off_time=0):
         """Check walltime and save model out if near end of time."""

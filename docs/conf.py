@@ -159,6 +159,7 @@ html_logo = 'images/terrainbento_logo.png'
 numpydoc_class_members_toctree = False
 numpydoc_show_class_members = False
 # html_style = 'landlab.css'
+autoclass_content = 'both'
 
 # -- Options for HTMLHelp output ------------------------------------------
 

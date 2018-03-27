@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to the ``terrainbento`` documentation!
-========================================
+==============================================
 
 ``terrainbento`` is a python package for multi-model analysis in Earth surface
 dynamics. It was built on top of the `Landlab Toolkit`_.
@@ -21,7 +21,7 @@ evolution models derived from the base class.
 
 
 Model Base Class
-------------------------------------------
+----------------
 
 .. toctree::
    :maxdepth: 2
@@ -29,24 +29,24 @@ Model Base Class
    source/terrainbento.base_class
 
 Boundary Condition Handlers
-------------------------------------------
+---------------------------
 
- .. toctree::
-    :maxdepth: 2
+.. toctree::
+   :maxdepth: 2
 
-    source/terrainbento.boundary_condition_handlers
+   source/terrainbento.boundary_condition_handlers
 
 Derived Models
-------------------------------------------
+--------------
 
- .. toctree::
-    :maxdepth: 3
+.. toctree::
+   :maxdepth: 3
 
-    source/terrainbento.derived_models
+   source/terrainbento.derived_models
 
 
 Indices
-==================
+=======
 
 * :ref:`genindex`
 * :ref:`modindex`
