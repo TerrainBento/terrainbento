@@ -46,7 +46,6 @@ from .derived_models import BasicChRtTh
 
 from .testing.nosetester import TerrainBentoTester
 test = TerrainBentoTester().test
-bench = TerrainBentoTester().bench
 
 
 from ._version import get_versions
