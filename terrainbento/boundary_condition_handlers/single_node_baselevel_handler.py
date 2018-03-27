@@ -13,13 +13,11 @@ class SingleNodeBaselevelHandler():
     boundary node, referred to here as the *outlet*. The outlet lowering rate is
     specified either as a constant or through a time, elevation change textfile.
 
-    Parameters
-    ----------
-    grid
-    outlet_node
-    outlet_lowering_rate
-    outlet_lowering_file_path
-    modern_outlet_elevation
+    Methods
+    -------
+    run_one_step(dt)
+
+
 
 
      """
@@ -31,26 +29,31 @@ class SingleNodeBaselevelHandler():
                  outlet_lowering_file_path = None,
                  model_end_elevation = None,
                  **kwargs):
-
+        """
+        Parameters
+        ----------
+        grid
+        outlet_node
+        outlet_lowering_rate
+        outlet_lowering_file_path
+        modern_outlet_elevation
+        """
         self.grid = grid
-    
+
         self.outlet_lowering_rate = self.params.get('outlet_lowering_rate',  0.0)
-    
+
         try:
-            file_name = self.params['outlet_lowering_file_path']
-    
-            model_end_elevation = self.params['model_end_elevation']
-    
-            model_start_elevation = self.z[self.outlet_node]
-    
+
+            model_start_elevation = self.grid.at_node['topographic__elevation'][self.outlet_node]
+
             elev_change_df = np.loadtxt(file_name, skiprows=1, delimiter =',')
             time = elev_change_df[:, 0]
             elev_change = elev_change_df[:, 1]
             scaling_factor = np.abs(model_start_elevation-model_end_elevation)/np.abs(elev_change[0]-elev_change[-1])
             outlet_elevation = (scaling_factor*elev_change_df[:, 1]) + model_start_elevation
-    
+
             self.outlet_elevation_obj = interp1d(time, outlet_elevation)
-    
+
         except KeyError:
             self.outlet_elevation_obj = None
 
