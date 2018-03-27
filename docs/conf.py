@@ -19,6 +19,17 @@
 #
 import os
 import sys
+
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+MOCK_MODULES = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
 import terrainbento
 
 autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
@@ -36,10 +47,10 @@ autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
 
 # with patch('builtins.__import__', side_effect=import_mock):
 #
-#     # The short X.Y version.
-#     version = terrainbento.__version__
-#     # The full version, including alpha/beta/rc tags.
-#     release = terrainbento.__version__
+# The short X.Y version.
+version = terrainbento.__version__
+# The full version, including alpha/beta/rc tags.
+release = terrainbento.__version__
 
 # del landlab, dill, numpy, scipy, yaml
 
