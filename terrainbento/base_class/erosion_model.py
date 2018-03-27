@@ -26,7 +26,7 @@ _SUPPORTED_BOUNDARY_HANDLERS = ['NormalFault',
                                 'PrecipChanger',
                                 'CaptureNodeBaselevelHandler',
                                 'ClosedNodeBaselevelHandler',
-                                'SingleNodeBaselevelHandler']                         
+                                'SingleNodeBaselevelHandler']
 
 
 class ErosionModel(object):
@@ -51,7 +51,7 @@ class ErosionModel(object):
     run_for
     run
     finalize
-    
+
     get_parameter_from_exponent
     calculate_cumulative_change
     update_boundary_conditions
@@ -124,7 +124,7 @@ class ErosionModel(object):
             # read from file.
             else:
                 self.params = load_params(input_file)
-       
+
         #######################################################################
         # Get the pickled instance name.
         #######################################################################
@@ -247,10 +247,10 @@ class ErosionModel(object):
                         self.setup_boundary_handler(comp)
                 else:
                     self.BoundaryHandlers(comp)
-    
+
     def setup_boundary_handler(self, handler):
         """
-        
+
         """
         name = handler.__name__
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
@@ -260,7 +260,7 @@ class ErosionModel(object):
             raise ValueError(('Only supported boundary condition handlers are '
                               'permitted. These include:'
                               '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
-        
+
     def setup_hexagonal_grid(self, params):
         """
         """

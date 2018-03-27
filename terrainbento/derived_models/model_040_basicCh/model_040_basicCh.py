@@ -62,7 +62,7 @@ class BasicCh(ErosionModel):
         # (if we're varying K through time, update that first)
         if 'PrecipChanger' in self.boundary_handler:
             self.eroder.K = (self.K_sp
-                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor(self.model_time))
+                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor())
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
         # Do some soil creep

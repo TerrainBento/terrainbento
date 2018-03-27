@@ -133,7 +133,7 @@ class BasicSaVs(ErosionModel):
         # (if we're varying K through time, update that first)
         if 'PrecipChanger' in self.boundary_handler:
             self.eroder.K = (self.K_sp
-                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor(self.model_time))
+                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor())
         self.eroder.run_one_step(dt)
 
         # We must also now erode the bedrock where relevant. If water erosion

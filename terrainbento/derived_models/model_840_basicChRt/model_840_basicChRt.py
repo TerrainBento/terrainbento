@@ -155,7 +155,7 @@ class BasicChRt(ErosionModel):
 
         # (if we're varying K through time, update that first)
         if 'PrecipChanger' in self.boundary_handler:
-            erode_factor = self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor(self.model_time)
+            erode_factor = self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor()
             self.till_erody = self.K_till_sp * erode_factor
             self.rock_erody = self.K_rock_sp * erode_factor
 

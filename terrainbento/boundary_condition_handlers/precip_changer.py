@@ -93,12 +93,10 @@ class PrecipChanger(object):
 
     Methods
     --------
-
-
-     and related
-    parameters in Erosion Modeling Suite (EMS).
-
-
+    calculate_starting_psi()
+    get_current_precip_params()
+    get_erodibility_adjustment_factor()
+    run_one_step(dt)
     """
 
     def __init__(self,
@@ -117,7 +115,7 @@ class PrecipChanger(object):
 
         """Initialize a PrecipChanger object.
         """
-
+        self.model_time = 0.0
         if precip_stop_time is None:
             stop_time = kwargs['run_duration']
 
@@ -136,21 +134,22 @@ class PrecipChanger(object):
         self.stop_time = stop_time
 
         if self.infilt_cap is not None:
-            (self.starting_psi, abserr) = self._calculate_starting_psi()
+            (self.starting_psi, abserr) = self.calculate_starting_psi()
 
-    def _calculate_starting_psi(self):
-        """Calculate and store for later the factor psi, which represents the
-        portion of the erosion coefficient that depends on precipitation
-        intensity.
-
-        Psi is defined as the integral from Ic to infinity of
-
-            (p - Ic)^m f(p) dp
-
-        where p is precipitation intensity, Ic is infiltration capacity, m is
-        the discharge/area exponent (e.g., 1/2), and f(p) is the Weibull
-        distribution representing the probability distribution of daily
+    def calculate_starting_psi(self):
+        """Calculate and store for later the factor :math:`\Psi`, which
+        represents the portion of the erosion coefficient that depends on
         precipitation intensity.
+
+        :math:`\Psi` is defined as the integral from :math:`I_c` to infinity of
+
+        ..math::
+            \Psi = (p - I_{c})^m f(p) dp
+
+        where :math`p` is precipitation intensity, :math`I_c` is infiltration
+        capacity, :math`m` is the discharge/area exponent (e.g., 1/2), and
+        :math`f(p)` is the Weibull distribution representing the probability
+        distribution of daily precipitation intensity.
         """
         mean_intensity = _depth_to_intensity(self.starting_daily_mean_depth,
                                             self.time_unit)
@@ -160,19 +159,19 @@ class PrecipChanger(object):
                                self.m))
         return psi
 
-    def get_current_precip_params(self, current_time):
+    def get_current_precip_params(self):
         """Return current frac wet days and daily mean depth."""
 
-        if current_time > self.stop_time:
-            current_time = self.stop_time
+        if self.model_time > self.stop_time:
+            self.model_time = self.stop_time
 
         frac_wet_days = (self.starting_frac_wet_days
-                         + self.frac_wet_days_rate_of_change * current_time)
+                         + self.frac_wet_days_rate_of_change * self.model_time)
         mean_depth = (self.starting_daily_mean_depth
-                         + self.mean_depth_rate_of_change * current_time)
+                         + self.mean_depth_rate_of_change * self.model_time)
         return frac_wet_days, mean_depth
 
-    def get_erodibility_adjustment_factor(self, current_time):
+    def get_erodibility_adjustment_factor(self):
         """Calculates and returns the factor by which erodibility ("K")
         should be adjusted.
 
@@ -183,10 +182,10 @@ class PrecipChanger(object):
         We will have already calculated Kq, and it won't
         """
 
-        if current_time > self.stop_time:
-            current_time = self.stop_time
+        if self.model_time > self.stop_time:
+            self.model_time = self.stop_time
 
-        frac_wet, mean_depth = self.get_current_precip_params(current_time)
+        frac_wet, mean_depth = self.get_current_precip_params(self.model_time)
 
         mean_intensity = _depth_to_intensity(mean_depth, self.time_unit)
         lam = _scale_fac(mean_intensity, self.precip_shape_factor)
@@ -200,6 +199,5 @@ class PrecipChanger(object):
     def run_one_step(self, dt):
         """Run one step method.
 
-        For PrecipChanger, nothing is done.
         """
-        pass
+        self.model_time += dt
