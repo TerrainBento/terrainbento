@@ -27,8 +27,9 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
         return MagicMock()
 
-MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.io.components',
-                'FlowAccumulator',
+MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.components',
+                'FlowAccumulator', 'PrecipitationDistribution',
+                'FastscapeEroder', 'LinearDiffuser',
                 'dill', 'numpy', 'scipy', 'yaml']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
