@@ -16,9 +16,10 @@ def _integrand(p, Ic, lam, c, m):
     """Calculates the value of
 
     .. math::
+
         (p-I_{c})^{m} f(p)
 
-    where .. math::`f(p)`` is a Weibull distribution.
+    where :math:`f(p)`` is a Weibull distribution.
 
     Called by the scipy 'quad' numerical integration function.
 
@@ -113,7 +114,14 @@ class PrecipChanger(object):
                  length_factor = 1.0,
                  **kwargs):
 
-        """Initialize a PrecipChanger object.
+        """
+        Parameters
+        ----------
+        grid : landlab model grid
+        intermittency_factor
+        intermittency_factor_rate_of_change
+
+
         """
         self.model_time = 0.0
         if precip_stop_time is None:
@@ -143,12 +151,13 @@ class PrecipChanger(object):
 
         :math:`\Psi` is defined as the integral from :math:`I_c` to infinity of
 
-        ..math::
+        .. math::
+
             \Psi = (p - I_{c})^m f(p) dp
 
-        where :math`p` is precipitation intensity, :math`I_c` is infiltration
-        capacity, :math`m` is the discharge/area exponent (e.g., 1/2), and
-        :math`f(p)` is the Weibull distribution representing the probability
+        where :math:`p` is precipitation intensity, :math:`I_c` is infiltration
+        capacity, :math:`m` is the discharge/area exponent (e.g., 1/2), and
+        :math:`f(p)` is the Weibull distribution representing the probability
         distribution of daily precipitation intensity.
         """
         mean_intensity = _depth_to_intensity(self.starting_daily_mean_depth,

@@ -19,7 +19,7 @@ def show_system_info():
     print('nose version %d.%d.%d' % nose.__versioninfo__)
 
 
-class TerrainBentoDoctest(doctest.Doctest):
+class TerrainBentoDoctest(doctests.Doctest):
     name = 'terrainbentodoctest'
     score = 1000
     doctest_ignore = ('setup.py', )
