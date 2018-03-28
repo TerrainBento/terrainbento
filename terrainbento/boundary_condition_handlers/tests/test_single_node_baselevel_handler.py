@@ -17,7 +17,7 @@ def text_hex():
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros('node', 'topographic__elevation')
 
-    bh = SingleNodeBaselevelHandler(mg, outlet_node = 0, outlet_lowering_rate = 0.1)
+    bh = SingleNodeBaselevelHandler(mg, outlet_node = 0, lowering_rate = 0.1)
     bh.run_one_step(10.0)
 
     assert z[0] == -1.0
@@ -42,8 +42,8 @@ def test_passing_both_lowering_methods():
     assert_raises(ValueError,
                   SingleNodeBaselevelHandler,
                   mg, outlet_node=0,
-                  outlet_lowering_rate = 0.1,
-                  outlet_lowering_file_path=file)
+                  lowering_rate = -0.1,
+                  lowering_file_path=file)
 
 def test_outlet_lowering_object_bad_file():
     """Test using an outlet lowering object with a bad file"""
@@ -55,7 +55,7 @@ def test_outlet_lowering_object_bad_file():
                   SingleNodeBaselevelHandler,
                   mg,
                   outlet_node = 0,
-                  outlet_lowering_file_path='foo.txt')
+                  lowering_file_path='foo.txt')
 
 def test_outlet_lowering_rate_no_scaling_bedrock():
     """Test using an outlet lowering object with no scaling and bedrock"""
@@ -67,7 +67,7 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
     node_id = 27
     bh = SingleNodeBaselevelHandler(mg,
                                     outlet_node = node_id,
-                                    outlet_lowering_rate = 0.1)
+                                    lowering_rate = -0.1)
     bh.run_one_step(2400.0)
 
     assert z[node_id] == -239.0
@@ -84,7 +84,7 @@ def test_outlet_lowering_object_no_scaling_bedrock():
     file = os.path.join(_TEST_DATA_DIR, 'outlet_history.txt')
     bh = SingleNodeBaselevelHandler(mg,
                                     outlet_node = node_id,
-                                    outlet_lowering_file_path=file)
+                                    lowering_file_path=file)
     bh.run_one_step(2400.0)
 
     assert z[node_id] == -46.5
@@ -99,7 +99,7 @@ def test_outlet_lowering_object_no_scaling():
     file = os.path.join(_TEST_DATA_DIR, 'outlet_history.txt')
     bh = SingleNodeBaselevelHandler(mg,
                                     outlet_node = node_id,
-                                    outlet_lowering_file_path=file)
+                                    lowering_file_path=file)
     bh.run_one_step(2400.0)
 
     assert bh.z[node_id] == -47.5
@@ -114,7 +114,7 @@ def test_outlet_lowering_object_with_scaling():
     file = os.path.join(_TEST_DATA_DIR, 'outlet_history.txt')
     bh = SingleNodeBaselevelHandler(mg,
                                     outlet_node = node_id,
-                                    outlet_lowering_file_path=file,
+                                    lowering_file_path=file,
                                     model_end_elevation = -318.0)
     bh.run_one_step(2400.0)
     assert bh.z[node_id] == -95.0
