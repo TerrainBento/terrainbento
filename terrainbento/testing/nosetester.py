@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import os
 import sys
-import doctest
 from numpy.testing import Tester
 import nose
 from nose.plugins import doctests
