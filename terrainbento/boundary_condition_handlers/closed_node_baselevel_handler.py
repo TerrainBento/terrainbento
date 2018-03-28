@@ -10,10 +10,10 @@ from scipy.interpolate import interp1d
 class ClosedNodeBaselevelHandler():
     """ Control the elevation of a single open boundary node.
 
-    The `ClosedNodeBaselevelHandler` controls the elevation of all closed nodes
-    on the model grid. The elevation change at these nodes is specified either
-    as a constant or through a time or through a textfile that specifies the
-    elevation change through time.
+    The `ClosedNodeBaselevelHandler` controls the elevation of all nodes on the
+    model grid with status != 0. The elevation change at these nodes is
+    specified either as a constant or through a time or through a textfile that
+    specifies the elevation change through time.
 
     Through the parameter `modify_closed_nodes` the user can determine if the
     closed nodes should be moved in the direction (up or down) specified by the
@@ -21,8 +21,8 @@ class ClosedNodeBaselevelHandler():
     the opposite direction.
 
     The `ClosedNodeBaselevelHandler` expects that `topographic__elevation` is a
-    at-node model grid field. It will modify this field and `bedrock__elevation`
-    if it exists.
+    at-node model grid field. It will modify this field and, if it exists,
+    the field `bedrock__elevation`.
 
     Methods
     -------
