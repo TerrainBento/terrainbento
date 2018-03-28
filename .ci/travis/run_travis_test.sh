@@ -9,7 +9,7 @@ run_test()
 
   INSTALLDIR=$($PYTHON -c "import os; import terrainbento; print(os.path.dirname(terrainbento.__file__))")
 
-  python ../scripts/test-installed-terrainbento.py && (cp .coverage ..)
+  python ../scripts/test-installed-terrainbento.py && (coverage report && cp .coverage ..)
 }
 
 run_test
