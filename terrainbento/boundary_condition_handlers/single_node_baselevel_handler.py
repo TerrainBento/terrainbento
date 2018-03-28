@@ -17,8 +17,8 @@ class SingleNodeBaselevelHandler():
     specifies the elevation change through time.
 
     The `SingleNodeBaselevelHandler` expects that `topographic__elevation` is a
-    at-node model grid field. It will modify this field and `bedrock__elevation`
-    if it exists.
+    at-node model grid field. It will modify this field and, if it exists,
+    the field `bedrock__elevation`.
 
     Methods
     -------
