@@ -516,15 +516,6 @@ class ErosionModel(object):
             #write_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
             pass
 
-    def run_one_step(self, dt):
-        """
-        Run each component for one time step.
-
-        This base-class method does nothing. Derived classes should override
-        it to run each component in turn for a time period dt.
-        """
-        pass
-
     def finalize(self):
         """
         Finalize model
