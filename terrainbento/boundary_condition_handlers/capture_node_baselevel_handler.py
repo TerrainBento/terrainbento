@@ -19,7 +19,7 @@ class CaptureNodeBaselevelHandler():
 
     Methods
     -------
-    run_one_step(dt)
+    run_one_step
 
     """
 

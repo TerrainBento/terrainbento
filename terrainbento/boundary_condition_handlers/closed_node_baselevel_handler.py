@@ -12,7 +12,7 @@ class ClosedNodeBaselevelHandler():
     """ Control the elevation of a single open boundary node.
 
     The ``ClosedNodeBaselevelHandler`` controls the elevation of all nodes on the
-    model grid with status != 0. The elevation change at these nodes is
+    model grid with ``status != 0``. The elevation change at these nodes is
     specified either as a constant or through a time or through a textfile that
     specifies the elevation change through time.
 
@@ -30,7 +30,7 @@ class ClosedNodeBaselevelHandler():
 
     Methods
     -------
-    run_one_step(dt)
+    run_one_step
 
     """
 
