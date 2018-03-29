@@ -42,6 +42,11 @@ class ModelName(ErosionModel): # The model must inherit from either ErosionModel
     created.
 
     >>> from terrainbento import ModelName
+    >>> # this is where you'd show how to import and use your model.
+    >>> # these statements get evaluated in testing so its also a way to show
+    >>> # that the model does what you say it will do.
+    >>> # its important to make sure that all lines of your model are tested
+    >>> # either in these docstring tests or in test files.
 
     See also
     --------
