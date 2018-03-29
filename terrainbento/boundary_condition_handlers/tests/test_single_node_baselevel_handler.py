@@ -71,7 +71,8 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
     bh = SingleNodeBaselevelHandler(mg,
                                     outlet_node = node_id,
                                     lowering_rate = -0.1)
-    bh.run_one_step(2400.0)
+    for i in range(240):
+        bh.run_one_step(10)
     
     assert z[1] == 1.0
     assert b[1] == 0.0
@@ -92,7 +93,8 @@ def test_outlet_lowering_object_no_scaling_bedrock():
     bh = SingleNodeBaselevelHandler(mg,
                                     outlet_node = node_id,
                                     lowering_file_path=file)
-    bh.run_one_step(2400.0)
+    for i in range(241):
+        bh.run_one_step(10)
     
     assert z[1] == 1.0
     assert b[1] == 0.0
@@ -111,7 +113,8 @@ def test_outlet_lowering_object_no_scaling():
     bh = SingleNodeBaselevelHandler(mg,
                                     outlet_node = node_id,
                                     lowering_file_path=file)
-    bh.run_one_step(2400.0)
+    for i in range(241):
+        bh.run_one_step(10)
 
 
     assert z[1] == 0.0
@@ -130,6 +133,8 @@ def test_outlet_lowering_object_with_scaling():
                                     lowering_file_path=file,
                                     model_end_elevation = -318.0)
     
-    bh.run_one_step(2400.0)
+    for i in range(241):
+        bh.run_one_step(10)
+        
     assert bh.z[node_id] == -95.0
     assert z[1] == 0.0

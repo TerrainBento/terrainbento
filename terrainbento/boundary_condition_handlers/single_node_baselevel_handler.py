@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-SingleNodeBaselevelHandler controls elevation for a single open boundary node.
+``SingleNodeBaselevelHandler`` controls elevation for a single open boundary node.
 """
 import os
 import numpy as np
@@ -11,14 +11,14 @@ from scipy.interpolate import interp1d
 class SingleNodeBaselevelHandler():
     """Control the elevation of a single open boundary node.
 
-    The `SingleNodeBaselevelHandler` controls the elevation of a single open
+    The ``SingleNodeBaselevelHandler`` controls the elevation of a single open
     boundary node, referred to here as the *outlet*. The outlet lowering rate is
     specified either as a constant or through a time or through a textfile that
     specifies the elevation change through time.
 
-    The `SingleNodeBaselevelHandler` expects that `topographic__elevation` is a
+    The ``SingleNodeBaselevelHandler`` expects that ``topographic__elevation`` is a
     at-node model grid field. It will modify this field and, if it exists,
-    the field `bedrock__elevation`.
+    the field ``bedrock__elevation``.
 
     Methods
     -------
@@ -40,23 +40,23 @@ class SingleNodeBaselevelHandler():
         outlet_node : int
             Node ID of the outlet node.
         lowering_rate : float, optional
-            Lowering rate of the outlet node. One of `lowering_rate` and
-            `lowering_file_path` is required. Units are implied by the
-            model grids spatial scale and the time units of `dt`. Negative
+            Lowering rate of the outlet node. One of ``lowering_rate`` and
+            ``lowering_file_path`` is required. Units are implied by the
+            model grids spatial scale and the time units of ``dt``. Negative
             values mean that the outlet lowers.
         lowering_file_path : str, optional
-            Lowering lowering history file path. One of `lowering_rate`
-            and `lowering_file_path` is required. Units are implied by
-            the model grids spatial scale and the time units of `dt`.
+            Lowering lowering history file path. One of ``lowering_rate``
+            and ``lowering_file_path`` is required. Units are implied by
+            the model grids spatial scale and the time units of ``dt``.
             This file should be readable with
-            `np.loadtxt(filename, skiprows=1, delimiter=',')`
+            ``np.loadtxt(filename, skiprows=1, delimiter=',')``
             Its first column is time and its second colum is the elevation
             change at the outlet since the onset of the model run. Negative
             values mean the outlet lowers.
         model_end_elevation : float, optional
             Elevation of the outlet at the end of the model run duration. When
             the outlet is lowered based on an lowering_file_path, a
-            `model_end_elevation` can be set such that lowering is scaled
+            ``model_end_elevation`` can be set such that lowering is scaled
             based on the starting and ending outlet elevation. Default behavior
             is to not scale the lowering pattern.
 
@@ -74,7 +74,7 @@ class SingleNodeBaselevelHandler():
          [ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]]
 
-        Now import the `SingleNodeBaselevelHandler` and instantiate.
+        Now import the ``SingleNodeBaselevelHandler`` and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
         ...                                         SingleNodeBaselevelHandler)
@@ -93,7 +93,7 @@ class SingleNodeBaselevelHandler():
          [ 0.  0.  0.  0.  0.]]
 
         More complex baselevel histories can be provided with a
-        `lowering_file_path`.
+        ``lowering_file_path``.
 
         """
         self.model_time = 0.0
@@ -143,9 +143,6 @@ class SingleNodeBaselevelHandler():
         dt : float
             Duration of model time to advance forward.
         """
-        # increment model time
-        self.model_time += dt
-
         # first, if we do not have an outlet elevation object
         if self.outlet_elevation_obj is None:
 
@@ -169,3 +166,5 @@ class SingleNodeBaselevelHandler():
 
             # lower topography
             self.z[self.outlet_node] -= topo_change
+        # increment model time
+        self.model_time += dt

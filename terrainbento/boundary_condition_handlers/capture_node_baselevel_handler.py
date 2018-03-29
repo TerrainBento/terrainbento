@@ -1,56 +1,163 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-CaptureNodeBaselevelHandler implements "external" stream capture.
+``CaptureNodeBaselevelHandler`` implements "external" stream capture.
 """
 
 from landlab import FIXED_VALUE_BOUNDARY
 
 
 class CaptureNodeBaselevelHandler():
-    """CaptureNodeBaselevelHandler turns a given node into an open boundary and
-    drives its elevation.
+    """Turn a closed boundary node into an open, lowering, boundary node.
 
+    ``CaptureNodeBaselevelHandler`` turns a given node into an open boundary and
+    changing elevation. This is meant as a simple approach to model stream
+    capture external to the modeled basin.
+
+    Methods
+    -------
+    run_one_step(dt)
 
     """
 
     def __init__(self,
                  grid,
-                 capture_node = None,
-                 capture_start_time = None,
-                 capture_stabilize_time = None,
-                 run_duration = None,
-                 capture_incision_rate = None,
-                 post_stabilization_incision_rate = None,
+                 capture_node,
+                 capture_start_time = 0,
+                 capture_stop_time = None,
+                 capture_incision_rate = -0.01,
+                 post_capture_incision_rate = None,
                  **kwargs):
+        """
+        Parameters
+        ----------
+        grid : landlab model grid
+        capture_node : int
+            Node id of the model grid node that should be captured.
+        capture_start_time : float, optional
+            Time at which capture should begin. Default is at onset of model
+            run.
+        capture_stop_time : float, optional
+            Time at which capture ceases. Default is the entire duration of
+            model run.
+        capture_incision_rate : float, optional
+            Rate of capture node elevation change.  Units are implied by the
+            model grids spatial scale and the time units of ``dt``. Negative
+            values mean the outlet lowers. Default value is -0.01.
+        post_capture_incision_rate : float, optional
+            Rate of captured node elevation change after capture ceases.  Units
+            are implied by the model grids spatial scale and the time units of
+            ``dt``. Negative values mean the outlet lowers. Default value is 0.
 
+        Examples
+        --------
+        Start by creating a landlab model grid and set its boundary conditions.
+
+        >>> from landlab import RasterModelGrid
+        >>> mg = RasterModelGrid(5, 5)
+        >>> z = mg.add_zeros('node', 'topographic__elevation')
+        >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
+        ...                                        left_is_closed=True,
+        ...                                        right_is_closed=True,
+        ...                                        top_is_closed=True)
+        >>> mg.set_watershed_boundary_condition_outlet_id(
+        ...     0, mg.at_node['topographic__elevation'], -9999.)
+        >>> print(z.reshape(mg.shape))
+        [[ 0.  0.  0.  0.  0.]
+         [ 0.  0.  0.  0.  0.]
+         [ 0.  0.  0.  0.  0.]
+         [ 0.  0.  0.  0.  0.]
+         [ 0.  0.  0.  0.  0.]]
+
+        Now import the ``CaptureNodeBaselevelHandler`` and instantiate.
+
+        >>> from terrainbento.boundary_condition_handlers import (
+        ...                                         CaptureNodeBaselevelHandler)
+        >>> bh = CaptureNodeBaselevelHandler(mg,
+        ...                                  capture_node = 3,
+        ...                                  capture_incision_rate = -3.0,
+        ...                                  capture_start_time = 10,
+        ...                                  capture_stop_time = 20,
+        ...                                  post_capture_incision_rate = -0.1)
+        >>> for i in range(10):
+        ...     bh.run_one_step(1)
+
+        The capture has not yet started, so we should expect that the topography
+        is still all zeros.
+
+        >>> print(z.reshape(mg.shape))
+        [[ 0.  0.  0.  0.  0.]
+         [ 0.  0.  0.  0.  0.]
+         [ 0.  0.  0.  0.  0.]
+         [ 0.  0.  0.  0.  0.]
+         [ 0.  0.  0.  0.  0.]]
+
+        Running forward another 10 time units, we should
+        see node three lower by 30.
+
+        >>> for i in range(10):
+        ...     bh.run_one_step(1)
+        >>> print(z.reshape(mg.shape))
+        [[  0.   0.   0. -30.   0.]
+         [  0.   0.   0.   0.   0.]
+         [  0.   0.   0.   0.   0.]
+         [  0.   0.   0.   0.   0.]
+         [  0.   0.   0.   0.   0.]]
+        >>> bh.model_time
+        20.0
+
+        Now that model time has reached 20, lowering will occur at the post
+        capture incision rate. The node should lower by 1 to -31 in the next
+        10 time units.
+
+        >>> for i in range(10):
+        ...     bh.run_one_step(1)
+        >>> print(z.reshape(mg.shape))
+        [[  0.   0.   0. -31.   0.]
+         [  0.   0.   0.   0.   0.]
+         [  0.   0.   0.   0.   0.]
+         [  0.   0.   0.   0.   0.]
+         [  0.   0.   0.   0.   0.]]
+
+        """
+        self.model_time = 0.0
         self.grid = grid
         self.z = grid.at_node['topographic__elevation']
         self.node = capture_node
         self.start = capture_start_time
-        try:
-            self.stop = capture_stabilize_time
-        except KeyError:
-            self.stop = run_duration
-
-        try:
-            self.post_stabilization_incision_rate = post_stabilization_incision_rate
-        except KeyError:
-            self.post_stabilization_incision_rate = 0
-
         self.rate = capture_incision_rate
-        self.current_time = 0.0
+
+        if capture_stop_time is None:
+            self.capture_ends = False
+        else:
+            self.capture_ends = True
+            self.stop = capture_stop_time
+
+        if post_capture_incision_rate is None:
+            self.post_capture_incision_rate = 0
+        else:
+            self.post_capture_incision_rate = post_capture_incision_rate
+
         self.grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
 
     def run_one_step(self, dt):
         """
+        Run `CaptureNodeBaselevelHandler` forward and update outlet node elevation.
+
+        Parameters
+        ----------
+        dt : float
+            Duration of model time to advance forward.
 
         """
-        if self.current_time >= self.start and self.current_time < self.stop:
-            self.z[self.node] -= self.rate * dt
-            print('Lowered cap node by ' + str(self.rate*dt) + ' to ' + str(self.z[self.node]))
-        elif self.current_time >= self.stop:
-            self.z[self.node] -= self.post_stabilization_incision_rate * dt
-            print('Lowered cap node by ' + str(self.post_stabilization_incision_rate*dt) + ' to ' + str(self.z[self.node]))
-
-        self.current_time += dt
+        # lower the correct amount.
+        if self.model_time >= self.start:
+            if self.capture_ends:
+                if self.model_time < self.stop:
+                    self.z[self.node] += self.rate * dt
+                else:
+                    self.z[self.node] += self.post_capture_incision_rate * dt
+            else:
+                self.z[self.node] += self.rate * dt
+        # increment model time
+        self.model_time += dt
