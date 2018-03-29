@@ -19,12 +19,11 @@ of **Boundary Condition Handlers** provide tools to set and modify boundary
 conditions during a model run. Third, we provide an initial set of landscape
 evolution models derived from the base class.
 
-
 Model Base Class
 ----------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    source/terrainbento.base_class
 
