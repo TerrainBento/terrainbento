@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-"""
-``PrecipChanger`` controls precipitation frequency and/or intensity over time.
+""" ``PrecipChanger`` changes precipitation frequency and intensity over time.
 
 This ``terrainbento`` baselevel handler was designed to change the precipitation
 frequency and intensity over time in order to modify the water erodability
@@ -85,7 +84,6 @@ that when :math:`p<I_c`, no runoff occurs, and when :math:`p>I_c`,
 
     r = p - I_c.
 
-
 An advantage of this simple approach is that :math:`I_c` can be measured directly
 or inferred from stream-flow records.
 
@@ -160,7 +158,6 @@ starting value for :math:`\Psi`.
 
 ``PrecipChanger`` presently supports changes in :math:`F` and :math:`p_d` but
 not :math:`c`.
-
 """
 
 import numpy as np
@@ -174,8 +171,7 @@ DAYS_PER_SECOND = 1.0 / (60. * 60. * 24.)
 
 
 def _integrand(p, Ic, lam, c, m):
-    """
-    Calculates the integrand for numerical integration.
+    """Calculate the integrand for numerical integration.
 
     Calculates the value of
 
@@ -363,7 +359,6 @@ class PrecipChanger(object):
         >>> fw = bh.get_erodibility_adjustment_factor()
         >>> print(fw)
         1.7213259316512188
-
         """
         self.model_time = 0.0
         self._length_factor = length_factor
@@ -422,19 +417,19 @@ class PrecipChanger(object):
                               'This is invalid.'))
 
     def _check_mean_depth(self, mean_depth):
-        """Check that mean depth is >= 0"""
+        """Check that mean depth is >= 0."""
         if (mean_depth<0):
             raise ValueError(('The PrecipChanger mean depth has a '
                               'value of less than zero. This is invalid.'))
 
     def _check_infiltration_capacity(self, infiltration_capacity):
-        """Check that infiltration_capacity >= 0"""
+        """Check that infiltration_capacity >= 0."""
         if (infiltration_capacity<0):
             raise ValueError(('The PrecipChanger infiltration_capacity has a '
                               'value of less than zero. This is invalid.'))
 
     def calculate_starting_psi(self):
-        """Calculate and store for later the factor :math:`\Psi_0`
+        """Calculate and store for later the factor :math:`\Psi_0`.
 
         :math:`\Psi` represents the portion of the erosion coefficient that
         depends on precipitation intensity. :math:`\Psi_0` is the starting value
