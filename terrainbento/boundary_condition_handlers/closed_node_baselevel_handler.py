@@ -3,6 +3,7 @@
 """
 ClosedNodeBaselevelHandler handles modifying elevation for all closed nodes.
 """
+
 import os
 import numpy as np
 from scipy.interpolate import interp1d
@@ -10,19 +11,19 @@ from scipy.interpolate import interp1d
 class ClosedNodeBaselevelHandler():
     """ Control the elevation of a single open boundary node.
 
-    The `ClosedNodeBaselevelHandler` controls the elevation of all nodes on the
+    The ``ClosedNodeBaselevelHandler`` controls the elevation of all nodes on the
     model grid with status != 0. The elevation change at these nodes is
     specified either as a constant or through a time or through a textfile that
     specifies the elevation change through time.
 
-    Through the parameter `modify_closed_nodes` the user can determine if the
+    Through the parameter ``modify_closed_nodes`` the user can determine if the
     closed nodes should be moved in the direction (up or down) specified by the
     elevation change directive, or if the non-closed nodes should be moved in
     the opposite direction.
 
-    The `ClosedNodeBaselevelHandler` expects that `topographic__elevation` is a
+    The ``ClosedNodeBaselevelHandler`` expects that ``topographic__elevation`` is a
     at-node model grid field. It will modify this field and, if it exists,
-    the field `bedrock__elevation`.
+    the field ``bedrock__elevation``.
 
     Methods
     -------
@@ -45,23 +46,23 @@ class ClosedNodeBaselevelHandler():
             Flag to indicate if the closed nodes or the non-closed nodes will
             be modified.
         lowering_rate : float, optional
-            Lowering rate of the outlet node. One of `lowering_rate` and
-            `lowering_file_path` is required. Units are implied by the
-            model grids spatial scale and the time units of `dt`. Negative
+            Lowering rate of the outlet node. One of ``lowering_rate`` and
+            ``lowering_file_path`` is required. Units are implied by the
+            model grids spatial scale and the time units of ``dt``. Negative
             values mean that the outlet lowers.
         lowering_file_path : str, optional
-            Lowering lowering history file path. One of `lowering_rate`
+            Lowering lowering history file path. One of ``lowering_rate``
             and `lowering_file_path` is required. Units are implied by
-            the model grids spatial scale and the time units of `dt`.
+            the model grids spatial scale and the time units of ``dt``.
             This file should be readable with
-            `np.loadtxt(filename, skiprows=1, delimiter=',')`
+            ``np.loadtxt(filename, skiprows=1, delimiter=',')``
             Its first column is time and its second colum is the elevation
             change at the outlet since the onset of the model run. Negative
             values mean the outlet lowers.
         model_end_elevation : float, optional
             Average elevation of the nodes_to_lower at the end of the model run duration. When
             the outlet is lowered based on an lowering_file_path, a
-            `model_end_elevation` can be set such that lowering is scaled
+            ``model_end_elevation`` can be set such that lowering is scaled
             based on the starting and ending outlet elevation. Default behavior
             is to not scale the lowering pattern.
 
@@ -85,7 +86,7 @@ class ClosedNodeBaselevelHandler():
          [ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]]
 
-        Now import the `ClosedNodeBaselevelHandler` and instantiate.
+        Now import the ``ClosedNodeBaselevelHandler`` and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
         ...                                         ClosedNodeBaselevelHandler)
@@ -105,7 +106,7 @@ class ClosedNodeBaselevelHandler():
          [-1. -1. -1. -1. -1.]]
 
         If we wanted instead for all of the non closed nodes to change their
-        elevation, we would set `modify_closed_nodes = False`.
+        elevation, we would set ``modify_closed_nodes = False``.
 
         >>> mg = RasterModelGrid(5, 5)
         >>> z = mg.add_zeros('node', 'topographic__elevation')
@@ -129,7 +130,7 @@ class ClosedNodeBaselevelHandler():
          [ 0.  0.  0.  0.  0.]]
 
         More complex baselevel histories can be provided with a
-        `lowering_file_path`.
+        ``lowering_file_path``.
 
         """
         self.model_time = 0.0
@@ -160,11 +161,11 @@ class ClosedNodeBaselevelHandler():
                     model_start_elevation = np.mean(self.z[self.nodes_to_lower])
 
                     if model_end_elevation is None:
-                        scaling_factor = 1.0
+                        self.scaling_factor = 1.0
                     else:
-                        scaling_factor = np.abs(model_start_elevation-model_end_elevation)/np.abs(elev_change[0]-elev_change[-1])
+                        self.scaling_factor = np.abs(model_start_elevation-model_end_elevation)/np.abs(elev_change[0]-elev_change[-1])
 
-                    outlet_elevation = (scaling_factor*elev_change_df[:, 1]) + model_start_elevation
+                    outlet_elevation = (self.scaling_factor*elev_change_df[:, 1]) + model_start_elevation
 
                     self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
@@ -190,9 +191,6 @@ class ClosedNodeBaselevelHandler():
         dt : float
             Duration of model time to advance forward.
         """
-        # increment model time
-        self.model_time += dt
-
         # next, lower the correct nodes the desired amount
         # first, if we do not have an outlet elevation object
         if self.outlet_elevation_obj is None:
@@ -210,11 +208,14 @@ class ClosedNodeBaselevelHandler():
             # calcuate the topographic change required to match the current time's value for
             # outlet elevation. This must be done in case bedrock elevation exists, and must
             # be done before the topography is lowered
-            topo_change = (self.prefactor * (self.z[self.nodes_to_lower]
-                                - self.outlet_elevation_obj(self.model_time)))
+            mean_z = np.mean(self.z[self.nodes_to_lower])
+            topo_change = (self.prefactor * (mean_z - self.outlet_elevation_obj(self.model_time)))
 
             if 'bedrock__elevation' in self.grid.at_node:
                 self.grid.at_node['bedrock__elevation'][self.nodes_to_lower] -= topo_change
 
             # lower topography
             self.z[self.nodes_to_lower] -= topo_change
+
+        # increment model time
+        self.model_time += dt
