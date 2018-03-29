@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Base class for common functions of terrainbento models.
+"""Base class for common functions of all `terrainbento`` erosion models."""
 
-"""
 import sys
 import os
 import subprocess
@@ -40,12 +38,11 @@ _HANDLER_METHODS = {'NormalFault': NormalFault,
 
 
 class ErosionModel(object):
-    """
-    Base class providing common functionality for TerrainBento models.
+    """ Base class providing common functionality for ``terrainbento`` models.
 
-    An ErosionModel the skeleton for the basic models of terrain evolution in
-    TerrainBento. It can be initialized with an input DEM, a or parameters
-    used for creation of a new model grid.
+    An ``ErosionModel the skeleton for the models of terrain evolution in
+    ``terrainbento``. It can be initialized with an input DEM, or parameters
+    used for creation of a new ``RasterModelGrid`` or ``HexModelGrid``.
 
     This is a base class that does not implement any processes, but rather
     simply handles I/O and setup. Derived classes are meant to include
@@ -58,7 +55,6 @@ class ErosionModel(object):
     setup_hexagonal_grid
     setup_raster_grid
 
-    run_one_step
     run_for
     run
     finalize
@@ -556,6 +552,7 @@ class ErosionModel(object):
             self.write_output(self.params, field_names=output_fields)
             self.iteration += 1
 
+        # now that the model is finished running, execute finalize.
         self.finalize()
         # once done, remove saved model object if it exists
         if os.path.exists(self.save_model_name):
