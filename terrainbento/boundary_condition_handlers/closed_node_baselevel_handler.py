@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-ClosedNodeBaselevelHandler handles modifying elevation for all closed nodes.
+``ClosedNodeBaselevelHandler`` handles modifying elevation for all closed nodes.
 """
 
 import os
@@ -24,6 +24,9 @@ class ClosedNodeBaselevelHandler():
     The ``ClosedNodeBaselevelHandler`` expects that ``topographic__elevation`` is a
     at-node model grid field. It will modify this field and, if it exists,
     the field ``bedrock__elevation``.
+
+    Note that ``ClosedNodeBaselevelHandler`` increments time at the end of the
+    ``run_one_step`` method.
 
     Methods
     -------
@@ -184,12 +187,23 @@ class ClosedNodeBaselevelHandler():
 
     def run_one_step(self, dt):
         """
-        Run `ClosedNodeBaselevelHandler` forward and update node elevations.
+        Run ``ClosedNodeBaselevelHandler`` forward and update node elevations.
+
+        The ``run_one_step`` method provides a consistent interface to update
+        the ``terrainbento`` boundary condition handlers.
+
+        In the ``run_one_step`` routine, the ``ClosedNodeBaselevelHandler`` will
+        either lower the closed or raise the non-closed nodes based on inputs
+        specified at instantiation.
+
+        Note that ``ClosedNodeBaselevelHandler`` increments time at the end of the
+        ``run_one_step`` method.
 
         Parameters
         ----------
         dt : float
             Duration of model time to advance forward.
+
         """
         # next, lower the correct nodes the desired amount
         # first, if we do not have an outlet elevation object
