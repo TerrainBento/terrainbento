@@ -57,13 +57,14 @@ class ErosionModel(object):
 
     run_for
     run
-    finalize
 
     get_parameter_from_exponent
     calculate_cumulative_change
     update_boundary_conditions
-    write_output
     check_walltime
+
+    write_output
+    finalize
 
     pickle_self
     unpickle_self
