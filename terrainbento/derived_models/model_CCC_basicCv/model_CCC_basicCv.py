@@ -6,9 +6,6 @@ power, and discharge proportional to drainage area.
 Model 000 Basic
 
 Landlab components used: FastscapeStreamPower, LinearDiffuser
-
-@author: gtucker
-@author: Katherine Barnhart
 """
 import sys
 import numpy as np

@@ -6,9 +6,6 @@ hybrid alluvium model with a threshold.
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          Space
 
-@author: Charlie Shobe
-@author: Katherine Barnhart
-5 April 2017
 """
 import sys
 import numpy as np

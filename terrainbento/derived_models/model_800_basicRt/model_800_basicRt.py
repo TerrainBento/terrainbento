@@ -9,8 +9,6 @@ Model 800 BasicRt
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          FastscapeStreamPower, LinearDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

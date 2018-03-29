@@ -8,9 +8,6 @@ Model 842 BasicChRtTh
 
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          StreamPowerSmoothThresholdEroder, CubicNonLinearDiffuser
-
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

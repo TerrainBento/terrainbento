@@ -6,8 +6,6 @@ that varies with cumulative incision depth.
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
 LinearDiffuser, and HybridAlluvium
 
-@author: Charlie Shobe, 5 May 2017
-@author: Katherine Barnhart
 """
 import sys
 import numpy as np

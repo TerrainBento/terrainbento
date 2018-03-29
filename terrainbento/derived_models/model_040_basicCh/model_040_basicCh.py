@@ -8,8 +8,6 @@ Model 040 BasicCh
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          FastscapeStreamPower, LinearDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

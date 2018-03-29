@@ -10,8 +10,6 @@ Model 202 BasicThVs
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          StreamPowerEroder, LinearDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

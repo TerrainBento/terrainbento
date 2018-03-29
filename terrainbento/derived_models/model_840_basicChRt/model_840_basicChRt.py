@@ -8,9 +8,6 @@ Model 840 BasicChRt
 
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          FastscapeStreamPower, CubicNonLinearDiffuser
-
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

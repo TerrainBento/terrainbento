@@ -9,8 +9,6 @@ Model 600 BasicVsSa
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          StreamPowerEroder, DepthDependentDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

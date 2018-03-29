@@ -9,8 +9,7 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          FastscapeStreamPower, DepthDependentDiffuser,
                          ExponentialWeatherer
 
-@author: gtucker
-@author: Katherine Barnhart
+
 """
 
 import sys

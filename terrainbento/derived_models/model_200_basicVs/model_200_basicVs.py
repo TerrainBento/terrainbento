@@ -10,8 +10,6 @@ Model 200 BasicVs
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          StreamPowerEroder, LinearDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

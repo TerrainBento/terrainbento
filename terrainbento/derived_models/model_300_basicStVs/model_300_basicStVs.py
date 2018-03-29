@@ -23,8 +23,6 @@ where $T$ is the soil transmissivity and $\lambda$ is cell width.
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
 PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

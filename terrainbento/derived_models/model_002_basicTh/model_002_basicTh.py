@@ -7,8 +7,6 @@ Model 002 BasicTh
 
 Landlab components used: LinearDiffuser, StreamPowerSmoothThresholdEroder
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

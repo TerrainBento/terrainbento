@@ -9,8 +9,6 @@ Model C00 BasicSaRt
 Landlab components used: FlowRouter, FastscapeStreamPower,
 DepthDependentDiffuser, ExponentialWeatherer
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 import sys
 import numpy as np

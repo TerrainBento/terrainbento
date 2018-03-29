@@ -11,8 +11,6 @@ Model 210 BasicHyVs
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          StreamPowerEroder, LinearDiffuser
 
-@author: Charlie Shobe
-@author: Katherine Barnhart
 """
 
 import sys

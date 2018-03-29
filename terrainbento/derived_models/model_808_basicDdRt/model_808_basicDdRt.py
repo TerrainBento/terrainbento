@@ -9,8 +9,6 @@ Model 808 BasicDdRt
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          StreamPowerSmoothThresholdEroder, LinearDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

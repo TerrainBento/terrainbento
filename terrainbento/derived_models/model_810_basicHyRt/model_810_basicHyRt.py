@@ -12,9 +12,6 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 IMPORTANT: This model allows changes in erodibility and threshold for bedrock
 abd sediment INDEPENDENTLY, meaning that weighting functions etc. exist for
 both.
-
-@author: Charlie Shobe
-@author: Katherine Barnhart
 """
 
 import sys

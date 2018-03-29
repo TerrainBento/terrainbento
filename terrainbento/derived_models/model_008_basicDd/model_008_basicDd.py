@@ -9,8 +9,6 @@ Model 008 BasicDd
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          StreamPowerSmoothThresholdEroder, LinearDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

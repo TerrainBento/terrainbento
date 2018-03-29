@@ -7,9 +7,6 @@ effective drainage area.
 Model A00 BasicVsRt
 
 Landlab components used: FlowRouter, StreamPowerEroder, LinearDiffuser
-
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys

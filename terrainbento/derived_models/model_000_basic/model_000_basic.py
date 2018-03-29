@@ -7,8 +7,6 @@ Model 000 Basic
 
 Landlab components used: FlowRouter, FastscapeStreamPower, LinearDiffuser
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 import sys
 import numpy as np

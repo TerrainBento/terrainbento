@@ -31,8 +31,6 @@ near-zero runoff (when $I>>P$) to $R \approx P$ (when $P>>I$), without a
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
 PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
 
-@author: gtucker
-@author: Katherine Barnhart
 """
 
 import sys
