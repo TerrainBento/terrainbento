@@ -1,7 +1,166 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-PrecipChanger controls precipitation frequency and/or intensity over time.
+``PrecipChanger`` controls precipitation frequency and/or intensity over time.
+
+This ``terrainbento`` baselevel handler was designed to change the precipitation
+frequency and intensity over time in order to modify the water erodability
+coefficient.
+
+In order to accomplish this, we need a theory by which to relate changes in
+the precipitation to changes in erodability.
+
+We start by describing the assumed precipitation model.
+
+The precipitation model considers the fraction of wet days, :math:`F`, and the
+frequency distribution of precipitation depth on wet days. Precipitation on a
+given day is given as :math:`p`. For daily average precipitation intensity, we
+assume that the complementary cumulative distribution function is a stretched
+exponential:
+
+.. math::
+
+    Pr(P>p) = \exp \left[-\left( p \lambda \\right)^c\\right]
+
+where :math:`c` is the shape factor and :math:`\lambda` is the scale factor. The
+corresponding probability density function is a Weibull distribution. The mean
+wet-day precipitation depth :math:`p_d` is related to the scale factor by
+
+.. math::
+
+    p_d = \lambda \Gamma (1 + 1/c)
+
+where :math:`\Gamma` is the gamma function.
+
+The basic erosion law considered here is:
+
+.. math::
+
+    E = KA^{m}S^{n}
+
+where :math:`E` is channel erosion rate, :math:`A` is contributing drainage
+area, and :math:`S` is local channel gradient. :math:`m` and :math:`n` are the
+slope and area exponents
+
+With :math:`m=1`, :math:`K` has dimensions of inverse length.
+
+Here, we present the approach used to relate changes in :math:`K` to changes in
+:math:`p_d`
+
+Deriving a relation between :math:`K`, :math:`p_d`, and :math:`F` requires
+defining an underlying hydrology model. We start by noting that drainage area
+serves as a surrogate for discharge, :math:`Q`. We can therefore write an
+`instantaneous` version of the erosion law as:
+
+.. math::
+
+    E_i = K_q Q^{m}S^n.
+
+This formulation represents the erosion rate during a particular daily event,
+:math:`E_i` with daily-average discharge :math:`Q_q`, as opposed to the long-term
+average rate of erosion, :math:`E`. It introduces a new term :math:`K_q`, the
+daily-averaged erosion coefficent.
+
+We next assume that discharge is the product of runoff rate, :math:`r`, and
+drainage area:
+
+.. math::
+
+    Q = r A.
+
+Combining these we can write
+
+.. math::
+
+    E_i = K_q r^{m} A^{m} S^{m}.
+
+This equation establishes the dependence of short-term erosion rate on
+catchment-average runoff rate, :math:`r`.
+
+Next we need to relate runoff rate to precipitation rate. A common method is to
+acknowledge that there exists a soil infiltration capacity, :math:`I_c`, such
+that when :math:`p<I_c`, no runoff occurs, and when :math:`p>I_c`,
+
+.. math::
+
+    r = p - I_c.
+
+
+An advantage of this simple approach is that :math:`I_c` can be measured directly
+or inferred from stream-flow records.
+
+To relate short-term ('instantaneous') erosion rate to the long-term average,
+one can first integrate the erosion rate over the full probability distribution
+of daily precipitation intensity. This operation yields the average erosion rate
+produced on wet days. To convert this into an average that includes dry days, we
+simply multiply the integral by the wet-day fraction :math:`F`. Thus, the
+long-term erosion rate by water can be expressed as:
+
+.. math::
+
+    E = F \int_{I_c}^\infty K_q (p-I_c)^{m}A^{m} S^{n} f(p) dp,
+
+where :math:`f(p)` is the probability density function (PDF) of daily
+precipitation intensity. By equating the above definition of long-term erosion
+math:`E` with the simpler definition :math:`E = K Q^{m}S^{n}`,
+we can solve for the effective erosion coefficient, :math:`K`:
+
+.. math::
+
+    K = F K_q \int_{I_c}^\infty (p-I_c)^{m} f(p) dp.
+
+In this case, what is of interest is the `change` in :math:`K` given some change
+in precipitation frequency distribution :math:`f(p)`. Suppose we have an original
+value of the effective erodibility coefficient, :math:`K_0`, and an original
+precipitation distribution, :math:`f_0(p)`. Given a future change to a new
+precipitation distribution :math:`f(p)`, we wish to know what is the ratio of the
+new effective erodibility coefficient :math:`K` to its original value. Using the
+definition of :math:`K` above, the ratio of old to new coefficient is:
+
+.. math::
+
+    \\frac{K}{K_0} = \\frac{F\int_{I_c}^\infty (p-I_c)^{m} f(p) dp}{F_0\int_{I_c}^\infty (p-I_c)^{m} f_0(p) dp}
+
+Here :math:`F_0` is the starting intermittency factor.
+
+Thus, if we know the original and new precipitation distributions and
+intermittency factors, we can determine the resulting change in :math:`K`.
+
+We assume that the daily precipitation intensity PDF is given by the Weibull
+distribution such that :math:`f(p)` has the form:
+
+.. math::
+
+    f(p) = \\frac{c}{\lambda}\left( \\frac{p}{\lambda} \\right)^{(c-1)} e^{-(p \lambda)^c}.
+
+The above definition can be substituted in the integrals in the equation for
+:math:`\\frac{K}{K_0}`. We are not aware of a closed-form solution to the
+resulting integrals. Therefore, we apply a numerical integration to convert the
+input values of :math:`F`, :math:`c`, and :math:`p_d` into a corresponding new
+value of :math:`K`.
+
+For computational convenience, we define and calculate :math:`\Psi` which
+represents the portion of the erosion coefficient that depends on precipitation.
+
+:math:`\Psi` is defined as the integral from :math:`I_c` to infinity of the
+rainfall in excess of infiltration.
+
+.. math::
+
+    \Psi = \int_{I_c}^\infty (p - I_{c})^m f(p) dp
+
+Finally we define the erodibility adjustment factor :math:`F_{w}`:
+
+.. math::
+
+     K = F_{w} K_{0} = \\frac{F \Psi}{F_0 \Psi_0} K_{0}
+
+Here :math:`F_0` and :math:`\Psi_0` are the starting fraction of wet days and
+starting value for :math:`\Psi`.
+
+``PrecipChanger`` presently supports changes in :math:`F` and :math:`p_d` but
+not :math:`c`.
+
 """
 
 import numpy as np
@@ -13,7 +172,10 @@ DAYS_PER_YEAR = 365.25
 
 
 def _integrand(p, Ic, lam, c, m):
-    """Calculates the value of
+    """
+    Calculates the integrand for numerical integration.
+
+    Calculates the value of
 
     .. math::
 
@@ -44,6 +206,7 @@ def _integrand(p, Ic, lam, c, m):
     """
     return (((p - Ic) ** m) * (c / lam) * ((p / lam) ** (c - 1.0))
             * np.exp(-((p / lam) ** c)))
+
 
 def _scale_fac(pmean, c):
     """Convert mean precipitation intensity into Weibull scale factor lambda.
@@ -90,27 +253,37 @@ def _depth_to_intensity(depth, time_unit):
 
 
 class PrecipChanger(object):
-    """PrecipChanger handles time-varying precipitation.
+    """Handle time varying precipitation.
+
+    The ``PrecipChanger`` handles time-varying precipitation by changing the
+    proportion of time rain occurs (``daily_rainfall_intermittency_factor``) and
+    the mean of the daily rainfall Weibull distribution
+    (``daily_rainfall__mean_intensity``).
+
+    Note that ``ClosedNodeBaselevelHandler`` increments time at the end of the
+    ``run_one_step`` method.
 
     Methods
     --------
-    calculate_starting_psi()
-    get_current_precip_params()
-    get_erodibility_adjustment_factor()
-    run_one_step(dt)
+    calculate_starting_psi
+    get_current_precip_params
+    get_erodibility_adjustment_factor
+    run_one_step
+
     """
 
     def __init__(self,
                  grid,
-                 intermittency_factor = 0.3,
-                 intermittency_factor_rate_of_change = 0.001,
-                 mean_storm__intensity = 0.3,
-                 mean_depth_rate_of_change = 0.001,
-                 precip_shape_factor = 0.65,
+                 daily_rainfall__intermittency_factor,
+                 daily_rainfall__intermittency_factor_time_rate_of_change,
+                 daily_rainfall__mean_intensity,
+                 daily_rainfall__mean_intensity_time_rate_of_change,
+                 daily_rainfall__precipitation_shape_factor = 0.65,
                  time_unit = 'year',
-                 infiltration_capacity = None,
-                 m_sp = None,
-                 precip_stop_time = None,
+                 infiltration_capacity = 0,
+                 m_sp = 0.5,
+                 precipchanger_start_time = 0,
+                 precipchanger_stop_time = None,
                  length_factor = 1.0,
                  **kwargs):
 
@@ -118,95 +291,226 @@ class PrecipChanger(object):
         Parameters
         ----------
         grid : landlab model grid
-        intermittency_factor
-        intermittency_factor_rate_of_change
+        daily_rainfall_intermittency_factor : float
+            Starting value of the rainfall intermittency_factor :math:`F`.
+        daily_rainfall_intermittency_factor__time_rate_of_change : float
+            Time rate of change of the rainfall intermittency_factor :math:`F`.
+            Units are implied by the ``time_unit`` argument. Currently only
+            'year' is supported.
+        daily_rainfall__mean_intensity : float
+            Starting value of the mean daily rainfall intensity :math:`p_d`.
+            Units are implied by the ``time_unit`` argument. Currently only
+            'year' is supported.
+        daily_rainfall__mean_intensity__time_rate_of_change : float
+            Time rate of change of the mean daily rainfall intensity :math:`p_d`.
+            Units are implied by the ``time_unit`` argument. Currently only
+            'year' is supported.
+        daily_rainfall__precipitation_shape_factor : float, optional
+            Weibull distribution shape factor :math:`c`. Default value is 0.65.
+        infiltration_capacity : float, optional
+            Infiltration capacity. Default value is 0.
+        m_sp : float, optional
+            Drainage area exponent in erosion rule, :math:`m`.  Default value is
+            0.5.
+        precipchanger_start_time : float, optional
+            Model time at which changing the precipitation should start. Default
+            is at the onset of the model run.
+        precipchanger_stop_time : float, optional
+            Model Time at which changing the precipitation statistics should end.
+            Default is no end time.
+        time_unit : str, optional
+            Time unit of input parameters. Currently only 'year' is
+            supported. Default value is 'year'.
+        length_factor : float, optional
+            ``terrainbento`` model interal length factor conversion related to
+            ``meters_to_feet`` and ``feet_to_meters`` input paramters. Default
+            is 1.0.
+
+        Examples
+        --------
+        Start by creating a landlab model grid.
+
+        >>> from landlab import RasterModelGrid
+        >>> mg = RasterModelGrid(5, 5)
+
+        Now import the ``PrecipChanger`` and instantiate.
+
+        >>> from terrainbento.boundary_condition_handlers import PrecipChanger
+        >>> bh = PrecipChanger(mg,
+        ...                    daily_rainfall__intermittency_factor = 0.3,
+        ...                    daily_rainfall__intermittency_factor_time_rate_of_change = 0.1,
+        ...                    daily_rainfall__mean_intensity = 3.0,
+        ...                    daily_rainfall__mean_intensity_time_rate_of_change = 0.2,
+        ...                    daily_rainfall__precipitation_shape_factor = 0.65,
+        ...                    infiltration_capacity = 0)
+        >>> bh.run_one_step(10.0)
 
 
         """
         self.model_time = 0.0
-        if precip_stop_time is None:
-            stop_time = kwargs['run_duration']
+        self._length_factor = length_factor
 
-        self.starting_frac_wet_days = intermittency_factor
-        self.frac_wet_days_rate_of_change = intermittency_factor_rate_of_change
+        if precipchanger_stop_time is None:
+            self.no_stop_time = True
+        else:
+            self.no_stop_time = False
+            self.stop_time = precipchanger_stop_time
+        self.start_time = precipchanger_start_time
 
-        self.starting_daily_mean_depth = mean_storm__intensity / DAYS_PER_YEAR * self._length_factor
-        self.mean_depth_rate_of_change = mean_depth_rate_of_change / DAYS_PER_YEAR * self._length_factor
-        self.precip_shape_factor = precip_shape_factor
+        self.starting_frac_wet_days = daily_rainfall__intermittency_factor
+        self.frac_wet_days_rate_of_change = daily_rainfall__intermittency_factor_time_rate_of_change
+
+        self.starting_daily_mean_depth = daily_rainfall__mean_intensity / DAYS_PER_YEAR * self._length_factor
+        self.mean_depth_rate_of_change = daily_rainfall__mean_intensity_time_rate_of_change / DAYS_PER_YEAR * self._length_factor
+        self.precip_shape_factor = daily_rainfall__precipitation_shape_factor
         self.time_unit = time_unit
-        try:
-            self.infilt_cap = infiltration_capacity * self._length_factor
-        except TypeError:
-            self.infilt_cap = infiltration_capacity
-        self.m = m_sp
-        self.stop_time = stop_time
+        self.infilt_cap = infiltration_capacity * self._length_factor
 
-        if self.infilt_cap is not None:
-            (self.starting_psi, abserr) = self.calculate_starting_psi()
+        self.m = m_sp
+
+        self.starting_psi = self.calculate_starting_psi()
+
+        self._check_intermittency_value(self.starting_frac_wet_days)
+        self._check_mean_depth(self.starting_daily_mean_depth)
+
+    def _check_intermittency_value(self, intermittency_factor):
+        """Check that intermittency_factor is >= 0 and <=1."""
+        if (intermittency_factor<0) or (intermittency_factor>1):
+            raise ValueError(('The PrecipChanger intermittency_factor has a '
+                              'value of less than zero or greater than one. '
+                              'This is invalid.'))
+
+    def _check_mean_depth(self, mean_depth):
+        """Check that mean depth is >= 0"""
+        if (mean_depth<0):
+            raise ValueError(('The PrecipChanger mean depth has a '
+                              'value of less than zero. This is invalid.'))
+
 
     def calculate_starting_psi(self):
-        """Calculate and store for later the factor :math:`\Psi`, which
-        represents the portion of the erosion coefficient that depends on
-        precipitation intensity.
+        """Calculate and store for later the factor :math:`\Psi_0`
 
-        :math:`\Psi` is defined as the integral from :math:`I_c` to infinity of
+        :math:`\Psi` represents the portion of the erosion coefficient that
+        depends on precipitation intensity. :math:`\Psi_0` is the starting value
+        of :math:`\Psi`.
+
+        :math:`\Psi_0` is defined as the integral from :math:`I_c` to infinity
+        of the rainfall in excess of infiltration.
 
         .. math::
 
-            \Psi = (p - I_{c})^m f(p) dp
+            \Psi_0 = \int_{I_c}^\infty (p - I_{c})^m f_0(p) dp
 
         where :math:`p` is precipitation intensity, :math:`I_c` is infiltration
         capacity, :math:`m` is the discharge/area exponent (e.g., 1/2), and
-        :math:`f(p)` is the Weibull distribution representing the probability
-        distribution of daily precipitation intensity.
+        :math:`f_0(p)` is the Weibull distribution representing the probability
+        distribution of daily precipitation intensity at model run onset.
+
         """
         mean_intensity = _depth_to_intensity(self.starting_daily_mean_depth,
                                             self.time_unit)
         lam = _scale_fac(mean_intensity, self.precip_shape_factor)
-        psi = quad(_integrand, self.infilt_cap, np.inf,
-                         args=(self.infilt_cap, lam, self.precip_shape_factor,
-                               self.m))
+        psi, abserror = quad(_integrand, self.infilt_cap, np.inf,
+                             args=(self.infilt_cap, lam,
+                             self.precip_shape_factor,
+                             self.m))
         return psi
 
     def get_current_precip_params(self):
-        """Return current frac wet days and daily mean depth."""
+        """Return current values precipitation parameters.
 
-        if self.model_time > self.stop_time:
-            self.model_time = self.stop_time
+        Returns
+        -------
+        daily_rainfall_intermittency_factor : float
+        daily_rainfall__mean_intensity : float
 
-        frac_wet_days = (self.starting_frac_wet_days
-                         + self.frac_wet_days_rate_of_change * self.model_time)
-        mean_depth = (self.starting_daily_mean_depth
-                         + self.mean_depth_rate_of_change * self.model_time)
-        return frac_wet_days, mean_depth
+        """
+        # if after start time
+        if self.model_time > self.start_time:
+
+            # get current evaluation time
+            if self.no_stop_time:
+                if self.model_time > self.stop_time:
+                    time = self.stop_time
+                else:
+                    time = self.model_time
+            else:
+                time = self.model_time
+
+            # calculate and return updated values
+            frac_wet_days = (self.starting_frac_wet_days
+                             + self.frac_wet_days_rate_of_change * time)
+            mean_depth = (self.starting_daily_mean_depth
+                             + self.mean_depth_rate_of_change * time)
+
+            self._check_intermittency_value(frac_wet_days)
+            self._check_mean_depth(mean_depth)
+
+            return frac_wet_days, mean_depth
+        else:
+            # otherwise return starting values.
+            return self.starting_frac_wet_days, self.starting_daily_mean_depth
 
     def get_erodibility_adjustment_factor(self):
-        """Calculates and returns the factor by which erodibility ("K")
-        should be adjusted.
+        """Calculates the erodability adjustment factor.
 
-        Erodibility factor K is defined here as in the docstring above:
+        Calculates and returns the factor :math:`F_{w}` by which an erodability
+        by water should be adjusted.
 
-             K = Fw Kq psi
+        .. math::
 
-        We will have already calculated Kq, and it won't
+             K = F_{w} K_{0} = \\frac{F \Psi}{F_0 \Psi_0} K_{0}
+
+        Returns
+        -------
+        erodability_adjustment_factor : float
+
         """
+        # if after start time
+        if self.model_time > self.start_time:
+            # get correct evaluation time
+            if self.no_stop_time:
+                if self.model_time > self.stop_time:
+                    time = self.stop_time
+                else:
+                    time = self.model_time
+            else:
+                time = self.model_time
 
-        if self.model_time > self.stop_time:
-            self.model_time = self.stop_time
+            # get the updated precipitation paramters
+            frac_wet, mean_depth = self.get_current_precip_params(time)
 
-        frac_wet, mean_depth = self.get_current_precip_params(self.model_time)
+            # calculate the mean intensity and the scale factor
+            mean_intensity = _depth_to_intensity(mean_depth, self.time_unit)
+            lam = _scale_fac(mean_intensity, self.precip_shape_factor)
 
-        mean_intensity = _depth_to_intensity(mean_depth, self.time_unit)
-        lam = _scale_fac(mean_intensity, self.precip_shape_factor)
-        (psi, abserr) = quad(_integrand, self.infilt_cap, np.inf,
-                         args=(self.infilt_cap, lam, self.precip_shape_factor,
-                               self.m))
-        adj_fac = ((frac_wet * psi)
-                    / (self.starting_frac_wet_days * self.starting_psi))
-        return adj_fac
+            # calculate current value of Psi
+            psi  = quad(_integrand, self.infilt_cap, np.inf,
+                        args=(self.infilt_cap, lam, self.precip_shape_factor,
+                        self.m))
+
+            # calculate the adjustment factor
+            adj_fac = ((frac_wet * psi)
+                        / (self.starting_frac_wet_days * self.starting_psi))
+            # and return
+            return adj_fac
+        else:
+            # if before starting time, return 1.0
+            return 1.0
 
     def run_one_step(self, dt):
-        """Run one step method.
+        """Run ``PrecipChanger`` forward and update model time.
+
+        The ``run_one_step`` method provides a consistent interface to update
+        the ``terrainbento`` boundary condition handlers.
+
+        In the ``run_one_step`` routine, the ``PrecipChanger`` will update its
+        internal record of model time.
+
+        Parameters
+        ----------
+        dt : float
+            Duration of model time to advance forward.
 
         """
         self.model_time += dt
