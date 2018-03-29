@@ -14,10 +14,16 @@ dynamics. It was built on top of the `Landlab Toolkit`_.
 The goal of ``terrainbento`` is to make it easier to create alternative Earth
 surface dynamics models. The package has three main parts that support this
 goal. First, a **Model Base Class** that contains the functionality required
-across models (e.g. reading in input files, writing out output). Second, a set
-of **Boundary Condition Handlers** provide tools to set and modify boundary
-conditions during a model run. Third, we provide an initial set of landscape
-evolution models derived from the base class.
+across models (e.g. reading in input files, writing out output). A **Model
+Template** provides an skeleton of a model made with the main base class that
+can be used to create your own ``terrainbento`` model.
+
+Second, a set of **Boundary Condition Handlers** provide tools to set and modify
+boundary conditions during a model run. Third, we provide an initial set of
+landscape evolution models derived from the base class. These models increase
+in complexity from a base model to models with one, two, or three differences
+from the base mode.
+
 
 Model Base Class
 ----------------
@@ -39,7 +45,7 @@ Derived Models
 --------------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    source/terrainbento.derived_models
 
