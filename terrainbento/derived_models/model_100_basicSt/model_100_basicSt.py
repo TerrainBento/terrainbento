@@ -41,9 +41,11 @@ near-zero runoff (when :math:`I>>P`) to :math:`R \approx P` (when :math`P>>I`),
 without a "hard threshold."
 """
 
-from terrainbento.base_class import StochasticErosionModel
-from landlab.components import LinearDiffuser, FastscapeEroder
+import sys
 import numpy as np
+
+from landlab.components import LinearDiffuser, FastscapeEroder
+from terrainbento.base_class import StochasticErosionModel
 
 
 class BasicSt(StochasticErosionModel):

@@ -27,10 +27,11 @@ PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import StochasticErosionModel
-from landlab.components import StreamPowerEroder, LinearDiffuser
-
+import sys
 import numpy as np
+
+from landlab.components import StreamPowerEroder, LinearDiffuser
+from terrainbento.base_class import StochasticErosionModel
 
 
 class BasicStVs(StochasticErosionModel):

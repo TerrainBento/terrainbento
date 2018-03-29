@@ -12,9 +12,11 @@ Landlab components used: FlowRouter, StreamPowerEroder, LinearDiffuser
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import ErosionModel
-from landlab.components import StreamPowerEroder, LinearDiffuser
+import sys
 import numpy as np
+
+from landlab.components import StreamPowerEroder, LinearDiffuser
+from terrainbento.base_class import ErosionModel
 
 
 class BasicRtVs(ErosionModel):

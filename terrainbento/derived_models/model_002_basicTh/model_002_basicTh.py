@@ -11,9 +11,11 @@ Landlab components used: LinearDiffuser, StreamPowerSmoothThresholdEroder
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import ErosionModel
-from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
+import sys
 import numpy as np
+
+from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
+from terrainbento.base_class import ErosionModel
 
 
 class BasicTh(ErosionModel):

@@ -34,10 +34,12 @@ PrecipitationDistribution, LinearDiffuser, HybridAlluvium
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import StochasticErosionModel
-from landlab.components import LinearDiffuser, ErosionDeposition
-
+import sys
 import numpy as np
+
+from landlab.components import LinearDiffuser, ErosionDeposition
+from terrainbento.base_class import StochasticErosionModel
+
 
 class BasicHySt(StochasticErosionModel):
     """

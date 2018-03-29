@@ -10,12 +10,13 @@ Landlab components used: FastscapeStreamPower, LinearDiffuser
 @author: gtucker
 @author: Katherine Barnhart
 """
-
-from terrainbento.base_class import ErosionModel
-from landlab.components import FastscapeEroder, LinearDiffuser
-
+import sys
 import numpy as np
 from scipy.interpolate import interp1d
+
+from landlab.components import FastscapeEroder, LinearDiffuser
+from terrainbento.base_class import ErosionModel
+
 
 class BasicCv(ErosionModel):
     """

@@ -10,10 +10,11 @@ Landlab components used: FlowRouter, FastscapeStreamPower, LinearDiffuser
 @author: gtucker
 @author: Katherine Barnhart
 """
-
-from terrainbento.base_class import ErosionModel
-from landlab.components import FastscapeEroder, LinearDiffuser
+import sys
 import numpy as np
+
+from landlab.components import FastscapeEroder, LinearDiffuser
+from terrainbento.base_class import ErosionModel
 
 
 class Basic(ErosionModel):
@@ -86,6 +87,7 @@ class Basic(ErosionModel):
         # Check walltime
         self.check_walltime()
 
+
 def main():
     """Executes model."""
     import sys
@@ -93,11 +95,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print(('To run a terrainbento model from the command line you must '
+                'include input file name on command line'))
         sys.exit(1)
 
-    ldsp = Basic(input_file=infile)
-    ldsp.run()
+    model = Basic(input_file=infile)
+    model.run()
 
 
 if __name__ == '__main__':

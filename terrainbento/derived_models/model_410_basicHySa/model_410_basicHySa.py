@@ -14,10 +14,12 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 """
 
-from terrainbento.base_class import ErosionModel
+import sys
+import numpy as np
+
 from landlab.components import (Space, DepthDependentDiffuser,
                                 ExponentialWeatherer)
-import numpy as np
+from terrainbento.base_class import ErosionModel
 
 
 class BasicHySa(ErosionModel):

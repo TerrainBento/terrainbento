@@ -10,9 +10,13 @@ Landlab components used: FlowRouter, DepressionFinderAndRouter,
 @author: Katherine Barnhart
 5 April 2017
 """
+import sys
 import numpy as np
-from terrainbento.base_class import ErosionModel
+
 from landlab.components import ErosionDeposition, LinearDiffuser
+from terrainbento.base_class import ErosionModel
+
+
 class BasicHy(ErosionModel):
     """
     A BasicHy model computes erosion of sediment and bedrock

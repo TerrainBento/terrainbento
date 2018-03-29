@@ -12,11 +12,12 @@ DepthDependentDiffuser, ExponentialWeatherer
 @author: gtucker
 @author: Katherine Barnhart
 """
+import sys
+import numpy as np
 
-from terrainbento.base_class import ErosionModel
 from landlab.components import (FastscapeEroder, DepthDependentDiffuser,
                                 ExponentialWeatherer)
-import numpy as np
+from terrainbento.base_class import ErosionModel
 
 
 class BasicRtSa(ErosionModel):

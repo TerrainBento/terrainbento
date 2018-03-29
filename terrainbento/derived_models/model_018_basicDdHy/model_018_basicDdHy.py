@@ -9,10 +9,12 @@ LinearDiffuser, and HybridAlluvium
 @author: Charlie Shobe, 5 May 2017
 @author: Katherine Barnhart
 """
-
-from terrainbento.base_class import ErosionModel
-from landlab.components import LinearDiffuser, ErosionDeposition
+import sys
 import numpy as np
+
+from landlab.components import LinearDiffuser, ErosionDeposition
+from terrainbento.base_class import ErosionModel
+
 
 class BasicDdHy(ErosionModel):
     """
