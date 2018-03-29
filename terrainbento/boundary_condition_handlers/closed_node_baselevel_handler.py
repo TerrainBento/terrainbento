@@ -142,6 +142,7 @@ class ClosedNodeBaselevelHandler():
         self.z = self.grid.at_node['topographic__elevation']
 
         # determine which nodes to lower
+        # based on which are lowering, set the prefactor correctly.
         if self.modify_closed_nodes:
             self.nodes_to_lower = self.grid.status_at_node != 0
             self.prefactor = 1.0
@@ -168,7 +169,7 @@ class ClosedNodeBaselevelHandler():
                     else:
                         self.scaling_factor = np.abs(model_start_elevation-model_end_elevation)/np.abs(elev_change[0]-elev_change[-1])
 
-                    outlet_elevation = (self.scaling_factor*elev_change_df[:, 1]) + model_start_elevation
+                    outlet_elevation = (self.scaling_factor * self.prefactor * elev_change_df[:, 1]) + model_start_elevation
 
                     self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
@@ -223,13 +224,13 @@ class ClosedNodeBaselevelHandler():
             # outlet elevation. This must be done in case bedrock elevation exists, and must
             # be done before the topography is lowered
             mean_z = np.mean(self.z[self.nodes_to_lower])
-            topo_change = (self.prefactor * (mean_z - self.outlet_elevation_obj(self.model_time)))
+            self.topo_change = mean_z - self.outlet_elevation_obj(self.model_time)
 
             if 'bedrock__elevation' in self.grid.at_node:
-                self.grid.at_node['bedrock__elevation'][self.nodes_to_lower] -= topo_change
+                self.grid.at_node['bedrock__elevation'][self.nodes_to_lower] -= self.topo_change
 
             # lower topography
-            self.z[self.nodes_to_lower] -= topo_change
+            self.z[self.nodes_to_lower] -= self.topo_change
 
         # increment model time
         self.model_time += dt

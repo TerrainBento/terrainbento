@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from numpy.testing import assert_almost_equal, assert_array_equal
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 from nose.tools import assert_raises
 
 from terrainbento.boundary_condition_handlers import ClosedNodeBaselevelHandler
@@ -89,6 +89,31 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
     # not closed should have been uplifted 2410*0.1
     assert_array_equal(b[not_closed], 240.0 * np.ones(np.sum(not_closed)))
     assert_array_equal(z[not_closed], 241.0 * np.ones(np.sum(not_closed)))
+    
+    
+    #% doing the oposite should also work
+    mg = RasterModelGrid(5, 5)
+    z = mg.add_ones('node', 'topographic__elevation')
+    b = mg.add_zeros('node', 'bedrock__elevation')
+
+    bh = ClosedNodeBaselevelHandler(mg,
+                                    modify_closed_nodes = True,
+                                    lowering_rate = -0.1)
+    for i in range(240):
+        bh.run_one_step(10)
+    
+    closed = mg.status_at_node != 0
+    not_closed = mg.status_at_node == 0 
+    
+    # not closed should have staued the same
+    assert_array_equal(z[not_closed], np.ones(np.sum(not_closed)))
+    assert_array_equal(b[not_closed], np.zeros(np.sum(not_closed)))
+    
+    # closed should have lowered by 240
+    assert_array_equal(b[closed], -240.0 * np.ones(np.sum(closed)))
+    assert_array_equal(z[closed], -239.0 * np.ones(np.sum(closed)))
+
+    
 
 
 def test_outlet_lowering_object_no_scaling_bedrock():
@@ -133,11 +158,33 @@ def test_outlet_lowering_object_no_scaling():
     closed = mg.status_at_node != 0
     not_closed = mg.status_at_node == 0 
     
-    # closed should have stayed the same
+    # not closed should have stayed the same
     assert_array_equal(z[not_closed], np.ones(np.sum(not_closed)))
 
-    # not closed should lowered by 47.5  to -46.5
+    # closed should lowered by 47.5  to -46.5
     assert_array_equal(z[closed], -46.5 * np.ones(np.sum(closed)))
+    
+    
+def test_outlet_lowering_object_no_scaling_core_nodes():
+    """Test using an outlet lowering object with no scaling on core nodes"""
+
+    mg = HexModelGrid(5, 5)
+    z = mg.add_ones('node', 'topographic__elevation')
+    file = os.path.join(_TEST_DATA_DIR, 'outlet_history.txt')
+    bh = ClosedNodeBaselevelHandler(mg,
+                                    modify_closed_nodes = False,
+                                    lowering_file_path=file)
+    for i in range(241):
+        bh.run_one_step(10)
+
+    closed = mg.status_at_node != 0
+    not_closed = mg.status_at_node == 0 
+    
+    # closed should have stayed the same
+    assert_array_equal(z[closed], np.ones(np.sum(closed)))
+
+    # not closed should raise by 47.5  to 48.5
+    assert_array_almost_equal(z[not_closed], 48.5 * np.ones(np.sum(not_closed)))
 
 
 def test_outlet_lowering_object_with_scaling():
