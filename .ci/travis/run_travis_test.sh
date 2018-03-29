@@ -10,6 +10,7 @@ run_test()
   INSTALLDIR=$($PYTHON -c "import os; import terrainbento; print(os.path.dirname(terrainbento.__file__))")
 
   coverage run --source=$INSTALLDIR ../scripts/test-installed-terrainbento.py && (coverage report && cp .coverage ..)
+
 }
 
 run_test
