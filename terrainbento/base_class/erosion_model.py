@@ -3,30 +3,40 @@
 Base class for common functions of terrainbento models.
 
 """
+import sys
+import os
+import subprocess
+from six import string_types
+import dill
+import time as tm
+
+import numpy as np
+from scipy.interpolate import interp1d
 
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
 from landlab import load_params
 from landlab.io.netcdf import write_raster_netcdf, write_netcdf
 
-from landlab.components import FlowAccumulator
+from landlab.components import FlowAccumulator, NormalFault
 
-import numpy as np
-from scipy.interpolate import interp1d
-import sys
-import os
-import subprocess
-import dill
-import time as tm
-from terrainbento.boundary_condition_handlers import PrecipChanger
-
-DAYS_PER_YEAR = 365.25
+from terrainbento.boundary_condition_handlers import (
+                            PrecipChanger,
+                            CaptureNodeBaselevelHandler,
+                            ClosedNodeBaselevelHandler,
+                            SingleNodeBaselevelHandler)
 
 _SUPPORTED_BOUNDARY_HANDLERS = ['NormalFault',
                                 'PrecipChanger',
                                 'CaptureNodeBaselevelHandler',
                                 'ClosedNodeBaselevelHandler',
                                 'SingleNodeBaselevelHandler']
+
+_HANDLER_METHODS = {'NormalFault': NormalFault,
+                    'PrecipChanger': PrecipChanger,
+                    'CaptureNodeBaselevelHandler': CaptureNodeBaselevelHandler,
+                    'ClosedNodeBaselevelHandler': ClosedNodeBaselevelHandler,
+                    'SingleNodeBaselevelHandler': SingleNodeBaselevelHandler}
 
 
 class ErosionModel(object):
@@ -43,6 +53,7 @@ class ErosionModel(object):
 
     Methods
     -------
+
     read_topography
     setup_hexagonal_grid
     setup_raster_grid
@@ -61,21 +72,19 @@ class ErosionModel(object):
     pickle_self
     unpickle_self
 
-    __set_state__
-    __get_state__
-
-
     """
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
         """
         Parameters
         ----------
-        input_file :
-            df
-        params :
-            dfa
-        BoundaryHandlers :
-
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle
 
 
 
@@ -174,10 +183,10 @@ class ErosionModel(object):
             else:
                 # this routine will set self.opt_watershed internally
                 if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
-                    self.setup_hexagonal_grid(self.params)
+                    self.setup_hexagonal_grid()
                     self._starting_topography = 'HexModelGrid'
                 else:
-                    self.setup_raster_grid(self.params)
+                    self.setup_raster_grid()
                     self._starting_topography = 'RasterModelGrid'
 
             # Set DEM boundaries
@@ -254,16 +263,27 @@ class ErosionModel(object):
         """
         name = handler.__name__
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
-            handler_params = self.params[name]
+
+            # if unique paramters for the boundary condition handler have
+            # been passed, use them.
+            if name in self.params:
+                handler_params = self.params[name]
+                handler_params['length_factor'] = self._length_factor
+
+            # otherwise pass all parameters
+            else:
+                handler_params = self.params
+
+            # Instantiate handler
             self.boundary_handler[name] = handler(self.grid, **handler_params)
+
+        # Raise an error if the handler is not supported.
         else:
             raise ValueError(('Only supported boundary condition handlers are '
                               'permitted. These include:'
                               '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
 
-    def setup_hexagonal_grid(self, params):
-        """
-        """
+    def setup_hexagonal_grid(self):
         """Create hexagonal grid based on input parameters.
 
         Called if DEM is not used, or not found.
@@ -271,17 +291,18 @@ class ErosionModel(object):
         Examples
         --------
         >>> params = {'model_grid' : 'HexModelGrid',
-        ...           'base_num_rows' : 6,
-        ...           'base_num_cols' : 9,
-        ...           'dx' : 10.0 }
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0 }
         >>> from terrainbento import ErosionModel
         >>> em = ErosionModel(params=params)
+
         """
 
         try:
-            nr = params['number_of_node_rows']
-            nc = params['number_of_node_columns']
-            dx = params['node_spacing']
+            nr = self.params['number_of_node_rows']
+            nc = self.params['number_of_node_columns']
+            dx = self.params['node_spacing']
 
 
         except KeyError:
@@ -291,13 +312,13 @@ class ErosionModel(object):
             nc = 5
             dx = 10
 
-        orientation = params.get('orientation', 'horizontal')
-        shape = params.get('shape', 'hex')
-        reorient_links = params.get('reorient_links', True)
+        orientation = self.params.get('orientation', 'horizontal')
+        shape = self.params.get('shape', 'hex')
+        reorient_links = self.params.get('reorient_links', True)
 
-        if 'outlet_id' in params:
+        if 'outlet_id' in self.params:
             self.opt_watershed = True
-            self.outlet_node = params['outlet_id']
+            self.outlet_node = self.params['outlet_id']
         else:
             self.opt_watershed = False
             self.outlet_node = 0
@@ -313,8 +334,8 @@ class ErosionModel(object):
 
         # Create and initialize elevation field
         self.z = self.grid.add_zeros('node', 'topographic__elevation')
-        if 'random_seed' in params:
-            seed = params['random_seed']
+        if 'random_seed' in self.params:
+            seed = self.params['random_seed']
         else:
             seed = 0
         np.random.seed(seed)
@@ -323,7 +344,7 @@ class ErosionModel(object):
 
         # Set boundary conditions
 
-    def setup_raster_grid(self, params):
+    def setup_raster_grid(self):
         """Create raster grid based on input parameters.
 
         Called if DEM is not used, or not found.
@@ -344,9 +365,9 @@ class ErosionModel(object):
         >>> em = ErosionModel(params=params)
         """
         try:
-            nr = params['number_of_node_rows']
-            nc = params['number_of_node_columns']
-            dx = params['node_spacing']
+            nr = self.params['number_of_node_rows']
+            nc = self.params['number_of_node_columns']
+            dx = self.params['node_spacing']
         except KeyError:
             print('Warning: no DEM or grid shape specified. '
                   'Creating simple raster grid')
@@ -354,21 +375,21 @@ class ErosionModel(object):
             nc = 5
             dx = 1.0
 
-        if 'outlet_id' in params:
+        if 'outlet_id' in self.params:
             self.opt_watershed = True
             self.outlet_node = params['outlet_id']
         else:
             self.opt_watershed = False
             self.outlet_node = 0
             east_closed = north_closed = west_closed = south_closed = False
-            if 'east_boundary_closed' in params:
-                east_closed = params['east_boundary_closed']
-            if 'north_boundary_closed' in params:
-                north_closed = params['north_boundary_closed']
-            if 'west_boundary_closed' in params:
-                west_closed = params['west_boundary_closed']
-            if 'south_boundary_closed' in params:
-                south_closed = params['south_boundary_closed']
+            if 'east_boundary_closed' in self.params:
+                east_closed = self.params['east_boundary_closed']
+            if 'north_boundary_closed' in self.params:
+                north_closed = self.params['north_boundary_closed']
+            if 'west_boundary_closed' in self.params:
+                west_closed = self.params['west_boundary_closed']
+            if 'south_boundary_closed' in self.params:
+                south_closed = self.params['south_boundary_closed']
 
         # Create grid
         from landlab import RasterModelGrid
@@ -376,8 +397,8 @@ class ErosionModel(object):
 
         # Create and initialize elevation field
         self.z = self.grid.add_zeros('node', 'topographic__elevation')
-        if 'random_seed' in params:
-            seed = params['random_seed']
+        if 'random_seed' in self.params:
+            seed = self.params['random_seed']
         else:
             seed = 0
         np.random.seed(seed)
@@ -553,8 +574,6 @@ class ErosionModel(object):
         """
         Update outlet level
         """
-
-
         # Run each of the baselevel handlers.
         if self.boundary_handler is not None:
             for handler_name in self.boundary_handler:
