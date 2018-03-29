@@ -48,6 +48,9 @@ class ErosionModel(object):
     simply handles I/O and setup. Derived classes are meant to include
     Landlab components to model actual erosion processes.
 
+    It is expected that a derived model will define an ``__init__`` and a
+     ``run_one_step`` method.
+
     Methods
     -------
 
@@ -98,7 +101,7 @@ class ErosionModel(object):
 
         number_of_node_rows
         number_of_node_columns
-
+        node_spacing
 
         meters_to_feet
         feet_to_meters
@@ -109,8 +112,6 @@ class ErosionModel(object):
         Returns
         -------
         ErosionModel : object
-
-
         """
         #######################################################################
         # get parameters
