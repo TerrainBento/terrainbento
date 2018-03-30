@@ -13,7 +13,7 @@ designed and created by **you**
 from terrainbento.base_class import ErosionModel
 
 
-class ModelName(ErosionModel): # The model must inherit from either ErosionModel
+class ModelTemplate(ErosionModel): # The model must inherit from either ErosionModel
                                # or StochasticErosionModel
     """ModelName is a template for making your own ``terrainbento`` models.
 
@@ -22,44 +22,44 @@ class ModelName(ErosionModel): # The model must inherit from either ErosionModel
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None): # Do not change this line
-    """
-    Parameters
-    ----------
-    parameter_name : type
-        This is an example parameter_name
-    option_a : bool, optional
-        List all parameters here, including their type, if they are optional,
-        and what their default values are. Default value is True.
+        """
+        Parameters
+        ----------
+        parameter_name : type
+            This is an example parameter_name
+        option_a : bool, optional
+            List all parameters here, including their type, if they are optional,
+            and what their default values are. Default value is True.
 
-    Notes
-    -----
-    If there are other things you'd like users to know about, consider putting
-    them here.
+        Notes
+        -----
+        If there are other things you'd like users to know about, consider putting
+        them here.
 
-    Examples
-    --------
-    This is where you can make code examples showing how to use the model you
-    created.
+        Examples
+        --------
+        This is where you can make code examples showing how to use the model you
+        created.
 
-    >>> from terrainbento import ModelName
-    >>> # this is where you'd show how to import and use your model.
-    >>> # these statements get evaluated in testing so its also a way to show
-    >>> # that the model does what you say it will do.
-    >>> # its important to make sure that all lines of your model are tested
-    >>> # either in these docstring tests or in test files.
+        >>> from terrainbento import ModelName
+        >>> # this is where you'd show how to import and use your model.
+        >>> # these statements get evaluated in testing so its also a way to show
+        >>> # that the model does what you say it will do.
+        >>> # its important to make sure that all lines of your model are tested
+        >>> # either in these docstring tests or in test files.
 
-    See also
-    --------
-    If there are references associated with your model, consider putting them
-    here.
+        See also
+        --------
+        If there are references associated with your model, consider putting them
+        here.
 
-    """
-    super(ModelName, self).__init__(input_file=input_file,                  # Replace  `ModelName` with your model name.
-                                    params=params,                          # Do not change any additional parts of this
-                                    BoundaryHandlers=BoundaryHandlers)      # line.
+        """
+        super(ModelTemplate, self).__init__(input_file=input_file,                  # Replace  `ModelTemplate` with your model name.
+                                        params=params,                              # Do not change any additional parts of this
+                                        BoundaryHandlers=BoundaryHandlers)          # line.
 
-    # replace pass with all actions needed to initialize the model.
-    pass
+        # replace pass with all actions needed to initialize the model.
+        pass
 
     def run_one_step(self, dt):
         """Run each component for one time step.
