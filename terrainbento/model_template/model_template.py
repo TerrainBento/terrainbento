@@ -31,10 +31,24 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
             List all parameters here, including their type, if they are optional,
             and what their default values are. Default value is True.
 
+        Attributes
+        ----------
+        attribute_a : str
+            This would be an example attribute.
+
+        See also
+        --------
+        function_a : description of related function a.
+
         Notes
         -----
         If there are other things you'd like users to know about, consider putting
         them here.
+
+        References
+        --------
+        If there are references associated with your model, consider putting them
+        here.
 
         Examples
         --------
@@ -47,11 +61,6 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
         >>> # that the model does what you say it will do.
         >>> # its important to make sure that all lines of your model are tested
         >>> # either in these docstring tests or in test files.
-
-        See also
-        --------
-        If there are references associated with your model, consider putting them
-        here.
 
         """
         super(ModelTemplate, self).__init__(input_file=input_file,                  # Replace  `ModelTemplate` with your model name.

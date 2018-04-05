@@ -144,8 +144,8 @@ class BasicHySa(ErosionModel):
         # calculate model time
         self.model_time += dt
 
-        # Lower outlet
-        self.update_outlet(dt)
+        # Update boundary conditions
+        self.update_boundary_conditions(dt)
 
         # Check walltime
         self.check_walltime()
