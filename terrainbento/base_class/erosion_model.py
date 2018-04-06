@@ -49,7 +49,8 @@ class ErosionModel(object):
     Landlab components to model actual erosion processes.
 
     It is expected that a derived model will define an ``__init__`` and a
-     ``run_one_step`` method.
+     ``run_one_step`` method. If desired, the derived model can overwrite the
+     existing ``run_for`` and ``run`` methods. 
 
     Methods
     -------
@@ -87,7 +88,6 @@ class ErosionModel(object):
             Classes used to handle
 
 
-
         Other Parameters
         ----------------
         pickle_name : str, optional
@@ -99,12 +99,25 @@ class ErosionModel(object):
 
         DEM_filename
 
-        number_of_node_rows
+        number_of_node_rows 
         number_of_node_columns
         node_spacing
+        starting_elevation : float, optional
+            Default value is 0.0
+        random_noise : boolean, optional
+            Default value is False.
+        
+        meters_to_feet : boolean, optional
+            Default value is False.
+        feet_to_meters : boolean, optional
+            Default value is False.
+            
+        flow_director : str, optional
+            Default is 'FlowDirectorSteepest'
+            
+        depression_finder : str, optional
+            Default is 'DepressionFinderAndRouter'
 
-        meters_to_feet
-        feet_to_meters
 
         save_first_timestep
         outlet_id
@@ -394,6 +407,7 @@ class ErosionModel(object):
         self.grid = RasterModelGrid((nr, nc), dx)
 
         # Create and initialize elevation field
+        # need to add starting elevation here and in hex grid. TODO
         self.z = self.grid.add_zeros('node', 'topographic__elevation')
         if 'random_seed' in self.params:
             seed = self.params['random_seed']
@@ -419,9 +433,15 @@ class ErosionModel(object):
         name
         halo
 
+        Returns
+        -------
+        (grid, z) : tuple
+          Model grid and topographic elevation
+        
         Examples
         --------
 
+        
         """
         try:
             (grid, z) = read_esri_ascii(topo_file_name,
@@ -441,8 +461,16 @@ class ErosionModel(object):
         raise_error : boolean
             Raise an error if parameter doesn not exist. Default is True.
 
+        Returns
+        -------
+        value : float
+          Parameter value.
+        
         Examples
         --------
+        
+        
+        
         """
         if (param_name in self.params) and (param_name+'_exp' in self.params):
             raise ValueError('Parameter file includes both absolute value and'
