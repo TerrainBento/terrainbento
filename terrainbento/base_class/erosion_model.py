@@ -16,6 +16,7 @@ from landlab.io.netcdf import read_netcdf
 from landlab import load_params
 from landlab.io.netcdf import write_raster_netcdf, write_netcdf
 
+from landlab import Component
 from landlab.components import FlowAccumulator, NormalFault
 
 from terrainbento.boundary_condition_handlers import (
@@ -54,25 +55,19 @@ class ErosionModel(object):
 
     Methods
     -------
-
     read_topography
     setup_hexagonal_grid
     setup_raster_grid
-
     run_for
     run
-
     get_parameter_from_exponent
     calculate_cumulative_change
     update_boundary_conditions
     check_walltime
-
     write_output
     finalize
-
     pickle_self
     unpickle_self
-
     """
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriter=None):
         """
@@ -103,10 +98,13 @@ class ErosionModel(object):
         number_of_node_rows 
         number_of_node_columns
         node_spacing
-        starting_elevation : float, optional
+        initial_elevation : float, optional
             Default value is 0.0
-        random_noise : boolean, optional
-            Default value is False.
+        add_random_noise : boolean, optional
+            Default value is True.
+        
+        initial_noise_std : float, optional
+
         
         meters_to_feet : boolean, optional
             Default value is False.
@@ -186,20 +184,19 @@ class ErosionModel(object):
                                  'been specified.')
 
             if 'DEM_filename' in self.params:
+                self._starting_topography = 'inputDEM'
                 (self.grid, self.z) = self.read_topography(self.params['DEM_filename'],
                                                            name='topographic__elevation',
                                                            halo=1)
                 self.opt_watershed = True
-                self._starting_topography = 'inputDEM'
-
             else:
                 # this routine will set self.opt_watershed internally
                 if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
-                    self.setup_hexagonal_grid()
                     self._starting_topography = 'HexModelGrid'
+                    self.setup_hexagonal_grid()
                 else:
-                    self.setup_raster_grid()
                     self._starting_topography = 'RasterModelGrid'
+                    self.setup_raster_grid()
 
             # Set DEM boundaries
             if self.opt_watershed:
@@ -259,21 +256,31 @@ class ErosionModel(object):
             ###################################################################
             # Boundary Conditions
             ###################################################################
+            self.boundary_handler = {}
+
+            if 'BoundaryHandlers' in self.params:
+                    BoundaryHandlers = self.params['BoundaryHandlers']
+
             if BoundaryHandlers is None:
-                self.boundary_handler = None
+                pass
             else:
-                self.boundary_handler = {}
                 if isinstance(BoundaryHandlers, list):
                     for comp in BoundaryHandlers:
                         self.setup_boundary_handler(comp)
                 else:
-                    self.BoundaryHandlers(comp)
-
+                    self.setup_boundary_handler(BoundaryHandlers)
+                    
+            
     def setup_boundary_handler(self, handler):
         """
 
         """
-        name = handler.__name__
+        if isinstance(handler, Component):
+            name = handler.__name__
+        else:
+            name = handler
+            handler = _HANDLER_METHODS[name]
+
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 
             # if unique paramters for the boundary condition handler have
@@ -328,13 +335,6 @@ class ErosionModel(object):
         shape = self.params.get('shape', 'hex')
         reorient_links = self.params.get('reorient_links', True)
 
-        if 'outlet_id' in self.params:
-            self.opt_watershed = True
-            self.outlet_node = self.params['outlet_id']
-        else:
-            self.opt_watershed = False
-            self.outlet_node = 0
-
         # Create grid
         from landlab import HexModelGrid
         self.grid = HexModelGrid(nr,
@@ -345,17 +345,11 @@ class ErosionModel(object):
                                  reorient_links=reorient_links)
 
         # Create and initialize elevation field
-        self.z = self.grid.add_zeros('node', 'topographic__elevation')
-        if 'random_seed' in self.params:
-            seed = self.params['random_seed']
-        else:
-            seed = 0
-        np.random.seed(seed)
-        rs = np.random.rand(len(self.grid.core_nodes))
-        self.z[self.grid.core_nodes] = rs
+        self._create_synthetic_topography()
 
         # Set boundary conditions
-
+        self._setup_synthetic_boundary_conditions()
+        
     def setup_raster_grid(self):
         """Create raster grid based on input parameters.
 
@@ -387,44 +381,71 @@ class ErosionModel(object):
             nc = 5
             dx = 1.0
 
-        if 'outlet_id' in self.params:
-            self.opt_watershed = True
-            self.outlet_node = params['outlet_id']
-        else:
-            self.opt_watershed = False
-            self.outlet_node = 0
-            east_closed = north_closed = west_closed = south_closed = False
-            if 'east_boundary_closed' in self.params:
-                east_closed = self.params['east_boundary_closed']
-            if 'north_boundary_closed' in self.params:
-                north_closed = self.params['north_boundary_closed']
-            if 'west_boundary_closed' in self.params:
-                west_closed = self.params['west_boundary_closed']
-            if 'south_boundary_closed' in self.params:
-                south_closed = self.params['south_boundary_closed']
-
+        
         # Create grid
         from landlab import RasterModelGrid
         self.grid = RasterModelGrid((nr, nc), dx)
 
         # Create and initialize elevation field
         # need to add starting elevation here and in hex grid. TODO
+        
+        self._create_synthetic_topography()
+        # Set boundary conditions
+        self._setup_synthetic_boundary_conditions()
+        
+    def _create_synthetic_topography(self):
+        
+        add_noise = self.params.get('add_random_noise', True)
+        init_z = self.params.get('initial_elevation', 0.0)
+        init_sigma = self.params.get('initial_noise_std', 1.0)
+          
         self.z = self.grid.add_zeros('node', 'topographic__elevation')
+        
         if 'random_seed' in self.params:
             seed = self.params['random_seed']
         else:
             seed = 0
         np.random.seed(seed)
-        rs = np.random.rand(len(self.grid.core_nodes))
-        self.z[self.grid.core_nodes] = rs
-
-        # Set boundary conditions
-        if not self.opt_watershed:
-            self.grid.set_closed_boundaries_at_grid_edges(east_closed,
-                                                          north_closed,
-                                                          west_closed,
-                                                          south_closed)
-
+        
+        if add_noise:
+            rs = np.random.randn(len(self.grid.core_nodes))
+            self.z[self.grid.core_nodes] = init_z + (init_sigma * rs)
+        
+    def _setup_synthetic_boundary_conditions(self):
+        
+        if self._starting_topography == 'HexModelGrid':
+            if 'outlet_id' in self.params:
+                self.opt_watershed = True
+                self.outlet_node = self.params['outlet_id']
+            else:
+                self.opt_watershed = False
+                self.outlet_node = 0
+                
+            
+        else:  
+            if 'outlet_id' in self.params:
+                self.opt_watershed = True
+                self.outlet_node = self.params['outlet_id']
+            else:
+                self.opt_watershed = False
+                self.outlet_node = 0
+                east_closed = north_closed = west_closed = south_closed = False
+                if 'east_boundary_closed' in self.params:
+                    east_closed = self.params['east_boundary_closed']
+                if 'north_boundary_closed' in self.params:
+                    north_closed = self.params['north_boundary_closed']
+                if 'west_boundary_closed' in self.params:
+                    west_closed = self.params['west_boundary_closed']
+                if 'south_boundary_closed' in self.params:
+                    south_closed = self.params['south_boundary_closed']
+    
+    
+            if not self.opt_watershed:
+                self.grid.set_closed_boundaries_at_grid_edges(east_closed,
+                                                              north_closed,
+                                                              west_closed,
+                                                              south_closed)
+        
     def read_topography(self, topo_file_name, name, halo):
         """Read and return topography from file.
 
@@ -540,8 +561,7 @@ class ErosionModel(object):
         try:
             write_raster_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
         except NotImplementedError:
-            #write_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
-            pass
+            write_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
 
     def finalize(self):
         """
