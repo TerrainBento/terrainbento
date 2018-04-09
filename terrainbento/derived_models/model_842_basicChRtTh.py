@@ -24,13 +24,14 @@ class BasicChRtTh(ErosionModel):
     power with two rock units, and Q~A.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the BasicChRt model."""
 
         # Call ErosionModel's init
         super(BasicChRtTh, self).__init__(input_file=input_file,
                                           params=params,
-                                          BoundaryHandlers=BoundaryHandlers)
+                                          BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
 
         contact_zone__width = (self._length_factor)*self.params['contact_zone__width'] # has units length
         self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')

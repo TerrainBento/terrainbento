@@ -23,13 +23,14 @@ class BasicCh(ErosionModel):
     power, and Q~A.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the BasicCh."""
 
         # Call ErosionModel's init
         super(BasicCh, self).__init__(input_file=input_file,
                                       params=params,
-                                      BoundaryHandlers=BoundaryHandlers)
+                                      BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
 
         # Get Parameters and convert units if necessary:
         self.K_sp = self.get_parameter_from_exponent('K_sp')

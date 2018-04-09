@@ -29,13 +29,14 @@ class BasicSa(ErosionModel):
     in calculating hillslope diffusion.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the BasicSa."""
 
         # Call ErosionModel's init
         super(BasicSa, self).__init__(input_file=input_file,
                                         params=params,
-                                        BoundaryHandlers=BoundaryHandlers)
+                                        BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
 
         # Get Parameters and convert units if necessary:
         self.K_sp = self.get_parameter_from_exponent('K_sp')

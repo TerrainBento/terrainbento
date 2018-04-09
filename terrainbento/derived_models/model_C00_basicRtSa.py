@@ -27,13 +27,14 @@ class BasicRtSa(ErosionModel):
     in calculating hillslope diffusion.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the BasicSaRt."""
 
         # Call ErosionModel's init
         super(BasicSaRt, self).__init__(input_file=input_file,
                                         params=params,
-                                        BoundaryHandlers=BoundaryHandlers)
+                                        BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
         contact_zone__width = (self._length_factor)*self.params['contact_zone__width'] # has units length
         self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')
         self.K_till_sp = self.get_parameter_from_exponent('K_till_sp')

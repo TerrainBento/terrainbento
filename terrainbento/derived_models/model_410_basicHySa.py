@@ -30,13 +30,14 @@ class BasicHySa(ErosionModel):
     and consideres soil thickness in calculating hillslope diffusion.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the BasicSa."""
 
         # Call ErosionModel's init
         super(BasicHySa, self).__init__(input_file=input_file,
                                         params=params,
-                                        BoundaryHandlers=BoundaryHandlers)
+                                        BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
 
         self.K_br = self.get_parameter_from_exponent('K_rock_sp')
         self.K_sed = self.get_parameter_from_exponent('K_sed_sp')
@@ -49,8 +50,8 @@ class BasicHySa(ErosionModel):
         except KeyError:
             initial_soil_thickness = 1.0  # default value
         soil_transport_decay_depth = (self._length_factor)*self.params['soil_transport_decay_depth']  # has units length
-        max_soil_production_rate = (self._length_factor)*self.params['max_soil_production_rate'] # has units length per time
-        soil_production_decay_depth = (self._length_factor)*self.params['soil_production_decay_depth']   # has units length
+        max_soil_production_rate = (self._length_factor)*self.params['soil_production__maximum_rate'] # has units length per time
+        soil_production_decay_depth = (self._length_factor)*self.params['soil_production__decay_depth']   # has units length
 
         #set methods and fields. K's and sp_crits need to be field names
         method = self.params.get('space_method', 'simple_stream_power')
@@ -100,8 +101,8 @@ class BasicHySa(ErosionModel):
                                                soil_transport_decay_depth=soil_transport_decay_depth)
 
         self.weatherer = ExponentialWeatherer(self.grid,
-                                              max_soil_production_rate=max_soil_production_rate,
-                                              soil_production_decay_depth=soil_production_decay_depth)
+                                              soil_production__maximum_rate=max_soil_production_rate,
+                                              soil_production__decay_depth=soil_production_decay_depth)
 
         self.grid.at_node['soil__depth'][:] = \
             self.grid.at_node['topographic__elevation'] - \
@@ -111,6 +112,9 @@ class BasicHySa(ErosionModel):
         """
         Advance model for one time-step of duration dt.
         """
+
+        # Update boundary conditions
+        self.update_boundary_conditions(dt)
 
         # Route flow
         self.flow_router.run_one_step()
@@ -143,9 +147,6 @@ class BasicHySa(ErosionModel):
 
         # calculate model time
         self.model_time += dt
-
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
 
         # Check walltime
         self.check_walltime()

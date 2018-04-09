@@ -69,13 +69,14 @@ class BasicStTh(StochasticErosionModel):
     """
 
     def __init__(self, input_file=None, params=None,
-                 BoundaryHandlers=None):
+                 BoundaryHandlers=None, OutputWriters=None):
         """Initialize the BasicStTh."""
 
         # Call ErosionModel's init
         super(BasicStTh, self).__init__(input_file=input_file,
                                         params=params,
-                                        BoundaryHandlers=BoundaryHandlers)
+                                        BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
 
         K_stoch_sp = self.get_parameter_from_exponent('K_stochastic_sp')
         linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time

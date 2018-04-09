@@ -21,13 +21,14 @@ class BasicHy(ErosionModel):
     applies exponential entrainment rules to account for bed cover.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the HybridAlluviumModel."""
 
         # Call ErosionModel's init
         super(BasicHy, self).__init__(input_file=input_file,
                                       params=params,
-                                      BoundaryHandlers=BoundaryHandlers)
+                                      BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
 
         # Get Parameters and convert units if necessary:
         K_sp = self.get_parameter_from_exponent('K_sp', raise_error=False)

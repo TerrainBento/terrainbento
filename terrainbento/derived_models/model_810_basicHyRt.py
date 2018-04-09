@@ -27,13 +27,14 @@ class BasicHyRt(ErosionModel):
     stream erosion, Q~A, and two lithologies: rock and till.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the BasicHyRt."""
 
         # Call ErosionModel's init
         super(BasicHyRt, self).__init__(input_file=input_file,
                                         params=params,
-                                        BoundaryHandlers=BoundaryHandlers)
+                                        BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
 
         contact_zone__width = (self._length_factor
                                * self.params['contact_zone__width']) # L

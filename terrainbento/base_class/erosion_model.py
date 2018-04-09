@@ -74,7 +74,7 @@ class ErosionModel(object):
     unpickle_self
 
     """
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriter=None):
         """
         Parameters
         ----------
@@ -86,7 +86,8 @@ class ErosionModel(object):
             required.
         BoundaryHandlers : class or list of classes, optional
             Classes used to handle
-
+        OutputWriter : class or list of classes, optional
+            Classes used to handler...
 
         Other Parameters
         ----------------

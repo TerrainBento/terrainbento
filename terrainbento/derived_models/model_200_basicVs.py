@@ -27,13 +27,14 @@ class BasicVs(ErosionModel):
     "VSA" stands for "variable source area".
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the BasicVs."""
 
         # Call ErosionModel's init
         super(BasicVs, self).__init__(input_file=input_file,
                                       params=params,
-                                      BoundaryHandlers=BoundaryHandlers)
+                                      BoundaryHandlers=BoundaryHandlers,
+                                        OutputWriters=OutputWriters)
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_sp', raise_error=False)
         K_ss = self.get_parameter_from_exponent('K_ss', raise_error=False)
