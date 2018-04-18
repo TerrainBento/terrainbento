@@ -15,6 +15,7 @@ from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
 from landlab import load_params
 from landlab.io.netcdf import write_raster_netcdf, write_netcdf
+from landlab.graph import Graph
 
 from landlab import Component
 from landlab.components import FlowAccumulator, NormalFault
@@ -69,7 +70,7 @@ class ErosionModel(object):
     pickle_self
     unpickle_self
     """
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriter=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -81,7 +82,7 @@ class ErosionModel(object):
             required.
         BoundaryHandlers : class or list of classes, optional
             Classes used to handle
-        OutputWriter : class or list of classes, optional
+        OutputWriters : class, function, or list of classes and/or functions, optional
             Classes used to handler...
 
         Other Parameters
@@ -270,7 +271,20 @@ class ErosionModel(object):
                 else:
                     self.setup_boundary_handler(BoundaryHandlers)
                     
-            
+                    
+            ###################################################################
+            # Output Writers
+            ###################################################################
+            self.output_writers = {}
+            if OutputWriters is None:
+                pass
+            else:
+                if isinstance(OutputWriters, list):
+                    for comp in OutputWriters:
+                        self.setup_output_writer(comp)
+                else:
+                    self.setup_output_writer(OutputWriters)
+                    
     def setup_boundary_handler(self, handler):
         """
 
@@ -301,6 +315,17 @@ class ErosionModel(object):
             raise ValueError(('Only supported boundary condition handlers are '
                               'permitted. These include:'
                               '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
+            
+    def setup_output_writer(self, writer):
+        """
+
+        """
+        if isinstance(writer, object):
+            name = writer.__name__
+            self.output_writers[name] = writer(self)
+        else:
+            # if a function
+            pass
 
     def setup_hexagonal_grid(self):
         """Create hexagonal grid based on input parameters.
@@ -548,6 +573,7 @@ class ErosionModel(object):
     def write_output(self, params, field_names=None):
         """Write output to file (currently netCDF)."""
 
+    
         # Exclude fields with int64 (incompatible with netCDF3)
         if field_names is None:
             field_names = []
@@ -561,8 +587,24 @@ class ErosionModel(object):
         try:
             write_raster_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
         except NotImplementedError:
-            write_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
-
+            graph = Graph.from_dict({'y_of_node': self.grid.y_of_node,
+               'x_of_node': self.grid.x_of_node,
+               'nodes_at_link': self.grid.nodes_at_link})
+            
+            if field_names:
+                pass
+            else:
+                field_names = self.grid.at_node.keys()
+                
+            for field_name in field_names:
+                
+                graph._ds.__setitem__(field_name, ('node', self.grid.at_node[field_name]))
+            
+            graph.to_netcdf(path=filename, mode='w', format='NETCDF4')
+         
+        self.run_output_writers()
+        
+    
     def finalize(self):
         """
         Finalize model
@@ -608,6 +650,12 @@ class ErosionModel(object):
         # once done, remove saved model object if it exists
         if os.path.exists(self.save_model_name):
             os.remove(self.save_model_name)
+            
+    def run_output_writers(self):
+        """ """
+        if self.output_writers is not None:
+            for name in self.output_writers:
+                self.output_writers[name].run_one_step()
 
     def update_boundary_conditions(self, dt):
         """
