@@ -52,7 +52,7 @@ class ErosionModel(object):
 
     It is expected that a derived model will define an ``__init__`` and a
      ``run_one_step`` method. If desired, the derived model can overwrite the
-     existing ``run_for`` and ``run`` methods. 
+     existing ``run_for`` and ``run`` methods.
 
     Methods
     -------
@@ -96,25 +96,25 @@ class ErosionModel(object):
 
         DEM_filename
 
-        number_of_node_rows 
+        number_of_node_rows
         number_of_node_columns
         node_spacing
         initial_elevation : float, optional
             Default value is 0.0
         add_random_noise : boolean, optional
             Default value is True.
-        
+
         initial_noise_std : float, optional
 
-        
+
         meters_to_feet : boolean, optional
             Default value is False.
         feet_to_meters : boolean, optional
             Default value is False.
-            
+
         flow_director : str, optional
             Default is 'FlowDirectorSteepest'
-            
+
         depression_finder : str, optional
             Default is 'DepressionFinderAndRouter'
 
@@ -171,7 +171,7 @@ class ErosionModel(object):
 
             # Handle option to save if walltime is to short
             self.opt_save = self.params.get('opt_save', False)
-
+            self._check_walltime = self.params.get('opt_walltime', False)
             ###################################################################
             # create topography
             ###################################################################
@@ -270,8 +270,8 @@ class ErosionModel(object):
                         self.setup_boundary_handler(comp)
                 else:
                     self.setup_boundary_handler(BoundaryHandlers)
-                    
-                    
+
+
             ###################################################################
             # Output Writers
             ###################################################################
@@ -284,7 +284,7 @@ class ErosionModel(object):
                         self.setup_output_writer(comp)
                 else:
                     self.setup_output_writer(OutputWriters)
-                    
+
     def setup_boundary_handler(self, handler):
         """
 
@@ -315,7 +315,7 @@ class ErosionModel(object):
             raise ValueError(('Only supported boundary condition handlers are '
                               'permitted. These include:'
                               '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
-            
+
     def setup_output_writer(self, writer):
         """
 
@@ -374,7 +374,7 @@ class ErosionModel(object):
 
         # Set boundary conditions
         self._setup_synthetic_boundary_conditions()
-        
+
     def setup_raster_grid(self):
         """Create raster grid based on input parameters.
 
@@ -406,38 +406,38 @@ class ErosionModel(object):
             nc = 5
             dx = 1.0
 
-        
+
         # Create grid
         from landlab import RasterModelGrid
         self.grid = RasterModelGrid((nr, nc), dx)
 
         # Create and initialize elevation field
         # need to add starting elevation here and in hex grid. TODO
-        
+
         self._create_synthetic_topography()
         # Set boundary conditions
         self._setup_synthetic_boundary_conditions()
-        
+
     def _create_synthetic_topography(self):
-        
+
         add_noise = self.params.get('add_random_noise', True)
         init_z = self.params.get('initial_elevation', 0.0)
         init_sigma = self.params.get('initial_noise_std', 1.0)
-          
+
         self.z = self.grid.add_zeros('node', 'topographic__elevation')
-        
+
         if 'random_seed' in self.params:
             seed = self.params['random_seed']
         else:
             seed = 0
         np.random.seed(seed)
-        
+
         if add_noise:
             rs = np.random.randn(len(self.grid.core_nodes))
             self.z[self.grid.core_nodes] = init_z + (init_sigma * rs)
-        
+
     def _setup_synthetic_boundary_conditions(self):
-        
+
         if self._starting_topography == 'HexModelGrid':
             if 'outlet_id' in self.params:
                 self.opt_watershed = True
@@ -445,9 +445,9 @@ class ErosionModel(object):
             else:
                 self.opt_watershed = False
                 self.outlet_node = 0
-                
-            
-        else:  
+
+
+        else:
             if 'outlet_id' in self.params:
                 self.opt_watershed = True
                 self.outlet_node = self.params['outlet_id']
@@ -463,14 +463,14 @@ class ErosionModel(object):
                     west_closed = self.params['west_boundary_closed']
                 if 'south_boundary_closed' in self.params:
                     south_closed = self.params['south_boundary_closed']
-    
-    
+
+
             if not self.opt_watershed:
                 self.grid.set_closed_boundaries_at_grid_edges(east_closed,
                                                               north_closed,
                                                               west_closed,
                                                               south_closed)
-        
+
     def read_topography(self, topo_file_name, name, halo):
         """Read and return topography from file.
 
@@ -484,11 +484,11 @@ class ErosionModel(object):
         -------
         (grid, z) : tuple
           Model grid and topographic elevation
-        
+
         Examples
         --------
 
-        
+
         """
         try:
             (grid, z) = read_esri_ascii(topo_file_name,
@@ -512,12 +512,12 @@ class ErosionModel(object):
         -------
         value : float
           Parameter value.
-        
+
         Examples
         --------
-        
-        
-        
+
+
+
         """
         if (param_name in self.params) and (param_name+'_exp' in self.params):
             raise ValueError('Parameter file includes both absolute value and'
@@ -573,7 +573,7 @@ class ErosionModel(object):
     def write_output(self, params, field_names=None):
         """Write output to file (currently netCDF)."""
 
-    
+
         # Exclude fields with int64 (incompatible with netCDF3)
         if field_names is None:
             field_names = []
@@ -590,21 +590,21 @@ class ErosionModel(object):
             graph = Graph.from_dict({'y_of_node': self.grid.y_of_node,
                'x_of_node': self.grid.x_of_node,
                'nodes_at_link': self.grid.nodes_at_link})
-            
+
             if field_names:
                 pass
             else:
                 field_names = self.grid.at_node.keys()
-                
+
             for field_name in field_names:
-                
+
                 graph._ds.__setitem__(field_name, ('node', self.grid.at_node[field_name]))
-            
+
             graph.to_netcdf(path=filename, mode='w', format='NETCDF4')
-         
+
         self.run_output_writers()
-        
-    
+
+
     def finalize(self):
         """
         Finalize model
@@ -650,7 +650,7 @@ class ErosionModel(object):
         # once done, remove saved model object if it exists
         if os.path.exists(self.save_model_name):
             os.remove(self.save_model_name)
-            
+
     def run_output_writers(self):
         """ """
         if self.output_writers is not None:
@@ -681,47 +681,48 @@ class ErosionModel(object):
         """Check walltime and save model out if near end of time."""
         # check walltime
 
-        # format is days-hours:minutes:seconds
-        if dynamic_cut_off_time:
-            self.compute_time.append(tm.time())
-            mean_time_diffs = np.mean(np.diff(np.asarray(self.compute_time)))/60. # in minutes
-            cut_off_time = mean_time_diffs + wall_threshold
-        else:
-            pass # cut off time is 0
-
-        try:
-            output,error = subprocess.Popen(['squeue',
-                                              '--job='+os.environ['SLURM_JOB_ID'], '--format=%.10L'],
-                                             stdout = subprocess.PIPE,
-                                             stderr = subprocess.PIPE).communicate()
-            time_left = output.strip().split(' ')[-1]
-
-            if len(time_left.split('-')) == 1:
-                days_left = 0
+        if self._check_walltime:
+            # format is days-hours:minutes:seconds
+            if dynamic_cut_off_time:
+                self.compute_time.append(tm.time())
+                mean_time_diffs = np.mean(np.diff(np.asarray(self.compute_time)))/60. # in minutes
+                cut_off_time = mean_time_diffs + wall_threshold
             else:
-                days_left = time_left.split('-')[0]
+                pass # cut off time is 0
 
             try:
-                minutes_left = int(time_left.split(':')[-2])
-            except IndexError:
-                minutes_left = 0
+                output,error = subprocess.Popen(['squeue',
+                                                  '--job='+os.environ['SLURM_JOB_ID'], '--format=%.10L'],
+                                                 stdout = subprocess.PIPE,
+                                                 stderr = subprocess.PIPE).communicate()
+                time_left = output.strip().split(' ')[-1]
 
-            try:
-                hours_left = int(time_left.split(':')[-3])
-            except IndexError:
-                hours_left = 0
+                if len(time_left.split('-')) == 1:
+                    days_left = 0
+                else:
+                    days_left = time_left.split('-')[0]
 
-            remaining_time = (days_left*60*60) + (60*hours_left) + minutes_left
+                try:
+                    minutes_left = int(time_left.split(':')[-2])
+                except IndexError:
+                    minutes_left = 0
 
-            if self.opt_save:
-                if remaining_time < cut_off_time:
-                    # pickle self
-                    self.pickle_self()
-                    # exit program
-                    sys.exit()
+                try:
+                    hours_left = int(time_left.split(':')[-3])
+                except IndexError:
+                    hours_left = 0
 
-        except KeyError:
-            pass
+                remaining_time = (days_left*60*60) + (60*hours_left) + minutes_left
+
+                if self.opt_save:
+                    if remaining_time < cut_off_time:
+                        # pickle self
+                        self.pickle_self()
+                        # exit program
+                        sys.exit()
+
+            except KeyError:
+                pass
 
 
 def main():
