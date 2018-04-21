@@ -58,6 +58,7 @@ class BasicHySa(ErosionModel):
         discharge_method = self.params.get('discharge_method', 'discharge_field')
         area_field = self.params.get('area_field', None)
         discharge_field = self.params.get('discharge_field', 'surface_water__discharge')
+        K_noise_scale = self.params.get('K_noise_scale', 0)
 
         # Instantiate a SPACE component
         self.eroder = Space(self.grid,
@@ -73,7 +74,8 @@ class BasicHySa(ErosionModel):
                             discharge_method=discharge_method,
                             area_field=area_field,
                             discharge_field=discharge_field,
-                            solver=self.params['solver'])
+                            solver=self.params['solver'],
+                            K_noise_scale= K_noise_scale)
 
         # Create soil thickness (a.k.a. depth) field
         if 'soil__depth' in self.grid.at_node:
