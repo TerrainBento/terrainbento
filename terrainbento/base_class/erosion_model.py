@@ -54,6 +54,11 @@ class ErosionModel(object):
      ``run_one_step`` method. If desired, the derived model can overwrite the
      existing ``run_for`` and ``run`` methods.
 
+    Attributes
+    ----------
+    model_time
+
+
     Methods
     -------
     read_topography
@@ -258,7 +263,6 @@ class ErosionModel(object):
             # Boundary Conditions
             ###################################################################
             self.boundary_handler = {}
-
             if 'BoundaryHandlers' in self.params:
                     BoundaryHandlers = self.params['BoundaryHandlers']
 
@@ -271,11 +275,10 @@ class ErosionModel(object):
                 else:
                     self.setup_boundary_handler(BoundaryHandlers)
 
-
             ###################################################################
             # Output Writers
             ###################################################################
-            self.output_writers = {}
+            self.output_writers = {'class' = {}, 'function' = []}
             if OutputWriters is None:
                 pass
             else:
@@ -286,8 +289,19 @@ class ErosionModel(object):
                     self.setup_output_writer(OutputWriters)
 
     def setup_boundary_handler(self, handler):
-        """
+        """ Setup BoundaryHandlers for use by a TerrainBento model.
 
+        Boundary condition handlers are classes with a run_one_step method that
+        takes the parameter ``dt``. Permitted boundary condition handlers
+        include the Landlab Component ``NormalFault`` as well as the following
+        options from ``TerrainBento``: ``PrecipChanger``,
+        ``CaptureNodeBaselevelHandler``, ``ClosedNodeBaselevelHandler``,
+        ``SingleNodeBaselevelHandler``.
+
+        Parameters
+        ----------
+        handler : str or object
+            Name of instance of a supported boundary condition handler.
         """
         if isinstance(handler, Component):
             name = handler.__name__
@@ -317,45 +331,85 @@ class ErosionModel(object):
                               '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
 
     def setup_output_writer(self, writer):
-        """
+        """Setup OutputWriter for use by a TerrainBento model.
 
+        An OutputWriter can be either a function or a class designed to create
+        output, calculate a loss function, or do some other task that is not
+        inherent to running a TerrainBento model but is desired by the user. An
+        example might be making a plot of topography while the model is running.
+        TerrainBento saves output to NetCDF format at each interval defined by
+        the parameter `'output_interval'`
+
+        If a class, an OutputWriter will be instantiated with only one passed
+        argument: the entire model object. The class is expected to have a bound
+        function called `run_one_step` which is run with no arguments each time
+        output is written. If a function, the OutputWriter will be run at each
+        time output is written with one passed argument: the entire model
+        object.
+
+        Parameters
+        ----------
+        writer : function or class
+            An OutputWriter function or class
         """
         if isinstance(writer, object):
             name = writer.__name__
-            self.output_writers[name] = writer(self)
+            self.output_writers['class'][name] = writer(self)
         else:
-            # if a function
-            pass
+            self.output_writers['function'].append(writer)
 
     def setup_hexagonal_grid(self):
         """Create hexagonal grid based on input parameters.
 
-        Called if DEM is not used, or not found.
+        This method will be called if the value of the input parameter
+        `'DEM_filename'` does not exist, and if the value of the input parameter
+        `'model_grid'` is set to `'HexModelGrid'`. Input parameters are not
+        passed explicitly, but are expected to be located in the model attribute
+        `params`.
+
+        Parameters
+        ----------
+        number_of_node_rows : int, optional
+            Number of rows of nodes in the left column. Default is 8
+        number_of_node_columns : int, optional
+            Number of nodes on the first row. Default is 5
+        node_spacing : float, optional
+            Node spacing. Default is 10.0
+        orientation : str, optional
+            Either 'horizontal' (default) or 'vertical'.
+        shape : str, optional
+            Controls the shape of the bounding hull, i.e., are the nodes
+            arranged in a hexagon, or a rectangle? Either 'hex' (default) or
+            'rect'.
+        reorient_links, bool, optional
+            Whether or not to re-orient all links to point between -45 deg
+            and +135 deg clockwise from "north" (i.e., along y axis). Default
+            value is True.
 
         Examples
         --------
+        >>> from landlab import HexModelGrid
+        >>> from terrainbento import ErosionModel
         >>> params = {'model_grid' : 'HexModelGrid',
         ...           'number_of_node_rows' : 6,
         ...           'number_of_node_columns' : 9,
         ...           'node_spacing' : 10.0 }
-        >>> from terrainbento import ErosionModel
+
         >>> em = ErosionModel(params=params)
-
+        >>> isinstance(em.grid, HexModelGrid)
+        True
+        >>> em.grid.x_of_node
+        >>> em.grid.y_of_node
         """
-
         try:
             nr = self.params['number_of_node_rows']
             nc = self.params['number_of_node_columns']
             dx = self.params['node_spacing']
 
-
         except KeyError:
-            print('Warning: no DEM or grid shape specified. '
-                  'Creating simple hex grid')
             nr = 8
             nc = 5
-            dx = 10
-
+            dx = 10.0
         orientation = self.params.get('orientation', 'horizontal')
         shape = self.params.get('shape', 'hex')
         reorient_links = self.params.get('reorient_links', True)
