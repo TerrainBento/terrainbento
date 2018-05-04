@@ -174,7 +174,7 @@ class BasicDdSt(StochasticErosionModel):
         self.update_boundary_conditions(dt)
 
         # Check walltime
-        self.check_walltime()
+        self.check_slurm_walltime()
 
     def handle_water_erosion_with_threshold(self, dt, flooded):
         """Handle water erosion.

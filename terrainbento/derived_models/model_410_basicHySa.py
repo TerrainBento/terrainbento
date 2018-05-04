@@ -151,7 +151,7 @@ class BasicHySa(ErosionModel):
         self.model_time += dt
 
         # Check walltime
-        self.check_walltime()
+        self.check_slurm_walltime()
 
         # Check stability
         self.check_stability()

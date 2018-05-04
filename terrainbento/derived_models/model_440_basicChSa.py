@@ -120,7 +120,7 @@ class BasicChSa(ErosionModel):
         self.update_boundary_conditions(dt)
 
         # Check walltime
-        self.check_walltime()
+        self.check_slurm_walltime()
 
 def main():
     """Executes model."""
