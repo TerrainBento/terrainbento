@@ -1,5 +1,120 @@
 # -*- coding: utf-8 -*-
-"""Base class for common functions of all `terrainbento`` erosion models."""
+"""Base class for common functions of all ``terrainbento`` erosion models.
+
+
+
+Input File or Dictionary Parameters
+-----------------------------------
+The following are parameters found in the parameters input file or dictionary.
+Depending on how the model is initialized, some of them are optional or not
+used.
+
+Parameters that control the type of grid created
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+DEM_filename : str, optional
+    File path to either an ESRII ASCII or netCDF file.
+model_grid : str, optional
+    Either ``'RasterModelGrid'`` (default) or ``'HexModelGrid'``.
+
+Note that if both ``'DEM_filename'`` and ``'model_grid'`` are specified
+a error will be raised.
+
+Parameters that control creation of a synthetic HexModelGrid
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+number_of_node_rows : int, optional
+    Number of rows of nodes in the left column. Default is 8
+number_of_node_columns : int, optional
+    Number of nodes on the first row. Default is 5
+node_spacing : float, optional
+    Node spacing. Default is 10.0
+orientation : str, optional
+    Either 'horizontal' (default) or 'vertical'.
+shape : str, optional
+    Controls the shape of the bounding hull, i.e., are the nodes
+    arranged in a hexagon, or a rectangle? Either 'hex' (default) or
+    'rect'.
+reorient_links, bool, optional
+    Whether or not to re-orient all links to point between -45 deg
+    and +135 deg clockwise from "north" (i.e., along y axis). Default
+    value is True.
+outlet_id : int, optional
+    Node id for the watershed outlet. If not provided, the model will be
+    set boundary conditions based on the following parameters.
+boundary_closed : boolean, optional
+    If ``True`` the model boundarys are closed boundaries. Default is
+    ``False``.
+
+Parameters that control creation of a synthetic RasterModelGrid
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+number_of_node_rows : int, optional
+    Number of node rows. Default is 4.
+number_of_node_columns : int, optional
+    Number of node columns. Default is 5.
+node_spacing : float, optional
+    Row and column node spacing. Default is 1.0
+outlet_id : int, optional
+    Node id for the watershed outlet. If not
+    provided, the model will set boundary conditions
+    based on the following parameters.
+east_boundary_closed : boolean
+    If ``True`` right-edge nodes are closed boundaries. Default is ``False``.
+north_boundary_closed : boolean
+    If ``True`` top-edge nodes are closed boundaries. Default is ``False``.
+west_boundary_closed : boolean
+    If ``True`` left-edge nodes are closed boundaries. Default is ``False``.
+south_boundary_closed : boolean
+    If ``True`` bottom-edge nodes are closed boundaries. Default is ``False``.
+
+Parameters that control creation of synthetic topography
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+initial_elevation : float, optional
+    Default value is 0.
+random_seed : int, optional
+    Default value is 0.
+add_random_noise : boolean, optional
+    Default value is True.
+initial_noise_std : float, optional
+    Default value is 0.
+
+Parameters that control grid boundary conditions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+outlet_id
+BoundaryHandlers
+
+Parameters that control units
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+meters_to_feet : boolean, optional
+    Default value is False.
+feet_to_meters : boolean, optional
+    Default value is False.
+
+Parameters that control surface hydrology
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+flow_director : str, optional
+    Default is 'FlowDirectorSteepest'
+depression_finder : str, optional
+    Default is 'DepressionFinderAndRouter'
+
+Parameters that control run duration, timestep, and output
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+save_first_timestep
+output_filename
+output_interval
+run_duration
+dt
+
+Miscellaneous Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^
+pickle_name : str, optional
+    Default value is 'saved_model.model'
+load_from_pickle : boolean, optional
+    Default is False
+opt_save : boolean, optional
+    text
+opt_walltime : boolean, optional
+    Text
+
+"""
 
 import sys
 import os
@@ -40,6 +155,7 @@ _HANDLER_METHODS = {'NormalFault': NormalFault,
 
 
 class ErosionModel(object):
+
     """ Base class providing common functionality for ``terrainbento`` models.
 
     An ``ErosionModel the skeleton for the models of terrain evolution in
@@ -57,7 +173,6 @@ class ErosionModel(object):
     Attributes
     ----------
     model_time
-
 
     Methods
     -------
@@ -91,118 +206,7 @@ class ErosionModel(object):
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes used to handler...
 
-        The following are parameters found in the parameters input file or
-        dictionary. Depending on how the model is initialized, some of them
-        are optional or not used.
 
-        Other Parameters
-        ================
-
-        Parameters that control the type of grid created
-        ---------------------------
-        DEM_filename : str, optional
-            File path to either an ESRII ASCII or netCDF file.
-        model_grid : str, optional
-            Either ``'RasterModelGrid'`` (default) or ``'HexModelGrid'``.
-
-        Note that if both ``'DEM_filename'`` and ``'model_grid'`` are specified
-        a error will be raised.
-
-
-        Parameters that control creation of a synthetic HexModelGrid
-        ------------------------------------------------------------
-        number_of_node_rows : int, optional
-            Number of rows of nodes in the left column. Default is 8
-        number_of_node_columns : int, optional
-            Number of nodes on the first row. Default is 5
-        node_spacing : float, optional
-            Node spacing. Default is 10.0
-        orientation : str, optional
-            Either 'horizontal' (default) or 'vertical'.
-        shape : str, optional
-            Controls the shape of the bounding hull, i.e., are the nodes
-            arranged in a hexagon, or a rectangle? Either 'hex' (default) or
-            'rect'.
-        reorient_links, bool, optional
-            Whether or not to re-orient all links to point between -45 deg
-            and +135 deg clockwise from "north" (i.e., along y axis). Default
-            value is True.
-        outlet_id : int, optional
-            Node id for the watershed outlet. If not provided, the model will be
-            set boundary conditions based on the following parameters.
-        boundary_closed : boolean, optional
-            If ``True`` the model boundarys are closed boundaries. Default is
-            ``False``.
-
-        Parameters that control creation of a synthetic RasterModelGrid
-        ---------------------------------------------------------------
-        number_of_node_rows : int, optional
-            Number of node rows. Default is 4.
-        number_of_node_columns : int, optional
-            Number of node columns. Default is 5.
-        node_spacing : float, optional
-            Row and column node spacing. Default is 1.0
-        outlet_id : int, optional
-            Node id for the watershed outlet. If not
-            provided, the model will set boundary conditions
-            based on the following parameters.
-        east_boundary_closed : boolean
-            If ``True`` right-edge nodes are closed boundaries. Default is ``False``.
-        north_boundary_closed : boolean
-            If ``True`` top-edge nodes are closed boundaries. Default is ``False``.
-        west_boundary_closed : boolean
-            If ``True`` left-edge nodes are closed boundaries. Default is ``False``.
-        south_boundary_closed : boolean
-            If ``True`` bottom-edge nodes are closed boundaries. Default is ``False``.
-
-        Parameters that control creation of synthetic topography
-        --------------------------------------------------------
-        initial_elevation : float, optional
-            Default value is 0.
-        random_seed : int, optional
-            Default value is 0.
-        add_random_noise : boolean, optional
-            Default value is True.
-        initial_noise_std : float, optional
-            Default value is 0.
-
-        Parameters that control grid boundary conditions
-        ------------------------------------------------
-        outlet_id
-        BoundaryHandlers
-
-
-        Parameters that control units
-        -----------------------------
-        meters_to_feet : boolean, optional
-            Default value is False.
-        feet_to_meters : boolean, optional
-            Default value is False.
-
-        Parameters that control surface hydrology
-        -----------------------------------------
-        flow_director : str, optional
-            Default is 'FlowDirectorSteepest'
-        depression_finder : str, optional
-            Default is 'DepressionFinderAndRouter'
-
-        Parameters that control run duration, timestep, and output
-        ----------------------------------------------------------
-        save_first_timestep
-        output_filename
-        output_interval
-        run_duration
-        dt
-
-
-        Other Parameters
-        ----------------
-        pickle_name : str, optional
-            Default value is 'saved_model.model'
-        load_from_pickle : boolean, optional
-            Default is False
-        opt_save
-        opt_walltime
 
         Returns
         -------
@@ -246,7 +250,7 @@ class ErosionModel(object):
             self.save_first_timestep = self.params.get('save_first_timestep', False)
 
             # instantiate model time.
-            self.model_time = 0.
+            self._model_time = 0.
 
             # instantiate container for computational timestep:
             self._compute_time = [tm.time()]
@@ -353,7 +357,7 @@ class ErosionModel(object):
             ###################################################################
             # Output Writers
             ###################################################################
-            self.output_writers = {'class' = {}, 'function' = []}
+            self.output_writers = {'class': {}, 'function': []}
             if OutputWriters is None:
                 pass
             else:
@@ -362,6 +366,10 @@ class ErosionModel(object):
                         self.setup_output_writer(comp)
                 else:
                     self.setup_output_writer(OutputWriters)
+
+    @property
+    def model_time(self):
+        return self._model_time
 
     def setup_boundary_handler(self, handler):
         """ Setup BoundaryHandlers for use by a TerrainBento model.
@@ -810,7 +818,7 @@ class ErosionModel(object):
         total_run_duration = self.params['run_duration']
         output_interval = self.params['output_interval']
         self.iteration = 1
-        time_now = self.model_time
+        time_now = self._model_time
         while time_now < total_run_duration:
             next_run_pause = min(time_now + output_interval, total_run_duration)
             self.run_for(self.params['dt'], next_run_pause - time_now)
@@ -857,7 +865,7 @@ class ErosionModel(object):
             model = dill.load(f)
         self.__setstate__(model)
 
-    def self.check_slurm_walltime(self, wall_threshold=0, dynamic_cut_off_time=False, cut_off_time=0):
+    def check_slurm_walltime(self, wall_threshold=0, dynamic_cut_off_time=False, cut_off_time=0):
         """Check walltime with slurm and save model out if near end of time.
 
         Parameters
