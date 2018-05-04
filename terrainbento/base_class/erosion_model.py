@@ -3,12 +3,12 @@
 
 
 
+
 Input File or Dictionary Parameters
 -----------------------------------
 The following are parameters found in the parameters input file or dictionary.
 Depending on how the model is initialized, some of them are optional or not
 used.
-
 
 Required Parameters
 ^^^^^^^^^^^^^^^^^^^^
@@ -86,11 +86,24 @@ initial_noise_std : float, optional
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-outlet_id
-BoundaryHandlers
+outlet_id : int, optional
+    Model grid node id of the location of the watershed outlet, if used.
+BoundaryHandlers : str or list of str, optional
+    Strings of the classes used to handle boundary conditions. Valid options
+    are currently: 'NormalFault', 'PrecipChanger', 'CaptureNodeBaselevelHandler',
+    'ClosedNodeBaselevelHandler', 'SingleNodeBaselevelHandler'. These
+    BoundaryHandlers are instantiated with the entire parameter set unless there
+    is an entry in the parameter dictionary with the name of the boundary
+    handler that contains its own parameter dictionary. If this is the case, the
+    handler-specific dictionary is passed to instantiate the boundary handler.
 
 Parameters that control units
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+These courtesy options exist to support the case in which a model must be run
+in one type of units (e.g. feet) but the scientific literature  provides
+information about parameter values in a different unit (e.g. meters). If both
+are set to ``True`` a ``ValueError`` will be raised.
+
 meters_to_feet : boolean, optional
     Default value is False.
 feet_to_meters : boolean, optional
@@ -99,25 +112,33 @@ feet_to_meters : boolean, optional
 Parameters that control surface hydrology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 flow_director : str, optional
-    Default is 'FlowDirectorSteepest'
+    String name of a Landlab FlowDirector. All options that the Landlab
+    FlowAccumulator is compatible with are permitted. Default is
+    'FlowDirectorSteepest'.
 depression_finder : str, optional
-    Default is 'DepressionFinderAndRouter'
+    String name of a Landlab depression finder. Default is
+    'DepressionFinderAndRouter'.
 
 Parameters that control output
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-save_first_timestep
-output_filename
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+save_first_timestep : bool, optional
+    Should model output be saved at time zero.  Default is True.
+output_filename : str, optional
+    String prefix for output netCDF files. Default is ``'terrainbento_output'``.
 
 Miscellaneous Parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^
 pickle_name : str, optional
-    Default value is 'saved_model.model'
+    Name for pickled instance of the model. Default value is 'saved_model.model'
 load_from_pickle : boolean, optional
-    Default is False
-opt_save : boolean, optional
-    text
+    Optionally load model from pickled instance. Default is False
 opt_walltime : boolean, optional
-    Text
+    Optionally check supercomputer job walltime (compatible only with SLURM
+    submission system) to identify if the model will be cut off before it
+    completes.
+opt_save : boolean, optional
+    Optionally save model as a pickle if supercomputer walltime gets too
+    close to a threshold.
 
 """
 
@@ -194,6 +215,7 @@ class ErosionModel(object):
     finalize
     pickle_self
     unpickle_self
+
     """
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """
@@ -206,12 +228,11 @@ class ErosionModel(object):
             Dictionary containing the input file. One of input_file or params is
             required.
         BoundaryHandlers : class or list of classes, optional
-            Classes used to handle. Alternatively can be passed by input
-            file as string.
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
-            Classes used to handler...
-
-
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
 
         Returns
         -------
@@ -265,8 +286,8 @@ class ErosionModel(object):
 
             # identify if initial conditions should be saved.
             # default behavior is to not save the first timestep
-            self.save_first_timestep = self.params.get('save_first_timestep', False)
-
+            self.save_first_timestep = self.params.get('save_first_timestep', True)
+            self._out_file_name = self.params.get('output_filename', 'terrainbento_output')
             # instantiate model time.
             self._model_time = 0.
 
@@ -799,7 +820,7 @@ class ErosionModel(object):
             out all fields.
         """
         self.calculate_cumulative_change()
-        filename = self.params['output_filename'] + str(self.iteration).zfill(4) \
+        filename = self._out_file_name + str(self.iteration).zfill(4) \
                     + '.nc'
         try:
             write_raster_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
