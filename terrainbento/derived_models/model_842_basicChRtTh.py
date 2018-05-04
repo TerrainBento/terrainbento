@@ -204,7 +204,7 @@ class BasicChRtTh(ErosionModel):
                                    courant_factor=0.1)
 
         # calculate model time
-        self.model_time += dt
+        self._model_time += dt
 
         # Update boundary conditions
         self.update_boundary_conditions(dt)

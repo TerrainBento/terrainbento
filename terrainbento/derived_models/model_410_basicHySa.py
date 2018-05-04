@@ -148,7 +148,7 @@ class BasicHySa(ErosionModel):
         self.diffuser.run_one_step(dt)
 
         # calculate model time
-        self.model_time += dt
+        self._model_time += dt
 
         # Check walltime
         self.check_slurm_walltime()
