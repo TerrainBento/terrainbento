@@ -614,18 +614,11 @@ class ErosionModel(object):
             else:
                 self.opt_watershed = False
                 self.outlet_node = 0
-                east_closed = north_closed = west_closed = south_closed = False
-                if 'east_boundary_closed' in self.params:
-                    east_closed = self.params['east_boundary_closed']
-                if 'north_boundary_closed' in self.params:
-                    north_closed = self.params['north_boundary_closed']
-                if 'west_boundary_closed' in self.params:
-                    west_closed = self.params['west_boundary_closed']
-                if 'south_boundary_closed' in self.params:
-                    south_closed = self.params['south_boundary_closed']
+                east_closed = self.params.get('east_boundary_closed', False)
+                north_closed = self.params.get('north_boundary_closed', False)
+                west_closed = self.params.get('west_boundary_closed', False)
+                south_closed = self.params.get('south_boundary_closed', False)
 
-
-            if not self.opt_watershed:
                 self.grid.set_closed_boundaries_at_grid_edges(east_closed,
                                                               north_closed,
                                                               west_closed,
@@ -745,13 +738,6 @@ class ErosionModel(object):
             List of model grid fields to write as output. Default is to write
             out all fields.
         """
-        # Exclude fields with int64 (incompatible with netCDF3)
-        if field_names is None:
-            field_names = []
-            for field in self.grid.at_node:
-                if type(self.grid.at_node[field][0]) is not np.int64:
-                    field_names.append(field)
-
         self.calculate_cumulative_change()
         filename = self.params['output_filename'] + str(self.iteration).zfill(4) \
                     + '.nc'
@@ -879,8 +865,6 @@ class ErosionModel(object):
         wall_threshold : float, optional
         dynamic_cut_off_time : bool, optional
         cut_off_time : float, optional
-
-
         """
         # check walltime
 
