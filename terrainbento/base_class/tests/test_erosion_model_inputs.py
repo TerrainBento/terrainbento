@@ -29,25 +29,3 @@ def test_load_from_pickle():
 def test_create_pickle():
     """Test providing parameters file."""
     pass
-
-def test_HexModelGrid():
-    """Test HexModelGrid."""
-    pass
-
-def test_RasterModelGrid():
-    """Test RasterModelGrid."""
-    pass
-
-def test_DEM():
-    """Test DEM."""
-    pass
-
-def test_length_conversion():
-    """Test meters to feet, and reverse."""
-    pass
-
-def test_FlowAccumulator_options():
-    """Test FlowAccumulator instantiation."""
-    # D8, D4, MFD x hex, raster, dem
-    # with/without DepressionFinder
-    pass
