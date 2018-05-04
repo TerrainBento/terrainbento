@@ -24,13 +24,14 @@ class StochasticErosionModel(ErosionModel):
     Hydrology based modeles.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """Initialize the _BaseSt base class."""
 
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(input_file=input_file,
                                                       params=params,
-                                                      BoundaryHandlers=BoundaryHandlers)
+                                                      BoundaryHandlers=BoundaryHandlers,
+                                                      OutputWriters=OutputWriters)
 
         self.opt_stochastic_duration = self.params.get('opt_stochastic_duration', False)
 

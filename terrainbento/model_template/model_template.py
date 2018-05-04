@@ -15,7 +15,7 @@ from terrainbento.base_class import ErosionModel
 
 class ModelTemplate(ErosionModel): # The model must inherit from either ErosionModel
                                # or StochasticErosionModel
-    """ModelName is a template for making your own ``terrainbento`` models.
+    """ModelTemplate is a template for making your own ``terrainbento`` models.
 
     This is where you will want to put introductory information about the model.
 
@@ -55,7 +55,7 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
         This is where you can make code examples showing how to use the model you
         created.
 
-        >>> from terrainbento import ModelName
+        >>> from terrainbento.model_template import ModelTemplate
         >>> # this is where you'd show how to import and use your model.
         >>> # these statements get evaluated in testing so its also a way to show
         >>> # that the model does what you say it will do.

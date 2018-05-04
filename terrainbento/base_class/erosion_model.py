@@ -9,12 +9,20 @@ The following are parameters found in the parameters input file or dictionary.
 Depending on how the model is initialized, some of them are optional or not
 used.
 
-Parameters that control the type of grid created
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Required Parameters
+^^^^^^^^^^^^^^^^^^^^
 DEM_filename : str, optional
-    File path to either an ESRII ASCII or netCDF file.
+    File path to either an ESRII ASCII or netCDF file. Either  ``'DEM_filename'``
+    or ``'model_grid'`` must be specified.
 model_grid : str, optional
     Either ``'RasterModelGrid'`` (default) or ``'HexModelGrid'``.
+run_duration : float
+    Duration of entire model run.
+dt : float
+    Increment of time at which the model is run.
+output_interval : float
+    Increment of model time at which model output is written.
 
 Note that if both ``'DEM_filename'`` and ``'model_grid'`` are specified
 a error will be raised.
@@ -95,13 +103,10 @@ flow_director : str, optional
 depression_finder : str, optional
     Default is 'DepressionFinderAndRouter'
 
-Parameters that control run duration, timestep, and output
+Parameters that control output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 save_first_timestep
 output_filename
-output_interval
-run_duration
-dt
 
 Miscellaneous Parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -245,6 +250,19 @@ class ErosionModel(object):
         # otherwise initialize as normal.
         #######################################################################
         else:
+            # ensure required values are provided
+            for req in ['dt', 'output_interval', 'run_duration']:
+                if req in self.params:
+                    try:
+                        val = float(self.params[req])
+                    except ValueError:
+                        msg = 'Required parameter {0} is not compatible with type float.'.format(req),
+                        raise ValueError(msg)
+                else:
+                    msg = 'Required parameter {0} was not provided.'.format(req),
+
+                    raise ValueError(msg)
+
             # identify if initial conditions should be saved.
             # default behavior is to not save the first timestep
             self.save_first_timestep = self.params.get('save_first_timestep', False)
@@ -482,13 +500,36 @@ class ErosionModel(object):
         >>> params = {'model_grid' : 'HexModelGrid',
         ...           'number_of_node_rows' : 6,
         ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0 }
+        ...           'node_spacing' : 10.0,
+        ...           'dt': 1, 'output_interval': 2., 'run_duration': 10.}
 
         >>> em = ErosionModel(params=params)
         >>> isinstance(em.grid, HexModelGrid)
         True
         >>> em.grid.x_of_node
+        array([  0.,  10.,  20.,  30.,  40.,  50.,  60.,  70.,  80.,  -5.,   5.,
+                15.,  25.,  35.,  45.,  55.,  65.,  75.,  85., -10.,   0.,  10.,
+                20.,  30.,  40.,  50.,  60.,  70.,  80.,  90., -15.,  -5.,   5.,
+                15.,  25.,  35.,  45.,  55.,  65.,  75.,  85.,  95., -10.,   0.,
+                10.,  20.,  30.,  40.,  50.,  60.,  70.,  80.,  90.,  -5.,   5.,
+                15.,  25.,  35.,  45.,  55.,  65.,  75.,  85.])
         >>> em.grid.y_of_node
+        array([  0.        ,   0.        ,   0.        ,   0.        ,
+                 0.        ,   0.        ,   0.        ,   0.        ,
+                 0.        ,   8.66025404,   8.66025404,   8.66025404,
+                 8.66025404,   8.66025404,   8.66025404,   8.66025404,
+                 8.66025404,   8.66025404,   8.66025404,  17.32050808,
+                17.32050808,  17.32050808,  17.32050808,  17.32050808,
+                17.32050808,  17.32050808,  17.32050808,  17.32050808,
+                17.32050808,  17.32050808,  25.98076211,  25.98076211,
+                25.98076211,  25.98076211,  25.98076211,  25.98076211,
+                25.98076211,  25.98076211,  25.98076211,  25.98076211,
+                25.98076211,  25.98076211,  34.64101615,  34.64101615,
+                34.64101615,  34.64101615,  34.64101615,  34.64101615,
+                34.64101615,  34.64101615,  34.64101615,  34.64101615,
+                34.64101615,  43.30127019,  43.30127019,  43.30127019,
+                43.30127019,  43.30127019,  43.30127019,  43.30127019,
+                43.30127019,  43.30127019,  43.30127019])
         """
         try:
             nr = self.params['number_of_node_rows']
@@ -553,14 +594,25 @@ class ErosionModel(object):
         >>> from landlab import RasterModelGrid
         >>> params = { 'number_of_node_rows' : 6,
         ...            'number_of_node_columns' : 9,
-        ...            'node_spacing' : 10.0 }
+        ...            'node_spacing' : 10.0,
+        ...            'dt': 1, 'output_interval': 2., 'run_duration': 10.}
         >>> from terrainbento import ErosionModel
         >>> em = ErosionModel(params=params)
         >>> em = ErosionModel(params=params)
         >>> isinstance(em.grid, RasterModelGrid)
         True
         >>> em.grid.x_of_node
+        array([  0.,  10.,  20.,  30.,  40.,  50.,  60.,  70.,  80.,   0.,  10.,
+                20.,  30.,  40.,  50.,  60.,  70.,  80.,   0.,  10.,  20.,  30.,
+                40.,  50.,  60.,  70.,  80.,   0.,  10.,  20.,  30.,  40.,  50.,
+                60.,  70.,  80.,   0.,  10.,  20.,  30.,  40.,  50.,  60.,  70.,
+                80.,   0.,  10.,  20.,  30.,  40.,  50.,  60.,  70.,  80.])
         >>> em.grid.y_of_node
+        array([  0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,  10.,  10.,
+                10.,  10.,  10.,  10.,  10.,  10.,  10.,  20.,  20.,  20.,  20.,
+                20.,  20.,  20.,  20.,  20.,  30.,  30.,  30.,  30.,  30.,  30.,
+                30.,  30.,  30.,  40.,  40.,  40.,  40.,  40.,  40.,  40.,  40.,
+                40.,  50.,  50.,  50.,  50.,  50.,  50.,  50.,  50.,  50.])
         """
         try:
             nr = self.params['number_of_node_rows']

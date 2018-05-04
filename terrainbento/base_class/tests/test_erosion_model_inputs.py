@@ -14,6 +14,12 @@ def test_both_inputs():
     """Test providing both input file and parameters."""
     pass
 
+def test_no_required_params():
+    pass
+
+def test_bad_req_params():
+    pass
+
 def test_input_file():
     """Test providing input file."""
     pass

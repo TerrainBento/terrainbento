@@ -52,6 +52,7 @@ class BasicHySt(StochasticErosionModel):
     >>> my_pars = {}
     >>> my_pars['dt'] = 1.0
     >>> my_pars['run_duration'] = 1.0
+    >>> my_pars['output_interval'] = 2.0
     >>> my_pars['infiltration_capacity'] = 1.0
     >>> my_pars['K_stochastic_sp'] = 1.0
     >>> my_pars['m_sp'] = 0.5
