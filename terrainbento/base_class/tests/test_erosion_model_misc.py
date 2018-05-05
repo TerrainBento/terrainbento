@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 26 09:58:16 2018
-
-@author: barnhark
-"""
-
 import numpy as np
 #from numpy.testing import assert_array_equal, assert_array_almost_equal
 from nose.tools import assert_raises#, assert_almost_equal, assert_equal
