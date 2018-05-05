@@ -237,6 +237,10 @@ class ErosionModel(object):
         Returns
         -------
         ErosionModel : object
+
+        Examples
+        --------
+        We recommend that you look at the ``terraintento`` tutorials.
         """
         #######################################################################
         # get parameters
@@ -726,8 +730,7 @@ class ErosionModel(object):
 
         Examples
         --------
-
-
+        We recommend that you look at the ``terraintento`` tutorials.
         """
         try:
             (grid, vals) = read_esri_ascii(topo_file_name,
@@ -754,8 +757,29 @@ class ErosionModel(object):
 
         Examples
         --------
+        >>> from landlab import HexModelGrid
+        >>> from terrainbento import ErosionModel
 
+        Sometimes in makes sense to provide a parameter as an exponent (base 10).
+        If the string `'_exp'` is attached to the end of the name in the input
+        dictionary, this function can help.
 
+        >>> params = {'model_grid' : 'HexModelGrid',
+        ...           'water_erodability_exp' : -3.,
+        ...           'dt': 1, 'output_interval': 2., 'run_duration': 10.}
+        >>> em = ErosionModel(params=params)
+        >>> em.get_parameter_from_exponent('water_erodability')
+        0.001
+
+        Alternatively, the same call to the dictionary still works if the
+        parameter was not provided as an exponent.
+
+        >>> params = {'model_grid' : 'HexModelGrid',
+        ...           'water_erodability' : 0.5,
+        ...           'dt': 1, 'output_interval': 2., 'run_duration': 10.}
+        >>> em = ErosionModel(params=params)
+        >>> em.get_parameter_from_exponent('water_erodability')
+        0.5
 
         """
         if (param_name in self.params) and (param_name+'_exp' in self.params):
