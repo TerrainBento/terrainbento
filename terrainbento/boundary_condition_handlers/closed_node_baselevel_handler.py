@@ -1,15 +1,13 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-"""
-``ClosedNodeBaselevelHandler`` handles modifying elevation for all closed nodes.
-"""
+"""``ClosedNodeBaselevelHandler`` modifies elevation for all closed nodes."""
 
 import os
 import numpy as np
 from scipy.interpolate import interp1d
 
 class ClosedNodeBaselevelHandler():
-    """ Control the elevation of a single open boundary node.
+    """Control the elevation of a single open boundary node.
 
     The ``ClosedNodeBaselevelHandler`` controls the elevation of all nodes on the
     model grid with ``status != 0``. The elevation change at these nodes is
@@ -187,8 +185,7 @@ class ClosedNodeBaselevelHandler():
                                   'only one.'))
 
     def run_one_step(self, dt):
-        """
-        Run ``ClosedNodeBaselevelHandler`` forward and update node elevations.
+        """ Run ``ClosedNodeBaselevelHandler`` forward and update elevations.
 
         The ``run_one_step`` method provides a consistent interface to update
         the ``terrainbento`` boundary condition handlers.
@@ -197,8 +194,8 @@ class ClosedNodeBaselevelHandler():
         either lower the closed or raise the non-closed nodes based on inputs
         specified at instantiation.
 
-        Note that ``ClosedNodeBaselevelHandler`` increments time at the end of the
-        ``run_one_step`` method.
+        Note that ``ClosedNodeBaselevelHandler`` increments time at the end of
+        the ``run_one_step`` method.
 
         Parameters
         ----------

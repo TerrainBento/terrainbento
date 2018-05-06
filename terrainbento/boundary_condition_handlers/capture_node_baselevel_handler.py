@@ -145,7 +145,7 @@ class CaptureNodeBaselevelHandler():
 
     def run_one_step(self, dt):
         """
-        Run ``CaptureNodeBaselevelHandler`` forward and update outlet node elevation.
+        Run ``CaptureNodeBaselevelHandler`` to update captured node elevation.
 
         The ``run_one_step`` method provides a consistent interface to update
         the ``terrainbento`` boundary condition handlers.

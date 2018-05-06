@@ -1,8 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-"""
-``SingleNodeBaselevelHandler`` controls elevation for a single open boundary node.
-"""
+"""``SingleNodeBaselevelHandler`` changes elevation for a single boundary node."""
 import os
 import numpy as np
 from scipy.interpolate import interp1d
@@ -16,8 +14,8 @@ class SingleNodeBaselevelHandler():
     specified either as a constant or through a time or through a textfile that
     specifies the elevation change through time.
 
-    The ``SingleNodeBaselevelHandler`` expects that ``topographic__elevation`` is a
-    at-node model grid field. It will modify this field and, if it exists,
+    The ``SingleNodeBaselevelHandler`` expects that ``topographic__elevation``
+    is a at-node model grid field. It will modify this field and, if it exists,
     the field ``bedrock__elevation``.
 
     Note that ``SingleNodeBaselevelHandler`` increments time at the end of the
@@ -138,8 +136,7 @@ class SingleNodeBaselevelHandler():
                                   'only one.'))
 
     def run_one_step(self, dt):
-        """
-        Run ``SingleNodeBaselevelHandler`` forward and update outlet node elevation.
+        """ Run ``SingleNodeBaselevelHandler`` to update outlet node elevation.
 
         The ``run_one_step`` method provides a consistent interface to update
         the ``terrainbento`` boundary condition handlers.
@@ -148,14 +145,13 @@ class SingleNodeBaselevelHandler():
         will change the elevation of the outlet node based on inputs specified
         at instantiation.
 
-        Note that ``SingleNodeBaselevelHandler`` increments time at the end of the
-        ``run_one_step`` method.
+        Note that ``SingleNodeBaselevelHandler`` increments time at the end of
+        the ``run_one_step`` method.
 
         Parameters
         ----------
         dt : float
             Duration of model time to advance forward.
-
         """
         # first, if we do not have an outlet elevation object
         if self.outlet_elevation_obj is None:
