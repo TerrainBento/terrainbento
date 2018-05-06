@@ -37,6 +37,7 @@ class MockTest(MagicMock):
         return MagicMock()
 
 MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.components',
+                'landlab.graph',
                 'FlowAccumulator', 'PrecipitationDistribution',
                 'FastscapeEroder', 'LinearDiffuser', 'StreamPowerSmoothThresholdEroder',
                 'ErosionDeposition', 'Space', 'TaylorNonLinearDiffuser',

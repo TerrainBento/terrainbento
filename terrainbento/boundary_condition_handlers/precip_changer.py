@@ -300,12 +300,14 @@ class PrecipChanger(object):
             ``meters_to_feet`` and ``feet_to_meters`` input paramters. Default
             is 1.0.
 
-        Note that the time units of ``daily_rainfall__mean_intensity``
+        Notes
+        -----
+        The time units of ``daily_rainfall__mean_intensity``
         ``daily_rainfall__mean_intensity_time_rate_of_change``, and
         ``infiltration_capacity`` are all assumed to be the same.
 
-        The ``time_unit`` **IS** assumed to be consistent with the time unit
-        of `dt`.
+        The value passed by ``time_unit`` **IS** assumed to be consistent with
+        the time units of `dt`.
 
         The length units are assumed to be consistent with the model grid
         definition.
