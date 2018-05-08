@@ -10,31 +10,58 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
 def test_no_inputs():
-    """Test providing neither input file nor parameters."""
-    pass
+    assert_raises(ValueError, ErosionModel)
+
 
 def test_both_inputs():
-    """Test providing both input file and parameters."""
-    pass
+    params = {'model_grid' : 'HexModelGrid',
+              'dt': 1, 'output_interval': 2., 'run_duration': 10.}
+    fp = os.path.join(_TEST_DATA_DIR, 'inputs.txt')
+
+    assert_raises(ValueError, ErosionModel, params=params, input_file=fp)
+
 
 def test_no_required_params():
-    pass
+    params = {'model_grid' : 'HexModelGrid',
+              'dt': 1, 'output_interval': 2.}
+    assert_raises(ValueError, ErosionModel, params=params)
+
+    params = {'model_grid' : 'HexModelGrid',
+              'dt': 1, 'run_duration': 10.}
+    assert_raises(ValueError, ErosionModel, params=params)
+
+    params = {'model_grid' : 'HexModelGrid',
+              'output_interval': 2, 'run_duration': 10.}
+    assert_raises(ValueError, ErosionModel, params=params)
+
 
 def test_bad_req_params():
-    pass
+    params = {'model_grid' : 'HexModelGrid',
+              'dt': 'spam', 'output_interval': 2., 'run_duration': 10.}
+    assert_raises(ValueError, ErosionModel, params=params)
+
+    params = {'model_grid' : 'HexModelGrid',
+              'dt': 1, 'output_interval': 'eggs', 'run_duration': 10.}
+    assert_raises(ValueError, ErosionModel, params=params)
+
+    params = {'model_grid' : 'HexModelGrid',
+              'dt': 1, 'output_interval': 2., 'run_duration': 'wooo'}
+    assert_raises(ValueError, ErosionModel, params=params)
+
 
 def test_input_file():
-    """Test providing input file."""
-    pass
+    fp = os.path.join(_TEST_DATA_DIR, 'inputs.txt')
+    em = ErosionModel(input_file=fp)
+
 
 def test_parameters():
-    """Test providing parameters file."""
-    pass
+    params = {'model_grid' : 'HexModelGrid',
+              'dt': 1, 'output_interval': 2., 'run_duration': 10.}
+    em = ErosionModel(params=params)
+
 
 def test_load_from_pickle():
-    """Test providing parameters file."""
     pass
 
 def test_create_pickle():
-    """Test providing parameters file."""
     pass

@@ -353,8 +353,8 @@ class ErosionModel(object):
             # instantiate flow direction and accumulation
             ###################################################################
             # get flow direction, and depression finding options
-            self.flow_director = params.get('flow_director', 'FlowDirectorSteepest')
-            self.depression_finder = params.get('depression_finder', None)
+            self.flow_director = self.params.get('flow_director', 'FlowDirectorSteepest')
+            self.depression_finder = self.params.get('depression_finder', None)
 
             # Instantiate a FlowAccumulator, if DepressionFinder is provided
             # AND director = Steepest, then we need routing to be D4,
