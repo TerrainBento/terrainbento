@@ -812,12 +812,6 @@ class ErosionModel(object):
         random_state = state_dict.pop('random_state')
         np.random.set_state(random_state)
 
-        if state_dict['outlet_elevation_obj'] == None:
-            pass
-        else:
-            outlet_elev = state_dict.pop('outlet_elevation_obj')
-            state_dict['outlet_elevation_obj'] = interp1d(outlet_elev['x'], outlet_elev['y'])
-
         self.__dict__ = state_dict
 
     def __getstate__(self):
@@ -825,12 +819,6 @@ class ErosionModel(object):
         state_dict = self.__dict__
         state_dict['random_state'] = np.random.get_state()
 
-        if self.outlet_elevation_obj == None:
-            pass
-        else:
-            x = self.outlet_elevation_obj.x
-            y = self.outlet_elevation_obj.y
-            state_dict['outlet_elevation_obj'] = {'x': x, 'y': y}
         return state_dict
 
     def calculate_cumulative_change(self):
