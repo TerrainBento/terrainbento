@@ -68,7 +68,6 @@ class BasicDdSt(StochasticErosionModel):
     >>> my_pars['precip_shape_factor'] = 0.65
     >>> my_pars['number_of_sub_time_steps'] = 10
     >>> srt = BasicDdSt(params=my_pars)
-    Warning: no DEM or grid shape specified. Creating simple raster grid
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):

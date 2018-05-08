@@ -83,6 +83,9 @@ add_random_noise : boolean, optional
     Default value is True.
 initial_noise_std : float, optional
     Default value is 0.
+add_noise_to_all_nodes : bool, optional
+    When False, noise just added to core nodes. Default value is False.
+
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -328,15 +331,15 @@ class ErosionModel(object):
 
             # Set DEM boundaries
             if self.opt_watershed:
-                try:
+                if 'outlet_id' in self.params:
                     self.outlet_node = self.params['outlet_id']
                     self.grid.set_watershed_boundary_condition_outlet_id(self.outlet_node,
                                                                          self.z,
                                                                          nodata_value=-9999)
-                except:
+                else:
                     self.outlet_node = self.grid.set_watershed_boundary_condition(self.z,
                                                                                   nodata_value=-9999,
-                                                                                  return_outlet_id=True)
+                                                                                  return_outlet_id=True)[0]
 
             # Add fields for initial topography and cumulative erosion depth
             z0 = self.grid.add_zeros('node', 'initial_topographic__elevation')
@@ -644,8 +647,6 @@ class ErosionModel(object):
             nc = self.params['number_of_node_columns']
             dx = self.params['node_spacing']
         except KeyError:
-            print('Warning: no DEM or grid shape specified. '
-                  'Creating simple raster grid')
             nr = 4
             nc = 5
             dx = 1.0
@@ -662,22 +663,30 @@ class ErosionModel(object):
         self._setup_synthetic_boundary_conditions()
 
     def _create_synthetic_topography(self):
-        """Create topography for synthetic grids."""
+        """Create topography for synthetic grids.
+
+        If noise or initial elevation is added, it will only be added to the
+        core nodes.
+        """
         add_noise = self.params.get('add_random_noise', True)
         init_z = self.params.get('initial_elevation', 0.0)
         init_sigma = self.params.get('initial_noise_std', 0.0)
-
+        seed = self.params.get('random_seed', 0)
         self.z = self.grid.add_zeros('node', 'topographic__elevation')
-
-        if 'random_seed' in self.params:
-            seed = self.params['random_seed']
-        else:
-            seed = 0
+        noise_location = self.params.get('add_noise_to_all_nodes', False)
         np.random.seed(seed)
 
+        if noise_location:
+            noise_nodes = np.arange(self.grid.size('node'))
+        else:
+            noise_nodes = self.grid.core_nodes
+
+
         if add_noise:
-            rs = np.random.randn(len(self.grid.core_nodes))
-            self.z[self.grid.core_nodes] = init_z + (init_sigma * rs)
+            rs = np.random.randn(noise_nodes.size)
+            self.z[noise_nodes] += init_z + (init_sigma * rs)
+        else:
+            self.z[noise_nodes] += init_z
 
     def _setup_synthetic_boundary_conditions(self):
         """Set up boundary conditions for synthetic grids."""
@@ -733,11 +742,11 @@ class ErosionModel(object):
         We recommend that you look at the ``terraintento`` tutorials.
         """
         try:
-            (grid, vals) = read_esri_ascii(topo_file_name,
+            (grid, vals) = read_esri_ascii(file_path,
                                         name=name,
                                         halo=halo)
         except:
-            grid = read_netcdf(topo_file_name)
+            grid = read_netcdf(file_path)
             vals = grid.at_node[name]
         return (grid, vals)
 

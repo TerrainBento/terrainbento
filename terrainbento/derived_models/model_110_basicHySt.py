@@ -70,7 +70,6 @@ class BasicHySt(StochasticErosionModel):
     >>> my_pars['phi'] = 0.3
     >>> my_pars['solver'] = 'adaptive'
     >>> srt = BasicHySt(params=my_pars)
-    Warning: no DEM or grid shape specified. Creating simple raster grid
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
