@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Base class for common functions of all ``terrainbento`` erosion models.
 
-
+The ``ErosionModel`` is a base class that contains all of the functionality
+shared by the ``terrainbento`` models.
 
 
 Input File or Dictionary Parameters
@@ -12,11 +13,10 @@ used.
 
 Required Parameters
 ^^^^^^^^^^^^^^^^^^^^
-DEM_filename : str, optional
-    File path to either an ESRII ASCII or netCDF file. Either  ``'DEM_filename'``
-    or ``'model_grid'`` must be specified.
-model_grid : str, optional
-    Either ``'RasterModelGrid'`` (default) or ``'HexModelGrid'``.
+
+The required parameters control how long a model will run, the duration of a
+model timestep and the interval at which output is written.
+
 run_duration : float
     Duration of entire model run.
 dt : float
@@ -24,11 +24,35 @@ dt : float
 output_interval : float
     Increment of model time at which model output is written.
 
+
+Grid Setup Parameters
+^^^^^^^^^^^^^^^^^^^^^
+This set of parameters controls what kind of model grid is created. Two primary
+options exist: the creation of a model grid based on elevations provided by an
+input DEM and the creation of synthetic model domain. In this latter option
+either a  ``RasterModelGrid`` or  ``HexModelGrid`` of synthetic terrain is
+possible.
+
+If neither of the two following parameters is specified, a synthetic
+``RasterModelGrid`` will be created. If parameters associated with setting up
+a synthetic ``RasterModelGrid`` are not provided the default values for grid
+size, initial topography, and boundary conditions will be used.
+
+DEM_filename : str, optional
+    File path to either an ESRII ASCII or netCDF file. Either  ``'DEM_filename'``
+    or ``'model_grid'`` must be specified.
+model_grid : str, optional
+    Either ``'RasterModelGrid'`` or ``'HexModelGrid'``.
+
 Note that if both ``'DEM_filename'`` and ``'model_grid'`` are specified
 a error will be raised.
 
 Parameters that control creation of a synthetic HexModelGrid
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+These parameters control the size, shape, and model boundary conditions of a
+synthetic HexModelGrid. They are only used if ``model_grid == 'HexModelGrid'``.
+
 number_of_node_rows : int, optional
     Number of rows of nodes in the left column. Default is 8
 number_of_node_columns : int, optional
@@ -54,6 +78,12 @@ boundary_closed : boolean, optional
 
 Parameters that control creation of a synthetic RasterModelGrid
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+These parameters control the size, shape, and model boundary conditions of a
+synthetic ``RasterModelGrid``.  These parameters are used if neither
+``DEM_filename`` nor ``'model_grid'`` is specified or if
+`model_grid == 'RasterModelGrid'``.
+
 number_of_node_rows : int, optional
     Number of node rows. Default is 4.
 number_of_node_columns : int, optional
@@ -75,6 +105,11 @@ south_boundary_closed : boolean
 
 Parameters that control creation of synthetic topography
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+These parameters create synthetic initial topgraphy in either a
+``RasterModelGrid`` or ``HexModelGrid``. They are used if ``DEM_filename`` is
+not specified.
+
 initial_elevation : float, optional
     Default value is 0.
 random_seed : int, optional
@@ -89,8 +124,21 @@ add_noise_to_all_nodes : bool, optional
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-outlet_id : int, optional
-    Model grid node id of the location of the watershed outlet, if used.
+
+``terrainbento`` provides the ability for an arbitrary number of boundary
+condition handler classes to operate on the model grid each time step in order
+to handle time-variable boundary conditions such as: changing a watershed outlet
+elevation, modify precipitation parameters through time, or simulate external
+drainage capture.
+
+Boundary condition handlers are styled after Landlab components. ``terrainbento``
+presently has four built in boundary condition handlers and supports the use of
+the Landlab NormalFault component as a fifth. Over time the developers
+anticipate extending the boundary handler library to include other Landlab
+components and other options within ``terrainbento`` . If these present
+capabilities do not fit your needs, we recommend that you make an issue
+describing the functionality you would like to use in your work.
+
 BoundaryHandlers : str or list of str, optional
     Strings of the classes used to handle boundary conditions. Valid options
     are currently: 'NormalFault', 'PrecipChanger', 'CaptureNodeBaselevelHandler',
@@ -114,6 +162,10 @@ feet_to_meters : boolean, optional
 
 Parameters that control surface hydrology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``terrainbento`` uses the Landlab FlowAccumulator component to manage surface
+hydrology. These parameters control options associated with the this component.
+
 flow_director : str, optional
     String name of a Landlab FlowDirector. All options that the Landlab
     FlowAccumulator is compatible with are permitted. Default is
@@ -124,13 +176,27 @@ depression_finder : str, optional
 
 Parameters that control output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In addition to the required parameter ``output_interval``, the following
+parameters control when and how output is written.
+
 save_first_timestep : bool, optional
     Should model output be saved at time zero.  Default is True.
 output_filename : str, optional
     String prefix for output netCDF files. Default is ``'terrainbento_output'``.
 
+Note also that the ``run`` method takes as a parameter ``output_fields`` which
+is a list of model grid fields to write as output.
+
 Miscellaneous Parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following are optional parameters that control the cabablity of a
+``terrainbento`` model to monitor the wall time of jobs on a computing platform
+submitted with the SLURM package. If the wall time is too close to the specified
+threshold, then a pickle of the model is created. The model (including random
+state) can then be re-started from the last run timestep.
+
 pickle_name : str, optional
     Name for pickled instance of the model. Default value is 'saved_model.model'
 load_from_pickle : boolean, optional
@@ -142,7 +208,9 @@ opt_walltime : boolean, optional
 opt_save : boolean, optional
     Optionally save model as a pickle if supercomputer walltime gets too
     close to a threshold.
-
+wall_threshold : float, optional
+dynamic_cut_off_time : bool, optional
+cut_off_time : float, optional
 """
 
 import sys
@@ -243,7 +311,8 @@ class ErosionModel(object):
 
         Examples
         --------
-        We recommend that you look at the ``terraintento`` tutorials.
+        We recommend that you look at the ``terraintento`` tutorials for
+        examples of usage.
         """
         #######################################################################
         # get parameters
@@ -460,18 +529,18 @@ class ErosionModel(object):
                               '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
 
     def setup_output_writer(self, writer):
-        """Setup OutputWriter for use by a TerrainBento model.
+        """Setup OutputWriter for use by a ``terrainbento`` model.
 
         An OutputWriter can be either a function or a class designed to create
         output, calculate a loss function, or do some other task that is not
-        inherent to running a TerrainBento model but is desired by the user. An
+        inherent to running a ``terrainbento`` model but is desired by the user. An
         example might be making a plot of topography while the model is running.
-        TerrainBento saves output to NetCDF format at each interval defined by
-        the parameter `'output_interval'`
+        ``terrainbento`` saves output to NetCDF format at each interval defined by
+        the parameter ``'output_interval'``
 
         If a class, an OutputWriter will be instantiated with only one passed
         argument: the entire model object. The class is expected to have a bound
-        function called `run_one_step` which is run with no arguments each time
+        function called ``run_one_step`` which is run with no arguments each time
         output is written. If a function, the OutputWriter will be run at each
         time output is written with one passed argument: the entire model
         object.
@@ -491,10 +560,10 @@ class ErosionModel(object):
         """Create hexagonal grid based on input parameters.
 
         This method will be called if the value of the input parameter
-        `'DEM_filename'` does not exist, and if the value of the input parameter
-        `'model_grid'` is set to `'HexModelGrid'`. Input parameters are not
+        ``'DEM_filename'`` does not exist, and if the value of the input parameter
+        ``'model_grid'`` is set to `'HexModelGrid'`. Input parameters are not
         passed explicitly, but are expected to be located in the model attribute
-        `params`.
+        ``params``.
 
         Parameters
         ----------
@@ -508,8 +577,8 @@ class ErosionModel(object):
             Either 'horizontal' (default) or 'vertical'.
         shape : str, optional
             Controls the shape of the bounding hull, i.e., are the nodes
-            arranged in a hexagon, or a rectangle? Either 'hex' (default) or
-            'rect'.
+            arranged in a hexagon, or a rectangle? Either ``'hex'`` (default) or
+            ``'rect'``.
         reorient_links, bool, optional
             Whether or not to re-orient all links to point between -45 deg
             and +135 deg clockwise from "north" (i.e., along y axis). Default
@@ -591,10 +660,10 @@ class ErosionModel(object):
         """Create raster grid based on input parameters.
 
         This method will be called if the value of the input parameter
-        `'DEM_filename'` does not exist, and if the value of the input parameter
-        `'model_grid'` is set to `'RasterModelGrid'`. Input parameters are not
+        ``'DEM_filename'`` does not exist, and if the value of the input parameter
+        ``'model_grid'`` is set to ``'RasterModelGrid'``. Input parameters are not
         passed explicitly, but are expected to be located in the model attribute
-        `params`.
+        ``params``.
 
         Parameters
         ----------
@@ -739,7 +808,8 @@ class ErosionModel(object):
 
         Examples
         --------
-        We recommend that you look at the ``terraintento`` tutorials.
+        We recommend that you look at the ``terraintento`` tutorials for
+        examples of usage.
         """
         try:
             (grid, vals) = read_esri_ascii(file_path,
@@ -960,14 +1030,7 @@ class ErosionModel(object):
         self.__setstate__(model)
 
     def check_slurm_walltime(self, wall_threshold=0, dynamic_cut_off_time=False, cut_off_time=0):
-        """Check walltime with slurm and save model out if near end of time.
-
-        Parameters
-        ----------
-        wall_threshold : float, optional
-        dynamic_cut_off_time : bool, optional
-        cut_off_time : float, optional
-        """
+        """Check walltime with slurm and save model out if near end of time."""
         # check walltime
 
         if self._check_slurm_walltime:
