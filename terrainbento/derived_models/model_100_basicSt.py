@@ -142,14 +142,8 @@ class BasicSt(StochasticErosionModel):
         # Do some soil creep
         self.diffuser.run_one_step(dt)
 
-        # update model time
-        self._model_time += dt
-
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
-
-        # Check walltime
-        self.check_slurm_walltime()
+        # Finalize the run_one_step_method
+        self.finalize_run_one_step(dt)
 
 
 def main():

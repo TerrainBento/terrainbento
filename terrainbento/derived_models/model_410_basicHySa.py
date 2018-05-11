@@ -115,8 +115,8 @@ class BasicHySa(ErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
+
+
 
         # Route flow
         self.flow_router.run_one_step()
@@ -147,11 +147,8 @@ class BasicHySa(ErosionModel):
         # Generate and move soil around
         self.diffuser.run_one_step(dt)
 
-        # calculate model time
-        self._model_time += dt
-
-        # Check walltime
-        self.check_slurm_walltime()
+        # Finalize the run_one_step_method
+        self.finalize__run_one_step(dt)
 
         # Check stability
         self.check_stability()

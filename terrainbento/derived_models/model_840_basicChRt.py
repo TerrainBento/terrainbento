@@ -186,14 +186,9 @@ class BasicChRt(ErosionModel):
                                    if_unstable='raise',
                                    courant_factor=0.1)
 
-        # calculate model time
-        self._model_time += dt
+        # Finalize the run_one_step_method
+        self.finalize__run_one_step(dt)
 
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
-
-        # Check walltime
-        self.check_slurm_walltime()
 
 def main():
     """Executes model."""

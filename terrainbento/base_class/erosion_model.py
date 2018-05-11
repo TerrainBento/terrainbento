@@ -933,6 +933,16 @@ class ErosionModel(object):
 
         self.run_output_writers()
 
+    def finalize__run_one_step(self, dt):
+        # calculate model time
+        self._model_time += dt
+
+        # Update boundary conditions
+        self.update_boundary_conditions(dt)
+
+        # Check walltime
+        self.check_slurm_walltime()
+
     def finalize(self):
         """Finalize model
 
