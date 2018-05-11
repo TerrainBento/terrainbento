@@ -6,8 +6,17 @@ from landlab import HexModelGrid
 from terrainbento import ErosionModel
 
 
-def test_FlowAccumulator_options():
-    """Test FlowAccumulator instantiation."""
-    # D8, D4, MFD x hex, raster, dem
-    # with/without DepressionFinder
+def test_FlowAccumulator_with_depression_D8():
+    pass
+
+
+def test_FlowAccumulator_with_depression_D8_Hex():
+    pass
+
+
+def test_FlowAccumulator_with_depression_D4():
+    pass
+
+
+def test_FlowAccumulator_with_depression_MFD():
     pass
