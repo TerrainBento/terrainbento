@@ -78,12 +78,15 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
         """
         # replace pass with all actions needed to run the model forward for a time
         # increment `dt`.
-        pass
+
+        # end with finalize__run_one_step which does things at the end of
+        # run_one_step that are required by all models.
+        self.finalize__run_one_step(dt)
 
 
     # if you have additional class functions, you can define them here.
     def my_internal_function(self):
-        """Do something necessary to instantiate or run ``ModelName```."""
+        """Do something necessary to instantiate or run ``ModelTemplate```."""
         # replace pass with function.
         pass
 
@@ -112,7 +115,7 @@ def main():
                 'include input file name on command line'))
         sys.exit(1)
 
-    model = ModelName(input_file=infile)
+    model = ModelTemplate(input_file=infile)
     model.run()
 
 
