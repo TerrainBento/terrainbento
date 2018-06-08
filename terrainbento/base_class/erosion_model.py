@@ -188,29 +188,6 @@ output_filename : str, optional
 Note also that the ``run`` method takes as a parameter ``output_fields`` which
 is a list of model grid fields to write as output.
 
-Miscellaneous Parameters
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-The following are optional parameters that control the cabablity of a
-``terrainbento`` model to monitor the wall time of jobs on a computing platform
-submitted with the SLURM package. If the wall time is too close to the specified
-threshold, then a pickle of the model is created. The model (including random
-state) can then be re-started from the last run timestep.
-
-pickle_name : str, optional
-    Name for pickled instance of the model. Default value is 'saved_model.model'
-load_from_pickle : boolean, optional
-    Optionally load model from pickled instance. Default is False
-opt_walltime : boolean, optional
-    Optionally check supercomputer job walltime (compatible only with SLURM
-    submission system) to identify if the model will be cut off before it
-    completes.
-opt_save : boolean, optional
-    Optionally save model as a pickle if supercomputer walltime gets too
-    close to a threshold.
-wall_threshold : float, optional
-dynamic_cut_off_time : bool, optional
-cut_off_time : float, optional
 """
 
 import sys
@@ -281,11 +258,8 @@ class ErosionModel(object):
     get_parameter_from_exponent
     calculate_cumulative_change
     update_boundary_conditions
-    check_slurm_walltime
     write_output
     finalize
-    pickle_self
-    unpickle_self
 
     """
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
@@ -333,154 +307,137 @@ class ErosionModel(object):
             else:
                 self.params = load_params(input_file)
 
-        #######################################################################
-        # Get the pickled instance name.
-        #######################################################################
-        self.save_model_name = self.params.get('pickle_name', 'saved_model.model')
-        self.load_from_pickle = self.params.get('load_from_pickle', False)
-
-        # if pickled instance exists and should be loaded, load it.
-        if (self.load_from_pickle) and (os.path.exists(self.save_model_name)):
-            self.unpickle_self()
-
-        #######################################################################
-        # otherwise initialize as normal.
-        #######################################################################
-        else:
-            # ensure required values are provided
-            for req in ['dt', 'output_interval', 'run_duration']:
-                if req in self.params:
-                    try:
-                        val = float(self.params[req])
-                    except ValueError:
-                        msg = 'Required parameter {0} is not compatible with type float.'.format(req),
-                        raise ValueError(msg)
-                else:
-                    msg = 'Required parameter {0} was not provided.'.format(req),
-
+        # ensure required values are provided
+        for req in ['dt', 'output_interval', 'run_duration']:
+            if req in self.params:
+                try:
+                    val = float(self.params[req])
+                except ValueError:
+                    msg = 'Required parameter {0} is not compatible with type float.'.format(req),
                     raise ValueError(msg)
-
-            # identify if initial conditions should be saved.
-            # default behavior is to not save the first timestep
-            self.save_first_timestep = self.params.get('save_first_timestep', True)
-            self._out_file_name = self.params.get('output_filename', 'terrainbento_output')
-            # instantiate model time.
-            self._model_time = 0.
-
-            # instantiate container for computational timestep:
-            self._compute_time = [tm.time()]
-
-            # Handle option to save if walltime is to short
-            self.opt_save = self.params.get('opt_save', False)
-            self._check_slurm_walltime = self.params.get('opt_walltime', False)
-            ###################################################################
-            # create topography
-            ###################################################################
-
-            # Read the topography data and create a grid
-            # first, check to make sure both DEM and node-rows are not both
-            # specified.
-            if ((self.params.get('number_of_node_rows') is not None) and
-                (self.params.get('DEM_filename') is not None)):
-                raise ValueError('Both a DEM filename and number_of_node_rows have '
-                                 'been specified.')
-
-            if 'DEM_filename' in self.params:
-                self._starting_topography = 'inputDEM'
-                (self.grid, self.z) = self.read_topography(self.params['DEM_filename'])
-                self.opt_watershed = True
             else:
-                # this routine will set self.opt_watershed internally
-                if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
-                    self._starting_topography = 'HexModelGrid'
-                    self.setup_hexagonal_grid()
-                else:
-                    self._starting_topography = 'RasterModelGrid'
-                    self.setup_raster_grid()
+                msg = 'Required parameter {0} was not provided.'.format(req),
 
-            # Set DEM boundaries
-            if self.opt_watershed:
-                if 'outlet_id' in self.params:
-                    self.outlet_node = self.params['outlet_id']
-                    self.grid.set_watershed_boundary_condition_outlet_id(self.outlet_node,
-                                                                         self.z,
-                                                                         nodata_value=-9999)
-                else:
-                    self.outlet_node = self.grid.set_watershed_boundary_condition(self.z,
-                                                                                  nodata_value=-9999,
-                                                                                  return_outlet_id=True)[0]
+                raise ValueError(msg)
 
-            # Add fields for initial topography and cumulative erosion depth
-            z0 = self.grid.add_zeros('node', 'initial_topographic__elevation')
-            z0[:] = self.z  # keep a copy of starting elevation
-            self.grid.add_zeros('node', 'cumulative_erosion__depth')
+        # identify if initial conditions should be saved.
+        # default behavior is to not save the first timestep
+        self.save_first_timestep = self.params.get('save_first_timestep', True)
+        self._out_file_name = self.params.get('output_filename', 'terrainbento_output')
+        # instantiate model time.
+        self._model_time = 0.
 
-            # identify which nodes are data nodes:
-            self.data_nodes = self.grid.at_node['topographic__elevation']!=-9999.
+        # instantiate container for computational timestep:
+        self._compute_time = [tm.time()]
 
-            ###################################################################
-            # instantiate flow direction and accumulation
-            ###################################################################
-            # get flow direction, and depression finding options
-            self.flow_director = self.params.get('flow_director', 'FlowDirectorSteepest')
-            self.depression_finder = self.params.get('depression_finder', None)
+        ###################################################################
+        # create topography
+        ###################################################################
 
-            # Instantiate a FlowAccumulator, if DepressionFinder is provided
-            # AND director = Steepest, then we need routing to be D4,
-            # otherwise, just passing params should be sufficient.
-            if ((self.depression_finder is not None) and
-                (self.flow_director == 'FlowDirectorSteepest')):
-                self.flow_router = FlowAccumulator(self.grid,
-                                                   routing = 'D4',
-                                                   **self.params)
+        # Read the topography data and create a grid
+        # first, check to make sure both DEM and node-rows are not both
+        # specified.
+        if ((self.params.get('number_of_node_rows') is not None) and
+            (self.params.get('DEM_filename') is not None)):
+            raise ValueError('Both a DEM filename and number_of_node_rows have '
+                             'been specified.')
+
+        if 'DEM_filename' in self.params:
+            self._starting_topography = 'inputDEM'
+            (self.grid, self.z) = self.read_topography(self.params['DEM_filename'])
+            self.opt_watershed = True
+        else:
+            # this routine will set self.opt_watershed internally
+            if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
+                self._starting_topography = 'HexModelGrid'
+                self.setup_hexagonal_grid()
             else:
-                self.flow_router = FlowAccumulator(self.grid, **self.params)
+                self._starting_topography = 'RasterModelGrid'
+                self.setup_raster_grid()
 
-            ###################################################################
-            # get internal length scale adjustement
-            ###################################################################
-            feet_to_meters = self.params.get('feet_to_meters', False)
-            meters_to_feet = self.params.get('meters_to_feet', False)
-            if feet_to_meters and meters_to_feet:
-                raise ValueError('Both "feet_to_meters" and "meters_to_feet" are'
-                                 'set as True. This is not realistic.')
+        # Set DEM boundaries
+        if self.opt_watershed:
+            if 'outlet_id' in self.params:
+                self.outlet_node = self.params['outlet_id']
+                self.grid.set_watershed_boundary_condition_outlet_id(self.outlet_node,
+                                                                     self.z,
+                                                                     nodata_value=-9999)
             else:
-                if feet_to_meters:
-                    self._length_factor = 1.0/3.28084
-                elif meters_to_feet:
-                    self._length_factor = 3.28084
-                else:
-                    self._length_factor = 1.0
-            self.params['length_factor'] = self._length_factor
+                self.outlet_node = self.grid.set_watershed_boundary_condition(self.z,
+                                                                              nodata_value=-9999,
+                                                                              return_outlet_id=True)[0]
 
-            ###################################################################
-            # Boundary Conditions
-            ###################################################################
-            self.boundary_handler = {}
-            if 'BoundaryHandlers' in self.params:
-                    BoundaryHandlers = self.params['BoundaryHandlers']
+        # Add fields for initial topography and cumulative erosion depth
+        z0 = self.grid.add_zeros('node', 'initial_topographic__elevation')
+        z0[:] = self.z  # keep a copy of starting elevation
+        self.grid.add_zeros('node', 'cumulative_erosion__depth')
 
-            if BoundaryHandlers is None:
-                pass
+        # identify which nodes are data nodes:
+        self.data_nodes = self.grid.at_node['topographic__elevation']!=-9999.
+
+        ###################################################################
+        # instantiate flow direction and accumulation
+        ###################################################################
+        # get flow direction, and depression finding options
+        self.flow_director = self.params.get('flow_director', 'FlowDirectorSteepest')
+        self.depression_finder = self.params.get('depression_finder', None)
+
+        # Instantiate a FlowAccumulator, if DepressionFinder is provided
+        # AND director = Steepest, then we need routing to be D4,
+        # otherwise, just passing params should be sufficient.
+        if ((self.depression_finder is not None) and
+            (self.flow_director == 'FlowDirectorSteepest')):
+            self.flow_router = FlowAccumulator(self.grid,
+                                               routing = 'D4',
+                                               **self.params)
+        else:
+            self.flow_router = FlowAccumulator(self.grid, **self.params)
+
+        ###################################################################
+        # get internal length scale adjustement
+        ###################################################################
+        feet_to_meters = self.params.get('feet_to_meters', False)
+        meters_to_feet = self.params.get('meters_to_feet', False)
+        if feet_to_meters and meters_to_feet:
+            raise ValueError('Both "feet_to_meters" and "meters_to_feet" are'
+                             'set as True. This is not realistic.')
+        else:
+            if feet_to_meters:
+                self._length_factor = 1.0/3.28084
+            elif meters_to_feet:
+                self._length_factor = 3.28084
             else:
-                if isinstance(BoundaryHandlers, list):
-                    for comp in BoundaryHandlers:
-                        self.setup_boundary_handler(comp)
-                else:
-                    self.setup_boundary_handler(BoundaryHandlers)
+                self._length_factor = 1.0
+        self.params['length_factor'] = self._length_factor
 
-            ###################################################################
-            # Output Writers
-            ###################################################################
-            self.output_writers = {'class': {}, 'function': []}
-            if OutputWriters is None:
-                pass
+        ###################################################################
+        # Boundary Conditions
+        ###################################################################
+        self.boundary_handler = {}
+        if 'BoundaryHandlers' in self.params:
+                BoundaryHandlers = self.params['BoundaryHandlers']
+
+        if BoundaryHandlers is None:
+            pass
+        else:
+            if isinstance(BoundaryHandlers, list):
+                for comp in BoundaryHandlers:
+                    self.setup_boundary_handler(comp)
             else:
-                if isinstance(OutputWriters, list):
-                    for comp in OutputWriters:
-                        self.setup_output_writer(comp)
-                else:
-                    self.setup_output_writer(OutputWriters)
+                self.setup_boundary_handler(BoundaryHandlers)
+
+        ###################################################################
+        # Output Writers
+        ###################################################################
+        self.output_writers = {'class': {}, 'function': []}
+        if OutputWriters is None:
+            pass
+        else:
+            if isinstance(OutputWriters, list):
+                for comp in OutputWriters:
+                    self.setup_output_writer(comp)
+            else:
+                self.setup_output_writer(OutputWriters)
 
     @property
     def model_time(self):
@@ -879,20 +836,6 @@ class ErosionModel(object):
                 param = None
         return param
 
-    def __setstate__(self, state_dict):
-        """Get ErosionModel state from pickled state_dict."""
-        random_state = state_dict.pop('random_state')
-        np.random.set_state(random_state)
-
-        self.__dict__ = state_dict
-
-    def __getstate__(self):
-        """Set ErosionModel state for pickling."""
-        state_dict = self.__dict__
-        state_dict['random_state'] = np.random.get_state()
-
-        return state_dict
-
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
         self.grid.at_node['cumulative_erosion__depth'] = \
@@ -941,9 +884,6 @@ class ErosionModel(object):
 
         # Update boundary conditions
         self.update_boundary_conditions(dt)
-
-        # Check walltime
-        self.check_slurm_walltime()
 
     def finalize(self):
         """Finalize model
@@ -1005,10 +945,6 @@ class ErosionModel(object):
         # now that the model is finished running, execute finalize.
         self.finalize()
 
-        # once done, remove saved model object if it exists
-        if os.path.exists(self.save_model_name):
-            os.remove(self.save_model_name)
-
     def run_output_writers(self):
         """Run all output writers"""
         if self.output_writers is not None:
@@ -1029,65 +965,6 @@ class ErosionModel(object):
         if self.boundary_handler is not None:
             for handler_name in self.boundary_handler:
                 self.boundary_handler[handler_name].run_one_step(dt)
-
-    def pickle_self(self):
-        """Pickle model object."""
-        with open(self.save_model_name, 'wb') as f:
-            dill.dump(self, f)
-
-    def unpickle_self(self):
-        """Unpickle model object."""
-        with open(self.save_model_name, 'rb') as f:
-            model = dill.load(f)
-        self.__setstate__(model)
-
-    def check_slurm_walltime(self, wall_threshold=0, dynamic_cut_off_time=False, cut_off_time=0):
-        """Check walltime with slurm and save model out if near end of time."""
-        # check walltime
-
-        if self._check_slurm_walltime:
-            # format is days-hours:minutes:seconds
-            if dynamic_cut_off_time:
-                self._compute_time.append(tm.time())
-                mean_time_diffs = np.mean(np.diff(np.asarray(self._compute_time)))/60. # in minutes
-                cut_off_time = mean_time_diffs + wall_threshold
-            else:
-                pass # cut off time is 0
-
-            try:
-                output,error = subprocess.Popen(['squeue',
-                                                  '--job='+os.environ['SLURM_JOB_ID'], '--format=%.10L'],
-                                                 stdout = subprocess.PIPE,
-                                                 stderr = subprocess.PIPE).communicate()
-                time_left = output.strip().split(' ')[-1]
-
-                if len(time_left.split('-')) == 1:
-                    days_left = 0
-                else:
-                    days_left = time_left.split('-')[0]
-
-                try:
-                    minutes_left = int(time_left.split(':')[-2])
-                except IndexError:
-                    minutes_left = 0
-
-                try:
-                    hours_left = int(time_left.split(':')[-3])
-                except IndexError:
-                    hours_left = 0
-
-                remaining_time = (days_left*60*60) + (60*hours_left) + minutes_left
-
-                if self.opt_save:
-                    if remaining_time < cut_off_time:
-                        # pickle self
-                        self.pickle_self()
-                        # exit program
-                        sys.exit()
-
-            except KeyError:
-                pass
-
 
 def main():
     """Executes model."""

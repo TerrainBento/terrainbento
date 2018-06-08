@@ -77,8 +77,6 @@ def test_input_file():
     assert em.save_first_timestep == True
     assert em._out_file_name == 'terrainbento_output'
     assert em._model_time == 0.
-    assert em.opt_save == False
-    assert em._check_slurm_walltime == False
 
 
 def test_parameters():
@@ -97,29 +95,3 @@ def test_parameters():
     assert em.save_first_timestep == True
     assert em._out_file_name == 'terrainbento_output'
     assert em._model_time == 0.
-    assert em.opt_save == False
-    assert em._check_slurm_walltime == False
-
-
-def test_load_from_pickle():
-    params = {'model_grid' : 'HexModelGrid',
-              'dt': 1, 'output_interval': 2., 'run_duration': 10.}
-    em = ErosionModel(params=params)
-    em.pickle_self()
-
-    params2 = {'model_grid' : 'HexModelGrid',
-               'dt': 1, 'output_interval': 2., 'run_duration': 10.,
-               'load_from_pickle': True}
-    em2 = ErosionModel(params=params2)
-
-    assert os.path.exists('saved_model.model')
-    os.remove('saved_model.model')
-
-
-def test_create_pickle():
-    params = {'model_grid' : 'HexModelGrid',
-              'dt': 1, 'output_interval': 2., 'run_duration': 10.}
-    em = ErosionModel(params=params)
-    em.pickle_self()
-    assert os.path.exists('saved_model.model')
-    os.remove('saved_model.model')
