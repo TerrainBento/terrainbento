@@ -12,7 +12,7 @@ Depending on how the model is initialized, some of them are optional or not
 used.
 
 Required Parameters
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 The required parameters control how long a model will run, the duration of a
 model timestep and the interval at which output is written.
@@ -429,7 +429,9 @@ class ErosionModel(object):
             # AND director = Steepest, then we need routing to be D4,
             # otherwise, just passing params should be sufficient.
             if ((self.depression_finder is not None) and
-                (self.flow_director == 'FlowDirectorSteepest')):
+                (self.flow_director == 'FlowDirectorSteepest') or
+                () or
+                ()):
                 self.flow_router = FlowAccumulator(self.grid,
                                                    routing = 'D4',
                                                    **self.params)
@@ -484,15 +486,16 @@ class ErosionModel(object):
 
     @property
     def model_time(self):
+        """Current time of model integration in model time units."""
         return self._model_time
 
     def setup_boundary_handler(self, handler):
-        """ Setup BoundaryHandlers for use by a TerrainBento model.
+        """ Setup BoundaryHandlers for use by a ``terrainbento`` model.
 
         Boundary condition handlers are classes with a run_one_step method that
         takes the parameter ``dt``. Permitted boundary condition handlers
         include the Landlab Component ``NormalFault`` as well as the following
-        options from ``TerrainBento``: ``PrecipChanger``,
+        options from ``terrainbento``: ``PrecipChanger``,
         ``CaptureNodeBaselevelHandler``, ``ClosedNodeBaselevelHandler``,
         ``SingleNodeBaselevelHandler``.
 
@@ -500,6 +503,7 @@ class ErosionModel(object):
         ----------
         handler : str or object
             Name of instance of a supported boundary condition handler.
+
         """
         if isinstance(handler, Component):
             name = handler.__name__
