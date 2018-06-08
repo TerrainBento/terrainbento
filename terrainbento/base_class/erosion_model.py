@@ -429,9 +429,7 @@ class ErosionModel(object):
             # AND director = Steepest, then we need routing to be D4,
             # otherwise, just passing params should be sufficient.
             if ((self.depression_finder is not None) and
-                (self.flow_director == 'FlowDirectorSteepest') or
-                () or
-                ()):
+                (self.flow_director == 'FlowDirectorSteepest')):
                 self.flow_router = FlowAccumulator(self.grid,
                                                    routing = 'D4',
                                                    **self.params)
