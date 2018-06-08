@@ -135,15 +135,7 @@ class BasicHyVs(ErosionModel):
         self.diffuser.run_one_step(dt)
 
         # Finalize the run_one_step_method
-    self.finalize__run_one_step(dt)
-        
-
-        
-        
-
-        
-        
-
+        self.finalize__run_one_step(dt)
 
 def main():
     """Executes model."""

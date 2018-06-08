@@ -17,6 +17,7 @@ def output_writer_function_b(model):
 class output_writer_class_a(object):
     def __init__(model):
         self.model=model
+
     def run_one_step(self):
         pass
 
@@ -42,3 +43,4 @@ def test_two_class_writers():
     pass
 
 def test_all_four_writers():
+    pass
