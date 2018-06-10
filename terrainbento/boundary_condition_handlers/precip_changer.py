@@ -395,7 +395,7 @@ class PrecipChanger(object):
                                           / self._time_conversion
                                           * self._length_factor)
 
-        self.precip_shape_factor = daily_rainfall__precipitation_shape_factor
+        self.daily_rainfall__precipitation_shape_factor = daily_rainfall__precipitation_shape_factor
         self.time_unit = time_unit
         self.infilt_cap = (infiltration_capacity
                           / self._time_conversion
@@ -450,10 +450,10 @@ class PrecipChanger(object):
         distribution of daily precipitation intensity at model run onset.
 
         """
-        lam = _scale_fac(self.starting_daily_mean_depth, self.precip_shape_factor)
+        lam = _scale_fac(self.starting_daily_mean_depth, self.daily_rainfall__precipitation_shape_factor)
         psi, abserror = quad(_integrand, self.infilt_cap, np.inf,
                              args=(self.infilt_cap, lam,
-                             self.precip_shape_factor,
+                             self.daily_rainfall__precipitation_shape_factor,
                              self.m))
         return psi
 
@@ -514,11 +514,11 @@ class PrecipChanger(object):
             frac_wet, mean_depth = self.get_current_precip_params()
 
             # calculate the mean intensity and the scale factor
-            lam = _scale_fac(mean_depth, self.precip_shape_factor)
+            lam = _scale_fac(mean_depth, self.daily_rainfall__precipitation_shape_factor)
 
             # calculate current value of Psi
             psi, err  = quad(_integrand, self.infilt_cap, np.inf,
-                             args=(self.infilt_cap, lam, self.precip_shape_factor,
+                             args=(self.infilt_cap, lam, self.daily_rainfall__precipitation_shape_factor,
                              self.m))
 
             # calculate the adjustment factor

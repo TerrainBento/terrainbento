@@ -63,7 +63,7 @@ class BasicHySt(StochasticErosionModel):
     >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
     >>> my_pars['mean_storm_depth'] = 0.025
     >>> my_pars['random_seed'] = 907
-    >>> my_pars['precip_shape_factor'] = 0.65
+    >>> my_pars['daily_rainfall__precipitation_shape_factor'] = 0.65
     >>> my_pars['number_of_sub_time_steps'] = 10
     >>> my_pars['v_s'] = 0.01
     >>> my_pars['F_f'] = 0.1

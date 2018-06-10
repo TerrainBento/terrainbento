@@ -39,7 +39,7 @@ parameter ``number_of_sub_time_steps`` and then each of these sub-timesteps will
 experience a duration of rain and no-rain based on the value of
 ``daily_rainfall_intermittency_factor``. The duration of rain and no-rain will not change, but
 the intensity of rain will vary based on a stretched exponential described by
-the shape factor ``precip_shape_factor`` and with a scale factor calculated so
+the shape factor ``daily_rainfall__precipitation_shape_factor`` and with a scale factor calculated so
 that the mean of the distribution has the value given by
 ``daily_rainfall__mean_intensity``,
 
@@ -51,7 +51,7 @@ daily_rainfall_intermittency_factor : float
     never ceases.
 daily_rainfall__mean_intensity : float
     Mean of the precipitation distribution.
-precip_shape_factor : float
+daily_rainfall__precipitation_shape_factor : float
     Shape factor of the precipitation distribution.
 
 Parameters that control output
@@ -220,7 +220,7 @@ class StochasticErosionModel(ErosionModel):
                                           random_seed=int(self.params['random_seed']))
             self.daily_rainfall_intermittency_factor = daily_rainfall_intermittency_factor
             self.daily_rainfall__mean_intensity = daily_rainfall__mean_intensity
-            self.shape_factor = self.params['precip_shape_factor']
+            self.shape_factor = self.params['daily_rainfall__precipitation_shape_factor']
             self.scale_factor = (self.daily_rainfall__mean_intensity
                                  / gamma(1.0 + (1.0 / self.shape_factor)))
 
