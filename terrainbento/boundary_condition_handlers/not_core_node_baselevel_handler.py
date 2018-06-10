@@ -1,29 +1,29 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-"""``ClosedNodeBaselevelHandler`` modifies elevation for all closed nodes."""
+"""``NotCoreNodeBaselevelHandler`` modifies elevation for all closed nodes."""
 
 import os
 import numpy as np
 from scipy.interpolate import interp1d
 
-class ClosedNodeBaselevelHandler():
-    """Control the elevation of a single open boundary node.
+class NotCoreNodeBaselevelHandler():
+    """Control the elevation of all nodes that are not core nodes.
 
-    The ``ClosedNodeBaselevelHandler`` controls the elevation of all nodes on the
-    model grid with ``status != 0``. The elevation change at these nodes is
-    specified either as a constant or through a time or through a textfile that
-    specifies the elevation change through time.
+    The ``NotCoreNodeBaselevelHandler`` controls the elevation of all nodes on
+    the model grid with ``status != 0`` (core nodes). The elevation change at
+    these nodes is specified either as a constant or through a time or through a
+    textfile that specifies the elevation change through time.
 
-    Through the parameter ``modify_closed_nodes`` the user can determine if the
-    closed nodes should be moved in the direction (up or down) specified by the
-    elevation change directive, or if the non-closed nodes should be moved in
+    Through the parameter ``modify_core_nodes`` the user can determine if the
+    core nodes should be moved in the direction (up or down) specified by the
+    elevation change directive, or if the non-core nodes should be moved in
     the opposite direction.
 
-    The ``ClosedNodeBaselevelHandler`` expects that ``topographic__elevation`` is a
+    The ``NotCoreNodeBaselevelHandler`` expects that ``topographic__elevation`` is a
     at-node model grid field. It will modify this field and, if it exists,
     the field ``bedrock__elevation``.
 
-    Note that ``ClosedNodeBaselevelHandler`` increments time at the end of the
+    Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of the
     ``run_one_step`` method.
 
     Methods
@@ -34,7 +34,7 @@ class ClosedNodeBaselevelHandler():
 
     def __init__(self,
                  grid,
-                 modify_closed_nodes = False,
+                 modify_core_nodes = False,
                  lowering_rate = None,
                  lowering_file_path = None,
                  model_end_elevation = None,
@@ -43,9 +43,10 @@ class ClosedNodeBaselevelHandler():
         Parameters
         ----------
         grid : landlab model grid
-        modify_closed_nodes : boolean, optional
-            Flag to indicate if the closed nodes or the non-closed nodes will
-            be modified.
+        modify_core_nodes : boolean, optional
+            Flag to indicate if the core nodes or the non-core nodes will
+            be modified. Default is False, indicating that nodes in the core
+            will be modified.
         lowering_rate : float, optional
             Lowering rate of the outlet node. One of ``lowering_rate`` and
             ``lowering_file_path`` is required. Units are implied by the
@@ -87,12 +88,12 @@ class ClosedNodeBaselevelHandler():
          [ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]]
 
-        Now import the ``ClosedNodeBaselevelHandler`` and instantiate.
+        Now import the ``NotCoreNodeBaselevelHandler`` and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         ClosedNodeBaselevelHandler)
-        >>> bh = ClosedNodeBaselevelHandler(mg,
-        ...                                 modify_closed_nodes = True,
+        ...                                         NotCoreNodeBaselevelHandler)
+        >>> bh = NotCoreNodeBaselevelHandler(mg,
+        ...                                 modify_core_nodes = False,
         ...                                 lowering_rate = -0.1)
         >>> bh.run_one_step(10.0)
 
@@ -106,8 +107,8 @@ class ClosedNodeBaselevelHandler():
          [-1.  0.  0.  0. -1.]
          [-1. -1. -1. -1. -1.]]
 
-        If we wanted instead for all of the non closed nodes to change their
-        elevation, we would set ``modify_closed_nodes = False``.
+        If we wanted instead for all of the non core nodes to change their
+        elevation, we would set ``modify_core_nodes = True``.
 
         >>> mg = RasterModelGrid(5, 5)
         >>> z = mg.add_zeros('node', 'topographic__elevation')
@@ -118,9 +119,9 @@ class ClosedNodeBaselevelHandler():
         >>> mg.set_watershed_boundary_condition_outlet_id(
         ...     0, mg.at_node['topographic__elevation'], -9999.)
         >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         ClosedNodeBaselevelHandler)
-        >>> bh = ClosedNodeBaselevelHandler(mg,
-        ...                                 modify_closed_nodes = False,
+        ...                                         NotCoreNodeBaselevelHandler)
+        >>> bh = NotCoreNodeBaselevelHandler(mg,
+        ...                                 modify_core_nodes = True,
         ...                                 lowering_rate = -0.1)
         >>> bh.run_one_step(10.0)
         >>> print(z.reshape(mg.shape))
@@ -136,20 +137,21 @@ class ClosedNodeBaselevelHandler():
         """
         self.model_time = 0.0
         self.grid = grid
-        self.modify_closed_nodes = modify_closed_nodes
+        self.modify_core_nodes = modify_core_nodes
         self.z = self.grid.at_node['topographic__elevation']
 
         # determine which nodes to lower
         # based on which are lowering, set the prefactor correctly.
-        if self.modify_closed_nodes:
-            self.nodes_to_lower = self.grid.status_at_node != 0
-            self.prefactor = 1.0
-        else:
+        if self.modify_core_nodes:
             self.nodes_to_lower = self.grid.status_at_node == 0
             self.prefactor = -1.0
+        else:
+            self.nodes_to_lower = self.grid.status_at_node != 0
+            self.prefactor = 1.0
+
 
         if (lowering_file_path is None) and (lowering_rate is None):
-            raise ValueError(('ClosedNodeBaselevelHandler requires one of '
+            raise ValueError(('NotCoreNodeBaselevelHandler requires one of '
                               'lowering_rate and lowering_file_path'))
         else:
             if (lowering_rate is None):
@@ -173,7 +175,7 @@ class ClosedNodeBaselevelHandler():
                     self.lowering_rate = None
                 else:
                     raise ValueError(('The lowering_file_path provided '
-                                      'to ClosedNodeBaselevelHandler does not '
+                                      'to NotCoreNodeBaselevelHandler does not '
                                       'exist.'))
             elif (lowering_file_path is None):
                 self.lowering_rate = lowering_rate
@@ -181,20 +183,20 @@ class ClosedNodeBaselevelHandler():
             else:
                 raise ValueError(('Both an lowering_rate and a '
                                   'lowering_file_path have been provided '
-                                  'to ClosedNodeBaselevelHandler. Please provide '
+                                  'to NotCoreNodeBaselevelHandler. Please provide '
                                   'only one.'))
 
     def run_one_step(self, dt):
-        """ Run ``ClosedNodeBaselevelHandler`` forward and update elevations.
+        """ Run ``NotCoreNodeBaselevelHandler`` forward and update elevations.
 
         The ``run_one_step`` method provides a consistent interface to update
         the ``terrainbento`` boundary condition handlers.
 
-        In the ``run_one_step`` routine, the ``ClosedNodeBaselevelHandler`` will
+        In the ``run_one_step`` routine, the ``NotCoreNodeBaselevelHandler`` will
         either lower the closed or raise the non-closed nodes based on inputs
         specified at instantiation.
 
-        Note that ``ClosedNodeBaselevelHandler`` increments time at the end of
+        Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of
         the ``run_one_step`` method.
 
         Parameters

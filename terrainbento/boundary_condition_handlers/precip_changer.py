@@ -233,7 +233,7 @@ class PrecipChanger(object):
     the mean of the daily rainfall Weibull distribution
     (``daily_rainfall__mean_intensity``).
 
-    Note that ``ClosedNodeBaselevelHandler`` increments time at the end of the
+    Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of the
     ``run_one_step`` method.
 
     Methods

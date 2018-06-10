@@ -142,7 +142,7 @@ describing the functionality you would like to use in your work.
 BoundaryHandlers : str or list of str, optional
     Strings of the classes used to handle boundary conditions. Valid options
     are currently: 'NormalFault', 'PrecipChanger', 'CaptureNodeBaselevelHandler',
-    'ClosedNodeBaselevelHandler', 'SingleNodeBaselevelHandler'. These
+    'NotCoreNodeBaselevelHandler', 'SingleNodeBaselevelHandler'. These
     BoundaryHandlers are instantiated with the entire parameter set unless there
     is an entry in the parameter dictionary with the name of the boundary
     handler that contains its own parameter dictionary. If this is the case, the
@@ -211,19 +211,19 @@ from landlab.components import FlowAccumulator, NormalFault
 from terrainbento.boundary_condition_handlers import (
                             PrecipChanger,
                             CaptureNodeBaselevelHandler,
-                            ClosedNodeBaselevelHandler,
+                            NotCoreNodeBaselevelHandler,
                             SingleNodeBaselevelHandler)
 
 _SUPPORTED_BOUNDARY_HANDLERS = ['NormalFault',
                                 'PrecipChanger',
                                 'CaptureNodeBaselevelHandler',
-                                'ClosedNodeBaselevelHandler',
+                                'NotCoreNodeBaselevelHandler',
                                 'SingleNodeBaselevelHandler']
 
 _HANDLER_METHODS = {'NormalFault': NormalFault,
                     'PrecipChanger': PrecipChanger,
                     'CaptureNodeBaselevelHandler': CaptureNodeBaselevelHandler,
-                    'ClosedNodeBaselevelHandler': ClosedNodeBaselevelHandler,
+                    'NotCoreNodeBaselevelHandler': NotCoreNodeBaselevelHandler,
                     'SingleNodeBaselevelHandler': SingleNodeBaselevelHandler}
 
 
@@ -451,7 +451,7 @@ class ErosionModel(object):
         takes the parameter ``dt``. Permitted boundary condition handlers
         include the Landlab Component ``NormalFault`` as well as the following
         options from ``terrainbento``: ``PrecipChanger``,
-        ``CaptureNodeBaselevelHandler``, ``ClosedNodeBaselevelHandler``,
+        ``CaptureNodeBaselevelHandler``, ``NotCoreNodeBaselevelHandler``,
         ``SingleNodeBaselevelHandler``.
 
         Parameters
