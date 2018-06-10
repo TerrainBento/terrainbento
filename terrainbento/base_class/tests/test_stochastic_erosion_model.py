@@ -3,7 +3,7 @@ import numpy as np
 from nose.tools import assert_raises#, assert_almost_equal, assert_equal
 
 from landlab import HexModelGrid
-from terrainbento import StochasticErosionModel, ModelSt
+from terrainbento import StochasticErosionModel, BasicSt
 
 
 def test_run_opt_true():
@@ -29,6 +29,8 @@ def test_finalize_opt_duration_stochastic_true():
 def test_finalize_opt_duration_stochastic_false():
     pass
 
+def test_float_number_of_sub_time_steps():
+    pass
 
 # double check if these two options work with BOTH stochastic duration options.
 def test_write_storm_sequence_to_file():

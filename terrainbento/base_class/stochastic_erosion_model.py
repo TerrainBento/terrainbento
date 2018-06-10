@@ -223,6 +223,10 @@ class StochasticErosionModel(ErosionModel):
             self.shape_factor = self.params['precip_shape_factor']
             self.scale_factor = (self.mean_storm__intensity
                                  / gamma(1.0 + (1.0 / self.shape_factor)))
+
+            if isinstance(self.params['number_of_sub_time_steps'], (int, np.integer)) == False:
+                raise ValueError(('number_of_sub_time_steps must be of type integer.'))
+
             self.n_sub_steps = int(self.params['number_of_sub_time_steps'])
 
     def reset_random_seed(self):
