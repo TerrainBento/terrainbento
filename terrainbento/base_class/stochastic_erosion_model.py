@@ -41,7 +41,7 @@ experience a duration of rain and no-rain based on the value of
 the intensity of rain will vary based on a stretched exponential described by
 the shape factor ``precip_shape_factor`` and with a scale factor calculated so
 that the mean of the distribution has the value given by
-``mean_storm__intensity``,
+``daily_rainfall__mean_intensity``,
 
 number_of_sub_time_steps : int
     Number of sub timesteps.
@@ -49,7 +49,7 @@ intermittency_factor : float
     Value between zero and one that indicates the proportion of time rain
     occurs. A value of 0 means it never rains and a value of 1 means that rain
     never ceases.
-mean_storm__intensity : float
+daily_rainfall__mean_intensity : float
     Mean of the precipitation distribution.
 precip_shape_factor : float
     Shape factor of the precipitation distribution.
@@ -210,7 +210,7 @@ class StochasticErosionModel(ErosionModel):
             self.run_for = self.run_for_stochastic  # override base method
         else:
             from scipy.special import gamma
-            mean_storm__intensity = (self._length_factor)*self.params['mean_storm__intensity']# has units length per time
+            daily_rainfall__mean_intensity = (self._length_factor)*self.params['daily_rainfall__mean_intensity']# has units length per time
             intermittency_factor = self.params['intermittency_factor']
 
             self.rain_generator = \
@@ -219,9 +219,9 @@ class StochasticErosionModel(ErosionModel):
                                           mean_storm_depth=1.0,
                                           random_seed=int(self.params['random_seed']))
             self.intermittency_factor = intermittency_factor
-            self.mean_storm__intensity = mean_storm__intensity
+            self.daily_rainfall__mean_intensity = daily_rainfall__mean_intensity
             self.shape_factor = self.params['precip_shape_factor']
-            self.scale_factor = (self.mean_storm__intensity
+            self.scale_factor = (self.daily_rainfall__mean_intensity
                                  / gamma(1.0 + (1.0 / self.shape_factor)))
 
             if isinstance(self.params['number_of_sub_time_steps'], (int, np.integer)) == False:
@@ -271,7 +271,7 @@ class StochasticErosionModel(ErosionModel):
         """
         # (if we're varying precipitation parameters through time, update them)
         if 'PrecipChanger' in self.boundary_handler:
-            self.intermittency_factor, self.mean_storm__intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params()
+            self.intermittency_factor, self.daily_rainfall__mean_intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params()
 
         if self.opt_stochastic_duration and self.rain_rate > 0.0:
 
@@ -421,7 +421,7 @@ class StochasticErosionModel(ErosionModel):
         exceedance_file.write('\n')
 
         exceedance_file.write(('This provided value was:\n' +
-                               str(self.mean_storm__intensity) + '\n'))
+                               str(self.daily_rainfall__mean_intensity) + '\n'))
 
         # calculate the predictions for 10, 25, and 100 year event based on
         # the analytical form of the exceedance function.

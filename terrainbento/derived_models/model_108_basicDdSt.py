@@ -61,7 +61,7 @@ class BasicDdSt(StochasticErosionModel):
     >>> my_pars['erosion__threshold'] = 1.0
     >>> my_pars['thresh_change_per_depth'] = 0.1
     >>> my_pars['linear_diffusivity'] = 0.01
-    >>> my_pars['mean_storm__intensity'] = 0.002
+    >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
     >>> my_pars['intermittency_factor'] = 0.008
     >>> my_pars['mean_storm_depth'] = 0.025
     >>> my_pars['random_seed'] = 907
@@ -183,13 +183,13 @@ class BasicDdSt(StochasticErosionModel):
         """
         # (if we're varying precipitation parameters through time, update them)
         if 'PrecipChanger' in self.boundary_handler:
-            self.intermittency_factor, self.mean_storm__intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params()
+            self.intermittency_factor, self.daily_rainfall__mean_intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params()
 
         # If we're handling duration deterministically, as a set fraction of
         # time step duration, calculate a rainfall intensity. Otherwise,
         # assume it's already been calculated.
         if not self.opt_stochastic_duration:
-            self.rain_rate = np.random.exponential(self.mean_storm__intensity)
+            self.rain_rate = np.random.exponential(self.daily_rainfall__mean_intensity)
             dt_water = dt * self.intermittency_factor
         else:
             dt_water = dt
