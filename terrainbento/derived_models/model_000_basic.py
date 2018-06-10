@@ -16,10 +16,10 @@ from terrainbento.base_class import ErosionModel
 
 
 class Basic(ErosionModel):
-    """Model 000 Basic program.
+    """Model 000 ``Basic`` program.
 
-    Model 000 Basic is a model program that evolves a topographic surface desribed
-    by :math:`\eta` with the following governing equation:
+    Model 000 ``Basic`` is a model program that evolves a topographic surface
+    described by :math:`\eta` with the following governing equation:
 
     .. math::
 
@@ -27,30 +27,32 @@ class Basic(ErosionModel):
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
 
-    Model 000 Basic inherits from the ``terrainbento`` ``ErosionModel`` base
+    Model 000 ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
     class. Depending on the values of :math:`K`, :math:`D`, :math:`m_{sp}` and,
     :math:`n_{sp}` this model program can be used to run the following three
     ``terrainbento`` numerical models.
 
-    1) Model 000 Basic: Here :math:`m_{sp}` has a value of 0.5 and :math:`n_{sp}`
-    has a value of 1. :math:`K` is given by the parameter ``water_erodability``
-    and :math:`D` is given by the parameter ``regolith_transport_parameter``.
+    1) Model 000 ``Basic``: Here :math:`m_{sp}` has a value of 0.5 and
+    :math:`n_{sp}` has a value of 1. :math:`K` is given by the parameter
+    ``water_erodability`` and :math:`D` is given by the parameter
+    ``regolith_transport_parameter``.
 
-    2) Model 001 BasicVm: This model is identical to Model 000 Basic except that
-    the area exponent :math:`m_{sp}` is a free parameter.
+    2) Model 001 ``BasicVm``: This model is identical to Model 000 Basic except
+    that the area exponent :math:`m_{sp}` is a free parameter.
 
-    3) Model 004 BasicSs: In this model :math:`m_{sp}` has a value of 1/3,
+    3) Model 004 ``BasicSs``: In this model :math:`m_{sp}` has a value of 1/3,
     :math:`n_{sp}` has a value of 2/3, and :math:`K` is given by the paramter
     :math:`water_erodability~shear_stress`.
 
-    In addition to those provided by the ``ErosionModel`` base class  ``Basic``
-    has the following attributes and methods.
+    Refer to the ``terrainbento`` manuscript for the units for each of these
+    parameters.
 
-    Attributes
-    ----------
+    In addition to those provided by the ``ErosionModel`` base class  ``Basic``
+    has the following methods.
 
     Methods
     -------
+    run_one_step
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
@@ -76,8 +78,38 @@ class Basic(ErosionModel):
 
         Examples
         --------
-        We recommend that you look at the ``terraintento`` tutorials for
-        examples of usage.
+
+        Import the model class.
+
+        >>> from terrainbento import Basic
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability': 0.001,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0}
+
+        Construct the model.
+
+        >>> model = Basic(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        For more detailed examples, including stead state test examples, see the
+        ``terrainbento`` tutorials.
         """
         # Call ErosionModel's init
         super(Basic, self).__init__(input_file=input_file,
@@ -116,23 +148,28 @@ class Basic(ErosionModel):
                                        linear_diffusivity = regolith_transport_parameter)
 
     def run_one_step(self, dt):
+        """Advance model for one time-step of duration dt.
+
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
         """
-        Advance model for one time-step of duration dt.
-        """
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
-        # Get IDs of flooded nodes, if any
+        # Get IDs of flooded nodes, if any.
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
             flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
-        # Do some erosion (but not on the flooded nodes)
-        # (if we're varying K through time, update that first)
+        # If a PrecipChanger is being used, update the eroder's K value.
         if 'PrecipChanger' in self.boundary_handler:
             self.eroder.K = (self.K
                              * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor())
+
+        # Do some water erosion (but not on the flooded nodes)
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
         # Do some soil creep
