@@ -19,7 +19,7 @@ def test_write_output_raster():
     model.run()
     fs = glob.glob('terrainbento_output*.nc')
 
-    assert len(fs) == 101
+    assert len(fs) == 5
 
     ds = xr.open_dataset(fs[0])
 
@@ -35,7 +35,7 @@ def test_write_output_hex():
     model.run()
     fs = glob.glob('terrainbento_output*.nc')
 
-    assert len(fs) == 101
+    assert len(fs) == 5
     #ds = xr.open_dataset(fs[0])
 
     # todo assess hex output
