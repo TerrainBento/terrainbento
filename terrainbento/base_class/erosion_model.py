@@ -379,6 +379,8 @@ class ErosionModel(object):
         ###################################################################
         # get flow direction, and depression finding options
         self.flow_director = self.params.get('flow_director', 'FlowDirectorSteepest')
+        if ((self.flow_director == 'Steepest') or (self.flow_director == 'D4')):
+            self.flow_director = 'FlowDirectorSteepest'
         self.depression_finder = self.params.get('depression_finder', None)
 
         # Instantiate a FlowAccumulator, if DepressionFinder is provided
