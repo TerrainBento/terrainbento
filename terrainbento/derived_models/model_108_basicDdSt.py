@@ -159,7 +159,10 @@ class BasicDdSt(StochasticErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Handle water erosion
         self.handle_water_erosion_with_threshold(dt, flooded)

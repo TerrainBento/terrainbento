@@ -204,8 +204,14 @@ class BasicRtVs(ErosionModel):
         # Update effective runoff ratio
         self.calc_effective_drainage_area()
 
+        # Get IDs of flooded nodes, if any
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+
         # Zero out effective area in flooded nodes
-        self.eff_area[self.flow_accumulator.depression_finder.flood_status==3] = 0.0
+        self.eff_area[flooded] = 0.0
 
         # Update the erodibility field
         self.update_erodibility_field()

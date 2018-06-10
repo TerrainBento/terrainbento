@@ -80,7 +80,10 @@ class BasicDdHy(ErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Calculate cumulative erosion and update threshold
         cum_ero = self.grid.at_node['cumulative_erosion__depth']

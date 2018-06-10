@@ -189,7 +189,10 @@ class BasicChRtTh(ErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Update the erodibility and threshold field
         self.update_erodibility_and_threshold_fields()
