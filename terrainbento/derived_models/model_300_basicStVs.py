@@ -76,7 +76,7 @@ class BasicStVs(StochasticErosionModel):
         self.tlam = self.trans * self.grid._dx  # assumes raster
 
         # Run flow routing and lake filler
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Keep a reference to drainage area and steepest-descent slope
         self.area = self.grid.at_node['drainage_area']
@@ -122,10 +122,10 @@ class BasicStVs(StochasticErosionModel):
         """
 
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
+        flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Handle water erosion
         self.handle_water_erosion(dt, flooded)

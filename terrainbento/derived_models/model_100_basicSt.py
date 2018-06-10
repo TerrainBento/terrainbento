@@ -98,7 +98,7 @@ class BasicSt(StochasticErosionModel):
         self.area = self.grid.at_node['drainage_area']
 
         # Run flow routing and lake filler
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,
@@ -131,10 +131,10 @@ class BasicSt(StochasticErosionModel):
         """
 
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
+        flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Handle water erosion
         self.handle_water_erosion(dt, flooded)

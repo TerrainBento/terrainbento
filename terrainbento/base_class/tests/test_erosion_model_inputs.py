@@ -70,7 +70,7 @@ def test_input_file():
     for field in at_node_fields:
         assert field in em.grid.at_node
     assert em.flow_director == 'FlowDirectorSteepest'
-    assert isinstance(em.flow_router, FlowAccumulator) == True
+    assert isinstance(em.flow_accumulator, FlowAccumulator) == True
     assert em.depression_finder is None
     assert em.boundary_handler == {}
     assert em.output_writers == {'class': {}, 'function': []}
@@ -88,7 +88,7 @@ def test_parameters():
     for field in at_node_fields:
         assert field in em.grid.at_node
     assert em.flow_director == 'FlowDirectorSteepest'
-    assert isinstance(em.flow_router, FlowAccumulator) == True
+    assert isinstance(em.flow_accumulator, FlowAccumulator) == True
     assert em.depression_finder is None
     assert em.boundary_handler == {}
     assert em.output_writers == {'class': {}, 'function': []}

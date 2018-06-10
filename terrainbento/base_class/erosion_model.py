@@ -386,11 +386,11 @@ class ErosionModel(object):
         # otherwise, just passing params should be sufficient.
         if ((self.depression_finder is not None) and
             (self.flow_director == 'FlowDirectorSteepest')):
-            self.flow_router = FlowAccumulator(self.grid,
+            self.flow_accumulator = FlowAccumulator(self.grid,
                                                routing = 'D4',
                                                **self.params)
         else:
-            self.flow_router = FlowAccumulator(self.grid, **self.params)
+            self.flow_accumulator = FlowAccumulator(self.grid, **self.params)
 
         ###################################################################
         # get internal length scale adjustement

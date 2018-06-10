@@ -116,13 +116,13 @@ class BasicHyVs(ErosionModel):
         """
 
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
         self.calc_effective_drainage_area()
 
         # Zero out effective area in flooded nodes
-        self.eff_area[self.flow_router.depression_finder.flood_status==3] = 0.0
+        self.eff_area[self.flow_accumulator.depression_finder.flood_status==3] = 0.0
 
         # Do some erosion
         # (if we're varying K through time, update that first)

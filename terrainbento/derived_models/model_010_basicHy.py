@@ -86,10 +86,10 @@ class BasicHy(ErosionModel):
         """
 
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
+        flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
@@ -99,7 +99,7 @@ class BasicHy(ErosionModel):
         self.eroder.run_one_step(dt,
                                  flooded_nodes=flooded,
                                  dynamic_dt=True,
-                                 flow_director=self.flow_router.flow_director)
+                                 flow_director=self.flow_accumulator.flow_director)
 
         # Do some soil creep
         self.diffuser.run_one_step(dt)

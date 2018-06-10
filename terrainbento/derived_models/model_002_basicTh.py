@@ -69,10 +69,10 @@ class BasicTh(ErosionModel):
         """
 
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
+        flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
