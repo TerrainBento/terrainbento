@@ -1,8 +1,71 @@
 # -*- coding: utf-8 -*-
 """
-Base class for terrainbento models using stochastic hydrology.
+Base class for common functions of ``terrainbento`` stochastic erosion models.
 
-TEXT here.
+The ``StochasticErosionModel`` is a base class that contains all of the
+functionality shared by the ``terrainbento`` models that use stochastic
+hydrology.
+
+
+Input File or Dictionary Parameters
+-----------------------------------
+The following are parameters found in the parameters input file or dictionary.
+Depending on how the model is initialized, some of them are optional or not
+used.
+
+
+Required Parameters
+^^^^^^^^^^^^^^^^^^^
+
+Two primary options are avaliable for the stochastic erosion models. When
+``opt_stochastic_duration=True`` the model will use the
+``PrecipitationDistribution`` Landlab component to generate a random storm
+duration, interstorm duration, precipitation intensity or storm depth from a
+Poisson distribution when given a mean value. Refer to the documentation for
+this component for additional details.
+
+When this is the case, the following parameters are used:
+
+mean_storm_duration : float
+    Average duration of a precipitation event.
+mean_interstorm_duration : float
+    Average duration between precipitation events.
+mean_storm_depth : float
+    Average depth of precipitation events.
+
+If ``opt_stochastic_duration=False`` then the duration indicated by the
+parameter ``dt`` will first be split into a series of sub-timesteps based on the
+parameter ``number_of_sub_time_steps`` and then each of these sub-timesteps will
+experience a duration of rain and no-rain based on the value of
+``intermittency_factor``. The duration of rain and no-rain will not change, but
+the intensity of rain will vary based on a stretched exponential described by
+the shape factor ``precip_shape_factor`` and with a scale factor calculated so
+that the mean of the distribution has the value given by
+``mean_storm__intensity``,
+
+number_of_sub_time_steps : int
+    Number of sub timesteps.
+intermittency_factor : float
+    Value between zero and one that indicates the proportion of time rain
+    occurs. A value of 0 means it never rains and a value of 1 means that rain
+    never ceases.
+mean_storm__intensity : float
+    Mean of the precipitation distribution.
+precip_shape_factor : float
+    Shape factor of the precipitation distribution.
+
+Parameter that control output
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Both stochastic options have an option to record the sequence of rain and
+no-rain.
+
+record_rain : boolean
+    Flag to indicate if a sequence of storms should be saved. Default is False.
+storm_sequence_filename : str
+    Storm sequence filename. Default is 'storm_sequence.txt'
+frequency_filename : str
+    Filename for precipitation exceedance frequency summary. Default value is
+    'exceedance_summary.txt'
 """
 
 from terrainbento.base_class import ErosionModel
@@ -16,16 +79,56 @@ import textwrap
 _STRING_LENGTH = 80
 
 class StochasticErosionModel(ErosionModel):
-    """
-    An StochasticErosionModel is a basic model for erosion and landscape
-    evolution in a watershed, as represented by an input DEM.
+    """ Base class for stochastic ``terrainbento`` models.
 
-    This is a base class that handles only processes used by all Stochastic
-    Hydrology based modeles.
+    An ``StochasticErosionModel`` inherits from ``ErosionModel`` and provides
+    functionality needed by all stochastic models.
+
+    This is a base class handles processes related to the generation of explicit
+    preciptiation.
+
+    It is expected that a derived model will define an ``__init__`` and a
+     ``run_one_step`` method. If desired, the derived model can overwrite the
+     existing ``run_for``, ``run``, and ``finalize`` methods.
+
+    Methods
+    -------
+    run_for_stochastic
+    instantiate_rain_generator
+    reset_random_seed
+    handle_water_erosion
+    finalize
+    record_rain_event
+    write_storm_sequence_to_file
+    write_exceedance_frequency_file
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
-        """Initialize the _BaseSt base class."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        StochasticErosionModel : object
+
+        Examples
+        --------
+        We recommend that you look at the ``terraintento`` tutorials for
+        examples of usage.
+        """
 
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(input_file=input_file,
@@ -47,10 +150,6 @@ class StochasticErosionModel(ErosionModel):
         if (((self.params.get('storm_sequence_filename') is not None) or
             (self.params.get('frequency_filename') is not None)) and
                 (self.params.get('record_rain') != True)):
-            print('A storm sequence or frequency filename was specified but '
-                  'record_rain was not set or set to False. Overriding '
-                  'record_rain and recording rain so that the file can be '
-                  'written')
             self.params['record_rain'] = True
 
         # Second, test that
@@ -70,15 +169,26 @@ class StochasticErosionModel(ErosionModel):
         # it won't be done.
         if ((self.opt_stochastic_duration==True) and
             (self.params.get('frequency_filename'))):
-            print('opt_stochastic_duration is set to True and a '
+            raise ValueError(('opt_stochastic_duration is set to True and a '
                   'frequency_filename was specified. Frequency calculations '
-                  'are not done with stochastic time so the filename is being '
-                  'ignored.')
+                  'are not done with stochastic time.'))
 
     def run_for_stochastic(self, dt, runtime):
-        """
+        """Run_for with stochastic duration.
+
         Run model without interruption for a specified time period, using
         random storm/interstorm sequence.
+
+        ``run_for_stochastic`` runs the model for the duration ``runtime`` with
+        model time steps given by the PrecipitationDistribution component. Model
+        run steps will not exceed the duration given by ``dt``.
+
+        Parameters
+        ----------
+        dt : float
+            Model run timestep,
+        runtime : float
+            Total duration for which to run model.
         """
         self.rain_generator.delta_t = dt
         self.rain_generator.run_time = runtime
@@ -87,7 +197,7 @@ class StochasticErosionModel(ErosionModel):
             self.run_one_step(tr)
 
     def instantiate_rain_generator(self):
-        """Instantiate RainGenerator."""
+        """Instantiate component used to generate storm sequence."""
         # Handle option for duration.
         if self.opt_stochastic_duration:
             self.rain_generator = \
@@ -124,29 +234,36 @@ class StochasticErosionModel(ErosionModel):
         self.rain_generator.seed_generator(seedval=seed)
 
     def handle_water_erosion(self, dt, flooded):
-        """Handle water erosion.
+        """Handle water erosion for stochastic models.
 
-           If we are running stochastic duration, then self.rain_rate will
-           have been calculated already. It might be zero, in which case we
-           are between storms, so we don't do water erosion.
+        If we are running stochastic duration, then self.rain_rate will
+        have been calculated already. It might be zero, in which case we
+        are between storms, so we don't do water erosion.
 
-           If we're NOT doing stochastic duration, then we'll run water
-           erosion for one or more sub-time steps, each with its own
-           randomly drawn precipitation intensity.
+        If we're NOT doing stochastic duration, then we'll run water
+        erosion for one or more sub-time steps, each with its own
+        randomly drawn precipitation intensity.
 
-           This routine assumes that a model-specific method
+        This routine assumes that a model-specific method
 
-                       **calc_runoff_and_discharge()**
+                    **calc_runoff_and_discharge()**
 
-           will have been defined.
+        will have been defined. Additionally a model eroder must also have been
+        defined.
 
-           For example, BasicStVs calculated runoff and discharge in a different
-           way than the other models.
+        For example, BasicStVs calculated runoff and discharge in a different
+        way than the other models.
 
-           If the model has a function **update_threshold_field**, this
-           function will test for it and run it. This is presently done in
-           BasicDdSt.
+        If the model has a function **update_threshold_field**, this
+        function will test for it and run it. This is presently done in
+        BasicDdSt.
 
+        Paramters
+        ---------
+        dt : float
+            Model run timestep.
+        flooded_nodes : ndarray of int (optional)
+            IDs of nodes that are flooded and should have no erosion.
         """
         # (if we're varying precipitation parameters through time, update them)
         if 'PrecipChanger' in self.boundary_handler:
@@ -197,7 +314,12 @@ class StochasticErosionModel(ErosionModel):
                     self.record_rain_event(event_start_time, dt_dry, 0.0, 0.0)
 
     def finalize(self):
+        """Finalize stochastic erosion models.
 
+        The finalization step of stochastic erosion models in ``terraintento``
+        results in writing out the storm sequence file and the precipitation
+        exceedence statistics summary if ``record_rain`` was set to ``True``.
+        """
         # if rain was recorded, write it out.
         if self.record_rain:
             filename = self.params.get('storm_sequence_filename')
@@ -215,6 +337,12 @@ class StochasticErosionModel(ErosionModel):
         Create a record of event start time, event duration, rainfall rate, and
         runoff rate.
 
+        Parameters
+        ----------
+        event_start_time : float
+        event_duration : float
+        rainfall_rate : float
+        runoff_rate : float
         """
         self.rain_record['event_start_time'].append(event_start_time)
         self.rain_record['event_duration'].append(event_duration)
@@ -222,8 +350,12 @@ class StochasticErosionModel(ErosionModel):
         self.rain_record['runoff_rate'].append(runoff_rate)
 
     def write_storm_sequence_to_file(self, filename=None):
-        """
-        Write event duration and intensity to a formatted text file.
+        """ Write event duration and intensity to a formatted text file.
+
+        Parameters
+        ----------
+        filename : str
+            Default value is 'storm_sequence.txt'
         """
 
         # Open a file for writing
@@ -232,7 +364,7 @@ class StochasticErosionModel(ErosionModel):
                              'record rain, set the parameter "record_rain"'
                              'to True.')
         if filename is None:
-            filename = 'event_sequence.txt'
+            filename = 'storm_sequence.txt'
         stormfile = open(filename, 'w')
         stormfile.write('event_start_time' + ',' +
                         'event_duration' + ',' +
@@ -250,8 +382,18 @@ class StochasticErosionModel(ErosionModel):
         stormfile.close()
 
     def write_exceedance_frequency_file(self, filename=None):
+        """Write summary of rainfall exceedance statistics to file.
+
+        Parameters
+        ----------
+        filename : str
+            Default value is 'exceedance_summary.txt'
         """
-        """
+        if self.record_rain == False:
+            raise ValueError('Rain was not recorded when the model run. To '
+                             'record rain, set the parameter "record_rain"'
+                             'to True.')
+
         if filename is None:
             filename = 'exceedance_summary.txt'
         exceedance_file = open(filename, 'w')
@@ -454,8 +596,8 @@ def main():
         print('Must include input file name on command line')
         sys.exit(1)
 
-    em = StochasticErosionModel(input_file=infile)
-    em.run()
+    sm = StochasticErosionModel(input_file=infile)
+    sm.run()
 
 
 if __name__ == '__main__':
