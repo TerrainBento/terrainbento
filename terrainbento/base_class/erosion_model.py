@@ -260,7 +260,6 @@ class ErosionModel(object):
     update_boundary_conditions
     write_output
     finalize
-
     """
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
         """
@@ -458,7 +457,6 @@ class ErosionModel(object):
         ----------
         handler : str or object
             Name of instance of a supported boundary condition handler.
-
         """
         if isinstance(handler, Component):
             name = handler.__name__
@@ -902,7 +900,7 @@ class ErosionModel(object):
         Parameters
         ----------
         dt : float
-            Model run timestep,
+            Model run timestep.
         runtime : float
             Total duration for which to run model.
         """
