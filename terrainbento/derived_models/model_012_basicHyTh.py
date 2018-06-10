@@ -31,8 +31,8 @@ class BasicHyTh(ErosionModel):
                                         OutputWriters=OutputWriters)
 
         # Get Parameters and convert units if necessary:
-        K_sp = self.get_parameter_from_exponent('K_sp', raise_error=False)
-        K_ss = self.get_parameter_from_exponent('K_ss', raise_error=False)
+        K_sp = self.get_parameter_from_exponent('water_erodability', raise_error=False)
+        K_ss = self.get_parameter_from_exponent('water_erodability~shear_stress', raise_error=False)
 
         # check that a stream power and a shear stress parameter have not both been given
         if K_sp != None and K_ss != None:

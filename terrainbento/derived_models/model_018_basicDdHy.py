@@ -33,7 +33,7 @@ class BasicDdHy(ErosionModel):
                                         OutputWriters=OutputWriters)
 
         # Get Parameters and convert units if necessary:
-        self.K_sp = self.get_parameter_from_exponent('K_sp')
+        self.K_sp = self.get_parameter_from_exponent('water_erodability')
         regolith_transport_parameter = ((self._length_factor ** 2)  # L2/T
                 * self.get_parameter_from_exponent('regolith_transport_parameter'))
         v_s = self.get_parameter_from_exponent('v_sc') # unitless

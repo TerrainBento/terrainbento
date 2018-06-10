@@ -30,21 +30,24 @@ class Basic(ErosionModel):
                                         OutputWriters=OutputWriters)
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent('K_sp', raise_error=False)
-        K_ss = self.get_parameter_from_exponent('K_ss', raise_error=False)
+        K_sp = self.get_parameter_from_exponent('water_erodability', raise_error=False)
+        K_ss = self.get_parameter_from_exponent('water_erodability~shear_stress', raise_error=False)
         regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         # check that a stream power and a shear stress parameter have not both been given
         if K_sp != None and K_ss != None:
-            raise ValueError('A parameter for both K_sp and K_ss has been'
-                             'provided. Only one of these may be provided')
+            raise ValueError(('Model 000: A parameter for both '
+                              'water_erodability and '
+                              'water_erodability~shear_stress has been provided. '
+                              ' Only one of these may be provided.'))
         elif K_sp != None or K_ss != None:
             if K_sp != None:
                 self.K = K_sp
             else:
-                self.K = (self._length_factor**(1./3.))*K_ss # K_ss has units Lengtg^(1/3) per Time
+                self.K = (self._length_factor**(1./3.))*K_ss # K_ss has units Length^(1/3) per Time
         else:
-            raise ValueError('A value for K_sp or K_ss  must be provided.')
+            raise ValueError(('water_erodability or '
+                              'water_erodability~shear_stress must be provided.'))
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,

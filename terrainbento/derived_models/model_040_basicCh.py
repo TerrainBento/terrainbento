@@ -33,7 +33,7 @@ class BasicCh(ErosionModel):
                                         OutputWriters=OutputWriters)
 
         # Get Parameters and convert units if necessary:
-        self.K_sp = self.get_parameter_from_exponent('K_sp')
+        self.K_sp = self.get_parameter_from_exponent('water_erodability')
         regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         # Instantiate a FastscapeEroder component

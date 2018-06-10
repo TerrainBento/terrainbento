@@ -33,7 +33,7 @@ class BasicCv(ErosionModel):
                                         OutputWriters=OutputWriters)
 
 
-        K_sp = self.get_parameter_from_exponent('K_sp')
+        K_sp = self.get_parameter_from_exponent('water_erodability')
         regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter')
 
 

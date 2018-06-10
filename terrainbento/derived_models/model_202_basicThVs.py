@@ -36,7 +36,7 @@ class BasicThVs(ErosionModel):
                                         BoundaryHandlers=BoundaryHandlers,
                                         OutputWriters=OutputWriters)
 
-        self.K_sp = self.get_parameter_from_exponent('K_sp')
+        self.K_sp = self.get_parameter_from_exponent('water_erodability')
         regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
         threshold = self._length_factor*self.get_parameter_from_exponent('erosion__threshold') # has units length/time
 

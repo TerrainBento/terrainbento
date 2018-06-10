@@ -36,8 +36,8 @@ class BasicVs(ErosionModel):
                                       BoundaryHandlers=BoundaryHandlers,
                                         OutputWriters=OutputWriters)
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent('K_sp', raise_error=False)
-        K_ss = self.get_parameter_from_exponent('K_ss', raise_error=False)
+        K_sp = self.get_parameter_from_exponent('water_erodability', raise_error=False)
+        K_ss = self.get_parameter_from_exponent('water_erodability~shear_stress', raise_error=False)
         regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         recharge_rate = (self._length_factor)*self.params['recharge_rate'] # has units length per time
