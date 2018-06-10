@@ -24,7 +24,7 @@ run_for method is used. Whenever run_one_step is called, storm intensity is
 generated at random from an exponential distribution with mean given by the
 parameter daily_rainfall__mean_intensity. The stream power component is run for only a
 fraction of the time step duration dt, as specified by the parameter
-intermittency_factor. For example, if dt is 10 years and the intermittency
+daily_rainfall_intermittency_factor. For example, if dt is 10 years and the intermittency
 factor is 0.25, then the stream power component is run for only 2.5 years.
 
 In either case, given a storm precipitation intensity :math:`P`, the runoff

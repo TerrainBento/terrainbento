@@ -60,7 +60,7 @@ class BasicStTh(StochasticErosionModel):
     >>> my_pars['erosion__threshold'] = 1.0
     >>> my_pars['linear_diffusivity'] = 0.01
     >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
-    >>> my_pars['intermittency_factor'] = 0.008
+    >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
     >>> my_pars['mean_storm_depth'] = 0.025
     >>> my_pars['random_seed'] = 907
     >>> my_pars['precip_shape_factor'] = 0.65
