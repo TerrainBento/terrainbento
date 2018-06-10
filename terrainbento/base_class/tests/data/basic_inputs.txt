@@ -1,0 +1,8 @@
+model_grid: 'HexModelGrid'
+dt: 1
+output_interval: 2.
+run_duration: 10.
+K_sp: 0.001
+m_sp: 1 
+n_sp: 0.5
+linear_diffusivity: 0.01
