@@ -1,6 +1,6 @@
 model_grid: 'RasterModelGrid'
 dt: 1
-output_interval: 2.
+output_interval: 50
 run_duration: 200.
 water_erodability: 0.001
 m_sp: 1
