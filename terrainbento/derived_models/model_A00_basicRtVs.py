@@ -33,7 +33,7 @@ class BasicRtVs(ErosionModel):
         contact_zone__width = (self._length_factor)*self.params['contact_zone__width'] # has units length
         self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')
         self.K_till_sp = self.get_parameter_from_exponent('K_till_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity')
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter')
 
         recharge_rate = (self._length_factor)*self.params['recharge_rate'] # has units length per time
         soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
@@ -64,7 +64,7 @@ class BasicRtVs(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = linear_diffusivity)
+                                       linear_diffusivity = regolith_transport_parameter)
 
     def calc_effective_drainage_area(self):
         """Calculate and store effective drainage area.

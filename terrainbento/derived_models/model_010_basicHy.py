@@ -47,8 +47,8 @@ class BasicHy(ErosionModel):
             raise ValueError('A value for K_rock_sp or K_rock_ss  must be provided.')
 
         # Unit conversion for linear_diffusivity, with units L^2/T
-        linear_diffusivity = ((self._length_factor ** 2.)
-            * self.get_parameter_from_exponent('linear_diffusivity'))
+        regolith_transport_parameter = ((self._length_factor ** 2.)
+            * self.get_parameter_from_exponent('regolith_transport_parameter'))
 
         # Normalized settling velocity (dimensionless)
         v_sc = self.get_parameter_from_exponent('v_sc')
@@ -78,7 +78,7 @@ class BasicHy(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = linear_diffusivity)
+                                       linear_diffusivity = regolith_transport_parameter)
 
     def run_one_step(self, dt):
         """

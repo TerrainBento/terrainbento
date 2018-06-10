@@ -51,7 +51,7 @@ class BasicStVs(StochasticErosionModel):
                                         OutputWriters=OutputWriters)
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_stochastic_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
         K_hydraulic_conductivity = (self._length_factor)*self.params['K_hydraulic_conductivity'] # has units length per time
@@ -91,7 +91,7 @@ class BasicStVs(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = linear_diffusivity)
+                                       linear_diffusivity = regolith_transport_parameter)
 
 
     def calc_runoff_and_discharge(self):

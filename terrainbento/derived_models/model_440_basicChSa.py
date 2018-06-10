@@ -36,7 +36,7 @@ class BasicChSa(ErosionModel):
                                         OutputWriters=OutputWriters)
 
         self.K_sp = self.get_parameter_from_exponent('K_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
         try:
             initial_soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
         except KeyError:
@@ -73,7 +73,7 @@ class BasicChSa(ErosionModel):
 
         # Instantiate a soil-transport component
         self.diffuser = DepthDependentTaylorDiffuser(self.grid,
-                                                    linear_diffusivity=linear_diffusivity,
+                                                    linear_diffusivity=regolith_transport_parameter,
                                                     slope_crit=self.params['slope_crit'],
                                                     soil_transport_decay_depth=soil_transport_decay_depth,
                                                     nterms=11)

@@ -38,8 +38,8 @@ class BasicHyVs(ErosionModel):
                                         OutputWriters=OutputWriters)
 
         self.K_sp = self.get_parameter_from_exponent('K_sp')
-        linear_diffusivity = ((self._length_factor ** 2)
-                * self.get_parameter_from_exponent('linear_diffusivity')) # has units length^2/time
+        regolith_transport_parameter = ((self._length_factor ** 2)
+                * self.get_parameter_from_exponent('regolith_transport_parameter')) # has units length^2/time
         recharge_rate = (self._length_factor
                          * self.params['recharge_rate']) # L/T
         soil_thickness = (self._length_factor
@@ -88,7 +88,7 @@ class BasicHyVs(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = linear_diffusivity)
+                                       linear_diffusivity = regolith_transport_parameter)
 
 
     def calc_effective_drainage_area(self):

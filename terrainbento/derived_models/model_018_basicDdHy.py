@@ -34,8 +34,8 @@ class BasicDdHy(ErosionModel):
 
         # Get Parameters and convert units if necessary:
         self.K_sp = self.get_parameter_from_exponent('K_sp')
-        linear_diffusivity = ((self._length_factor ** 2)  # L2/T
-                * self.get_parameter_from_exponent('linear_diffusivity'))
+        regolith_transport_parameter = ((self._length_factor ** 2)  # L2/T
+                * self.get_parameter_from_exponent('regolith_transport_parameter'))
         v_s = self.get_parameter_from_exponent('v_sc') # unitless
         self.sp_crit = (self._length_factor  # L/T
                 * self.get_parameter_from_exponent('erosion__threshold'))
@@ -69,7 +69,7 @@ class BasicDdHy(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity=linear_diffusivity)
+                                       linear_diffusivity=regolith_transport_parameter)
 
     def run_one_step(self, dt):
         """

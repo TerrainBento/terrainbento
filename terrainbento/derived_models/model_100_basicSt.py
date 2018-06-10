@@ -68,7 +68,7 @@ class BasicSt(StochasticErosionModel):
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_stochastic_sp', raise_error=False)
         K_ss = self.get_parameter_from_exponent('K_stochastic_ss', raise_error=False)
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         # check that a stream power and a shear stress parameter have not both been given
         if K_sp != None and K_ss != None:
@@ -108,7 +108,7 @@ class BasicSt(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity=linear_diffusivity)
+                                       linear_diffusivity=regolith_transport_parameter)
 
 
     def calc_runoff_and_discharge(self):

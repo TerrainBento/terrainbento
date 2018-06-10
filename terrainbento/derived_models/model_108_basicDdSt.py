@@ -60,7 +60,7 @@ class BasicDdSt(StochasticErosionModel):
     >>> my_pars['n_sp'] = 1.0
     >>> my_pars['erosion__threshold'] = 1.0
     >>> my_pars['thresh_change_per_depth'] = 0.1
-    >>> my_pars['linear_diffusivity'] = 0.01
+    >>> my_pars['regolith_transport_parameter'] = 0.01
     >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
     >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
     >>> my_pars['mean_storm_depth'] = 0.025
@@ -81,7 +81,7 @@ class BasicDdSt(StochasticErosionModel):
 
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_stochastic_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
@@ -125,7 +125,7 @@ class BasicDdSt(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = linear_diffusivity)
+                                       linear_diffusivity = regolith_transport_parameter)
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""

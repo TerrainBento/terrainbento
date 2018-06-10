@@ -38,7 +38,7 @@ class BasicRtTh(ErosionModel):
         self.K_till_sp = self.get_parameter_from_exponent('K_till_sp')
         rock_erosion__threshold = self.get_parameter_from_exponent('rock_erosion__threshold')
         till_erosion__threshold = self.get_parameter_from_exponent('till_erosion__threshold')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity')
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter')
 
         # Set up rock-till
         self.setup_rock_and_till(self.params['rock_till_file__name'],
@@ -57,7 +57,7 @@ class BasicRtTh(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = linear_diffusivity)
+                                       linear_diffusivity = regolith_transport_parameter)
 
     def setup_rock_and_till(self, file_name, rock_erody, till_erody,
                             rock_thresh, till_thresh, contact_width):

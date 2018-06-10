@@ -34,7 +34,7 @@ class BasicCh(ErosionModel):
 
         # Get Parameters and convert units if necessary:
         self.K_sp = self.get_parameter_from_exponent('K_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,
@@ -44,7 +44,7 @@ class BasicCh(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(self.grid,
-                                               linear_diffusivity=linear_diffusivity,
+                                               linear_diffusivity=regolith_transport_parameter,
                                                slope_crit=self.params['slope_crit'],
                                                nterms=11)
 

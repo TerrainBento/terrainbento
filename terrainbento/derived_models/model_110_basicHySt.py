@@ -58,7 +58,7 @@ class BasicHySt(StochasticErosionModel):
     >>> my_pars['m_sp'] = 0.5
     >>> my_pars['n_sp'] = 1.0
     >>> my_pars['erosion__threshold'] = 1.0
-    >>> my_pars['linear_diffusivity'] = 0.01
+    >>> my_pars['regolith_transport_parameter'] = 0.01
     >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
     >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
     >>> my_pars['mean_storm_depth'] = 0.025
@@ -85,9 +85,9 @@ class BasicHySt(StochasticErosionModel):
         K = ((self._length_factor ** 0.5)  # K_stochastic [=] L^(1/2)  T^-(1/2)
              * self.get_parameter_from_exponent('K_stochastic_sp'))
 
-        linear_diffusivity = ((self._length_factor ** 2)
+        regolith_transport_parameter = ((self._length_factor ** 2)
                               * self.get_parameter_from_exponent(
-                                      'linear_diffusivity')) # L^2/T
+                                      'regolith_transport_parameter')) # L^2/T
 
         v_s = (self._length_factor)*self.get_parameter_from_exponent('v_s') # has units length per time
 
@@ -138,7 +138,7 @@ class BasicHySt(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = linear_diffusivity)
+                                       linear_diffusivity = regolith_transport_parameter)
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""

@@ -41,10 +41,10 @@ class BasicHySa(ErosionModel):
 
         self.K_br = self.get_parameter_from_exponent('K_rock_sp')
         self.K_sed = self.get_parameter_from_exponent('K_sed_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
         v_sc = self.get_parameter_from_exponent('v_sc') # normalized settling velocity. Unitless.
 
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
         try:
             initial_soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
         except KeyError:
@@ -99,7 +99,7 @@ class BasicHySa(ErosionModel):
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(self.grid,
-                                               linear_diffusivity=linear_diffusivity,
+                                               linear_diffusivity=regolith_transport_parameter,
                                                soil_transport_decay_depth=soil_transport_decay_depth)
 
         self.weatherer = ExponentialWeatherer(self.grid,

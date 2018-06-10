@@ -38,7 +38,7 @@ class BasicRtSa(ErosionModel):
         contact_zone__width = (self._length_factor)*self.params['contact_zone__width'] # has units length
         self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')
         self.K_till_sp = self.get_parameter_from_exponent('K_till_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity')
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter')
 
         # Set up rock-till
         self.setup_rock_and_till(self.params['rock_till_file__name'],
@@ -79,7 +79,7 @@ class BasicRtSa(ErosionModel):
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(self.grid,
-                                               linear_diffusivity=linear_diffusivity,
+                                               linear_diffusivity=regolith_transport_parameter,
                                                soil_transport_decay_depth=soil_transport_decay_depth)
 
         self.weatherer = ExponentialWeatherer(self.grid,
