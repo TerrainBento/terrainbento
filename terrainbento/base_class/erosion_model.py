@@ -171,8 +171,7 @@ flow_director : str, optional
     FlowAccumulator is compatible with are permitted. Default is
     'FlowDirectorSteepest'.
 depression_finder : str, optional
-    String name of a Landlab depression finder. Default is
-    'DepressionFinderAndRouter'.
+    String name of a Landlab depression finder. Default is no depression finder.
 
 Parameters that control output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
