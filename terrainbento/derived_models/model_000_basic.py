@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-model_000_basic.py: erosion model using linear diffusion, basic stream
-power, and discharge proportional to drainage area.
+``terrainbento`` Model 000 Basic
 
-Model 000 Basic
+Erosion model program using linear diffusion, stream power, and discharge
+proportional to drainage area.
 
-Landlab components used: FlowRouter, FastscapeStreamPower, LinearDiffuser
-
+Landlab components used: FlowAccumulator, DepressionFinderAndRouter,
+                         FastscapeStreamPower, LinearDiffuser
 """
 import sys
 import numpy as np
@@ -16,23 +16,79 @@ from terrainbento.base_class import ErosionModel
 
 
 class Basic(ErosionModel):
-    """
-    A Basic computes erosion using linear diffusion, basic stream
-    power, and Q~A.
+    """Model 000 Basic program.
+
+    Model 000 Basic is a model program that evolves a topographic surface desribed
+    by :math:`\eta` with the following governing equation:
+
+    .. math::
+
+        \frac{\partial \eta}{\partial t} = - KA^{M_{sp}}S^{n_sp} + D\nabla^2 \eta
+
+    where :math:`A` is the local drainage area and :math:`S` is the local slope.
+
+    Model 000 Basic inherits from the ``terrainbento`` ``ErosionModel`` base
+    class. Depending on the values of :math:`K`, :math:`D`, :math:`m_{sp}` and,
+    :math:`n_{sp}` this model program can be used to run the following three
+    ``terrainbento`` numerical models.
+
+    1) Model 000 Basic: Here :math:`m_{sp}` has a value of 0.5 and :math:`n_{sp}`
+    has a value of 1. :math:`K` is given by the parameter ``water_erodability``
+    and :math:`D` is given by the parameter ``regolith_transport_parameter``.
+
+    2) Model 001 BasicVm: This model is identical to Model 000 Basic except that
+    the area exponent :math:`m_{sp}` is a free parameter.
+
+    3) Model 004 BasicSs: In this model :math:`m_{sp}` has a value of 1/3,
+    :math:`n_{sp}` has a value of 2/3, and :math:`K` is given by the paramter
+    :math:`water_erodability~shear_stress`.
+
+    In addition to those provided by the ``ErosionModel`` base class  ``Basic``
+    has the following attributes and methods.
+
+    Attributes
+    ----------
+
+    Methods
+    -------
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
-        """Initialize the Basic model."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+        Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        ErosionModel : object
+
+        Examples
+        --------
+        We recommend that you look at the ``terraintento`` tutorials for
+        examples of usage.
+        """
         # Call ErosionModel's init
         super(Basic, self).__init__(input_file=input_file,
                                     params=params,
                                     BoundaryHandlers=BoundaryHandlers,
-                                        OutputWriters=OutputWriters)
+                                    OutputWriters=OutputWriters)
 
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('water_erodability', raise_error=False)
         K_ss = self.get_parameter_from_exponent('water_erodability~shear_stress', raise_error=False)
-        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.) * self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         # check that a stream power and a shear stress parameter have not both been given
         if K_sp != None and K_ss != None:
@@ -63,7 +119,6 @@ class Basic(ErosionModel):
         """
         Advance model for one time-step of duration dt.
         """
-
         # Route flow
         self.flow_accumulator.run_one_step()
 
