@@ -23,7 +23,7 @@ class Basic(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = - KA^{M_{sp}}S^{n_sp} + D\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = - KA^{M_{sp}}S^{n_sp} + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
 
