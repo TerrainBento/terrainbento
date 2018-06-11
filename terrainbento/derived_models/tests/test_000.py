@@ -146,8 +146,8 @@ def test_diffusion_only():
                ((model.grid.x_of_node - model.grid.x_of_node[model.grid.core_nodes[0]]) **2))
 
     # assert actual and predicted elevations are the same.
-    assert_array_almost_equal(predicted_z[model.grid.core_nodes[1:-1]],
-                              model.z[model.grid.core_nodes[1:-1]])
+    assert_array_almost_equal(predicted_z[model.grid.core_nodes],
+                              model.z[model.grid.core_nodes])
 
 def test_with_precip_changer():
     pass
