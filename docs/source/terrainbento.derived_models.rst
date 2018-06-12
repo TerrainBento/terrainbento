@@ -19,7 +19,7 @@ Base Model
 
 
 One Difference Models
---------------------
+---------------------
 
 .. toctree::
 
@@ -35,7 +35,7 @@ One Difference Models
 
 
 Two Difference Models
---------------------
+---------------------
 
 .. toctree::
 
@@ -60,7 +60,7 @@ Two Difference Models
 
 
 Three Difference Models
-----------------------
+-----------------------
 
 .. toctree::
 

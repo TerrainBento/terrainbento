@@ -18,7 +18,6 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
     """ModelTemplate is a template for making your own ``terrainbento`` models.
 
     This is where you will want to put introductory information about the model.
-
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None): # Do not change this line
@@ -46,7 +45,7 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
         them here.
 
         References
-        --------
+        ----------
         If there are references associated with your model, consider putting them
         here.
 
@@ -76,7 +75,7 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
         Put any additional information about ``run_one_step`` here. Importantly,
         ``run_one_step`` should only take on parameter, ``dt``.
         """
-        # replace pass with all actions needed to run the model forward for a time
+        # write here all actions needed to run the model forward for a time
         # increment `dt`.
 
         # end with finalize__run_one_step which does things at the end of
@@ -100,6 +99,8 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
         Put additional information about finalizing the model here.
         """
         # replace pass with all actions needed to finalize the model.
+        # if you are inheriting from the stochastic erosion model, be careful
+        # here as it already has a ``finalize`` method defined.
         pass
 
 

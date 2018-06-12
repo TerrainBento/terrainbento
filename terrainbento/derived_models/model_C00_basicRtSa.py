@@ -112,6 +112,7 @@ class BasicRtSa(ErosionModel):
                position as well. Here we'll use the altitude approach because
                this model was originally written for an application with lots
                of erosion expected but no tectonics.
+
         """
         from landlab.io import read_esri_ascii
 
@@ -171,6 +172,7 @@ class BasicRtSa(ErosionModel):
             F = self.erody_wt
             K_till = self.till_erody
             K_rock = self.rock_erody
+
         """
 
         # Update the erodibility weighting function (this is "F")
