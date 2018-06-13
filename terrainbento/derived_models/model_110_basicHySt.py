@@ -58,19 +58,18 @@ class BasicHySt(StochasticErosionModel):
     >>> my_pars['m_sp'] = 0.5
     >>> my_pars['n_sp'] = 1.0
     >>> my_pars['erosion__threshold'] = 1.0
-    >>> my_pars['linear_diffusivity'] = 0.01
-    >>> my_pars['mean_storm__intensity'] = 0.002
-    >>> my_pars['intermittency_factor'] = 0.008
+    >>> my_pars['regolith_transport_parameter'] = 0.01
+    >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
+    >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
     >>> my_pars['mean_storm_depth'] = 0.025
     >>> my_pars['random_seed'] = 907
-    >>> my_pars['precip_shape_factor'] = 0.65
+    >>> my_pars['daily_rainfall__precipitation_shape_factor'] = 0.65
     >>> my_pars['number_of_sub_time_steps'] = 10
     >>> my_pars['v_s'] = 0.01
     >>> my_pars['F_f'] = 0.1
     >>> my_pars['phi'] = 0.3
     >>> my_pars['solver'] = 'adaptive'
     >>> srt = BasicHySt(params=my_pars)
-    Warning: no DEM or grid shape specified. Creating simple raster grid
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
@@ -86,9 +85,9 @@ class BasicHySt(StochasticErosionModel):
         K = ((self._length_factor ** 0.5)  # K_stochastic [=] L^(1/2)  T^-(1/2)
              * self.get_parameter_from_exponent('K_stochastic_sp'))
 
-        linear_diffusivity = ((self._length_factor ** 2)
+        regolith_transport_parameter = ((self._length_factor ** 2)
                               * self.get_parameter_from_exponent(
-                                      'linear_diffusivity')) # L^2/T
+                                      'regolith_transport_parameter')) # L^2/T
 
         v_s = (self._length_factor)*self.get_parameter_from_exponent('v_s') # has units length per time
 
@@ -112,7 +111,7 @@ class BasicHySt(StochasticErosionModel):
         self.infilt = infiltration_capacity
 
         # Run flow routing and lake filler
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node['drainage_area']
@@ -139,7 +138,7 @@ class BasicHySt(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = linear_diffusivity)
+                                       linear_diffusivity = regolith_transport_parameter)
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
@@ -159,10 +158,13 @@ class BasicHySt(StochasticErosionModel):
         Advance model for one time-step of duration dt.
         """
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Handle water erosion
         self.handle_water_erosion(dt, flooded)
@@ -170,14 +172,9 @@ class BasicHySt(StochasticErosionModel):
         # Do some soil creep
         self.diffuser.run_one_step(dt)
 
-        # calculate model time
-        self._model_time += dt
+        # Finalize the run_one_step_method
+        self.finalize__run_one_step(dt)
 
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
-
-        # Check walltime
-        self.check_slurm_walltime()
 
 def main():
     """Executes model."""

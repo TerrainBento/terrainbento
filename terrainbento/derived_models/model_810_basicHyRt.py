@@ -41,8 +41,8 @@ class BasicHyRt(ErosionModel):
         self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')
         self.K_till_sp = self.get_parameter_from_exponent('K_till_sp')
 
-        linear_diffusivity = ((self._length_factor ** 2)
-                * self.get_parameter_from_exponent('linear_diffusivity'))
+        regolith_transport_parameter = ((self._length_factor ** 2)
+                * self.get_parameter_from_exponent('regolith_transport_parameter'))
 
         v_sc = self.get_parameter_from_exponent('v_sc') # normalized settling velocity. Unitless.
 
@@ -75,7 +75,7 @@ class BasicHyRt(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity=linear_diffusivity)
+                                       linear_diffusivity=regolith_transport_parameter)
 
     def setup_rock_and_till(self,
                             file_name='file',
@@ -205,10 +205,13 @@ class BasicHyRt(ErosionModel):
         Advance model for one time-step of duration dt.
         """
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Update the erodibility and threshold field
         self.update_erodibility_and_threshold_fields()
@@ -219,14 +222,9 @@ class BasicHyRt(ErosionModel):
         # Do some soil creep
         self.diffuser.run_one_step(dt)
 
-        # calculate model time
-        self._model_time += dt
+        # Finalize the run_one_step_method
+        self.finalize__run_one_step(dt)
 
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
-
-        # Check walltime
-        self.check_slurm_walltime()
 
 def main():
     """Executes model."""

@@ -39,8 +39,8 @@ class BasicSaVs(ErosionModel):
                                         OutputWriters=OutputWriters)
 
         # Get Parameters and convert units if necessary:
-        self.K_sp = self.get_parameter_from_exponent('K_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        self.K_sp = self.get_parameter_from_exponent('water_erodability')
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
         try:
             initial_soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
         except KeyError:
@@ -86,7 +86,7 @@ class BasicSaVs(ErosionModel):
 
         # Instantiate a DepthDependentDiffuser component
         self.diffuser = DepthDependentDiffuser(self.grid,
-                                               linear_diffusivity=linear_diffusivity,
+                                               linear_diffusivity=regolith_transport_parameter,
                                                soil_transport_decay_depth=soil_transport_decay_depth)
 
         self.weatherer = ExponentialWeatherer(self.grid,
@@ -122,13 +122,19 @@ class BasicSaVs(ErosionModel):
         """
 
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
         self.calc_effective_drainage_area()
 
+        # Get IDs of flooded nodes, if any
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+
         # Zero out effective area in flooded nodes
-        self.eff_area[self.flow_router.depression_finder.flood_status==3] = 0.0
+        self.eff_area[flooded] = 0.0
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
@@ -150,14 +156,9 @@ class BasicSaVs(ErosionModel):
         # Do some soil creep
         self.diffuser.run_one_step(dt)
 
-        # calculate model time
-        self._model_time += dt
+        # Finalize the run_one_step_method
+        self.finalize__run_one_step(dt)
 
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
-
-        # Check walltime
-        self.check_slurm_walltime()
 
 def main():
     """Executes model."""

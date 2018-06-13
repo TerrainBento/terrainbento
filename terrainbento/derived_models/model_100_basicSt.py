@@ -22,9 +22,9 @@ If the user does not request stochastic duration (indicated by setting
 opt_stochastic_duration to False), then the default (erosion_model base class)
 run_for method is used. Whenever run_one_step is called, storm intensity is
 generated at random from an exponential distribution with mean given by the
-parameter mean_storm__intensity. The stream power component is run for only a
+parameter daily_rainfall__mean_intensity. The stream power component is run for only a
 fraction of the time step duration dt, as specified by the parameter
-intermittency_factor. For example, if dt is 10 years and the intermittency
+daily_rainfall_intermittency_factor. For example, if dt is 10 years and the intermittency
 factor is 0.25, then the stream power component is run for only 2.5 years.
 
 In either case, given a storm precipitation intensity :math:`P`, the runoff
@@ -68,7 +68,7 @@ class BasicSt(StochasticErosionModel):
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent('K_stochastic_sp', raise_error=False)
         K_ss = self.get_parameter_from_exponent('K_stochastic_ss', raise_error=False)
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
 
         # check that a stream power and a shear stress parameter have not both been given
         if K_sp != None and K_ss != None:
@@ -98,7 +98,7 @@ class BasicSt(StochasticErosionModel):
         self.area = self.grid.at_node['drainage_area']
 
         # Run flow routing and lake filler
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid,
@@ -108,7 +108,7 @@ class BasicSt(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity=linear_diffusivity)
+                                       linear_diffusivity=regolith_transport_parameter)
 
 
     def calc_runoff_and_discharge(self):
@@ -131,10 +131,13 @@ class BasicSt(StochasticErosionModel):
         """
 
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Handle water erosion
         self.handle_water_erosion(dt, flooded)
@@ -142,14 +145,8 @@ class BasicSt(StochasticErosionModel):
         # Do some soil creep
         self.diffuser.run_one_step(dt)
 
-        # update model time
-        self._model_time += dt
-
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
-
-        # Check walltime
-        self.check_slurm_walltime()
+        # Finalize the run_one_step_method
+        self.finalize_run_one_step(dt)
 
 
 def main():

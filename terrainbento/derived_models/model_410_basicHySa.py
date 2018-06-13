@@ -41,10 +41,10 @@ class BasicHySa(ErosionModel):
 
         self.K_br = self.get_parameter_from_exponent('K_rock_sp')
         self.K_sed = self.get_parameter_from_exponent('K_sed_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
         v_sc = self.get_parameter_from_exponent('v_sc') # normalized settling velocity. Unitless.
 
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity') # has units length^2/time
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
         try:
             initial_soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
         except KeyError:
@@ -99,7 +99,7 @@ class BasicHySa(ErosionModel):
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(self.grid,
-                                               linear_diffusivity=linear_diffusivity,
+                                               linear_diffusivity=regolith_transport_parameter,
                                                soil_transport_decay_depth=soil_transport_decay_depth)
 
         self.weatherer = ExponentialWeatherer(self.grid,
@@ -114,16 +114,14 @@ class BasicHySa(ErosionModel):
         """
         Advance model for one time-step of duration dt.
         """
-
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
-
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
-        #print('There are ' + str(len(flooded)) + ' flooded nodes')
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
@@ -147,11 +145,8 @@ class BasicHySa(ErosionModel):
         # Generate and move soil around
         self.diffuser.run_one_step(dt)
 
-        # calculate model time
-        self._model_time += dt
-
-        # Check walltime
-        self.check_slurm_walltime()
+        # Finalize the run_one_step_method
+        self.finalize__run_one_step(dt)
 
         # Check stability
         self.check_stability()

@@ -38,7 +38,7 @@ class BasicRtSa(ErosionModel):
         contact_zone__width = (self._length_factor)*self.params['contact_zone__width'] # has units length
         self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')
         self.K_till_sp = self.get_parameter_from_exponent('K_till_sp')
-        linear_diffusivity = (self._length_factor**2.)*self.get_parameter_from_exponent('linear_diffusivity')
+        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter')
 
         # Set up rock-till
         self.setup_rock_and_till(self.params['rock_till_file__name'],
@@ -79,7 +79,7 @@ class BasicRtSa(ErosionModel):
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(self.grid,
-                                               linear_diffusivity=linear_diffusivity,
+                                               linear_diffusivity=regolith_transport_parameter,
                                                soil_transport_decay_depth=soil_transport_decay_depth)
 
         self.weatherer = ExponentialWeatherer(self.grid,
@@ -112,6 +112,7 @@ class BasicRtSa(ErosionModel):
                position as well. Here we'll use the altitude approach because
                this model was originally written for an application with lots
                of erosion expected but no tectonics.
+
         """
         from landlab.io import read_esri_ascii
 
@@ -171,6 +172,7 @@ class BasicRtSa(ErosionModel):
             F = self.erody_wt
             K_till = self.till_erody
             K_rock = self.rock_erody
+
         """
 
         # Update the erodibility weighting function (this is "F")
@@ -196,10 +198,13 @@ class BasicRtSa(ErosionModel):
         """
 
         # Route flow
-        self.flow_router.run_one_step()
+        self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
-        flooded = np.where(self.flow_router.depression_finder.flood_status==3)[0]
+        if self.flow_accumulator.depression_finder is None:
+            flooded = []
+        else:
+            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
 
         # Update the erodibility field
         self.update_erodibility_field()
@@ -221,14 +226,9 @@ class BasicRtSa(ErosionModel):
         # Generate and move soil around
         self.diffuser.run_one_step(dt)
 
-        # calculate model time
-        self._model_time += dt
+        # Finalize the run_one_step_method
+        self.finalize__run_one_step(dt)
 
-        # Update boundary conditions
-        self.update_boundary_conditions(dt)
-
-        # Check walltime
-        self.check_slurm_walltime()
 
 def main():
     """Executes model."""
