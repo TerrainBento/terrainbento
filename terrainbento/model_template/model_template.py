@@ -13,8 +13,8 @@ designed and created by **you**
 from terrainbento.base_class import ErosionModel
 
 
-class ModelTemplate(ErosionModel): # The model must inherit from either ErosionModel
-                               # or StochasticErosionModel
+class ModelTemplate(ErosionModel): # The model must inherit from either 
+                                   # ErosionModel or StochasticErosionModel
     """ModelTemplate is a template for making your own ``terrainbento`` models.
 
     This is where you will put introductory information about the model.
