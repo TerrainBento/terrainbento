@@ -15,12 +15,12 @@ Required Parameters
 ^^^^^^^^^^^^^^^^^^^
 
 The required parameters control how long a model will run, the duration of a
-model timestep and the interval at which output is written.
+model timestep, and the interval at which output is written.
 
 run_duration : float
     Duration of entire model run.
 dt : float
-    Increment of time at which the model is run.
+    Increment of time at which the model is run (i.e., time-step duration).
 output_interval : float
     Increment of model time at which model output is written.
 
@@ -29,14 +29,14 @@ Grid Setup Parameters
 ^^^^^^^^^^^^^^^^^^^^^
 This set of parameters controls what kind of model grid is created. Two primary
 options exist: the creation of a model grid based on elevations provided by an
-input DEM and the creation of synthetic model domain. In this latter option
+input DEM, and the creation of a synthetic model domain. In this latter option,
 either a  ``RasterModelGrid`` or  ``HexModelGrid`` of synthetic terrain is
 possible.
 
 If neither of the two following parameters is specified, a synthetic
 ``RasterModelGrid`` will be created. If parameters associated with setting up
-a synthetic ``RasterModelGrid`` are not provided the default values for grid
-size, initial topography, and boundary conditions will be used.
+a synthetic ``RasterModelGrid`` are not provided, default values will be used
+for grid size, initial topography, and boundary conditions.
 
 DEM_filename : str, optional
     File path to either an ESRII ASCII or netCDF file. Either  ``'DEM_filename'``
