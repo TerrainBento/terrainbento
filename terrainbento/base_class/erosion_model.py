@@ -231,7 +231,7 @@ class ErosionModel(object):
 
     """ Base class providing common functionality for ``terrainbento`` models.
 
-    An ``ErosionModel the skeleton for the models of terrain evolution in
+    An ``ErosionModel`` is the skeleton for the models of terrain evolution in
     ``terrainbento``. It can be initialized with an input DEM, or parameters
     used for creation of a new ``RasterModelGrid`` or ``HexModelGrid``.
 
@@ -283,7 +283,7 @@ class ErosionModel(object):
 
         Examples
         --------
-        We recommend that you look at the ``terraintento`` tutorials for
+        We recommend that you look at the ``terrainbento`` tutorials for
         examples of usage.
         """
         #######################################################################
@@ -494,7 +494,7 @@ class ErosionModel(object):
         inherent to running a ``terrainbento`` model but is desired by the user. An
         example might be making a plot of topography while the model is running.
         ``terrainbento`` saves output to NetCDF format at each interval defined by
-        the parameter ``'output_interval'``
+        the parameter ``'output_interval'``.
 
         If a class, an OutputWriter will be instantiated with only one passed
         argument: the entire model object. The class is expected to have a bound
@@ -526,11 +526,11 @@ class ErosionModel(object):
         Parameters
         ----------
         number_of_node_rows : int, optional
-            Number of rows of nodes in the left column. Default is 8
+            Number of rows of nodes in the left column. Default is 8.
         number_of_node_columns : int, optional
-            Number of nodes on the first row. Default is 5
+            Number of nodes on the first row. Default is 5.
         node_spacing : float, optional
-            Node spacing. Default is 10.0
+            Node spacing. Default is 10.0.
         orientation : str, optional
             Either 'horizontal' (default) or 'vertical'.
         shape : str, optional
@@ -630,7 +630,7 @@ class ErosionModel(object):
         number_of_node_columns : int, optional
             Number of node columns. Default is 5.
         node_spacing : float, optional
-            Row and column node spacing. Default is 1.0
+            Row and column node spacing. Default is 1.0.
         outlet_id : int, optional
             Node id for the watershed outlet. If not
             provided, the model will set boundary conditions
@@ -754,19 +754,19 @@ class ErosionModel(object):
         file_path : str
             File path to read. Must be either a NetCDF or ESRI ASCII type file.
         name : str, optional
-             Name of grid field for read topography. Default value is
+            Name of grid field for read topography. Default value is
              topographic__elevation.
         halo : int, optional
-            Halo to pad DEM with. Used only if file is an ESRI ASCII type.
+            Halo with which to pad DEM. Used only if file is an ESRI ASCII type.
 
         Returns
         -------
         (grid, vals) : tuple
-          Model grid and value field
+          Model grid and value field.
 
         Examples
         --------
-        We recommend that you look at the ``terraintento`` tutorials for
+        We recommend that you look at the ``terrainbento`` tutorials for
         examples of usage.
         """
         try:
@@ -888,7 +888,7 @@ class ErosionModel(object):
         """Finalize model
 
         This base-class method does nothing. Derived classes can override
-        it to run any required finalizations steps.
+        it to run any required finalization steps.
         """
         pass
 
@@ -919,7 +919,7 @@ class ErosionModel(object):
 
         The model will run for the duration indicated by the input file or
         dictionary parameter ``'run_duration'``, at a time step specified by the
-        parameter ``'dt'``, and creating ouput at intervales of ``'output_duration'``
+        parameter ``'dt'``, and create ouput at intervales of ``'output_duration'``.
 
         Parameters
         ----------
@@ -945,7 +945,7 @@ class ErosionModel(object):
         self.finalize()
 
     def run_output_writers(self):
-        """Run all output writers"""
+        """Run all output writers."""
         if self.output_writers is not None:
             for name in self.output_writers['class']:
                 self.output_writers[name].run_one_step()
