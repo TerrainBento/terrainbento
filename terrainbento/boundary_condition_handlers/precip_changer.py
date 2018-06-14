@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 """ ``PrecipChanger`` changes precipitation frequency and intensity over time.
 
-This ``terrainbento`` baselevel handler was designed to change the precipitation
-frequency and intensity over time in order to modify the water erodibility
-coefficient.
+This ``terrainbento`` boundary-condition handler was designed to change the
+precipitation frequency and intensity over time in order to modify the water
+erodibility coefficient.
 
 In order to accomplish this, we need a theory by which to relate changes in
 the precipitation to changes in erodibility.
@@ -21,9 +21,9 @@ exponential:
 
     Pr(P>p) = \exp \left[-\left( p \lambda \\right)^c\\right]
 
-where :math:`c` is the shape factor and :math:`\lambda` is the scale factor. The
-corresponding probability density function is a Weibull distribution. The mean
-wet-day precipitation depth :math:`p_d` is related to the scale factor by
+where :math:`c` is the shape factor and :math:`\lambda` is the scale factor.
+The corresponding probability density function is a Weibull distribution. The
+mean wet-day precipitation depth :math:`p_d` is related to the scale factor by
 
 .. math::
 
@@ -229,11 +229,11 @@ class PrecipChanger(object):
     """Handle time varying precipitation.
 
     The ``PrecipChanger`` handles time-varying precipitation by changing the
-    proportion of time rain occurs (``daily_rainfall_daily_rainfall_intermittency_factor``) and
-    the mean of the daily rainfall Weibull distribution
+    proportion of time rain occurs (``daily_rainfall_daily_rainfall_intermittency_factor``)
+    and the mean of the daily rainfall Weibull distribution
     (``daily_rainfall__mean_intensity``).
 
-    Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of the
+    Note that ``PrecipChanger`` increments time at the end of the
     ``run_one_step`` method.
 
     Methods
@@ -302,7 +302,7 @@ class PrecipChanger(object):
 
         Notes
         -----
-        The time units of ``daily_rainfall__mean_intensity``
+        The time units of ``daily_rainfall__mean_intensity``,
         ``daily_rainfall__mean_intensity_time_rate_of_change``, and
         ``infiltration_capacity`` are all assumed to be the same.
 
