@@ -3,11 +3,11 @@
 """ ``PrecipChanger`` changes precipitation frequency and intensity over time.
 
 This ``terrainbento`` baselevel handler was designed to change the precipitation
-frequency and intensity over time in order to modify the water erodability
+frequency and intensity over time in order to modify the water erodibility
 coefficient.
 
 In order to accomplish this, we need a theory by which to relate changes in
-the precipitation to changes in erodability.
+the precipitation to changes in erodibility.
 
 We start by describing the assumed precipitation model.
 
@@ -356,7 +356,7 @@ class PrecipChanger(object):
         If we are using an erosion model that requires the raw values of the
         precipitation parameters, we can use them. If instead we are using
         a model that does not explicitly treat event-scale precipitation, we can
-        use the bulk erodability adjustment factor :math:`F_w`.
+        use the bulk erodibility adjustment factor :math:`F_w`.
 
         >>> fw = bh.get_erodibility_adjustment_factor()
         >>> print(fw)
@@ -493,9 +493,9 @@ class PrecipChanger(object):
             return self.starting_frac_wet_days, self.starting_daily_mean_depth
 
     def get_erodibility_adjustment_factor(self):
-        """Calculates the erodability adjustment factor at the current time.
+        """Calculates the erodibility adjustment factor at the current time.
 
-        Calculates and returns the factor :math:`F_{w}` by which an erodability
+        Calculates and returns the factor :math:`F_{w}` by which an erodibility
         by water should be adjusted.
 
         .. math::
@@ -504,7 +504,7 @@ class PrecipChanger(object):
 
         Returns
         -------
-        erodability_adjustment_factor : float
+        erodibility_adjustment_factor : float
 
         """
         # if after start time
