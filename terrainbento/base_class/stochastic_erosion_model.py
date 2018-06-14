@@ -44,7 +44,7 @@ that the mean of the distribution has the value given by
 ``daily_rainfall__mean_intensity``,
 
 number_of_sub_time_steps : int
-    Number of sub timesteps.
+    Number of sub-timesteps.
 daily_rainfall_intermittency_factor : float
     Value between zero and one that indicates the proportion of time rain
     occurs. A value of 0 means it never rains and a value of 1 means that rain
@@ -126,7 +126,7 @@ class StochasticErosionModel(ErosionModel):
 
         Examples
         --------
-        We recommend that you look at the ``terraintento`` tutorials for
+        We recommend that you look at the ``terrainbento`` tutorials for
         examples of usage.
         """
 
@@ -230,7 +230,7 @@ class StochasticErosionModel(ErosionModel):
             self.n_sub_steps = int(self.params['number_of_sub_time_steps'])
 
     def reset_random_seed(self):
-        """Re-set the random number generation sequence."""
+        """Reset the random number generation sequence."""
         try:
             seed = int(self.params['random_seed'])
         except KeyError:
@@ -248,7 +248,7 @@ class StochasticErosionModel(ErosionModel):
         erosion for one or more sub-time steps, each with its own
         randomly drawn precipitation intensity.
 
-        This routine assumes that a model-specific method
+        This routine assumes that a model-specific method:
 
                     **calc_runoff_and_discharge()**
 
@@ -320,7 +320,7 @@ class StochasticErosionModel(ErosionModel):
     def finalize(self):
         """Finalize stochastic erosion models.
 
-        The finalization step of stochastic erosion models in ``terraintento``
+        The finalization step of stochastic erosion models in ``terrainbento``
         results in writing out the storm sequence file and the precipitation
         exceedence statistics summary if ``record_rain`` was set to ``True``.
         """
