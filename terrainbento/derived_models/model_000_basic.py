@@ -49,7 +49,7 @@ class Basic(ErosionModel):
     parameter :math:`water_erodability~shear_stress`.
 
     In addition to those provided by the ``ErosionModel`` base class  ``Basic``
-    has the following methods.
+    has the following methods:
 
     Methods
     -------
@@ -81,7 +81,7 @@ class Basic(ErosionModel):
         --------
         This is a minimal example to demonstrate how to construct an instance
         of model ``Basic``. Note that an YAML input file can be used instead of
-        a parameter dictionary. For more detailed examples, including stead
+        a parameter dictionary. For more detailed examples, including steady-
         state test examples, see the ``terrainbento`` tutorials.
 
         To begin, import the model class.
@@ -165,7 +165,7 @@ class Basic(ErosionModel):
 
         4. Calculates detachment-limited erosion by water.
 
-        5. Calculates sediment transport by linear diffusion.
+        5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the ``ErosionModel`` base class function
         ``finalize__run_one_step``. This function updates all BoundaryHandlers
