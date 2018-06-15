@@ -6,7 +6,10 @@ import os
 import numpy as np
 from scipy.interpolate import interp1d
 
-class NotCoreNodeBaselevelHandler():
+from landlab import Component
+
+
+class NotCoreNodeBaselevelHandler(Component):
     """Control the elevation of all nodes that are not core nodes.
 
     The ``NotCoreNodeBaselevelHandler`` controls the elevation of all nodes on
@@ -135,18 +138,20 @@ class NotCoreNodeBaselevelHandler():
         ``lowering_file_path``.
 
         """
+        super(NotCoreNodeBaselevelHandler, self).__init__(grid)
+
         self.model_time = 0.0
-        self.grid = grid
+        self._grid = grid
         self.modify_core_nodes = modify_core_nodes
-        self.z = self.grid.at_node['topographic__elevation']
+        self.z = self._grid.at_node['topographic__elevation']
 
         # determine which nodes to lower
         # based on which are lowering, set the prefactor correctly.
         if self.modify_core_nodes:
-            self.nodes_to_lower = self.grid.status_at_node == 0
+            self.nodes_to_lower = self._grid.status_at_node == 0
             self.prefactor = -1.0
         else:
-            self.nodes_to_lower = self.grid.status_at_node != 0
+            self.nodes_to_lower = self._grid.status_at_node != 0
             self.prefactor = 1.0
 
 
@@ -213,8 +218,8 @@ class NotCoreNodeBaselevelHandler():
             self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
 
             # if bedrock__elevation exists as a field, lower it also
-            if 'bedrock__elevation' in self.grid.at_node:
-                self.grid.at_node['bedrock__elevation'][self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
+            if 'bedrock__elevation' in self._grid.at_node:
+                self._grid.at_node['bedrock__elevation'][self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
 
         # if there is an outlet elevation object
         else:
@@ -225,8 +230,8 @@ class NotCoreNodeBaselevelHandler():
             mean_z = np.mean(self.z[self.nodes_to_lower])
             self.topo_change = mean_z - self.outlet_elevation_obj(self.model_time)
 
-            if 'bedrock__elevation' in self.grid.at_node:
-                self.grid.at_node['bedrock__elevation'][self.nodes_to_lower] -= self.topo_change
+            if 'bedrock__elevation' in self._grid.at_node:
+                self._grid.at_node['bedrock__elevation'][self.nodes_to_lower] -= self.topo_change
 
             # lower topography
             self.z[self.nodes_to_lower] -= self.topo_change
