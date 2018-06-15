@@ -18,8 +18,8 @@ Base Model
     terrainbento.derived_models.model_000_basic
 
 
-One Component Models
---------------------
+One Difference Models
+---------------------
 
 .. toctree::
 
@@ -34,8 +34,8 @@ One Component Models
     terrainbento.derived_models.model_CCC_basicCv
 
 
-Two Component Models
---------------------
+Two Difference Models
+---------------------
 
 .. toctree::
 
@@ -59,8 +59,8 @@ Two Component Models
     terrainbento.derived_models.model_C00_basicRtSa
 
 
-Three Component Models
-----------------------
+Three Difference Models
+-----------------------
 
 .. toctree::
 

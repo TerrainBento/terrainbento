@@ -18,6 +18,6 @@ Domain Boundary Elevation Modifiers
 
 .. toctree::
 
-    terrainbento.boundary_condition_handlers.closed_node_baselevel_handler
+    terrainbento.boundary_condition_handlers.not_core_node_baselevel_handler
     terrainbento.boundary_condition_handlers.single_node_baselevel_handler
     terrainbento.boundary_condition_handlers.capture_node_baselevel_handler
