@@ -55,7 +55,7 @@ class NotCoreNodeBaselevelHandler(Component):
             model grids spatial scale and the time units of ``dt``. Negative
             values mean that the outlet lowers.
         lowering_file_path : str, optional
-            Lowering lowering history file path. One of ``lowering_rate``
+            Lowering history file path. One of ``lowering_rate``
             and `lowering_file_path` is required. Units are implied by
             the model grids spatial scale and the time units of ``dt``.
             This file should be readable with
