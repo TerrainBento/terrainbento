@@ -449,11 +449,19 @@ class ErosionModel(object):
         handler : str or object
             Name of instance of a supported boundary condition handler.
         """
-        if isinstance(handler, Component):
-            name = handler.__name__
-        else:
-            name = handler
-            handler = _HANDLER_METHODS[name]
+        try:  # if handler is an uninstantiated component
+            name = handler._name
+
+            if isinstance(handler, Component):
+                raise ValueError(('Object passed to terrainbento is instantiated '
+                                  '. This is not permitted.'))
+        except AttributeError:
+            try: # if handler is a string
+                name = handler
+                handler = _HANDLER_METHODS[name]
+            except KeyError:
+                raise ValueError(('Object passed to terrainbento init is not a '
+                                  'valid Boundary Handler.'))
 
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 

@@ -6,9 +6,6 @@ from landlab import HexModelGrid
 from terrainbento import ErosionModel
 
 
-def test_check_walltime():
-    pass
-
 def test_length_conversion_raises_error():
     # test that passing both results in an error
     params = {'model_grid' : 'HexModelGrid',

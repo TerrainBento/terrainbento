@@ -5,9 +5,10 @@
 """
 
 from landlab import FIXED_VALUE_BOUNDARY
+from landlab import Component
 
 
-class CaptureNodeBaselevelHandler():
+class CaptureNodeBaselevelHandler(Component):
     """Turn a closed boundary node into an open, lowering, boundary node.
 
     A ``CaptureNodeBaselevelHandler`` turns a given node into an open boundary
@@ -122,8 +123,10 @@ class CaptureNodeBaselevelHandler():
          [  0.   0.   0.   0.   0.]]
 
         """
+        super(CaptureNodeBaselevelHandler, self).__init__(grid)
+
         self.model_time = 0.0
-        self.grid = grid
+        self._grid = grid
         self.z = grid.at_node['topographic__elevation']
         self.node = capture_node
         self.start = capture_start_time
@@ -140,7 +143,7 @@ class CaptureNodeBaselevelHandler():
         else:
             self.post_capture_incision_rate = post_capture_incision_rate
 
-        self.grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
+        self._grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
 
     def run_one_step(self, dt):
         """
