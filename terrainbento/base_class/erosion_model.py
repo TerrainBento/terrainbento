@@ -13,14 +13,13 @@ used.
 
 Required Parameters
 ^^^^^^^^^^^^^^^^^^^
-
 The required parameters control how long a model will run, the duration of a
-model timestep and the interval at which output is written.
+model timestep, and the interval at which output is written.
 
 run_duration : float
     Duration of entire model run.
 dt : float
-    Increment of time at which the model is run.
+    Increment of time at which the model is run (i.e., time-step duration).
 output_interval : float
     Increment of model time at which model output is written.
 
@@ -29,14 +28,14 @@ Grid Setup Parameters
 ^^^^^^^^^^^^^^^^^^^^^
 This set of parameters controls what kind of model grid is created. Two primary
 options exist: the creation of a model grid based on elevations provided by an
-input DEM and the creation of synthetic model domain. In this latter option
+input DEM, and the creation of a synthetic model domain. In this latter option,
 either a  ``RasterModelGrid`` or  ``HexModelGrid`` of synthetic terrain is
 possible.
 
 If neither of the two following parameters is specified, a synthetic
 ``RasterModelGrid`` will be created. If parameters associated with setting up
-a synthetic ``RasterModelGrid`` are not provided the default values for grid
-size, initial topography, and boundary conditions will be used.
+a synthetic ``RasterModelGrid`` are not provided, default values will be used
+for grid size, initial topography, and boundary conditions.
 
 DEM_filename : str, optional
     File path to either an ESRII ASCII or netCDF file. Either  ``'DEM_filename'``
@@ -44,28 +43,27 @@ DEM_filename : str, optional
 model_grid : str, optional
     Either ``'RasterModelGrid'`` or ``'HexModelGrid'``.
 
-Note that if both ``'DEM_filename'`` and ``'model_grid'`` are specified
-a error will be raised.
+Note that if both ``'DEM_filename'`` and ``'model_grid'`` are specified,
+an error will be raised.
 
 Parameters that control creation of a synthetic HexModelGrid
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 These parameters control the size, shape, and model boundary conditions of a
 synthetic HexModelGrid. They are only used if ``model_grid == 'HexModelGrid'``.
 
 number_of_node_rows : int, optional
-    Number of rows of nodes in the left column. Default is 8
+    Number of rows of nodes in the left column. Default is 8.
 number_of_node_columns : int, optional
-    Number of nodes on the first row. Default is 5
+    Number of nodes on the first row. Default is 5.
 node_spacing : float, optional
-    Node spacing. Default is 10.0
+    Node spacing. Default is 10.0.
 orientation : str, optional
     Either 'horizontal' (default) or 'vertical'.
 shape : str, optional
     Controls the shape of the bounding hull, i.e., are the nodes
     arranged in a hexagon, or a rectangle? Either 'hex' (default) or
     'rect'.
-reorient_links, bool, optional
+reorient_links : bool, optional
     Whether or not to re-orient all links to point between -45 deg
     and +135 deg clockwise from "north" (i.e., along y axis). Default
     value is True.
@@ -78,7 +76,6 @@ boundary_closed : boolean, optional
 
 Parameters that control creation of a synthetic RasterModelGrid
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 These parameters control the size, shape, and model boundary conditions of a
 synthetic ``RasterModelGrid``.  These parameters are used if neither
 ``DEM_filename`` nor ``'model_grid'`` is specified or if
@@ -89,7 +86,7 @@ number_of_node_rows : int, optional
 number_of_node_columns : int, optional
     Number of node columns. Default is 5.
 node_spacing : float, optional
-    Row and column node spacing. Default is 1.0
+    Row and column node spacing. Default is 1.0.
 outlet_id : int, optional
     Node id for the watershed outlet. If not
     provided, the model will set boundary conditions
@@ -105,7 +102,6 @@ south_boundary_closed : boolean
 
 Parameters that control creation of synthetic topography
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 These parameters create synthetic initial topgraphy in either a
 ``RasterModelGrid`` or ``HexModelGrid``. They are used if ``DEM_filename`` is
 not specified.
@@ -117,36 +113,36 @@ random_seed : int, optional
 add_random_noise : boolean, optional
     Default value is True.
 initial_noise_std : float, optional
-    Default value is 0.
+    Standard deviation of zero-mean, normally distributed random perturbations
+    to initial node elevations. Default value is 0.
 add_noise_to_all_nodes : bool, optional
-    When False, noise just added to core nodes. Default value is False.
-
+    When False, noise is added to core nodes only. Default value is False.
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 ``terrainbento`` provides the ability for an arbitrary number of boundary
 condition handler classes to operate on the model grid each time step in order
 to handle time-variable boundary conditions such as: changing a watershed outlet
-elevation, modify precipitation parameters through time, or simulate external
-drainage capture.
+elevation, modifying precipitation parameters through time, or simulating
+external drainage capture.
 
 Boundary condition handlers are styled after Landlab components. ``terrainbento``
-presently has four built in boundary condition handlers and supports the use of
-the Landlab NormalFault component as a fifth. Over time the developers
+presently has four built-in boundary condition handlers, and supports the use
+of the Landlab NormalFault component as a fifth. Over time the developers
 anticipate extending the boundary handler library to include other Landlab
-components and other options within ``terrainbento`` . If these present
+components and other options within ``terrainbento``. If these present
 capabilities do not fit your needs, we recommend that you make an issue
 describing the functionality you would like to use in your work.
 
 BoundaryHandlers : str or list of str, optional
-    Strings of the classes used to handle boundary conditions. Valid options
-    are currently: 'NormalFault', 'PrecipChanger', 'CaptureNodeBaselevelHandler',
-    'NotCoreNodeBaselevelHandler', 'SingleNodeBaselevelHandler'. These
-    BoundaryHandlers are instantiated with the entire parameter set unless there
-    is an entry in the parameter dictionary with the name of the boundary
-    handler that contains its own parameter dictionary. If this is the case, the
-    handler-specific dictionary is passed to instantiate the boundary handler.
+    Strings containing the names of classes used to handle boundary conditions.
+    Valid options are currently: 'NormalFault', 'PrecipChanger',
+    'CaptureNodeBaselevelHandler', 'NotCoreNodeBaselevelHandler', and
+    'SingleNodeBaselevelHandler'. These BoundaryHandlers are instantiated with 
+    the entire parameter set unless there is an entry in the parameter
+    dictionary with the name of the boundary handler that contains its own
+    parameter dictionary. If this is the case, the handler-specific dictionary
+    is passed to instantiate the boundary handler.
 
 Parameters that control units
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -162,7 +158,6 @@ feet_to_meters : boolean, optional
 
 Parameters that control surface hydrology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 ``terrainbento`` uses the Landlab FlowAccumulator component to manage surface
 hydrology. These parameters control options associated with the this component.
 
@@ -175,34 +170,28 @@ depression_finder : str, optional
 
 Parameters that control output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 In addition to the required parameter ``output_interval``, the following
 parameters control when and how output is written.
 
 save_first_timestep : bool, optional
-    Should model output be saved at time zero.  Default is True.
+    Indicates whether model output should be saved at time zero.  Default is
+    True.
 output_filename : str, optional
-    String prefix for output netCDF files. Default is ``'terrainbento_output'``.
+    String prefix for names of output netCDF files. Default is
+    ``'terrainbento_output'``.
 
-Note also that the ``run`` method takes as a parameter ``output_fields`` which
+Note also that the ``run`` method takes as a parameter ``output_fields``, which
 is a list of model grid fields to write as output.
-
 """
 
 import sys
-import os
-import subprocess
-from six import string_types
-import dill
 import time as tm
-
 import numpy as np
-from scipy.interpolate import interp1d
 
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
 from landlab import load_params
-from landlab.io.netcdf import write_raster_netcdf, write_netcdf
+from landlab.io.netcdf import write_raster_netcdf
 from landlab.graph import Graph
 
 from landlab import Component, CLOSED_BOUNDARY
@@ -229,7 +218,7 @@ _HANDLER_METHODS = {'NormalFault': NormalFault,
 
 class ErosionModel(object):
 
-    """ Base class providing common functionality for ``terrainbento`` models.
+    """Base class providing common functionality for ``terrainbento`` models.
 
     An ``ErosionModel`` is the skeleton for the models of terrain evolution in
     ``terrainbento``. It can be initialized with an input DEM, or parameters
@@ -260,7 +249,8 @@ class ErosionModel(object):
     write_output
     finalize
     """
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
+    def __init__(self, input_file=None, params=None, BoundaryHandlers=None,
+                 OutputWriters=None):
         """
         Parameters
         ----------
@@ -268,14 +258,14 @@ class ErosionModel(object):
             Path to model input file. See wiki for discussion of input file
             formatting. One of input_file or params is required.
         params : dict
-            Dictionary containing the input file. One of input_file or params is
-            required.
+            Dictionary containing the input file. One of input_file or params
+            is required.
         BoundaryHandlers : class or list of classes, optional
             Classes used to handle boundary conditions. Alternatively can be
             passed by input file as string. Valid options described above.
-        OutputWriters : class, function, or list of classes and/or functions, optional
-            Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot).
+        OutputWriters : class, function, or list of classes and/or functions, 
+            optional Classes or functions used to write incremental output 
+            (e.g. make a diagnostic plot).
 
         Returns
         -------
@@ -441,13 +431,13 @@ class ErosionModel(object):
 
     @property
     def model_time(self):
-        """Current time of model integration in model time units."""
+        """Return current time of model integration in model time units."""
         return self._model_time
 
     def setup_boundary_handler(self, handler):
         """ Setup BoundaryHandlers for use by a ``terrainbento`` model.
 
-        Boundary condition handlers are classes with a run_one_step method that
+        A boundary condition handler is a class with a run_one_step method that
         takes the parameter ``dt``. Permitted boundary condition handlers
         include the Landlab Component ``NormalFault`` as well as the following
         options from ``terrainbento``: ``PrecipChanger``,
@@ -491,10 +481,10 @@ class ErosionModel(object):
 
         An OutputWriter can be either a function or a class designed to create
         output, calculate a loss function, or do some other task that is not
-        inherent to running a ``terrainbento`` model but is desired by the user. An
-        example might be making a plot of topography while the model is running.
-        ``terrainbento`` saves output to NetCDF format at each interval defined by
-        the parameter ``'output_interval'``.
+        inherent to running a ``terrainbento`` model but is desired by the
+         user. An example might be making a plot of topography while the model
+        is running. ``terrainbento`` saves output to NetCDF format at each
+        interval defined by the parameter ``'output_interval'``.
 
         If a class, an OutputWriter will be instantiated with only one passed
         argument: the entire model object. The class is expected to have a bound
