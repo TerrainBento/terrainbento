@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""``terrainbento`` Model 000 ``Basic`` program.
+"""``terrainbento`` Model ``Basic`` program.
 
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area.
@@ -10,7 +10,7 @@ Landlab components used: (PUT URLS here.)
     3. FastscapeStreamPower
     4. LinearDiffuser
 """
-import sys
+
 import numpy as np
 
 from landlab.components import FastscapeEroder, LinearDiffuser
@@ -18,9 +18,9 @@ from terrainbento.base_class import ErosionModel
 
 
 class Basic(ErosionModel):
-    """Model 000 ``Basic`` program.
+    """Model ``Basic`` program.
 
-    Model 000 ``Basic`` is a model program that evolves a topographic surface
+    Model ``Basic`` is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
@@ -31,25 +31,25 @@ class Basic(ErosionModel):
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model 000 ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    Model ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
     class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
     and, :math:`n` this model program can be used to run the following three
-    ``terrainbento`` numerical models.
+    ``terrainbento`` numerical models:
 
-    1) Model 000 ``Basic``: Here :math:`m` has a value of 0.5 and
+    1) Model ``Basic``: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
     ``water_erodability`` and :math:`D` is given by the parameter
     ``regolith_transport_parameter``.
 
-    2) Model 001 ``BasicVm``: This model is identical to Model 000 Basic except
+    2) Model ``BasicVm``: This model is identical to Model Basic except
     that the area exponent :math:`m` is a free parameter.
 
-    3) Model 004 ``BasicSs``: In this model :math:`m` has a value of 1/3,
+    3) Model ``BasicSs``: In this model :math:`m` has a value of 1/3,
     :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
     parameter :math:`water_erodability~shear_stress`.
 
     In addition to those provided by the ``ErosionModel`` base class  ``Basic``
-    has the following methods.
+    has the following methods:
 
     Methods
     -------
@@ -81,7 +81,7 @@ class Basic(ErosionModel):
         --------
         This is a minimal example to demonstrate how to construct an instance
         of model ``Basic``. Note that an YAML input file can be used instead of
-        a parameter dictionary. For more detailed examples, including stead
+        a parameter dictionary. For more detailed examples, including steady-
         state test examples, see the ``terrainbento`` tutorials.
 
         To begin, import the model class.
@@ -161,11 +161,11 @@ class Basic(ErosionModel):
         not occur.
 
         3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
-        it is, uses it to modify the erodability by water.
+        so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited erosion by water.
 
-        5. Calculates sediment transport by linear diffusion.
+        5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the ``ErosionModel`` base class function
         ``finalize__run_one_step``. This function updates all BoundaryHandlers
@@ -201,7 +201,7 @@ class Basic(ErosionModel):
 
 
 def main():
-    """Executes model."""
+    """Execute model."""
     import sys
 
     try:

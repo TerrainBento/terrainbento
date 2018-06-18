@@ -11,17 +11,17 @@ class NotCoreNodeBaselevelHandler():
 
     The ``NotCoreNodeBaselevelHandler`` controls the elevation of all nodes on
     the model grid with ``status != 0`` (core nodes). The elevation change at
-    these nodes is specified either as a constant or through a time or through a
-    textfile that specifies the elevation change through time.
+    these nodes is specified either as a constant rate, or through a
+    text file that specifies the elevation change through time.
 
     Through the parameter ``modify_core_nodes`` the user can determine if the
     core nodes should be moved in the direction (up or down) specified by the
     elevation change directive, or if the non-core nodes should be moved in
     the opposite direction.
 
-    The ``NotCoreNodeBaselevelHandler`` expects that ``topographic__elevation`` is a
-    at-node model grid field. It will modify this field and, if it exists,
-    the field ``bedrock__elevation``.
+    The ``NotCoreNodeBaselevelHandler`` expects that ``topographic__elevation``
+     is an at-node model grid field. It will modify this field as well as
+    the field ``bedrock__elevation``, if it exists.
 
     Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of the
     ``run_one_step`` method.
@@ -29,7 +29,6 @@ class NotCoreNodeBaselevelHandler():
     Methods
     -------
     run_one_step
-
     """
 
     def __init__(self,
