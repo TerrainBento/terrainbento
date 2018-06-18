@@ -13,16 +13,14 @@ The following are parameters found in the parameters input file or dictionary.
 Depending on how the model is initialized, some of them are optional or not
 used.
 
-
 Required Parameters
 ^^^^^^^^^^^^^^^^^^^
-
 Two primary options are avaliable for the stochastic erosion models. When
 ``opt_stochastic_duration=True`` the model will use the
 ``PrecipitationDistribution`` Landlab component to generate a random storm
-duration, interstorm duration, precipitation intensity or storm depth from a
-Poisson distribution when given a mean value. Refer to the documentation for
-this component for additional details.
+duration, interstorm duration, and precipitation intensity or storm depth from
+an exponential distribution when given a mean value. Refer to the documentation
+for this component for additional details.
 
 When this is the case, the following parameters are used:
 
@@ -34,17 +32,18 @@ mean_storm_depth : float
     Average depth of precipitation events.
 
 If ``opt_stochastic_duration=False`` then the duration indicated by the
-parameter ``dt`` will first be split into a series of sub-timesteps based on the
-parameter ``number_of_sub_time_steps`` and then each of these sub-timesteps will
-experience a duration of rain and no-rain based on the value of
-``daily_rainfall_intermittency_factor``. The duration of rain and no-rain will not change, but
-the intensity of rain will vary based on a stretched exponential described by
-the shape factor ``daily_rainfall__precipitation_shape_factor`` and with a scale factor calculated so
-that the mean of the distribution has the value given by
-``daily_rainfall__mean_intensity``,
+parameter ``dt`` will first be split into a series of sub-timesteps based on
+the parameter ``number_of_sub_time_steps``, and then each of these
+sub-timesteps will experience a duration of rain and no-rain based on the value
+of ``daily_rainfall_intermittency_factor``. The duration of rain and no-rain
+will not change, but the intensity of rain will vary based on a stretched
+exponential distribution described by the shape factor
+``daily_rainfall__precipitation_shape_factor`` and with a scale factor
+calculated so that the mean of the distribution has the value given by
+``daily_rainfall__mean_intensity``.
 
 number_of_sub_time_steps : int
-    Number of sub timesteps.
+    Number of sub-timesteps.
 daily_rainfall_intermittency_factor : float
     Value between zero and one that indicates the proportion of time rain
     occurs. A value of 0 means it never rains and a value of 1 means that rain
@@ -79,13 +78,13 @@ import textwrap
 _STRING_LENGTH = 80
 
 class StochasticErosionModel(ErosionModel):
-    """ Base class for stochastic ``terrainbento`` models.
+    """ Base class for stochastic-precipitation ``terrainbento`` models.
 
-    An ``StochasticErosionModel`` inherits from ``ErosionModel`` and provides
-    functionality needed by all stochastic models.
+    A ``StochasticErosionModel`` inherits from ``ErosionModel`` and provides
+    functionality needed by all stochastic-precipitation models.
 
-    This is a base class handles processes related to the generation of explicit
-    preciptiation.
+    This is a base class handles processes related to the generation of
+    preciptiation events.
 
     It is expected that a derived model will define an ``__init__`` and a
      ``run_one_step`` method. If desired, the derived model can overwrite the
@@ -111,14 +110,14 @@ class StochasticErosionModel(ErosionModel):
             Path to model input file. See wiki for discussion of input file
             formatting. One of input_file or params is required.
         params : dict
-            Dictionary containing the input file. One of input_file or params is
-            required.
+            Dictionary containing the input file. One of input_file or params
+            is required.
         BoundaryHandlers : class or list of classes, optional
             Classes used to handle boundary conditions. Alternatively can be
             passed by input file as string. Valid options described above.
-        OutputWriters : class, function, or list of classes and/or functions, optional
-            Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot).
+        OutputWriters : class, function, or list of classes and/or functions,
+            optional classes or functions used to write incremental output
+            (e.g. make a diagnostic plot).
 
         Returns
         -------
@@ -126,15 +125,15 @@ class StochasticErosionModel(ErosionModel):
 
         Examples
         --------
-        We recommend that you look at the ``terraintento`` tutorials for
+        We recommend that you look at the ``terrainbento`` tutorials for
         examples of usage.
         """
 
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(input_file=input_file,
-                                                      params=params,
-                                                      BoundaryHandlers=BoundaryHandlers,
-                                                      OutputWriters=OutputWriters)
+                                                     params=params,
+                                                     BoundaryHandlers=BoundaryHandlers,
+                                                     OutputWriters=OutputWriters)
 
         self.opt_stochastic_duration = self.params.get('opt_stochastic_duration', False)
 
@@ -180,8 +179,8 @@ class StochasticErosionModel(ErosionModel):
         random storm/interstorm sequence.
 
         ``run_for_stochastic`` runs the model for the duration ``runtime`` with
-        model time steps given by the PrecipitationDistribution component. Model
-        run steps will not exceed the duration given by ``dt``.
+        model time steps given by the PrecipitationDistribution component.
+        Model run steps will not exceed the duration given by ``dt``.
 
         Parameters
         ----------
@@ -230,7 +229,7 @@ class StochasticErosionModel(ErosionModel):
             self.n_sub_steps = int(self.params['number_of_sub_time_steps'])
 
     def reset_random_seed(self):
-        """Re-set the random number generation sequence."""
+        """Reset the random number generation sequence."""
         try:
             seed = int(self.params['random_seed'])
         except KeyError:
@@ -248,7 +247,7 @@ class StochasticErosionModel(ErosionModel):
         erosion for one or more sub-time steps, each with its own
         randomly drawn precipitation intensity.
 
-        This routine assumes that a model-specific method
+        This routine assumes that a model-specific method:
 
                     **calc_runoff_and_discharge()**
 
@@ -320,7 +319,7 @@ class StochasticErosionModel(ErosionModel):
     def finalize(self):
         """Finalize stochastic erosion models.
 
-        The finalization step of stochastic erosion models in ``terraintento``
+        The finalization step of stochastic erosion models in ``terrainbento``
         results in writing out the storm sequence file and the precipitation
         exceedence statistics summary if ``record_rain`` was set to ``True``.
         """

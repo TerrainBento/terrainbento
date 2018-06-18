@@ -13,11 +13,11 @@ designed and created by **you**
 from terrainbento.base_class import ErosionModel
 
 
-class ModelTemplate(ErosionModel): # The model must inherit from either ErosionModel
-                               # or StochasticErosionModel
+class ModelTemplate(ErosionModel): # The model must inherit from either 
+                                   # ErosionModel or StochasticErosionModel
     """ModelTemplate is a template for making your own ``terrainbento`` models.
 
-    This is where you will want to put introductory information about the model.
+    This is where you will put introductory information about the model.
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None): # Do not change this line
@@ -25,7 +25,7 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
         Parameters
         ----------
         parameter_name : type
-            This is an example parameter_name
+            This is an example parameter_name.
         option_a : bool, optional
             List all parameters here, including their type, if they are optional,
             and what their default values are. Default value is True.
@@ -85,7 +85,7 @@ class ModelTemplate(ErosionModel): # The model must inherit from either ErosionM
 
     # if you have additional class functions, you can define them here.
     def my_internal_function(self):
-        """Do something necessary to instantiate or run ``ModelTemplate```."""
+        """Do something necessary to instantiate or run ``ModelTemplate``."""
         # replace pass with function.
         pass
 

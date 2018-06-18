@@ -11,9 +11,9 @@ from landlab import Component
 class CaptureNodeBaselevelHandler(Component):
     """Turn a closed boundary node into an open, lowering, boundary node.
 
-    ``CaptureNodeBaselevelHandler`` turns a given node into an open boundary and
-    changing elevation. This is meant as a simple approach to model stream
-    capture external to the modeled basin.
+    A ``CaptureNodeBaselevelHandler`` turns a given node into an open boundary
+    and lowers its elevation over time. This is meant as a simple approach to
+    model stream capture external to the modeled basin.
 
     Note that ``CaptureNodeBaselevelHandler`` increments time at the end of the
     ``run_one_step`` method.
@@ -21,7 +21,6 @@ class CaptureNodeBaselevelHandler(Component):
     Methods
     -------
     run_one_step
-
     """
 
     def __init__(self,
