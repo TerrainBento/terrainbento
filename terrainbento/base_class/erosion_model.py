@@ -159,7 +159,7 @@ feet_to_meters : boolean, optional
 Parameters that control surface hydrology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``terrainbento`` uses the Landlab FlowAccumulator component to manage surface
-hydrology. These parameters control options associated with the this component.
+hydrology. These parameters control options associated with this component.
 
 flow_director : str, optional
     String name of a Landlab FlowDirector. All options that the Landlab

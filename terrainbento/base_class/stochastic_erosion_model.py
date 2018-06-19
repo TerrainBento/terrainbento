@@ -83,7 +83,7 @@ class StochasticErosionModel(ErosionModel):
     A ``StochasticErosionModel`` inherits from ``ErosionModel`` and provides
     functionality needed by all stochastic-precipitation models.
 
-    This is a base class handles processes related to the generation of
+    This is a base class that handles processes related to the generation of
     preciptiation events.
 
     It is expected that a derived model will define an ``__init__`` and a
