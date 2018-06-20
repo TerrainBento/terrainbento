@@ -1,13 +1,10 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """``SingleNodeBaselevelHandler`` changes elevation for a single boundary node."""
 import os
 import numpy as np
 from scipy.interpolate import interp1d
 
-from landlab import Component
-
-class SingleNodeBaselevelHandler(Component):
+class SingleNodeBaselevelHandler(object):
     """Control the elevation of a single open boundary node.
 
     The ``SingleNodeBaselevelHandler`` controls the elevation of a single open
@@ -98,8 +95,6 @@ class SingleNodeBaselevelHandler(Component):
         ``lowering_file_path``.
 
         """
-        super(SingleNodeBaselevelHandler, self).__init__(grid)
-
         self.model_time = 0.0
         self._grid = grid
         self.outlet_node = outlet_node

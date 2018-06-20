@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_810_basicHyRt.py: erosion model using linear diffusion, the hybrid
 alluvium stream erosion model, discharge proportional to drainage area, and

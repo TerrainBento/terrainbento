@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_400_basicSa.py: erosion model using depth-dependent linear
 diffusion, basic stream power, and discharge proportional to drainage area.

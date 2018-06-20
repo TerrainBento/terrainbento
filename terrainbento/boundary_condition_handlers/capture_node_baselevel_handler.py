@@ -1,14 +1,12 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 ``CaptureNodeBaselevelHandler`` implements "external" stream capture.
 """
 
 from landlab import FIXED_VALUE_BOUNDARY
-from landlab import Component
 
 
-class CaptureNodeBaselevelHandler(Component):
+class CaptureNodeBaselevelHandler(object):
     """Turn a closed boundary node into an open, lowering, boundary node.
 
     A ``CaptureNodeBaselevelHandler`` turns a given node into an open boundary
@@ -123,8 +121,6 @@ class CaptureNodeBaselevelHandler(Component):
          [  0.   0.   0.   0.   0.]]
 
         """
-        super(CaptureNodeBaselevelHandler, self).__init__(grid)
-
         self.model_time = 0.0
         self._grid = grid
         self.z = grid.at_node['topographic__elevation']

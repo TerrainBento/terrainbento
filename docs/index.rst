@@ -38,7 +38,7 @@ Boundary Condition Handlers
 ---------------------------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    source/terrainbento.boundary_condition_handlers
 

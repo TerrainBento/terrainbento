@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_300_basicStVs.py: models discharge and erosion across a topographic
 surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction

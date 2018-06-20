@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_802_basicThRt.py: erosion model using linear diffusion, stream
 power with a smoothed threshold, discharge proportional to drainage area, and
