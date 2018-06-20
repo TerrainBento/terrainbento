@@ -24,11 +24,7 @@ class NotCoreNodeBaselevelHandler(object):
     the field ``bedrock__elevation``, if it exists.
 
     Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of the
-    ``run_one_step`` method.
-
-    Methods
-    -------
-    run_one_step
+    **run_one_step** method.
     """
 
     def __init__(self,
@@ -188,15 +184,15 @@ class NotCoreNodeBaselevelHandler(object):
     def run_one_step(self, dt):
         """ Run ``NotCoreNodeBaselevelHandler`` forward and update elevations.
 
-        The ``run_one_step`` method provides a consistent interface to update
+        The **run_one_step** method provides a consistent interface to update
         the ``terrainbento`` boundary condition handlers.
 
-        In the ``run_one_step`` routine, the ``NotCoreNodeBaselevelHandler`` will
+        In the **run_one_step** routine, the ``NotCoreNodeBaselevelHandler`` will
         either lower the closed or raise the non-closed nodes based on inputs
         specified at instantiation.
 
         Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of
-        the ``run_one_step`` method.
+        the **run_one_step** method.
 
         Parameters
         ----------
