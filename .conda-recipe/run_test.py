@@ -1,4 +1,10 @@
 #! /bin/bash
-
+import sys
 import terrainbento
-terrainbento.test()
+
+result = terrainbento.test()
+
+if result.wasSuccessful():
+    sys.exit(0)
+else:
+    sys.exit(1)
