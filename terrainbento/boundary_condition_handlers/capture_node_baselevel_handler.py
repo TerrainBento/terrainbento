@@ -14,11 +14,7 @@ class CaptureNodeBaselevelHandler(object):
     model stream capture external to the modeled basin.
 
     Note that ``CaptureNodeBaselevelHandler`` increments time at the end of the
-    ``run_one_step`` method.
-
-    Methods
-    -------
-    run_one_step
+    **run_one_step** method.
     """
 
     def __init__(self,
@@ -145,15 +141,15 @@ class CaptureNodeBaselevelHandler(object):
         """
         Run ``CaptureNodeBaselevelHandler`` to update captured node elevation.
 
-        The ``run_one_step`` method provides a consistent interface to update
+        The **run_one_step** method provides a consistent interface to update
         the ``terrainbento`` boundary condition handlers.
 
-        In the ``run_one_step`` routine, the ``CaptureNodeBaselevelHandler``
+        In the **run_one_step** routine, the ``CaptureNodeBaselevelHandler``
         will determine if capture is occuring and change the elevation of the
         captured node based on the amount specified in instantiation.
 
         Note that ``CaptureNodeBaselevelHandler`` increments time at the end of
-        the ``run_one_step`` method.
+        the **run_one_step** method.
 
         Parameters
         ----------
