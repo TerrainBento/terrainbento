@@ -360,8 +360,6 @@ class PrecipChanger(object):
         >>> print(fw)
         1.7213259316512188
         """
-        super(PrecipChanger, self).__init__(grid)
-
         self.model_time = 0.0
         self._length_factor = length_factor
 

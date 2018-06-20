@@ -121,8 +121,6 @@ class CaptureNodeBaselevelHandler(object):
          [  0.   0.   0.   0.   0.]]
 
         """
-        super(CaptureNodeBaselevelHandler, self).__init__(grid)
-
         self.model_time = 0.0
         self._grid = grid
         self.z = grid.at_node['topographic__elevation']

@@ -95,8 +95,6 @@ class SingleNodeBaselevelHandler(object):
         ``lowering_file_path``.
 
         """
-        super(SingleNodeBaselevelHandler, self).__init__(grid)
-
         self.model_time = 0.0
         self._grid = grid
         self.outlet_node = outlet_node

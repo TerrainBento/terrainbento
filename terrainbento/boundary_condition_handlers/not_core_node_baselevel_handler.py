@@ -134,8 +134,6 @@ class NotCoreNodeBaselevelHandler(object):
         ``lowering_file_path``.
 
         """
-        super(NotCoreNodeBaselevelHandler, self).__init__(grid)
-
         self.model_time = 0.0
         self._grid = grid
         self.modify_core_nodes = modify_core_nodes
