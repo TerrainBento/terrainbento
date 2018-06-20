@@ -4,9 +4,7 @@ import os
 import numpy as np
 from scipy.interpolate import interp1d
 
-from landlab import Component
-
-class SingleNodeBaselevelHandler(Component):
+class SingleNodeBaselevelHandler(object):
     """Control the elevation of a single open boundary node.
 
     The ``SingleNodeBaselevelHandler`` controls the elevation of a single open

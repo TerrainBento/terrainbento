@@ -4,10 +4,9 @@
 """
 
 from landlab import FIXED_VALUE_BOUNDARY
-from landlab import Component
 
 
-class CaptureNodeBaselevelHandler(Component):
+class CaptureNodeBaselevelHandler(object):
     """Turn a closed boundary node into an open, lowering, boundary node.
 
     A ``CaptureNodeBaselevelHandler`` turns a given node into an open boundary
