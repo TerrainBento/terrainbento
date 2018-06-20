@@ -90,7 +90,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
               'sphinx.ext.githubpages',
-              'numpydoc',
+              'sphinx.ext.napoleon',
               'sphinx.ext.autosummary']
 
 # sphinx napoleon specifications
