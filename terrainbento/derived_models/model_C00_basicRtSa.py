@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_C00_basicSaRt.py: erosion model using depth-dependent linear
 diffusion, basic stream power with till and rocklayers, and discharge

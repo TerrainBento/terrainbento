@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """``terrainbento`` Model ``Basic`` program.
 
 Erosion model program using linear diffusion, stream power, and discharge

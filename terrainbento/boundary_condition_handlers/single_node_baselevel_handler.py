@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """``SingleNodeBaselevelHandler`` changes elevation for a single boundary node."""
 import os
 import numpy as np

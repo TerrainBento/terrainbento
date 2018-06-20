@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_018_basicDdHy.py: erosion model with hybrid alluvium and a threshold
 that varies with cumulative incision depth.

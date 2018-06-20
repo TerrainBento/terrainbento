@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_040_basicCh.py: erosion model using cubic diffusion, basic stream
 power, and discharge proportional to drainage area.

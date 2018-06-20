@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_800_basicRt.py: erosion model using linear diffusion, basic stream
 power with spatially varying K and two bedrock units, and discharge

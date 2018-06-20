@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_002_basicTh.py: erosion model using linear diffusion, stream
 power with a smoothed threshold, and discharge proportional to drainage area.

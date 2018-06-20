@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """``NotCoreNodeBaselevelHandler`` modifies elevation for all closed nodes."""
 
 import os

@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 ``CaptureNodeBaselevelHandler`` implements "external" stream capture.
 """
