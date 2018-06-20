@@ -5,8 +5,9 @@ import os
 import numpy as np
 from scipy.interpolate import interp1d
 
+from landlab import Component
 
-class SingleNodeBaselevelHandler():
+class SingleNodeBaselevelHandler(Component):
     """Control the elevation of a single open boundary node.
 
     The ``SingleNodeBaselevelHandler`` controls the elevation of a single open
@@ -51,12 +52,12 @@ class SingleNodeBaselevelHandler():
             the model grids spatial scale and the time units of ``dt``.
             This file should be readable with
             ``np.loadtxt(filename, skiprows=1, delimiter=',')``
-            Its first column is time and its second colum is the elevation
+            Its first column is time and its second column is the elevation
             change at the outlet since the onset of the model run. Negative
             values mean the outlet lowers.
         model_end_elevation : float, optional
             Elevation of the outlet at the end of the model run duration. When
-            the outlet is lowered based on an lowering_file_path, a
+            the outlet is lowered based on a lowering_file_path, a
             ``model_end_elevation`` can be set such that lowering is scaled
             based on the starting and ending outlet elevation. Default behavior
             is to not scale the lowering pattern.
@@ -97,10 +98,12 @@ class SingleNodeBaselevelHandler():
         ``lowering_file_path``.
 
         """
+        super(SingleNodeBaselevelHandler, self).__init__(grid)
+
         self.model_time = 0.0
-        self.grid = grid
+        self._grid = grid
         self.outlet_node = outlet_node
-        self.z = self.grid.at_node['topographic__elevation']
+        self.z = self._grid.at_node['topographic__elevation']
 
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(('SingleNodeBaselevelHandler requires one of '
@@ -160,8 +163,8 @@ class SingleNodeBaselevelHandler():
             self.z[self.outlet_node] += self.lowering_rate * dt
 
             # if bedrock__elevation exists as a field, lower it also
-            if 'bedrock__elevation' in self.grid.at_node:
-                self.grid.at_node['bedrock__elevation'][self.outlet_node] += self.lowering_rate * dt
+            if 'bedrock__elevation' in self._grid.at_node:
+                self._grid.at_node['bedrock__elevation'][self.outlet_node] += self.lowering_rate * dt
 
         # if there is an outlet elevation object
         else:
@@ -171,8 +174,8 @@ class SingleNodeBaselevelHandler():
             # be done before the topography is lowered
             topo_change = self.z[self.outlet_node] - self.outlet_elevation_obj(self.model_time)
 
-            if 'bedrock__elevation' in self.grid.at_node:
-                self.grid.at_node['bedrock__elevation'][self.outlet_node] -= topo_change
+            if 'bedrock__elevation' in self._grid.at_node:
+                self._grid.at_node['bedrock__elevation'][self.outlet_node] -= topo_change
 
             # lower topography
             self.z[self.outlet_node] -= topo_change

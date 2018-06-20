@@ -38,7 +38,7 @@ class Basic(ErosionModel):
 
     1) Model ``Basic``: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodability`` and :math:`D` is given by the parameter
+    ``water_erodibility`` and :math:`D` is given by the parameter
     ``regolith_transport_parameter``.
 
     2) Model ``BasicVm``: This model is identical to Model Basic except
@@ -46,7 +46,7 @@ class Basic(ErosionModel):
 
     3) Model ``BasicSs``: In this model :math:`m` has a value of 1/3,
     :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter :math:`water_erodability~shear_stress`.
+    parameter :math:`water_erodibility~shear_stress`.
 
     In addition to those provided by the ``ErosionModel`` base class  ``Basic``
     has the following methods:
@@ -80,7 +80,7 @@ class Basic(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``Basic``. Note that an YAML input file can be used instead of
+        of model ``Basic``. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
         state test examples, see the ``terrainbento`` tutorials.
 

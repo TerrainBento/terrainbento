@@ -164,6 +164,7 @@ import numpy as np
 from scipy.special import gamma
 from scipy.integrate import quad
 
+from landlab import Component
 
 DAYS_PER_YEAR = 365.25
 DAYS_PER_DAY = 1.0
@@ -225,7 +226,7 @@ def _scale_fac(pmean, c):
     return pmean * (1.0 / gamma(1.0 + 1.0 / c))
 
 
-class PrecipChanger(object):
+class PrecipChanger(Component):
     """Handle time varying precipitation.
 
     The ``PrecipChanger`` handles time-varying precipitation by changing the
@@ -362,6 +363,8 @@ class PrecipChanger(object):
         >>> print(fw)
         1.7213259316512188
         """
+        super(PrecipChanger, self).__init__(grid)
+
         self.model_time = 0.0
         self._length_factor = length_factor
 
