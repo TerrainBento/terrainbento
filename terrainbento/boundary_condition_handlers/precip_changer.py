@@ -233,14 +233,6 @@ class PrecipChanger(object):
 
     Note that ``PrecipChanger`` increments time at the end of the
     **run_one_step** method.
-
-    Methods
-    --------
-    calculate_starting_psi
-    get_current_precip_params
-    get_erodibility_adjustment_factor
-    run_one_step
-
     """
 
     def __init__(self,

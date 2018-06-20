@@ -89,17 +89,6 @@ class StochasticErosionModel(ErosionModel):
     It is expected that a derived model will define an ``__init__`` and a
      **run_one_step** method. If desired, the derived model can overwrite the
      existing ``run_for``, **run**, and **finalize** methods.
-
-    Methods
-    -------
-    run_for_stochastic
-    instantiate_rain_generator
-    reset_random_seed
-    handle_water_erosion
-    finalize
-    record_rain_event
-    write_storm_sequence_to_file
-    write_exceedance_frequency_file
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):

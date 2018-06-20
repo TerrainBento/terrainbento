@@ -25,10 +25,6 @@ class NotCoreNodeBaselevelHandler(object):
 
     Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of the
     **run_one_step** method.
-
-    Methods
-    -------
-    run_one_step
     """
 
     def __init__(self,

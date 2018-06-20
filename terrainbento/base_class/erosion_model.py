@@ -231,23 +231,6 @@ class ErosionModel(object):
     It is expected that a derived model will define an **__init__** and a
     **run_one_step** method. If desired, the derived model can overwrite the
     existing **run_for**, **run**, and **finalize** methods.
-
-    Attributes
-    ----------
-    model_time
-
-    Methods
-    -------
-    read_topography
-    setup_hexagonal_grid
-    setup_raster_grid
-    run_for
-    run
-    get_parameter_from_exponent
-    calculate_cumulative_change
-    update_boundary_conditions
-    write_output
-    finalize
     """
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None,
                  OutputWriters=None):
