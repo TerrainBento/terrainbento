@@ -261,8 +261,8 @@ class StochasticErosionModel(ErosionModel):
         function will test for it and run it. This is presently done in
         BasicDdSt.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         dt : float
             Model run timestep.
         flooded_nodes : ndarray of int (optional)
