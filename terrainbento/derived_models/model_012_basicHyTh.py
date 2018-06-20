@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_012_basicThHy.py: calculates water erosion using the
 hybrid alluvium model with a threshold.

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_008_basicDd.py: erosion model using linear diffusion, stream
 power with a smoothed threshold that varies with incision depth, and discharge

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_210_basicHyVs.py: erosion model using linear diffusion,
 hybrid alluvium, and discharge proportional to effective drainage

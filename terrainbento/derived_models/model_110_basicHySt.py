@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_110_basicHySt.py: erosion model with stochastic
 rainfall and hybrid alluvial incision.
