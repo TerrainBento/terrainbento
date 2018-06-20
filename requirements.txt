@@ -1,5 +1,4 @@
 scipy
 numpy
-numpydoc
 dill
 landlab
