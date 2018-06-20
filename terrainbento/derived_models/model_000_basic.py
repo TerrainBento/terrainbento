@@ -46,7 +46,7 @@ class Basic(ErosionModel):
 
     3) Model ``BasicSs``: In this model :math:`m` has a value of 1/3,
     :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter :math:`water_erodibility~shear_stress`.
+    parameter ``water_erodibility~shear_stress``.
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
