@@ -4,11 +4,11 @@
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area.
 
-Landlab components used: (PUT URLS here.)
-    1. FlowAccumulator
-    2. DepressionFinderAndRouter (optional)
-    3. FastscapeStreamPower
-    4. LinearDiffuser
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import numpy as np
