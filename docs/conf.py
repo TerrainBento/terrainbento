@@ -91,7 +91,7 @@ extensions = ['sphinx.ext.autodoc',
 # sphinx napoleon specifications
 napoleon_numpy_docstring = True
 napoleon_google_docstring = False
-napoleon_include_init_with_doc = False
+napoleon_include_init_with_doc = True
 
 napoleon_include_special_with_doc = True
 #napoleon_google_docstring = False
