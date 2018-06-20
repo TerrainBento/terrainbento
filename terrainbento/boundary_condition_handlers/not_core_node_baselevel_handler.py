@@ -1,15 +1,12 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""``NotCoreNodeBaselevelHandler`` modifies elevation for all closed nodes."""
+#! /usr/env/python
+"""``NotCoreNodeBaselevelHandler`` modifies elevation for all not-core nodes."""
 
 import os
 import numpy as np
 from scipy.interpolate import interp1d
 
-from landlab import Component
 
-
-class NotCoreNodeBaselevelHandler(Component):
+class NotCoreNodeBaselevelHandler(object):
     """Control the elevation of all nodes that are not core nodes.
 
     The ``NotCoreNodeBaselevelHandler`` controls the elevation of all nodes on
@@ -23,7 +20,7 @@ class NotCoreNodeBaselevelHandler(Component):
     the opposite direction.
 
     The ``NotCoreNodeBaselevelHandler`` expects that ``topographic__elevation``
-     is an at-node model grid field. It will modify this field as well as
+    is an at-node model grid field. It will modify this field as well as
     the field ``bedrock__elevation``, if it exists.
 
     Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of the
@@ -137,8 +134,6 @@ class NotCoreNodeBaselevelHandler(Component):
         ``lowering_file_path``.
 
         """
-        super(NotCoreNodeBaselevelHandler, self).__init__(grid)
-
         self.model_time = 0.0
         self._grid = grid
         self.modify_core_nodes = modify_core_nodes

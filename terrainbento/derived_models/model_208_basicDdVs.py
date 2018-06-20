@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_208_basicDdVs.py: erosion model using linear diffusion,
 thresholded stream power, and discharge proportional to effective drainage

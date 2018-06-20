@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_840_basicChRtTh.py: erosion model using cubic diffusion, basic stream
 power with a threshold and spatially varying K and two bedrock units, and discharge

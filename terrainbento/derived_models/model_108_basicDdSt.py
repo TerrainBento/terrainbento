@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_108_basicDdSt.py: erosion model with stochastic
 rainfall, and water erosion proportional to stream power in excess of a

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_440_basicChSa.py: erosion model using depth-dependent cubic diffusion
 with a soil layer, basic stream power, and discharge proportional to drainage

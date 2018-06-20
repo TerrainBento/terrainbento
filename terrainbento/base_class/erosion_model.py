@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """Base class for common functions of all ``terrainbento`` erosion models.
 
 The ``ErosionModel`` is a base class that contains all of the functionality
@@ -138,7 +138,7 @@ BoundaryHandlers : str or list of str, optional
     Strings containing the names of classes used to handle boundary conditions.
     Valid options are currently: 'NormalFault', 'PrecipChanger',
     'CaptureNodeBaselevelHandler', 'NotCoreNodeBaselevelHandler', and
-    'SingleNodeBaselevelHandler'. These BoundaryHandlers are instantiated with 
+    'SingleNodeBaselevelHandler'. These BoundaryHandlers are instantiated with
     the entire parameter set unless there is an entry in the parameter
     dictionary with the name of the boundary handler that contains its own
     parameter dictionary. If this is the case, the handler-specific dictionary
@@ -263,8 +263,8 @@ class ErosionModel(object):
         BoundaryHandlers : class or list of classes, optional
             Classes used to handle boundary conditions. Alternatively can be
             passed by input file as string. Valid options described above.
-        OutputWriters : class, function, or list of classes and/or functions, 
-            optional Classes or functions used to write incremental output 
+        OutputWriters : class, function, or list of classes and/or functions,
+            optional Classes or functions used to write incremental output
             (e.g. make a diagnostic plot).
 
         Returns

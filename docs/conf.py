@@ -38,6 +38,7 @@ class MockTest(MagicMock):
 
 MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.components',
                 'landlab.graph',
+                'Component',
                 'FlowAccumulator', 'PrecipitationDistribution',
                 'FastscapeEroder', 'LinearDiffuser', 'StreamPowerSmoothThresholdEroder',
                 'ErosionDeposition', 'Space', 'TaylorNonLinearDiffuser',
@@ -45,7 +46,7 @@ MOCK_MODULES = ['landlab', 'landlab.io', 'landlab.io.netcdf', 'landlab.component
                 'ExponentialWeatherer', 'DepthDependentTaylorDiffuser',
                 'scipy', 'scipy.interpolate', 'scipy.special', 'scipy.integrate',
                 'scipy.stats',
-                'yaml', 'time', 'dill',
+                'yaml',
                 'numpy', 'numpy.testing',
                 'nose', 'nose.plugins', 'nose.plugins.base',
                 'doctests', 'Doctest', 'Tester', 'doctests.Doctest',
@@ -56,9 +57,6 @@ TEST_MOCK_MODULES = ['TerrainBentoTester']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 sys.modules.update((mod_name, MockTest()) for mod_name in TEST_MOCK_MODULES)
 
-
-autodoc_mock_imports = ['landlab', 'dill', 'numpy', 'scipy', 'yaml']
-
 import terrainbento
 
 # The short X.Y version.
@@ -66,10 +64,7 @@ version = terrainbento.__version__
 # The full version, including alpha/beta/rc tags.
 release = terrainbento.__version__
 
-# del landlab, dill, numpy, scipy, yaml
-
 from datetime import date
-sys.path.insert(0, os.path.abspath('sphinxext'))
 sys.path.insert(0, '.')
 
 # -- General configuration ------------------------------------------------
@@ -94,9 +89,16 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary']
 
 # sphinx napoleon specifications
-#napoleon_include_private_with_doc = True
-#napoleon_include_special_with_doc = True
+napoleon_numpy_docstring = True
+napoleon_google_docstring = False
+napoleon_include_init_with_doc = False
+
+napoleon_include_special_with_doc = True
 #napoleon_google_docstring = False
+
+autodoc_warningiserror = False
+
+autodoc_mock_imports = ['landlab', 'numpy', 'scipy', 'yaml']
 
 # Add any paths that contain templates here, relative to this directory.
 #templates_path = ['_templates']
@@ -181,10 +183,6 @@ html_logo = 'images/terrainbento_logo.png'
 #     ]
 # }
 
-numpydoc_class_members_toctree = False
-numpydoc_show_class_members = False
-# html_style = 'landlab.css'
-autoclass_content = 'both'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
@@ -265,4 +263,6 @@ epub_exclude_files = ['search.html']
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {'python': ('https://docs.python.org/2.7', None),
+                       'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+                       'landlab' : ('http://landlab.readthedocs.io/en/release/', None)}

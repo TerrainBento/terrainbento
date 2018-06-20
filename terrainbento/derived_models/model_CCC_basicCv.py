@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_000_basic.py: erosion model using linear diffusion, basic stream
 power, and discharge proportional to drainage area.

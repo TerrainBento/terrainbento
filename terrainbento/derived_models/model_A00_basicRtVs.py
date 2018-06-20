@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_A00_basicVsRt.py: erosion model using linear diffusion, basic stream
 power with 2 lithologies (rock and till), and discharge proportional to

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#! /usr/env/python
 """
 model_410_basicHySa.py: erosion model using depth-dependent linear diffusion,
 hybrid alluvium river erosion, and discharge proportional to drainage
