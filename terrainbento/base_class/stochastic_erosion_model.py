@@ -87,8 +87,8 @@ class StochasticErosionModel(ErosionModel):
     preciptiation events.
 
     It is expected that a derived model will define an ``__init__`` and a
-     ``run_one_step`` method. If desired, the derived model can overwrite the
-     existing ``run_for``, ``run``, and ``finalize`` methods.
+     **run_one_step** method. If desired, the derived model can overwrite the
+     existing ``run_for``, **run**, and **finalize** methods.
 
     Methods
     -------

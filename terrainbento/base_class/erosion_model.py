@@ -180,7 +180,7 @@ output_filename : str, optional
     String prefix for names of output netCDF files. Default is
     ``'terrainbento_output'``.
 
-Note also that the ``run`` method takes as a parameter ``output_fields``, which
+Note also that the **run** method takes as a parameter ``output_fields``, which
 is a list of model grid fields to write as output.
 """
 
@@ -228,9 +228,9 @@ class ErosionModel(object):
     simply handles I/O and setup. Derived classes are meant to include
     Landlab components to model actual erosion processes.
 
-    It is expected that a derived model will define an ``__init__`` and a
-     ``run_one_step`` method. If desired, the derived model can overwrite the
-     existing ``run_for``, ``run``, and ``finalize`` methods.
+    It is expected that a derived model will define an **__init__** and a
+    **run_one_step** method. If desired, the derived model can overwrite the
+    existing **run_for**, **run**, and **finalize** methods.
 
     Attributes
     ----------
@@ -496,7 +496,7 @@ class ErosionModel(object):
 
         If a class, an OutputWriter will be instantiated with only one passed
         argument: the entire model object. The class is expected to have a bound
-        function called ``run_one_step`` which is run with no arguments each time
+        function called **run_one_step** which is run with no arguments each time
         output is written. If a function, the OutputWriter will be run at each
         time output is written with one passed argument: the entire model
         object.

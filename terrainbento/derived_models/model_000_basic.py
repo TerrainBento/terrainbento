@@ -153,7 +153,7 @@ class Basic(ErosionModel):
     def run_one_step(self, dt):
         """Advance model ``Basic`` for one time-step of duration dt.
 
-        The ``run_one_step`` method does the following:
+        The **run_one_step** method does the following:
 
         1. Directs flow and accumulates drainage area.
 
@@ -168,7 +168,7 @@ class Basic(ErosionModel):
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the ``ErosionModel`` base class function
-        ``finalize__run_one_step``. This function updates all BoundaryHandlers
+        **finalize__run_one_step**. This function updates all BoundaryHandlers
         by ``dt`` and increments model time by ``dt``.
 
         Parameters
