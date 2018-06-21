@@ -17,16 +17,16 @@ requirements:
     - python
     - numpy
     - scipy
-    - dill
     - six
     - pyyaml
-    - numpydoc
-    - nose
+    - pytest
     - landlab >=1.3
 
 test:
   requires:
     - terrainbento
+    - pytest
+    - pytest-runner
 
 build:
   number: 0
