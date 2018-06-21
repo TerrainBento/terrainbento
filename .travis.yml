@@ -18,6 +18,7 @@ before_install:
     brew cleanup -s
     rm -rf $(brew --cache)
   fi
+- pip install pytest pytest-cov
 install:
 - echo "Build on $TRAVIS_OS_NAME for Python $TRAVIS_PYTHON_VERSION, $TRAVIS_TAG"
 - |
