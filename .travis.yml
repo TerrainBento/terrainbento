@@ -18,6 +18,8 @@ before_install:
     brew cleanup -s
     rm -rf $(brew --cache)
   fi
+- conda update --yes -n base conda
+- pip install --upgrade pip
 - pip install pytest pytest-cov
 install:
 - echo "Build on $TRAVIS_OS_NAME for Python $TRAVIS_PYTHON_VERSION, $TRAVIS_TAG"
@@ -36,8 +38,6 @@ install:
 - curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
 - bash $HOME/minconda.sh -b -p $CONDA_PREFIX
 - export PATH="$CONDA_PREFIX/bin:$PATH"
-- conda update --yes -n base conda
-- pip install --upgrade pip
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n _testing python=$TRAVIS_PYTHON_VERSION
