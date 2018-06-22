@@ -37,7 +37,7 @@ install:
 - export PATH="$CONDA_PREFIX/bin:$PATH"
 - conda update --yes -n base conda
 - pip install --upgrade pip
-- pip install pytest pytest-cov
+- pip install pytest
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n _testing python=$TRAVIS_PYTHON_VERSION
@@ -57,7 +57,10 @@ script:
  fi
 - |
  if [[ "$COVERALLS" == "1" ]]; then
+   pip install pytest-cov
    pip install coveralls
+   py.test --cov-report term-missing --cov=terrainbento tests/
+
    coveralls
  fi
 virtualenv:

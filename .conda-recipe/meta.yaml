@@ -26,6 +26,7 @@ test:
   requires:
     - terrainbento
     - pytest
+    - pytest-cov
     - pytest-runner
 
 build:

@@ -1,10 +1,11 @@
 #! /bin/bash
 import sys
+import pytest
 import terrainbento
 
-result = terrainbento.test()
+result = pytest.test()
 
-if result.wasSuccessful():
+if result == 0:
     sys.exit(0)
 else:
     sys.exit(1)
