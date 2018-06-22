@@ -59,8 +59,7 @@ script:
  if [[ "$COVERALLS" == "1" ]]; then
    pip install pytest-cov
    pip install coveralls
-   py.test --cov-report term-missing --cov=terrainbento tests/
-
+   py.test
    coveralls
  fi
 virtualenv:
