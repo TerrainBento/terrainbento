@@ -67,8 +67,10 @@ def test_time_units_equivalent():
         i_yr, p_yr = pc_yr.get_current_precip_params()
         i_sec, p_sec = pc_sec.get_current_precip_params()
 
-        assert_almost_equal(i_day, i_yr, i_sec)
-        assert_almost_equal(p_day, p_yr, p_sec)
+        assert_almost_equal(i_day, i_yr)
+        assert_almost_equal(i_day, i_sec)
+        assert_almost_equal(p_day, p_yr)
+        assert_almost_equal(p_day, p_sec)
 
         f_day = pc_day.get_erodibility_adjustment_factor()
         f_yr = pc_yr.get_erodibility_adjustment_factor()
