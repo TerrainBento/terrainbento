@@ -25,7 +25,7 @@ class Basic(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
