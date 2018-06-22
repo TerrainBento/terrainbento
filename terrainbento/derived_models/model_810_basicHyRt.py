@@ -27,63 +27,78 @@ class BasicHyRt(ErosionModel):
     stream erosion, Q~A, and two lithologies: rock and till.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """Initialize the BasicHyRt."""
 
         # Call ErosionModel's init
-        super(BasicHyRt, self).__init__(input_file=input_file,
-                                        params=params,
-                                        BoundaryHandlers=BoundaryHandlers,
-                                        OutputWriters=OutputWriters)
+        super(BasicHyRt, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
 
-        contact_zone__width = (self._length_factor
-                               * self.params['contact_zone__width']) # L
-        self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')
-        self.K_till_sp = self.get_parameter_from_exponent('K_till_sp')
+        contact_zone__width = (
+            self._length_factor * self.params["contact_zone__width"]
+        )  # L
+        self.K_rock_sp = self.get_parameter_from_exponent("K_rock_sp")
+        self.K_till_sp = self.get_parameter_from_exponent("K_till_sp")
 
-        regolith_transport_parameter = ((self._length_factor ** 2)
-                * self.get_parameter_from_exponent('regolith_transport_parameter'))
+        regolith_transport_parameter = (
+            self._length_factor ** 2
+        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
-        v_sc = self.get_parameter_from_exponent('v_sc') # normalized settling velocity. Unitless.
+        v_sc = self.get_parameter_from_exponent(
+            "v_sc"
+        )  # normalized settling velocity. Unitless.
 
         # Set up rock-till
-        self.setup_rock_and_till(self.params['rock_till_file__name'],
-                                 rock_erody_br=self.K_rock_sp,
-                                 till_erody_br=self.K_till_sp,
-                                 rock_thresh_br=0.0,
-                                 till_thresh_br=0.0,
-                                 contact_width=contact_zone__width)
+        self.setup_rock_and_till(
+            self.params["rock_till_file__name"],
+            rock_erody_br=self.K_rock_sp,
+            till_erody_br=self.K_till_sp,
+            rock_thresh_br=0.0,
+            till_thresh_br=0.0,
+            contact_width=contact_zone__width,
+        )
 
         # Handle solver option
         try:
-            solver = self.params['solver']
+            solver = self.params["solver"]
         except:
-            solver = 'original'
+            solver = "original"
 
         # Instantiate an ErosionDeposition ("hybrid") component
-        self.eroder = ErosionDeposition(self.grid,
-                            K='K_br',
-                            F_f=self.params['F_f'],
-                            phi=self.params['phi'],
-                            v_s=v_sc,
-                            m_sp=self.params['m_sp'],
-                            n_sp=self.params['n_sp'],
-                            method='simple_stream_power',
-                            discharge_method='drainage_area',
-                            area_field='drainage_area',
-                            solver=solver)
+        self.eroder = ErosionDeposition(
+            self.grid,
+            K="K_br",
+            F_f=self.params["F_f"],
+            phi=self.params["phi"],
+            v_s=v_sc,
+            m_sp=self.params["m_sp"],
+            n_sp=self.params["n_sp"],
+            method="simple_stream_power",
+            discharge_method="drainage_area",
+            area_field="drainage_area",
+            solver=solver,
+        )
 
         # Instantiate a LinearDiffuser component
-        self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity=regolith_transport_parameter)
+        self.diffuser = LinearDiffuser(
+            self.grid, linear_diffusivity=regolith_transport_parameter
+        )
 
-    def setup_rock_and_till(self,
-                            file_name='file',
-                            rock_erody_br=1,
-                            till_erody_br=1,
-                            rock_thresh_br=0,
-                            till_thresh_br=0,
-                            contact_width=1):
+    def setup_rock_and_till(
+        self,
+        file_name="file",
+        rock_erody_br=1,
+        till_erody_br=1,
+        rock_thresh_br=0,
+        till_thresh_br=0,
+        contact_width=1,
+    ):
         """Set up lithology handling for two layers with different erodibility.
 
         Parameters
@@ -109,25 +124,25 @@ class BasicHyRt(ErosionModel):
         from landlab.io import read_esri_ascii
 
         # Read input data on rock-till contact elevation
-        read_esri_ascii(file_name, grid=self.grid,
-                        name='rock_till_contact__elevation',
-                        halo=1)
+        read_esri_ascii(
+            file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
+        )
 
         # Get a reference to the rock-till field
-        self.rock_till_contact = self.grid.at_node['rock_till_contact__elevation']
+        self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
 
         # Create field for rock erodability
-        if 'K_br' in self.grid.at_node:
-            self.erody_br = self.grid.at_node['K_br']
+        if "K_br" in self.grid.at_node:
+            self.erody_br = self.grid.at_node["K_br"]
         else:
-            self.erody_br = self.grid.add_ones('node', 'K_br')
+            self.erody_br = self.grid.add_ones("node", "K_br")
             self.erody_br[:] = rock_erody_br
 
         # field for rock threshold values
-        if 'sp_crit_br' in self.grid.at_node:
-            self.threshold_br = self.grid.at_node['sp_crit_br']
+        if "sp_crit_br" in self.grid.at_node:
+            self.threshold_br = self.grid.at_node["sp_crit_br"]
         else:
-            self.threshold_br = self.grid.add_ones('node', 'sp_crit_br')
+            self.threshold_br = self.grid.add_ones("node", "sp_crit_br")
             self.threshold_br[:] = rock_thresh_br
 
         # Create array for erodibility weighting function for BEDROCK
@@ -181,24 +196,33 @@ class BasicHyRt(ErosionModel):
         """
 
         # Update the erodibility weighting function (this is "F")
-        self.erody_wt_br[self.data_nodes] = (1.0
-                            / (1.0
-                               + np.exp(-(self.z[self.data_nodes] - self.rock_till_contact[self.data_nodes])
-                                         / self.contact_width)))
+        self.erody_wt_br[self.data_nodes] = 1.0 / (
+            1.0
+            + np.exp(
+                -(self.z[self.data_nodes] - self.rock_till_contact[self.data_nodes])
+                / self.contact_width
+            )
+        )
 
         # (if we're varying K through time, update that first)
-        if 'PrecipChanger' in self.boundary_handler:
-            erode_factor = self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor()
+        if "PrecipChanger" in self.boundary_handler:
+            erode_factor = self.boundary_handler[
+                "PrecipChanger"
+            ].get_erodibility_adjustment_factor()
             self.till_erody_br = self.K_till_sp * erode_factor
             self.rock_erody_br = self.K_rock_sp * erode_factor
 
         # Calculate the effective BEDROCK erodibilities using weighted averaging
-        self.erody_br[:] = (self.erody_wt_br * self.till_erody_br
-                         + (1.0 - self.erody_wt_br) * self.rock_erody_br)
+        self.erody_br[:] = (
+            self.erody_wt_br * self.till_erody_br
+            + (1.0 - self.erody_wt_br) * self.rock_erody_br
+        )
 
         # Calculate the effective BEDROCK thresholds using weighted averaging
-        self.threshold_br[:] = (self.erody_wt_br * self.till_thresh_br
-                             + (1.0 - self.erody_wt_br) * self.rock_thresh_br)
+        self.threshold_br[:] = (
+            self.erody_wt_br * self.till_thresh_br
+            + (1.0 - self.erody_wt_br) * self.rock_thresh_br
+        )
 
     def run_one_step(self, dt):
         """
@@ -211,7 +235,9 @@ class BasicHyRt(ErosionModel):
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
-            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+            flooded = np.where(
+                self.flow_accumulator.depression_finder.flood_status == 3
+            )[0]
 
         # Update the erodibility and threshold field
         self.update_erodibility_and_threshold_fields()
@@ -233,12 +259,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     thrt = BasicHyRt(input_file=infile)
     thrt.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

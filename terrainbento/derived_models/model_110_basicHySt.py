@@ -72,80 +72,95 @@ class BasicHySt(StochasticErosionModel):
     >>> srt = BasicHySt(params=my_pars)
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """Initialize the BasicHySt."""
 
         # Call ErosionModel's init
-        super(BasicHySt, self).__init__(input_file=input_file,
-                                        params=params,
-                                        BoundaryHandlers=BoundaryHandlers,
-                                        OutputWriters=OutputWriters)
+        super(BasicHySt, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
 
         # Get Parameters:
-        K = ((self._length_factor ** 0.5)  # K_stochastic [=] L^(1/2)  T^-(1/2)
-             * self.get_parameter_from_exponent('K_stochastic_sp'))
+        K = (
+            self._length_factor ** 0.5
+        ) * self.get_parameter_from_exponent(  # K_stochastic [=] L^(1/2)  T^-(1/2)
+            "K_stochastic_sp"
+        )
 
-        regolith_transport_parameter = ((self._length_factor ** 2)
-                              * self.get_parameter_from_exponent(
-                                      'regolith_transport_parameter')) # L^2/T
+        regolith_transport_parameter = (
+            self._length_factor ** 2
+        ) * self.get_parameter_from_exponent(
+            "regolith_transport_parameter"
+        )  # L^2/T
 
-        v_s = (self._length_factor)*self.get_parameter_from_exponent('v_s') # has units length per time
+        v_s = (self._length_factor) * self.get_parameter_from_exponent(
+            "v_s"
+        )  # has units length per time
 
-        #set methods and fields.
-        method = 'simple_stream_power'
-        discharge_method = 'discharge_field'
+        # set methods and fields.
+        method = "simple_stream_power"
+        discharge_method = "discharge_field"
         area_field = None
-        discharge_field = 'surface_water__discharge'
+        discharge_field = "surface_water__discharge"
 
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if 'surface_water__discharge' not in self.grid.at_node:
-            self.grid.add_zeros('node', 'surface_water__discharge')
-        self.discharge = self.grid.at_node['surface_water__discharge']
+        if "surface_water__discharge" not in self.grid.at_node:
+            self.grid.add_zeros("node", "surface_water__discharge")
+        self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        infiltration_capacity = (self._length_factor
-                                 * self.params['infiltration_capacity']) # L/T
+        infiltration_capacity = (
+            self._length_factor * self.params["infiltration_capacity"]
+        )  # L/T
         self.infilt = infiltration_capacity
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
 
         # Keep a reference to drainage area
-        self.area = self.grid.at_node['drainage_area']
+        self.area = self.grid.at_node["drainage_area"]
 
         # Handle solver option
         try:
-            solver = self.params['solver']
+            solver = self.params["solver"]
         except:
-            solver = 'original'
+            solver = "original"
 
         # Instantiate an ErosionDeposition component
-        self.eroder = ErosionDeposition(self.grid,
-                            K=K,
-                            F_f=self.params['F_f'],
-                            phi=self.params['phi'],
-                            v_s=v_s,
-                            m_sp=self.params['m_sp'],
-                            n_sp=self.params['n_sp'],
-                            method=method,
-                            discharge_method=discharge_method,
-                            area_field=area_field,
-                            discharge_field=discharge_field,
-                            solver=solver)
+        self.eroder = ErosionDeposition(
+            self.grid,
+            K=K,
+            F_f=self.params["F_f"],
+            phi=self.params["phi"],
+            v_s=v_s,
+            m_sp=self.params["m_sp"],
+            n_sp=self.params["n_sp"],
+            method=method,
+            discharge_method=discharge_method,
+            area_field=area_field,
+            discharge_field=discharge_field,
+            solver=solver,
+        )
 
         # Instantiate a LinearDiffuser component
-        self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = regolith_transport_parameter)
+        self.diffuser = LinearDiffuser(
+            self.grid, linear_diffusivity=regolith_transport_parameter
+        )
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
         if self.rain_rate > 0.0 and self.infilt > 0.0:
-            runoff = self.rain_rate - (self.infilt *
-                                       (1.0 -
-                                        np.exp(-self.rain_rate / self.infilt)))
+            runoff = self.rain_rate - (
+                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
+            )
             if runoff < 0:
                 runoff = 0
         else:
@@ -164,7 +179,9 @@ class BasicHySt(StochasticErosionModel):
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
-            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+            flooded = np.where(
+                self.flow_accumulator.depression_finder.flood_status == 3
+            )[0]
 
         # Handle water erosion
         self.handle_water_erosion(dt, flooded)
@@ -183,12 +200,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     em = BasicHySt(input_file=infile)
     em.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

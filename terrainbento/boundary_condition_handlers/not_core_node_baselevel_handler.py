@@ -27,13 +27,15 @@ class NotCoreNodeBaselevelHandler(object):
     **run_one_step** method.
     """
 
-    def __init__(self,
-                 grid,
-                 modify_core_nodes = False,
-                 lowering_rate = None,
-                 lowering_file_path = None,
-                 model_end_elevation = None,
-                 **kwargs):
+    def __init__(
+        self,
+        grid,
+        modify_core_nodes=False,
+        lowering_rate=None,
+        lowering_file_path=None,
+        model_end_elevation=None,
+        **kwargs
+    ):
         """
         Parameters
         ----------
@@ -133,7 +135,7 @@ class NotCoreNodeBaselevelHandler(object):
         self.model_time = 0.0
         self._grid = grid
         self.modify_core_nodes = modify_core_nodes
-        self.z = self._grid.at_node['topographic__elevation']
+        self.z = self._grid.at_node["topographic__elevation"]
 
         # determine which nodes to lower
         # based on which are lowering, set the prefactor correctly.
@@ -144,16 +146,21 @@ class NotCoreNodeBaselevelHandler(object):
             self.nodes_to_lower = self._grid.status_at_node != 0
             self.prefactor = 1.0
 
-
         if (lowering_file_path is None) and (lowering_rate is None):
-            raise ValueError(('NotCoreNodeBaselevelHandler requires one of '
-                              'lowering_rate and lowering_file_path'))
+            raise ValueError(
+                (
+                    "NotCoreNodeBaselevelHandler requires one of "
+                    "lowering_rate and lowering_file_path"
+                )
+            )
         else:
-            if (lowering_rate is None):
+            if lowering_rate is None:
                 # initialize outlet elevation object
                 if os.path.exists(lowering_file_path):
 
-                    elev_change_df = np.loadtxt(lowering_file_path, skiprows=1, delimiter =',')
+                    elev_change_df = np.loadtxt(
+                        lowering_file_path, skiprows=1, delimiter=","
+                    )
                     time = elev_change_df[:, 0]
                     elev_change = elev_change_df[:, 1]
 
@@ -162,24 +169,36 @@ class NotCoreNodeBaselevelHandler(object):
                     if model_end_elevation is None:
                         self.scaling_factor = 1.0
                     else:
-                        self.scaling_factor = np.abs(model_start_elevation-model_end_elevation)/np.abs(elev_change[0]-elev_change[-1])
+                        self.scaling_factor = np.abs(
+                            model_start_elevation - model_end_elevation
+                        ) / np.abs(elev_change[0] - elev_change[-1])
 
-                    outlet_elevation = (self.scaling_factor * self.prefactor * elev_change_df[:, 1]) + model_start_elevation
+                    outlet_elevation = (
+                        self.scaling_factor * self.prefactor * elev_change_df[:, 1]
+                    ) + model_start_elevation
 
                     self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
                 else:
-                    raise ValueError(('The lowering_file_path provided '
-                                      'to NotCoreNodeBaselevelHandler does not '
-                                      'exist.'))
-            elif (lowering_file_path is None):
+                    raise ValueError(
+                        (
+                            "The lowering_file_path provided "
+                            "to NotCoreNodeBaselevelHandler does not "
+                            "exist."
+                        )
+                    )
+            elif lowering_file_path is None:
                 self.lowering_rate = lowering_rate
                 self.outlet_elevation_obj = None
             else:
-                raise ValueError(('Both an lowering_rate and a '
-                                  'lowering_file_path have been provided '
-                                  'to NotCoreNodeBaselevelHandler. Please provide '
-                                  'only one.'))
+                raise ValueError(
+                    (
+                        "Both an lowering_rate and a "
+                        "lowering_file_path have been provided "
+                        "to NotCoreNodeBaselevelHandler. Please provide "
+                        "only one."
+                    )
+                )
 
     def run_one_step(self, dt):
         """ Run ``NotCoreNodeBaselevelHandler`` forward and update elevations.
@@ -208,8 +227,10 @@ class NotCoreNodeBaselevelHandler(object):
             self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
 
             # if bedrock__elevation exists as a field, lower it also
-            if 'bedrock__elevation' in self._grid.at_node:
-                self._grid.at_node['bedrock__elevation'][self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
+            if "bedrock__elevation" in self._grid.at_node:
+                self._grid.at_node["bedrock__elevation"][self.nodes_to_lower] += (
+                    self.prefactor * self.lowering_rate * dt
+                )
 
         # if there is an outlet elevation object
         else:
@@ -220,8 +241,10 @@ class NotCoreNodeBaselevelHandler(object):
             mean_z = np.mean(self.z[self.nodes_to_lower])
             self.topo_change = mean_z - self.outlet_elevation_obj(self.model_time)
 
-            if 'bedrock__elevation' in self._grid.at_node:
-                self._grid.at_node['bedrock__elevation'][self.nodes_to_lower] -= self.topo_change
+            if "bedrock__elevation" in self._grid.at_node:
+                self._grid.at_node["bedrock__elevation"][
+                    self.nodes_to_lower
+                ] -= self.topo_change
 
             # lower topography
             self.z[self.nodes_to_lower] -= self.topo_change

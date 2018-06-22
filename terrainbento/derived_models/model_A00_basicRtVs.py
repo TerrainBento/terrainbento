@@ -22,49 +22,69 @@ class BasicRtVs(ErosionModel):
     power with 2 lithologies, and Q ~ A exp( -b S / A).
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """Initialize the BasicVsRt."""
 
         # Call ErosionModel's init
-        super(BasicVsRt, self).__init__(input_file=input_file,
-                                        params=params,
-                                        BoundaryHandlers=BoundaryHandlers,
-                                        OutputWriters=OutputWriters)
-        contact_zone__width = (self._length_factor)*self.params['contact_zone__width'] # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent('K_rock_sp')
-        self.K_till_sp = self.get_parameter_from_exponent('K_till_sp')
-        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter')
+        super(BasicVsRt, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
+        contact_zone__width = (self._length_factor) * self.params[
+            "contact_zone__width"
+        ]  # has units length
+        self.K_rock_sp = self.get_parameter_from_exponent("K_rock_sp")
+        self.K_till_sp = self.get_parameter_from_exponent("K_till_sp")
+        regolith_transport_parameter = (
+            self._length_factor ** 2.
+        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
-        recharge_rate = (self._length_factor)*self.params['recharge_rate'] # has units length per time
-        soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
-        K_hydraulic_conductivity = (self._length_factor)*self.params['K_hydraulic_conductivity'] # has units length per time
+        recharge_rate = (self._length_factor) * self.params[
+            "recharge_rate"
+        ]  # has units length per time
+        soil_thickness = (self._length_factor) * self.params[
+            "initial_soil_thickness"
+        ]  # has units length
+        K_hydraulic_conductivity = (self._length_factor) * self.params[
+            "K_hydraulic_conductivity"
+        ]  # has units length per time
 
         # Set up rock-till
-        self.setup_rock_and_till(self.params['rock_till_file__name'],
-                                 self.K_rock_sp,
-                                 self.K_till_sp,
-                                 contact_zone__width)
+        self.setup_rock_and_till(
+            self.params["rock_till_file__name"],
+            self.K_rock_sp,
+            self.K_till_sp,
+            contact_zone__width,
+        )
 
         # Add a field for effective drainage area
-        if 'effective_drainage_area' in self.grid.at_node:
-            self.eff_area = self.grid.at_node['effective_drainage_area']
+        if "effective_drainage_area" in self.grid.at_node:
+            self.eff_area = self.grid.at_node["effective_drainage_area"]
         else:
-            self.eff_area = self.grid.add_zeros('node',
-                                                'effective_drainage_area')
+            self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
-        self.sat_param = (K_hydraulic_conductivity*soil_thickness*self.grid.dx)/(recharge_rate)
+        self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (
+            recharge_rate
+        )
 
         # Instantiate a FastscapeEroder component
-        self.eroder = StreamPowerEroder(self.grid,
-                                        K_sp=self.erody,
-                                        m_sp=self.params['m_sp'],
-                                        n_sp=self.params['n_sp'],
-                                        use_Q=self.eff_area)
+        self.eroder = StreamPowerEroder(
+            self.grid,
+            K_sp=self.erody,
+            m_sp=self.params["m_sp"],
+            n_sp=self.params["n_sp"],
+            use_Q=self.eff_area,
+        )
 
         # Instantiate a LinearDiffuser component
-        self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = regolith_transport_parameter)
+        self.diffuser = LinearDiffuser(
+            self.grid, linear_diffusivity=regolith_transport_parameter
+        )
 
     def calc_effective_drainage_area(self):
         """Calculate and store effective drainage area.
@@ -78,15 +98,14 @@ class BasicRtVs(ErosionModel):
         parameter.
         """
 
-        area = self.grid.at_node['drainage_area']
-        slope = self.grid.at_node['topographic__steepest_slope']
+        area = self.grid.at_node["drainage_area"]
+        slope = self.grid.at_node["topographic__steepest_slope"]
         cores = self.grid.core_nodes
-        self.eff_area[cores] = (area[cores] * (np.exp(-self.sat_param
-                                                      * slope[cores]
-                                                      / area[cores])))
+        self.eff_area[cores] = area[cores] * (
+            np.exp(-self.sat_param * slope[cores] / area[cores])
+        )
 
-    def setup_rock_and_till(self, file_name, rock_erody, till_erody,
-                            contact_width):
+    def setup_rock_and_till(self, file_name, rock_erody, till_erody, contact_width):
         """Set up lithology handling for two layers with different erodibility.
 
         Parameters
@@ -115,18 +134,18 @@ class BasicRtVs(ErosionModel):
         from landlab.io import read_esri_ascii
 
         # Read input data on rock-till contact elevation
-        read_esri_ascii(file_name, grid=self.grid,
-                        name='rock_till_contact__elevation',
-                        halo=1)
+        read_esri_ascii(
+            file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
+        )
 
         # Get a reference to the rock-till field
-        self.rock_till_contact = self.grid.at_node['rock_till_contact__elevation']
+        self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
 
         # Create field for erodibility
-        if 'substrate__erodibility' in self.grid.at_node:
-            self.erody = self.grid.at_node['substrate__erodibility']
+        if "substrate__erodibility" in self.grid.at_node:
+            self.erody = self.grid.at_node["substrate__erodibility"]
         else:
-            self.erody = self.grid.add_zeros('node', 'substrate__erodibility')
+            self.erody = self.grid.add_zeros("node", "substrate__erodibility")
 
         # Create array for erodibility weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
@@ -176,23 +195,28 @@ class BasicRtVs(ErosionModel):
         # Update the erodibility weighting function (this is "F")
         core = self.grid.core_nodes
         if self.contact_width > 0.0:
-            self.erody_wt[core] = (
-                1.0 / (1.0 + np.exp(-(self.z[core]
-                                      - self.rock_till_contact[core])
-                                     / self.contact_width)))
+            self.erody_wt[core] = 1.0 / (
+                1.0
+                + np.exp(
+                    -(self.z[core] - self.rock_till_contact[core]) / self.contact_width
+                )
+            )
         else:
             self.erody_wt[core] = 0.0
             self.erody_wt[np.where(self.z > self.rock_till_contact)[0]] = 1.0
 
         # (if we're varying K through time, update that first)
-        if 'PrecipChanger' in self.boundary_handler:
-            erode_factor = self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor()
+        if "PrecipChanger" in self.boundary_handler:
+            erode_factor = self.boundary_handler[
+                "PrecipChanger"
+            ].get_erodibility_adjustment_factor()
             self.till_erody = self.K_till_sp * erode_factor
             self.rock_erody = self.K_rock_sp * erode_factor
 
         # Calculate the effective erodibilities using weighted averaging
-        self.erody[:] = (self.erody_wt * self.till_erody
-                         + (1.0 - self.erody_wt) * self.rock_erody)
+        self.erody[:] = (
+            self.erody_wt * self.till_erody + (1.0 - self.erody_wt) * self.rock_erody
+        )
 
     def run_one_step(self, dt):
         """
@@ -208,7 +232,9 @@ class BasicRtVs(ErosionModel):
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
-            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+            flooded = np.where(
+                self.flow_accumulator.depression_finder.flood_status == 3
+            )[0]
 
         # Zero out effective area in flooded nodes
         self.eff_area[flooded] = 0.0
@@ -233,12 +259,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     vsrt = BasicVsRt(input_file=infile)
     vsrt.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

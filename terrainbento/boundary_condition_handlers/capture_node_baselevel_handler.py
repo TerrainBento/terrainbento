@@ -17,14 +17,16 @@ class CaptureNodeBaselevelHandler(object):
     **run_one_step** method.
     """
 
-    def __init__(self,
-                 grid,
-                 capture_node,
-                 capture_start_time = 0,
-                 capture_stop_time = None,
-                 capture_incision_rate = -0.01,
-                 post_capture_incision_rate = None,
-                 **kwargs):
+    def __init__(
+        self,
+        grid,
+        capture_node,
+        capture_start_time=0,
+        capture_stop_time=None,
+        capture_incision_rate=-0.01,
+        post_capture_incision_rate=None,
+        **kwargs
+    ):
         """
         Parameters
         ----------
@@ -119,7 +121,7 @@ class CaptureNodeBaselevelHandler(object):
         """
         self.model_time = 0.0
         self._grid = grid
-        self.z = grid.at_node['topographic__elevation']
+        self.z = grid.at_node["topographic__elevation"]
         self.node = capture_node
         self.start = capture_start_time
         self.rate = capture_incision_rate

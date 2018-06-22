@@ -70,69 +70,84 @@ class BasicDdSt(StochasticErosionModel):
     >>> srt = BasicDdSt(params=my_pars)
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """Initialize the BasicDdSt."""
 
         # Call ErosionModel's init
-        super(BasicDdSt, self).__init__(input_file=input_file,
-                                        params=params,
-                                        BoundaryHandlers=BoundaryHandlers,
-                                        OutputWriters=OutputWriters)
+        super(BasicDdSt, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent('K_stochastic_sp')
-        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
+        K_sp = self.get_parameter_from_exponent("K_stochastic_sp")
+        regolith_transport_parameter = (
+            self._length_factor ** 2.
+        ) * self.get_parameter_from_exponent(
+            "regolith_transport_parameter"
+        )  # has units length^2/time
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
-        self.threshold_value = self._length_factor*self.get_parameter_from_exponent('erosion__threshold') # has units length/time
+        self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
+            "erosion__threshold"
+        )  # has units length/time
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params['thresh_change_per_depth']
+        self.thresh_change_per_depth = self.params["thresh_change_per_depth"]
 
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if 'surface_water__discharge' not in self.grid.at_node:
-            self.grid.add_zeros('node', 'surface_water__discharge')
-        self.discharge = self.grid.at_node['surface_water__discharge']
+        if "surface_water__discharge" not in self.grid.at_node:
+            self.grid.add_zeros("node", "surface_water__discharge")
+        self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        infiltration_capacity = (self._length_factor)*self.params['infiltration_capacity']# has units length per time
+        infiltration_capacity = (self._length_factor) * self.params[
+            "infiltration_capacity"
+        ]  # has units length per time
         self.infilt = infiltration_capacity
 
         # Keep a reference to drainage area
-        self.area = self.grid.at_node['drainage_area']
+        self.area = self.grid.at_node["drainage_area"]
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros('node', 'erosion__threshold')
+        self.threshold = self.grid.add_zeros("node", "erosion__threshold")
         self.threshold[:] = self.threshold_value
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params['thresh_change_per_depth']
+        self.thresh_change_per_depth = self.params["thresh_change_per_depth"]
 
         # Instantiate a FastscapeEroder component
-        self.eroder = StreamPowerSmoothThresholdEroder(self.grid,
-                                                       m_sp=self.params['m_sp'],
-                                                       n_sp=self.params['n_sp'],
-                                                       K_sp=K_sp,
-                                                       use_Q=self.discharge,
-                                                       threshold_sp=self.threshold)
+        self.eroder = StreamPowerSmoothThresholdEroder(
+            self.grid,
+            m_sp=self.params["m_sp"],
+            n_sp=self.params["n_sp"],
+            K_sp=K_sp,
+            use_Q=self.discharge,
+            threshold_sp=self.threshold,
+        )
 
         # Instantiate a LinearDiffuser component
-        self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = regolith_transport_parameter)
+        self.diffuser = LinearDiffuser(
+            self.grid, linear_diffusivity=regolith_transport_parameter
+        )
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
         if self.rain_rate > 0.0 and self.infilt > 0.0:
-            runoff = self.rain_rate - (self.infilt *
-                                       (1.0 -
-                                        np.exp(-self.rain_rate / self.infilt)))
+            runoff = self.rain_rate - (
+                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
+            )
             if runoff < 0:
                 runoff = 0
         else:
@@ -142,13 +157,12 @@ class BasicDdSt(StochasticErosionModel):
 
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
-        cum_ero = self.grid.at_node['cumulative_erosion__depth']
-        cum_ero[:] = (self.z
-                      - self.grid.at_node['initial_topographic__elevation'])
-        self.threshold[:] = (self.threshold_value
-                             - (self.thresh_change_per_depth * cum_ero))
-        self.threshold[self.threshold < self.threshold_value] = \
-                self.threshold_value
+        cum_ero = self.grid.at_node["cumulative_erosion__depth"]
+        cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
+        self.threshold[:] = self.threshold_value - (
+            self.thresh_change_per_depth * cum_ero
+        )
+        self.threshold[self.threshold < self.threshold_value] = self.threshold_value
 
     def run_one_step(self, dt):
         """
@@ -162,7 +176,9 @@ class BasicDdSt(StochasticErosionModel):
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
-            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+            flooded = np.where(
+                self.flow_accumulator.depression_finder.flood_status == 3
+            )[0]
 
         # Handle water erosion
         self.handle_water_erosion_with_threshold(dt, flooded)
@@ -173,7 +189,6 @@ class BasicDdSt(StochasticErosionModel):
         # Finalize the run_one_step_method
         self.finalize__run_one_step(dt)
 
-
     def handle_water_erosion_with_threshold(self, dt, flooded):
         """Handle water erosion.
 
@@ -182,8 +197,10 @@ class BasicDdSt(StochasticErosionModel):
         correctly for model BasicDdSt.
         """
         # (if we're varying precipitation parameters through time, update them)
-        if 'PrecipChanger' in self.boundary_handler:
-            self.daily_rainfall_intermittency_factor, self.daily_rainfall__mean_intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params()
+        if "PrecipChanger" in self.boundary_handler:
+            self.daily_rainfall_intermittency_factor, self.daily_rainfall__mean_intensity = self.boundary_handler[
+                "PrecipChanger"
+            ].get_current_precip_params()
 
         # If we're handling duration deterministically, as a set fraction of
         # time step duration, calculate a rainfall intensity. Otherwise,
@@ -195,11 +212,11 @@ class BasicDdSt(StochasticErosionModel):
             dt_water = dt
 
         # Calculate discharge field
-        area = self.grid.at_node['drainage_area']
+        area = self.grid.at_node["drainage_area"]
         if self.rain_rate > 0.0 and self.infilt > 0.0:
-            runoff = self.rain_rate - (self.infilt *
-                                       (1.0 -
-                                        np.exp(-self.rain_rate / self.infilt)))
+            runoff = self.rain_rate - (
+                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
+            )
         else:
             runoff = self.rain_rate
 
@@ -220,12 +237,13 @@ class BasicDdSt(StochasticErosionModel):
             runoff = self.calc_runoff_and_discharge()
             self.eroder.run_one_step(dt, flooded_nodes=flooded)
         elif not self.opt_stochastic_duration:
-            dt_water = ((dt * self.daily_rainfall_intermittency_factor)
-                         / float(self.n_sub_steps))
+            dt_water = (dt * self.daily_rainfall_intermittency_factor) / float(
+                self.n_sub_steps
+            )
             for i in range(self.n_sub_steps):
-                self.rain_rate = \
-                    self.rain_generator.generate_from_stretched_exponential(
-                        self.scale_factor, self.shape_factor)
+                self.rain_rate = self.rain_generator.generate_from_stretched_exponential(
+                    self.scale_factor, self.shape_factor
+                )
                 self.update_threshold_field()
                 runoff = self.calc_runoff_and_discharge()
                 self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
@@ -238,12 +256,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     em = BasicDdSt(input_file=infile)
     em.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
