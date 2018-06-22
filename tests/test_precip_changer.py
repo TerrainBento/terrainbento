@@ -75,7 +75,8 @@ def test_time_units_equivalent():
         f_day = pc_day.get_erodibility_adjustment_factor()
         f_yr = pc_yr.get_erodibility_adjustment_factor()
         f_sec = pc_sec.get_erodibility_adjustment_factor()
-        assert_almost_equal(f_day, f_yr, f_sec)
+        assert_almost_equal(f_day, f_yr)
+        assert_almost_equal(f_day, f_sec)
 
 
 def test_a_stop_time():
