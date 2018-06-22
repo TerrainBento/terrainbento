@@ -17,6 +17,7 @@ requirements:
     - python
     - numpy
     - scipy
+    - sympy
     - six
     - pyyaml
     - pytest
