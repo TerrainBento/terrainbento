@@ -349,8 +349,8 @@ class PrecipChanger(object):
         use the bulk erodibility adjustment factor :math:`F_w`.
 
         >>> fw = bh.get_erodibility_adjustment_factor()
-        >>> print(fw)
-        1.7213259316512188
+        >>> print(round(fw, 3))
+        1.721
         """
         self.model_time = 0.0
         self._length_factor = length_factor
