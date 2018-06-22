@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from numpy.testing import assert_array_equal #, assert_array_almost_equal
-from nose.tools import assert_raises#, assert_almost_equal, assert_equal
+import pytest
 
 from landlab import HexModelGrid, RasterModelGrid
 from landlab.components import LinearDiffuser, NormalFault
@@ -16,7 +16,7 @@ def test_bad_boundary_condition_component():
     params = {'dt': 1,
               'output_interval': 2.,
               'run_duration': 10.}
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   ErosionModel,
                   params=params,
                   BoundaryHandlers=LinearDiffuser)
@@ -30,7 +30,7 @@ def test_boundary_condition_already_instantiated():
     params = {'dt': 1,
               'output_interval': 2.,
               'run_duration': 10.}
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   ErosionModel,
                   params=params,
                   BoundaryHandlers=nf)
@@ -40,7 +40,7 @@ def test_bad_boundary_condition_string():
     params = {'dt': 1,
               'output_interval': 2.,
               'run_duration': 10.}
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   ErosionModel,
                   params=params,
                   BoundaryHandlers='spam')
@@ -50,7 +50,7 @@ def test_bad_boundary_condition_string():
     params = {'dt': 1,
               'output_interval': 2.,
               'run_duration': 10.}
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   ErosionModel,
                   params=params,
                   BoundaryHandlers='spam')

@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal # assert_array_equal,
-from nose.tools import assert_raises#, assert_almost_equal, assert_equal
+import pytest
 
 from landlab import HexModelGrid
 from terrainbento import Basic
@@ -15,7 +15,7 @@ def test_no_Ksp_or_Kss():
               'run_duration': 200.,
               'regolith_transport_parameter': 0.001}
 
-    assert_raises(ValueError, Basic, params=params)
+    pytest.raises(ValueError, Basic, params=params)
 
 
 def test_both_Ksp_or_Kss():
@@ -26,7 +26,7 @@ def test_both_Ksp_or_Kss():
               'regolith_transport_parameter': 0.001,
               'water_erodability': 0.001,
               'water_erodability~shear_stress': 0.001}
-    assert_raises(ValueError, Basic, params=params)
+    pytest.raises(ValueError, Basic, params=params)
 
 
 def test_steady_Kss_no_precip_changer():

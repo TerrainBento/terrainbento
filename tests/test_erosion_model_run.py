@@ -3,7 +3,7 @@ import numpy as np
 import glob
 
 #from numpy.testing import assert_array_equal, assert_array_almost_equal
-from nose.tools import assert_raises#, assert_almost_equal, assert_equal
+import pytest
 
 from landlab import HexModelGrid
 from terrainbento import Basic
