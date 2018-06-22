@@ -23,36 +23,39 @@ class BasicCv(ErosionModel):
     It also has basic climate change
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """Initialize the BasicCv model."""
         # Call ErosionModel's init
-        super(BasicCv, self).__init__(input_file=input_file,
-                                      params=params,
-                                      BoundaryHandlers=BoundaryHandlers,
-                                        OutputWriters=OutputWriters)
+        super(BasicCv, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
 
+        K_sp = self.get_parameter_from_exponent("water_erodability")
+        regolith_transport_parameter = (
+            self._length_factor ** 2.
+        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
-        K_sp = self.get_parameter_from_exponent('water_erodability')
-        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter')
+        self.climate_factor = self.params["climate_factor"]
+        self.climate_constant_date = self.params["climate_constant_date"]
 
-
-        self.climate_factor = self.params['climate_factor']
-        self.climate_constant_date = self.params['climate_constant_date']
-
-        time = [0, self.climate_constant_date, self.params['run_duration']]
-        K = [K_sp*self.climate_factor, K_sp, K_sp]
+        time = [0, self.climate_constant_date, self.params["run_duration"]]
+        K = [K_sp * self.climate_factor, K_sp, K_sp]
         self.K_through_time = interp1d(time, K)
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid,
-                                      K_sp=K[0],
-                                      m_sp=self.params['m_sp'],
-                                      n_sp=self.params['n_sp'])
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=K[0], m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
+        )
 
         # Instantiate a LinearDiffuser component
-        self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = regolith_transport_parameter)
+        self.diffuser = LinearDiffuser(
+            self.grid, linear_diffusivity=regolith_transport_parameter
+        )
 
     def run_one_step(self, dt):
         """
@@ -65,7 +68,9 @@ class BasicCv(ErosionModel):
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
-            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+            flooded = np.where(
+                self.flow_accumulator.depression_finder.flood_status == 3
+            )[0]
 
         # Update erosion based on climate
         self.eroder.K = float(self.K_through_time(self.model_time))
@@ -87,12 +92,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     ldsp = BasicCv(input_file=infile)
     ldsp.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

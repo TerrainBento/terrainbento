@@ -49,7 +49,9 @@ class Basic(ErosionModel):
     parameter ``water_erodibility~shear_stress``.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """
         Parameters
         ----------
@@ -108,40 +110,58 @@ class Basic(ErosionModel):
 
         """
         # Call ErosionModel's init
-        super(Basic, self).__init__(input_file=input_file,
-                                    params=params,
-                                    BoundaryHandlers=BoundaryHandlers,
-                                    OutputWriters=OutputWriters)
+        super(Basic, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent('water_erodability', raise_error=False)
-        K_ss = self.get_parameter_from_exponent('water_erodability~shear_stress', raise_error=False)
-        regolith_transport_parameter = (self._length_factor**2.) * self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
+        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
+        K_ss = self.get_parameter_from_exponent(
+            "water_erodability~shear_stress", raise_error=False
+        )
+        regolith_transport_parameter = (
+            self._length_factor ** 2.
+        ) * self.get_parameter_from_exponent(
+            "regolith_transport_parameter"
+        )  # has units length^2/time
 
         # check that a stream power and a shear stress parameter have not both been given
         if K_sp != None and K_ss != None:
-            raise ValueError(('Model 000: A parameter for both '
-                              'water_erodability and '
-                              'water_erodability~shear_stress has been provided. '
-                              ' Only one of these may be provided.'))
+            raise ValueError(
+                (
+                    "Model 000: A parameter for both "
+                    "water_erodability and "
+                    "water_erodability~shear_stress has been provided. "
+                    " Only one of these may be provided."
+                )
+            )
         elif K_sp != None or K_ss != None:
             if K_sp != None:
                 self.K = K_sp
             else:
-                self.K = (self._length_factor**(1./3.))*K_ss # K_ss has units Length^(1/3) per Time
+                self.K = (
+                    self._length_factor ** (1. / 3.)
+                ) * K_ss  # K_ss has units Length^(1/3) per Time
         else:
-            raise ValueError(('water_erodability or '
-                              'water_erodability~shear_stress must be provided.'))
+            raise ValueError(
+                (
+                    "water_erodability or "
+                    "water_erodability~shear_stress must be provided."
+                )
+            )
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid,
-                                      K_sp=self.K,
-                                      m_sp=self.params['m_sp'],
-                                      n_sp=self.params['n_sp'])
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=self.K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
+        )
 
         # Instantiate a LinearDiffuser component
-        self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = regolith_transport_parameter)
+        self.diffuser = LinearDiffuser(
+            self.grid, linear_diffusivity=regolith_transport_parameter
+        )
 
     def run_one_step(self, dt):
         """Advance model ``Basic`` for one time-step of duration dt.
@@ -176,12 +196,18 @@ class Basic(ErosionModel):
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
-            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+            flooded = np.where(
+                self.flow_accumulator.depression_finder.flood_status == 3
+            )[0]
 
         # If a PrecipChanger is being used, update the eroder's K value.
-        if 'PrecipChanger' in self.boundary_handler:
-            self.eroder.K = (self.K
-                             * self.boundary_handler['PrecipChanger'].get_erodibility_adjustment_factor())
+        if "PrecipChanger" in self.boundary_handler:
+            self.eroder.K = (
+                self.K
+                * self.boundary_handler[
+                    "PrecipChanger"
+                ].get_erodibility_adjustment_factor()
+            )
 
         # Do some water erosion (but not on the flooded nodes)
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
@@ -200,13 +226,17 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print(('To run a terrainbento model from the command line you must '
-                'include input file name on command line'))
+        print(
+            (
+                "To run a terrainbento model from the command line you must "
+                "include input file name on command line"
+            )
+        )
         sys.exit(1)
 
     model = Basic(input_file=infile)
     model.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

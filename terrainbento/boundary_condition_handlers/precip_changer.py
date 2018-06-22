@@ -200,8 +200,12 @@ def _integrand(p, Ic, lam, c, m):
     integrand = _integrand(5.0, 1.0, 0.5, 0.5, 0.5)
     assert_almost_equal(integrand, 0.026771349117364424)
     """
-    return (((p - Ic) ** m) * (c / lam) * ((p / lam) ** (c - 1.0))
-            * np.exp(-((p / lam) ** c)))
+    return (
+        ((p - Ic) ** m)
+        * (c / lam)
+        * ((p / lam) ** (c - 1.0))
+        * np.exp(-((p / lam) ** c))
+    )
 
 
 def _scale_fac(pmean, c):
@@ -235,20 +239,22 @@ class PrecipChanger(object):
     **run_one_step** method.
     """
 
-    def __init__(self,
-                 grid,
-                 daily_rainfall__daily_rainfall_intermittency_factor,
-                 daily_rainfall__daily_rainfall_intermittency_factor_time_rate_of_change,
-                 daily_rainfall__mean_intensity,
-                 daily_rainfall__mean_intensity_time_rate_of_change,
-                 daily_rainfall__precipitation_shape_factor = 0.65,
-                 time_unit = 'year',
-                 infiltration_capacity = 0,
-                 m_sp = 0.5,
-                 precipchanger_start_time = 0,
-                 precipchanger_stop_time = None,
-                 length_factor = 1.0,
-                 **kwargs):
+    def __init__(
+        self,
+        grid,
+        daily_rainfall__daily_rainfall_intermittency_factor,
+        daily_rainfall__daily_rainfall_intermittency_factor_time_rate_of_change,
+        daily_rainfall__mean_intensity,
+        daily_rainfall__mean_intensity_time_rate_of_change,
+        daily_rainfall__precipitation_shape_factor=0.65,
+        time_unit="year",
+        infiltration_capacity=0,
+        m_sp=0.5,
+        precipchanger_start_time=0,
+        precipchanger_stop_time=None,
+        length_factor=1.0,
+        **kwargs
+    ):
 
         """
         Parameters
@@ -355,15 +361,19 @@ class PrecipChanger(object):
         self.model_time = 0.0
         self._length_factor = length_factor
 
-        if time_unit == 'year':
+        if time_unit == "year":
             self._time_conversion = DAYS_PER_YEAR
-        elif time_unit == 'day':
+        elif time_unit == "day":
             self._time_conversion = DAYS_PER_DAY
-        elif time_unit == 'second':
+        elif time_unit == "second":
             self._time_conversion = DAYS_PER_SECOND
         else:
-            raise ValueError(('time_unit provided is invalid. Valid options '
-                              'are "second", "day" and "year".'))
+            raise ValueError(
+                (
+                    "time_unit provided is invalid. Valid options "
+                    'are "second", "day" and "year".'
+                )
+            )
 
         if precipchanger_stop_time is None:
             self.no_stop_time = True
@@ -372,24 +382,30 @@ class PrecipChanger(object):
             self.stop_time = precipchanger_stop_time
         self.start_time = precipchanger_start_time
 
-        self.starting_frac_wet_days = daily_rainfall__daily_rainfall_intermittency_factor
-        self.frac_wet_days_rate_of_change = (daily_rainfall__daily_rainfall_intermittency_factor_time_rate_of_change
-                                                    / self._time_conversion)
+        self.starting_frac_wet_days = (
+            daily_rainfall__daily_rainfall_intermittency_factor
+        )
+        self.frac_wet_days_rate_of_change = (
+            daily_rainfall__daily_rainfall_intermittency_factor_time_rate_of_change
+            / self._time_conversion
+        )
 
+        self.starting_daily_mean_depth = (
+            daily_rainfall__mean_intensity / self._time_conversion * self._length_factor
+        )
+        self.mean_depth_rate_of_change = (
+            daily_rainfall__mean_intensity_time_rate_of_change
+            / self._time_conversion
+            * self._length_factor
+        )
 
-
-        self.starting_daily_mean_depth = (daily_rainfall__mean_intensity
-                                          / self._time_conversion
-                                          * self._length_factor)
-        self.mean_depth_rate_of_change = (daily_rainfall__mean_intensity_time_rate_of_change
-                                          / self._time_conversion
-                                          * self._length_factor)
-
-        self.daily_rainfall__precipitation_shape_factor = daily_rainfall__precipitation_shape_factor
+        self.daily_rainfall__precipitation_shape_factor = (
+            daily_rainfall__precipitation_shape_factor
+        )
         self.time_unit = time_unit
-        self.infilt_cap = (infiltration_capacity
-                          / self._time_conversion
-                          * self._length_factor)
+        self.infilt_cap = (
+            infiltration_capacity / self._time_conversion * self._length_factor
+        )
 
         self.m = m_sp
 
@@ -401,24 +417,38 @@ class PrecipChanger(object):
 
     def _check_intermittency_value(self, daily_rainfall_intermittency_factor):
         """Check that daily_rainfall_intermittency_factor is >= 0 and <=1."""
-        if (daily_rainfall_intermittency_factor>=0.0) and (daily_rainfall_intermittency_factor<=1.0):
+        if (daily_rainfall_intermittency_factor >= 0.0) and (
+            daily_rainfall_intermittency_factor <= 1.0
+        ):
             pass
         else:
-            raise ValueError(('The PrecipChanger daily_rainfall_intermittency_factor has a '
-                              'value of less than zero or greater than one. '
-                              'This is invalid.'))
+            raise ValueError(
+                (
+                    "The PrecipChanger daily_rainfall_intermittency_factor has a "
+                    "value of less than zero or greater than one. "
+                    "This is invalid."
+                )
+            )
 
     def _check_mean_depth(self, mean_depth):
         """Check that mean depth is >= 0."""
-        if (mean_depth<0):
-            raise ValueError(('The PrecipChanger mean depth has a '
-                              'value of less than zero. This is invalid.'))
+        if mean_depth < 0:
+            raise ValueError(
+                (
+                    "The PrecipChanger mean depth has a "
+                    "value of less than zero. This is invalid."
+                )
+            )
 
     def _check_infiltration_capacity(self, infiltration_capacity):
         """Check that infiltration_capacity >= 0."""
-        if (infiltration_capacity<0):
-            raise ValueError(('The PrecipChanger infiltration_capacity has a '
-                              'value of less than zero. This is invalid.'))
+        if infiltration_capacity < 0:
+            raise ValueError(
+                (
+                    "The PrecipChanger infiltration_capacity has a "
+                    "value of less than zero. This is invalid."
+                )
+            )
 
     def calculate_starting_psi(self):
         """Calculate and store for later the factor :math:`\Psi_0`.
@@ -440,11 +470,21 @@ class PrecipChanger(object):
         distribution of daily precipitation intensity at model run onset.
 
         """
-        lam = _scale_fac(self.starting_daily_mean_depth, self.daily_rainfall__precipitation_shape_factor)
-        psi, abserror = quad(_integrand, self.infilt_cap, np.inf,
-                             args=(self.infilt_cap, lam,
-                             self.daily_rainfall__precipitation_shape_factor,
-                             self.m))
+        lam = _scale_fac(
+            self.starting_daily_mean_depth,
+            self.daily_rainfall__precipitation_shape_factor,
+        )
+        psi, abserror = quad(
+            _integrand,
+            self.infilt_cap,
+            np.inf,
+            args=(
+                self.infilt_cap,
+                lam,
+                self.daily_rainfall__precipitation_shape_factor,
+                self.m,
+            ),
+        )
         return psi
 
     def get_current_precip_params(self):
@@ -469,10 +509,12 @@ class PrecipChanger(object):
                     time = self.model_time * self._time_conversion
 
             # calculate and return updated values
-            frac_wet_days = (self.starting_frac_wet_days
-                             + self.frac_wet_days_rate_of_change * time)
-            mean_depth = (self.starting_daily_mean_depth
-                             + self.mean_depth_rate_of_change * time)
+            frac_wet_days = (
+                self.starting_frac_wet_days + self.frac_wet_days_rate_of_change * time
+            )
+            mean_depth = (
+                self.starting_daily_mean_depth + self.mean_depth_rate_of_change * time
+            )
 
             self._check_intermittency_value(frac_wet_days)
             self._check_mean_depth(mean_depth)
@@ -504,16 +546,27 @@ class PrecipChanger(object):
             frac_wet, mean_depth = self.get_current_precip_params()
 
             # calculate the mean intensity and the scale factor
-            lam = _scale_fac(mean_depth, self.daily_rainfall__precipitation_shape_factor)
+            lam = _scale_fac(
+                mean_depth, self.daily_rainfall__precipitation_shape_factor
+            )
 
             # calculate current value of Psi
-            psi, err  = quad(_integrand, self.infilt_cap, np.inf,
-                             args=(self.infilt_cap, lam, self.daily_rainfall__precipitation_shape_factor,
-                             self.m))
+            psi, err = quad(
+                _integrand,
+                self.infilt_cap,
+                np.inf,
+                args=(
+                    self.infilt_cap,
+                    lam,
+                    self.daily_rainfall__precipitation_shape_factor,
+                    self.m,
+                ),
+            )
 
             # calculate the adjustment factor
-            adj_fac = ((frac_wet * psi)
-                        / (self.starting_frac_wet_days * self.starting_psi))
+            adj_fac = (frac_wet * psi) / (
+                self.starting_frac_wet_days * self.starting_psi
+            )
             # and return
             return adj_fac
         else:
