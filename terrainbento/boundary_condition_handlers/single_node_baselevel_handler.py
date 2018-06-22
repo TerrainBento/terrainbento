@@ -17,12 +17,7 @@ class SingleNodeBaselevelHandler(object):
     the field ``bedrock__elevation``.
 
     Note that ``SingleNodeBaselevelHandler`` increments time at the end of the
-    ``run_one_step`` method.
-
-    Methods
-    -------
-    run_one_step
-
+    **run_one_step** method.
     """
 
     def __init__(self,
@@ -136,15 +131,15 @@ class SingleNodeBaselevelHandler(object):
     def run_one_step(self, dt):
         """ Run ``SingleNodeBaselevelHandler`` to update outlet node elevation.
 
-        The ``run_one_step`` method provides a consistent interface to update
+        The **run_one_step** method provides a consistent interface to update
         the ``terrainbento`` boundary condition handlers.
 
-        In the ``run_one_step`` routine, the ``SingleNodeBaselevelHandler``
+        In the **run_one_step** routine, the ``SingleNodeBaselevelHandler``
         will change the elevation of the outlet node based on inputs specified
         at instantiation.
 
         Note that ``SingleNodeBaselevelHandler`` increments time at the end of
-        the ``run_one_step`` method.
+        the **run_one_step** method.
 
         Parameters
         ----------

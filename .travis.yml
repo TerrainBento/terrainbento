@@ -37,6 +37,7 @@ install:
 - export PATH="$CONDA_PREFIX/bin:$PATH"
 - conda update --yes -n base conda
 - pip install --upgrade pip
+- pip install pytest
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n _testing python=$TRAVIS_PYTHON_VERSION
@@ -49,14 +50,16 @@ script:
 - conda config --add channels landlab
 - conda build -q .conda-recipe --old-build-string
 - conda install -q terrainbento --use-local -c $(dirname $(conda build --output ./.conda-recipe/ --old-build-string))
+- pytest
 - |
  if [[ "$BUILD_DOCS" == "1" && "$TRAVIS_OS_NAME" == "linux" ]]; then
    (cd docs && make html)
  fi
 - |
  if [[ "$COVERALLS" == "1" ]]; then
+   pip install pytest-cov
    pip install coveralls
-   bash .ci/travis/run_travis_test.sh
+   py.test terrainbento --doctest-modules --cov=terrainbento tests/ --cov-report term-missing
    coveralls
  fi
 virtualenv:

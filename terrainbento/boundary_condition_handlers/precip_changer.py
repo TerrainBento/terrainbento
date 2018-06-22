@@ -232,15 +232,7 @@ class PrecipChanger(object):
     (``daily_rainfall__mean_intensity``).
 
     Note that ``PrecipChanger`` increments time at the end of the
-    ``run_one_step`` method.
-
-    Methods
-    --------
-    calculate_starting_psi
-    get_current_precip_params
-    get_erodibility_adjustment_factor
-    run_one_step
-
+    **run_one_step** method.
     """
 
     def __init__(self,
@@ -357,8 +349,8 @@ class PrecipChanger(object):
         use the bulk erodibility adjustment factor :math:`F_w`.
 
         >>> fw = bh.get_erodibility_adjustment_factor()
-        >>> print(fw)
-        1.7213259316512188
+        >>> print(round(fw, 3))
+        1.721
         """
         self.model_time = 0.0
         self._length_factor = length_factor
@@ -531,10 +523,10 @@ class PrecipChanger(object):
     def run_one_step(self, dt):
         """Run ``PrecipChanger`` forward and update model time.
 
-        The ``run_one_step`` method provides a consistent interface to update
+        The **run_one_step** method provides a consistent interface to update
         the ``terrainbento`` boundary condition handlers.
 
-        In the ``run_one_step`` routine, the ``PrecipChanger`` will update its
+        In the **run_one_step** routine, the ``PrecipChanger`` will update its
         internal record of model time.
 
         Parameters

@@ -46,9 +46,6 @@ from .derived_models import BasicRtVs
 from .derived_models import BasicRtSa
 from .derived_models import BasicChRtTh
 
-from .testing.nosetester import TerrainBentoTester
-test = TerrainBentoTester().test
-
 
 from ._version import get_versions
 __version__ = get_versions()['version']

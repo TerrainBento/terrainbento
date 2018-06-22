@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal, assert_array_equal
-from nose.tools import assert_raises
+import pytest
 
 from terrainbento.boundary_condition_handlers import NotCoreNodeBaselevelHandler
 from landlab import RasterModelGrid, HexModelGrid
@@ -35,7 +35,7 @@ def test_passing_neither_lowering_method():
     mg = RasterModelGrid(5, 5)
     z = mg.add_zeros('node', 'topographic__elevation')
 
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   NotCoreNodeBaselevelHandler,
                   mg)
 
@@ -46,7 +46,7 @@ def test_passing_both_lowering_methods():
     z = mg.add_zeros('node', 'topographic__elevation')
     file = os.path.join(_TEST_DATA_DIR, 'outlet_history.txt')
 
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   NotCoreNodeBaselevelHandler,
                   mg,
                   lowering_rate = -0.1,
@@ -59,7 +59,7 @@ def test_outlet_lowering_object_bad_file():
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros('node', 'topographic__elevation')
 
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   NotCoreNodeBaselevelHandler,
                   mg,
                   lowering_file_path='foo.txt')

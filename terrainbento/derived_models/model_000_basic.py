@@ -4,11 +4,11 @@
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area.
 
-Landlab components used: (PUT URLS here.)
-    1. FlowAccumulator
-    2. DepressionFinderAndRouter (optional)
-    3. FastscapeStreamPower
-    4. LinearDiffuser
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import numpy as np
@@ -25,7 +25,7 @@ class Basic(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
@@ -46,14 +46,7 @@ class Basic(ErosionModel):
 
     3) Model ``BasicSs``: In this model :math:`m` has a value of 1/3,
     :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter :math:`water_erodibility~shear_stress`.
-
-    In addition to those provided by the ``ErosionModel`` base class  ``Basic``
-    has the following methods:
-
-    Methods
-    -------
-    run_one_step
+    parameter ``water_erodibility~shear_stress``.
     """
 
     def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
@@ -153,7 +146,7 @@ class Basic(ErosionModel):
     def run_one_step(self, dt):
         """Advance model ``Basic`` for one time-step of duration dt.
 
-        The ``run_one_step`` method does the following:
+        The **run_one_step** method does the following:
 
         1. Directs flow and accumulates drainage area.
 
@@ -168,7 +161,7 @@ class Basic(ErosionModel):
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the ``ErosionModel`` base class function
-        ``finalize__run_one_step``. This function updates all BoundaryHandlers
+        **finalize__run_one_step**. This function updates all BoundaryHandlers
         by ``dt`` and increments model time by ``dt``.
 
         Parameters

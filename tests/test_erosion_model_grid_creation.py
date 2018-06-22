@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
-from nose.tools import assert_raises, assert_almost_equal, assert_equal
+import pytest
 
 from landlab import HexModelGrid, RasterModelGrid
 from terrainbento import ErosionModel
@@ -27,7 +27,7 @@ def test_HexModelGrid_default():
               'dt': 1, 'output_interval': 2., 'run_duration': 10.}
     em = ErosionModel(params=params)
     assert isinstance(em.grid, HexModelGrid)
-    assert_equal(em.grid.number_of_nodes, 56)
+    assert em.grid.number_of_nodes == 56
     for field in at_node_fields:
         assert field in em.grid.at_node
 
@@ -36,10 +36,10 @@ def test_RasterModelGrid_default():
     params = {'dt': 1, 'output_interval': 2., 'run_duration': 10.}
     em = ErosionModel(params=params)
     assert isinstance(em.grid, RasterModelGrid)
-    assert_equal(em.grid.number_of_nodes, 20)
-    assert_equal(em.grid.number_of_node_columns, 5)
-    assert_equal(em.grid.number_of_node_rows, 4)
-    assert_equal(em.grid.dx, 1.0)
+    assert em.grid.number_of_nodes == 20
+    assert em.grid.number_of_node_columns == 5
+    assert em.grid.number_of_node_rows == 4
+    assert em.grid.dx == 1.0
     for field in at_node_fields:
         assert field in em.grid.at_node
 
@@ -237,7 +237,7 @@ def test_DEM_two_possible_outlets():
               'output_interval': 2.,
               'run_duration': 10.}
 
-    assert_raises(ValueError, ErosionModel, params=params)
+    pytest.raises(ValueError, ErosionModel, params=params)
 
     fp = os.path.join(_TEST_DATA_DIR, 'test_4_x_3_two_zeros.asc')
     params = {'DEM_filename': fp,

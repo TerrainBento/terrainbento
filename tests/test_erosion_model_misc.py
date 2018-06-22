@@ -1,6 +1,6 @@
 import numpy as np
 #from numpy.testing import assert_array_equal, assert_array_almost_equal
-from nose.tools import assert_raises#, assert_almost_equal, assert_equal
+import pytest
 
 from landlab import HexModelGrid
 from terrainbento import ErosionModel
@@ -12,7 +12,7 @@ def test_length_conversion_raises_error():
               'meters_to_feet' : True,
               'feet_to_meters' : True,
               'dt': 1, 'output_interval': 2., 'run_duration': 10.}
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   ErosionModel,
                   params=params)
 
@@ -57,7 +57,7 @@ def test_parameter_exponent_both_provided():
               'water_erodability' : 0.01,
               'dt': 1, 'output_interval': 2., 'run_duration': 10.}
     em = ErosionModel(params=params)
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   em.get_parameter_from_exponent,
                   'water_erodability')
 
@@ -67,7 +67,7 @@ def test_parameter_exponent_neither_provided():
     params = {'model_grid' : 'HexModelGrid',
               'dt': 1, 'output_interval': 2., 'run_duration': 10.}
     em = ErosionModel(params=params)
-    assert_raises(ValueError,
+    pytest.raises(ValueError,
                   em.get_parameter_from_exponent,
                   'water_erodability')
     val = em.get_parameter_from_exponent('water_erodability', raise_error=False)

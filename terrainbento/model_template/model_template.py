@@ -72,8 +72,8 @@ class ModelTemplate(ErosionModel): # The model must inherit from either
     def run_one_step(self, dt):
         """Run each component for one time step.
 
-        Put any additional information about ``run_one_step`` here. Importantly,
-        ``run_one_step`` should only take on parameter, ``dt``.
+        Put any additional information about **run_one_step** here. Importantly,
+        **run_one_step** should only take on parameter, ``dt``.
         """
         # write here all actions needed to run the model forward for a time
         # increment `dt`.
@@ -100,7 +100,7 @@ class ModelTemplate(ErosionModel): # The model must inherit from either
         """
         # replace pass with all actions needed to finalize the model.
         # if you are inheriting from the stochastic erosion model, be careful
-        # here as it already has a ``finalize`` method defined.
+        # here as it already has a **finalize** method defined.
         pass
 
 
