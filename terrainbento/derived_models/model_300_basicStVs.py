@@ -39,60 +39,72 @@ class BasicStVs(StochasticErosionModel):
     water discharge at each node.
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """Initialize the StochasticDischargeHortonianModel."""
 
         # Call ErosionModel's init
-        super(BasicStVs,
-              self).__init__(input_file=input_file,
-                                        params=params,
-                                        BoundaryHandlers=BoundaryHandlers,
-                                        OutputWriters=OutputWriters)
+        super(BasicStVs, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent('K_stochastic_sp')
-        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
+        K_sp = self.get_parameter_from_exponent("K_stochastic_sp")
+        regolith_transport_parameter = (
+            self._length_factor ** 2.
+        ) * self.get_parameter_from_exponent(
+            "regolith_transport_parameter"
+        )  # has units length^2/time
 
-        soil_thickness = (self._length_factor)*self.params['initial_soil_thickness'] # has units length
-        K_hydraulic_conductivity = (self._length_factor)*self.params['K_hydraulic_conductivity'] # has units length per time
+        soil_thickness = (self._length_factor) * self.params[
+            "initial_soil_thickness"
+        ]  # has units length
+        K_hydraulic_conductivity = (self._length_factor) * self.params[
+            "K_hydraulic_conductivity"
+        ]  # has units length per time
 
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if 'surface_water__discharge' not in self.grid.at_node:
-            self.grid.add_zeros('node', 'surface_water__discharge')
-        self.discharge = self.grid.at_node['surface_water__discharge']
+        if "surface_water__discharge" not in self.grid.at_node:
+            self.grid.add_zeros("node", "surface_water__discharge")
+        self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Add a field for subsurface discharge
-        if 'subsurface_water__discharge' not in self.grid.at_node:
-            self.grid.add_zeros('node', 'subsurface_water__discharge')
-        self.qss = self.grid.at_node['subsurface_water__discharge']
+        if "subsurface_water__discharge" not in self.grid.at_node:
+            self.grid.add_zeros("node", "subsurface_water__discharge")
+        self.qss = self.grid.at_node["subsurface_water__discharge"]
 
         # Get the transmissivity parameter
         # transmissivity is hydraulic condiuctivity times soil thickness
-        self.trans = (K_hydraulic_conductivity*soil_thickness)
-        assert (self.trans > 0.0), 'Transmissivity must be > 0'
+        self.trans = K_hydraulic_conductivity * soil_thickness
+        assert self.trans > 0.0, "Transmissivity must be > 0"
         self.tlam = self.trans * self.grid._dx  # assumes raster
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
 
         # Keep a reference to drainage area and steepest-descent slope
-        self.area = self.grid.at_node['drainage_area']
-        self.slope = self.grid.at_node['topographic__steepest_slope']
+        self.area = self.grid.at_node["drainage_area"]
+        self.slope = self.grid.at_node["topographic__steepest_slope"]
 
         # Instantiate a FastscapeEroder component
-        self.eroder = StreamPowerEroder(self.grid,
-                                        use_Q=self.discharge,
-                                        K_sp=K_sp,
-                                        m_sp=self.params['m_sp'],
-                                        n_sp=self.params['n_sp'])
+        self.eroder = StreamPowerEroder(
+            self.grid,
+            use_Q=self.discharge,
+            K_sp=K_sp,
+            m_sp=self.params["m_sp"],
+            n_sp=self.params["n_sp"],
+        )
 
         # Instantiate a LinearDiffuser component
-        self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity = regolith_transport_parameter)
-
+        self.diffuser = LinearDiffuser(
+            self.grid, linear_diffusivity=regolith_transport_parameter
+        )
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
@@ -105,8 +117,9 @@ class BasicStVs(StochasticErosionModel):
 
         # Subsurface discharge: zero where slope is flat
         self.qss[np.where(self.slope <= 0.0)[0]] = 0.0
-        self.qss[np.where(self.slope > 0.0)[0]] = (tls
-                    * (1.0 - np.exp(-pa[np.where(self.slope > 0.0)[0]] / tls)))
+        self.qss[np.where(self.slope > 0.0)[0]] = tls * (
+            1.0 - np.exp(-pa[np.where(self.slope > 0.0)[0]] / tls)
+        )
 
         # Surface discharge = total minus subsurface
         #
@@ -114,7 +127,6 @@ class BasicStVs(StochasticErosionModel):
         # value when qss and pa are close; make sure these are set to 0
         self.discharge[:] = pa - self.qss
         self.discharge[self.discharge < 0.0] = 0.0
-
 
     def run_one_step(self, dt):
         """
@@ -128,7 +140,9 @@ class BasicStVs(StochasticErosionModel):
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
-            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+            flooded = np.where(
+                self.flow_accumulator.depression_finder.flood_status == 3
+            )[0]
 
         # Handle water erosion
         self.handle_water_erosion(dt, flooded)
@@ -147,12 +161,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     dm = BasicStVs(input_file=infile)
     dm.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

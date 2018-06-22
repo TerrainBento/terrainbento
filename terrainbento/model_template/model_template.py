@@ -13,14 +13,16 @@ designed and created by **you**
 from terrainbento.base_class import ErosionModel
 
 
-class ModelTemplate(ErosionModel): # The model must inherit from either 
-                                   # ErosionModel or StochasticErosionModel
+class ModelTemplate(ErosionModel):  # The model must inherit from either
+    # ErosionModel or StochasticErosionModel
     """ModelTemplate is a template for making your own ``terrainbento`` models.
 
     This is where you will put introductory information about the model.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None): # Do not change this line
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None
+    ):  # Do not change this line
         """
         Parameters
         ----------
@@ -62,9 +64,11 @@ class ModelTemplate(ErosionModel): # The model must inherit from either
         >>> # either in these docstring tests or in test files.
 
         """
-        super(ModelTemplate, self).__init__(input_file=input_file,                  # Replace  `ModelTemplate` with your model name.
-                                        params=params,                              # Do not change any additional parts of this
-                                        BoundaryHandlers=BoundaryHandlers)          # line.
+        super(ModelTemplate, self).__init__(
+            input_file=input_file,  # Replace  `ModelTemplate` with your model name.
+            params=params,  # Do not change any additional parts of this
+            BoundaryHandlers=BoundaryHandlers,
+        )  # line.
 
         # replace pass with all actions needed to initialize the model.
         pass
@@ -81,7 +85,6 @@ class ModelTemplate(ErosionModel): # The model must inherit from either
         # end with finalize__run_one_step which does things at the end of
         # run_one_step that are required by all models.
         self.finalize__run_one_step(dt)
-
 
     # if you have additional class functions, you can define them here.
     def my_internal_function(self):
@@ -112,13 +115,17 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print(('To run a terrainbento model from the command line you must '
-                'include input file name on command line'))
+        print(
+            (
+                "To run a terrainbento model from the command line you must "
+                "include input file name on command line"
+            )
+        )
         sys.exit(1)
 
     model = ModelTemplate(input_file=infile)
     model.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

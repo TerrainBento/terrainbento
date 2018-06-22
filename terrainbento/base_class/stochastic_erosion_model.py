@@ -69,13 +69,14 @@ frequency_filename : str
 
 from terrainbento.base_class import ErosionModel
 
-from landlab.components import (PrecipitationDistribution)
+from landlab.components import PrecipitationDistribution
 
 import numpy as np
 import scipy.stats as stats
 import textwrap
 
 _STRING_LENGTH = 80
+
 
 class StochasticErosionModel(ErosionModel):
     """ Base class for stochastic-precipitation ``terrainbento`` models.
@@ -91,7 +92,9 @@ class StochasticErosionModel(ErosionModel):
      existing ``run_for``, **run**, and **finalize** methods.
     """
 
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """
         Parameters
         ----------
@@ -119,12 +122,14 @@ class StochasticErosionModel(ErosionModel):
         """
 
         # Call StochasticErosionModel init
-        super(StochasticErosionModel, self).__init__(input_file=input_file,
-                                                     params=params,
-                                                     BoundaryHandlers=BoundaryHandlers,
-                                                     OutputWriters=OutputWriters)
+        super(StochasticErosionModel, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
 
-        self.opt_stochastic_duration = self.params.get('opt_stochastic_duration', False)
+        self.opt_stochastic_duration = self.params.get("opt_stochastic_duration", False)
 
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the dt may
@@ -135,18 +140,21 @@ class StochasticErosionModel(ErosionModel):
         # make this the non-default option.
 
         # First test for consistency between filenames and boolean parameters
-        if (((self.params.get('storm_sequence_filename') is not None) or
-            (self.params.get('frequency_filename') is not None)) and
-                (self.params.get('record_rain') != True)):
-            self.params['record_rain'] = True
+        if (
+            (self.params.get("storm_sequence_filename") is not None)
+            or (self.params.get("frequency_filename") is not None)
+        ) and (self.params.get("record_rain") != True):
+            self.params["record_rain"] = True
 
         # Second, test that
-        if self.params.get('record_rain'):
+        if self.params.get("record_rain"):
             self.record_rain = True
-            self.rain_record = {'event_start_time': [],
-                                'event_duration': [],
-                                'rainfall_rate': [],
-                                'runoff_rate': []}
+            self.rain_record = {
+                "event_start_time": [],
+                "event_duration": [],
+                "rainfall_rate": [],
+                "runoff_rate": [],
+            }
         else:
             self.record_rain = False
             self.rain_record = None
@@ -155,11 +163,16 @@ class StochasticErosionModel(ErosionModel):
         # frequency_filename does not exist. For stochastic time, computing
         # exceedance frequencies is not super sensible. So make a warning that
         # it won't be done.
-        if ((self.opt_stochastic_duration==True) and
-            (self.params.get('frequency_filename'))):
-            raise ValueError(('opt_stochastic_duration is set to True and a '
-                  'frequency_filename was specified. Frequency calculations '
-                  'are not done with stochastic time.'))
+        if (self.opt_stochastic_duration == True) and (
+            self.params.get("frequency_filename")
+        ):
+            raise ValueError(
+                (
+                    "opt_stochastic_duration is set to True and a "
+                    "frequency_filename was specified. Frequency calculations "
+                    "are not done with stochastic time."
+                )
+            )
 
     def run_for_stochastic(self, dt, runtime):
         """Run_for with stochastic duration.
@@ -188,39 +201,54 @@ class StochasticErosionModel(ErosionModel):
         """Instantiate component used to generate storm sequence."""
         # Handle option for duration.
         if self.opt_stochastic_duration:
-            self.rain_generator = \
-                PrecipitationDistribution(mean_storm_duration=self.params['mean_storm_duration'],
-                                          mean_interstorm_duration=self.params['mean_interstorm_duration'],
-                                          mean_storm_depth=self.params['mean_storm_depth'],
-                                          total_t=self.params['run_duration'],
-                                          delta_t=self.params['dt'],
-                                          random_seed=int(self.params['random_seed']))
+            self.rain_generator = PrecipitationDistribution(
+                mean_storm_duration=self.params["mean_storm_duration"],
+                mean_interstorm_duration=self.params["mean_interstorm_duration"],
+                mean_storm_depth=self.params["mean_storm_depth"],
+                total_t=self.params["run_duration"],
+                delta_t=self.params["dt"],
+                random_seed=int(self.params["random_seed"]),
+            )
             self.run_for = self.run_for_stochastic  # override base method
         else:
             from scipy.special import gamma
-            daily_rainfall__mean_intensity = (self._length_factor)*self.params['daily_rainfall__mean_intensity']# has units length per time
-            daily_rainfall_intermittency_factor = self.params['daily_rainfall_intermittency_factor']
 
-            self.rain_generator = \
-                PrecipitationDistribution(mean_storm_duration=1.0,
-                                          mean_interstorm_duration=1.0,
-                                          mean_storm_depth=1.0,
-                                          random_seed=int(self.params['random_seed']))
-            self.daily_rainfall_intermittency_factor = daily_rainfall_intermittency_factor
+            daily_rainfall__mean_intensity = (self._length_factor) * self.params[
+                "daily_rainfall__mean_intensity"
+            ]  # has units length per time
+            daily_rainfall_intermittency_factor = self.params[
+                "daily_rainfall_intermittency_factor"
+            ]
+
+            self.rain_generator = PrecipitationDistribution(
+                mean_storm_duration=1.0,
+                mean_interstorm_duration=1.0,
+                mean_storm_depth=1.0,
+                random_seed=int(self.params["random_seed"]),
+            )
+            self.daily_rainfall_intermittency_factor = (
+                daily_rainfall_intermittency_factor
+            )
             self.daily_rainfall__mean_intensity = daily_rainfall__mean_intensity
-            self.shape_factor = self.params['daily_rainfall__precipitation_shape_factor']
-            self.scale_factor = (self.daily_rainfall__mean_intensity
-                                 / gamma(1.0 + (1.0 / self.shape_factor)))
+            self.shape_factor = self.params[
+                "daily_rainfall__precipitation_shape_factor"
+            ]
+            self.scale_factor = self.daily_rainfall__mean_intensity / gamma(
+                1.0 + (1.0 / self.shape_factor)
+            )
 
-            if isinstance(self.params['number_of_sub_time_steps'], (int, np.integer)) == False:
-                raise ValueError(('number_of_sub_time_steps must be of type integer.'))
+            if (
+                isinstance(self.params["number_of_sub_time_steps"], (int, np.integer))
+                == False
+            ):
+                raise ValueError(("number_of_sub_time_steps must be of type integer."))
 
-            self.n_sub_steps = int(self.params['number_of_sub_time_steps'])
+            self.n_sub_steps = int(self.params["number_of_sub_time_steps"])
 
     def reset_random_seed(self):
         """Reset the random number generation sequence."""
         try:
-            seed = int(self.params['random_seed'])
+            seed = int(self.params["random_seed"])
         except KeyError:
             seed = 0
         self.rain_generator.seed_generator(seedval=seed)
@@ -258,17 +286,20 @@ class StochasticErosionModel(ErosionModel):
             IDs of nodes that are flooded and should have no erosion.
         """
         # (if we're varying precipitation parameters through time, update them)
-        if 'PrecipChanger' in self.boundary_handler:
-            self.daily_rainfall_intermittency_factor, self.daily_rainfall__mean_intensity = self.boundary_handler['PrecipChanger'].get_current_precip_params()
+        if "PrecipChanger" in self.boundary_handler:
+            self.daily_rainfall_intermittency_factor, self.daily_rainfall__mean_intensity = self.boundary_handler[
+                "PrecipChanger"
+            ].get_current_precip_params()
 
         if self.opt_stochastic_duration and self.rain_rate > 0.0:
 
             runoff = self.calc_runoff_and_discharge()
 
-            self.eroder.run_one_step(dt, flooded_nodes=flooded,
-                                     rainfall_intensity_if_used=runoff)
+            self.eroder.run_one_step(
+                dt, flooded_nodes=flooded, rainfall_intensity_if_used=runoff
+            )
             if self.record_rain:
-                #save record into the rain record
+                # save record into the rain record
                 self.record_rain_event(self.model_time, dt, self.rain_rate, runoff)
 
         elif self.opt_stochastic_duration and self.rain_rate <= 0.0:
@@ -278,20 +309,24 @@ class StochasticErosionModel(ErosionModel):
 
         elif not self.opt_stochastic_duration:
 
-            dt_water = ((dt * self.daily_rainfall_intermittency_factor)
-                         / float(self.n_sub_steps))
+            dt_water = (dt * self.daily_rainfall_intermittency_factor) / float(
+                self.n_sub_steps
+            )
             for i in range(self.n_sub_steps):
-                self.rain_rate = \
-                    self.rain_generator.generate_from_stretched_exponential(
-                        self.scale_factor, self.shape_factor)
+                self.rain_rate = self.rain_generator.generate_from_stretched_exponential(
+                    self.scale_factor, self.shape_factor
+                )
 
                 runoff = self.calc_runoff_and_discharge()
-                self.eroder.run_one_step(dt_water, flooded_nodes=flooded,
-                                         rainfall_intensity_if_used=runoff)
-                #save record into the rain record
+                self.eroder.run_one_step(
+                    dt_water, flooded_nodes=flooded, rainfall_intensity_if_used=runoff
+                )
+                # save record into the rain record
                 if self.record_rain:
                     event_start_time = self.model_time + (i * dt_water)
-                    self.record_rain_event(event_start_time, dt_water, self.rain_rate, runoff)
+                    self.record_rain_event(
+                        event_start_time, dt_water, self.rain_rate, runoff
+                    )
 
             # once all the rain time_steps are complete,
             # calculate and record the time with no rain:
@@ -314,16 +349,18 @@ class StochasticErosionModel(ErosionModel):
         """
         # if rain was recorded, write it out.
         if self.record_rain:
-            filename = self.params.get('storm_sequence_filename')
+            filename = self.params.get("storm_sequence_filename")
             self.write_storm_sequence_to_file(filename)
 
-        if self.record_rain and (self.opt_stochastic_duration==False):
+        if self.record_rain and (self.opt_stochastic_duration == False):
             # if opt_stochastic_duration = False, calculate exceedance
             # frequencies and write out.
-            frequency_filename = self.params.get('frequency_filename')
+            frequency_filename = self.params.get("frequency_filename")
             self.write_exceedance_frequency_file(frequency_filename)
 
-    def record_rain_event(self, event_start_time, event_duration, rainfall_rate, runoff_rate):
+    def record_rain_event(
+        self, event_start_time, event_duration, rainfall_rate, runoff_rate
+    ):
         """Record rain events.
 
         Create a record of event start time, event duration, rainfall rate, and
@@ -336,10 +373,10 @@ class StochasticErosionModel(ErosionModel):
         rainfall_rate : float
         runoff_rate : float
         """
-        self.rain_record['event_start_time'].append(event_start_time)
-        self.rain_record['event_duration'].append(event_duration)
-        self.rain_record['rainfall_rate'].append(rainfall_rate)
-        self.rain_record['runoff_rate'].append(runoff_rate)
+        self.rain_record["event_start_time"].append(event_start_time)
+        self.rain_record["event_duration"].append(event_duration)
+        self.rain_record["rainfall_rate"].append(rainfall_rate)
+        self.rain_record["runoff_rate"].append(runoff_rate)
 
     def write_storm_sequence_to_file(self, filename=None):
         """ Write event duration and intensity to a formatted text file.
@@ -352,23 +389,37 @@ class StochasticErosionModel(ErosionModel):
 
         # Open a file for writing
         if self.record_rain == False:
-            raise ValueError('Rain was not recorded when the model run. To '
-                             'record rain, set the parameter "record_rain"'
-                             'to True.')
+            raise ValueError(
+                "Rain was not recorded when the model run. To "
+                'record rain, set the parameter "record_rain"'
+                "to True."
+            )
         if filename is None:
-            filename = 'storm_sequence.txt'
-        stormfile = open(filename, 'w')
-        stormfile.write('event_start_time' + ',' +
-                        'event_duration' + ',' +
-                        'rainfall_rate' + ',' +
-                        'runoff_rate' + '\n')
+            filename = "storm_sequence.txt"
+        stormfile = open(filename, "w")
+        stormfile.write(
+            "event_start_time"
+            + ","
+            + "event_duration"
+            + ","
+            + "rainfall_rate"
+            + ","
+            + "runoff_rate"
+            + "\n"
+        )
 
-        n_events = len(self.rain_record['event_start_time'])
+        n_events = len(self.rain_record["event_start_time"])
         for i in range(n_events):
-            stormfile.write(str(self.rain_record['event_start_time'][i]) + ',' +
-                            str(self.rain_record['event_duration'][i]) + ',' +
-                            str(self.rain_record['rainfall_rate'][i]) + ',' +
-                            str(self.rain_record['runoff_rate'][i])+ '\n')
+            stormfile.write(
+                str(self.rain_record["event_start_time"][i])
+                + ","
+                + str(self.rain_record["event_duration"][i])
+                + ","
+                + str(self.rain_record["rainfall_rate"][i])
+                + ","
+                + str(self.rain_record["runoff_rate"][i])
+                + "\n"
+            )
 
         # Close the file
         stormfile.close()
@@ -382,34 +433,49 @@ class StochasticErosionModel(ErosionModel):
             Default value is 'exceedance_summary.txt'
         """
         if self.record_rain == False:
-            raise ValueError('Rain was not recorded when the model run. To '
-                             'record rain, set the parameter "record_rain"'
-                             'to True.')
+            raise ValueError(
+                "Rain was not recorded when the model run. To "
+                'record rain, set the parameter "record_rain"'
+                "to True."
+            )
 
         if filename is None:
-            filename = 'exceedance_summary.txt'
-        exceedance_file = open(filename, 'w')
+            filename = "exceedance_summary.txt"
+        exceedance_file = open(filename, "w")
 
         # calculate the number of wet days per year.
         number_of_days_per_year = 365
-        nwet = int(np.ceil(self.daily_rainfall_intermittency_factor * number_of_days_per_year))
-        #ndry = int(number_of_days_per_year - nwet)
+        nwet = int(
+            np.ceil(self.daily_rainfall_intermittency_factor * number_of_days_per_year)
+        )
+        # ndry = int(number_of_days_per_year - nwet)
 
         # Write some basic information about the distribution to the file.
-        exceedance_file.write('Section 1: Distribution Description\n')
-        exceedance_file.write('Scale Factor: ' + str(self.scale_factor) + '\n')
-        exceedance_file.write('Shape Factor: ' + str(self.shape_factor) + '\n')
-        exceedance_file.write(('Intermittency Factor: ' +
-                               str(self.daily_rainfall_intermittency_factor) + '\n'))
-        exceedance_file.write(('Number of wet days per year: ' +
-                               str(nwet) + '\n\n'))
-        message_text = ('The scale factor that describes this distribution is ' +
-                        'calculated based on a provided value for the mean wet day rainfall.')
-        exceedance_file.write('\n'.join(textwrap.wrap(message_text, _STRING_LENGTH)))
-        exceedance_file.write('\n')
+        exceedance_file.write("Section 1: Distribution Description\n")
+        exceedance_file.write("Scale Factor: " + str(self.scale_factor) + "\n")
+        exceedance_file.write("Shape Factor: " + str(self.shape_factor) + "\n")
+        exceedance_file.write(
+            (
+                "Intermittency Factor: "
+                + str(self.daily_rainfall_intermittency_factor)
+                + "\n"
+            )
+        )
+        exceedance_file.write(("Number of wet days per year: " + str(nwet) + "\n\n"))
+        message_text = (
+            "The scale factor that describes this distribution is "
+            + "calculated based on a provided value for the mean wet day rainfall."
+        )
+        exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+        exceedance_file.write("\n")
 
-        exceedance_file.write(('This provided value was:\n' +
-                               str(self.daily_rainfall__mean_intensity) + '\n'))
+        exceedance_file.write(
+            (
+                "This provided value was:\n"
+                + str(self.daily_rainfall__mean_intensity)
+                + "\n"
+            )
+        )
 
         # calculate the predictions for 10, 25, and 100 year event based on
         # the analytical form of the exceedance function.
@@ -417,7 +483,7 @@ class StochasticErosionModel(ErosionModel):
 
         # calculate the probability of each event based on the number of years
         # and the number of wet days per year.
-        daily_distribution_exceedance_probabilities = (1./(nwet * event_intervals))
+        daily_distribution_exceedance_probabilities = 1. / (nwet * event_intervals)
 
         # exceedance probability is given as
         # Probability of daily rainfall of p exceeding a value of po is given as:
@@ -430,31 +496,42 @@ class StochasticErosionModel(ErosionModel):
         #
         # po = P * (- ln (P(p>po))) ^ (1 / c)
 
-        expected_rainfall = self.scale_factor * (-1. * np.log(daily_distribution_exceedance_probabilities)) ** (1. / self.shape_factor)
+        expected_rainfall = self.scale_factor * (
+            -1. * np.log(daily_distribution_exceedance_probabilities)
+        ) ** (1. / self.shape_factor)
 
-        exceedance_file.write('\n\nSection 2: Theoretical Predictions\n')
+        exceedance_file.write("\n\nSection 2: Theoretical Predictions\n")
 
-        message_text = ('Based on the analytical form of the wet day rainfall ' +
-                        'distribution, we can calculate theoretical predictions ' +
-                        'of the daily rainfall amounts associated with N-year events.')
-        exceedance_file.write('\n'.join(textwrap.wrap(message_text, _STRING_LENGTH)))
-        exceedance_file.write('\n')
+        message_text = (
+            "Based on the analytical form of the wet day rainfall "
+            + "distribution, we can calculate theoretical predictions "
+            + "of the daily rainfall amounts associated with N-year events."
+        )
+        exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+        exceedance_file.write("\n")
 
         for i in range(len(daily_distribution_exceedance_probabilities)):
-            exceedance_file.write(('Expected value for the wet day total of the ' +
-                                   str(event_intervals[i]) +
-                                   ' year event is: ' +
-                                   str(np.round(expected_rainfall[i], decimals=3)) + '\n'))
+            exceedance_file.write(
+                (
+                    "Expected value for the wet day total of the "
+                    + str(event_intervals[i])
+                    + " year event is: "
+                    + str(np.round(expected_rainfall[i], decimals=3))
+                    + "\n"
+                )
+            )
 
         # get rainfall record and filter out time without any rain
-        all_precipitation = np.array(self.rain_record['rainfall_rate'])
-        rainy_day_inds = np.where(all_precipitation>0)
-        if len(rainy_day_inds[0])>0:
+        all_precipitation = np.array(self.rain_record["rainfall_rate"])
+        rainy_day_inds = np.where(all_precipitation > 0)
+        if len(rainy_day_inds[0]) > 0:
             wet_day_totals = all_precipitation[rainy_day_inds]
         else:
-            raise ValueError('No rain fell, which makes calculating exceedance '
-                             'frequencies problematic. We recommend that you '
-                             'check the valude of daily_rainfall_intermittency_factor.')
+            raise ValueError(
+                "No rain fell, which makes calculating exceedance "
+                "frequencies problematic. We recommend that you "
+                "check the valude of daily_rainfall_intermittency_factor."
+            )
 
         # construct the distribution of yearly maxima.
         # here an effective year is represented by the number of draws implied
@@ -462,32 +539,39 @@ class StochasticErosionModel(ErosionModel):
 
         # first calculate the number of effective years.
         num_days = len(wet_day_totals)
-        num_effective_years = int(np.floor(wet_day_totals.size/nwet))
-
+        num_effective_years = int(np.floor(wet_day_totals.size / nwet))
 
         # write out the calculated event only if the duration
-        exceedance_file.write('\n\n')
-        message_text = ('Section 3: Predicted 95% confidence bounds on the ' +
-                        'exceedance values based on number of samples drawn.')
-        exceedance_file.write('\n'.join(textwrap.wrap(message_text, _STRING_LENGTH)))
-        exceedance_file.write('\n')
+        exceedance_file.write("\n\n")
+        message_text = (
+            "Section 3: Predicted 95% confidence bounds on the "
+            + "exceedance values based on number of samples drawn."
+        )
+        exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+        exceedance_file.write("\n")
 
-        message_text = ('The ability to empirically estimate the rainfall ' +
-                        'associated with an N-year event depends on the ' +
-                        'probability of that event occurring and the number of ' +
-                        'draws from the probability distribution. The ability ' +
-                        'to estimate increases with an increasing number of samples ' +
-                        'and decreases with decreasing probability of event ' +
-                        'occurrence.')
-        exceedance_file.write('\n'.join(textwrap.wrap(message_text, _STRING_LENGTH)))
-        exceedance_file.write('\n')
+        message_text = (
+            "The ability to empirically estimate the rainfall "
+            + "associated with an N-year event depends on the "
+            + "probability of that event occurring and the number of "
+            + "draws from the probability distribution. The ability "
+            + "to estimate increases with an increasing number of samples "
+            + "and decreases with decreasing probability of event "
+            + "occurrence."
+        )
+        exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+        exceedance_file.write("\n")
 
-        message_text = ('Exceedance values calculated from ' + str(len(wet_day_totals)) +
-                        ' draws from the daily-rainfall probability distribution. '+
-                        'This corresponds to ' + str(num_effective_years) +
-                        ' effective years.')
-        exceedance_file.write('\n'.join(textwrap.wrap(message_text, _STRING_LENGTH)))
-        exceedance_file.write('\n')
+        message_text = (
+            "Exceedance values calculated from "
+            + str(len(wet_day_totals))
+            + " draws from the daily-rainfall probability distribution. "
+            + "This corresponds to "
+            + str(num_effective_years)
+            + " effective years."
+        )
+        exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+        exceedance_file.write("\n")
 
         # For a general probability distribution, f, with a continuous not zero
         # quantile function at F-1(p), the order statistic associated with the
@@ -504,35 +588,53 @@ class StochasticErosionModel(ErosionModel):
         # we've already calculated F-1(p) for our events, and it is represented
         # by the variable expected_rainfall
 
-        daily_distribution_event_percentile = 1.0 - daily_distribution_exceedance_probabilities
+        daily_distribution_event_percentile = (
+            1.0 - daily_distribution_exceedance_probabilities
+        )
 
-        event_probability = ((self.shape_factor/self.scale_factor) *
-                             ((expected_rainfall/self.scale_factor) ** (self.shape_factor - 1.0)) *
-                             (np.exp(-1. * (expected_rainfall/self.scale_factor) ** self.shape_factor)))
+        event_probability = (
+            (self.shape_factor / self.scale_factor)
+            * ((expected_rainfall / self.scale_factor) ** (self.shape_factor - 1.0))
+            * (
+                np.exp(
+                    -1. * (expected_rainfall / self.scale_factor) ** self.shape_factor
+                )
+            )
+        )
 
-        event_variance = ((daily_distribution_event_percentile * (1.0 - daily_distribution_event_percentile)) /
-                          (num_days * (event_probability ** 2)))
+        event_variance = (
+            daily_distribution_event_percentile
+            * (1.0 - daily_distribution_event_percentile)
+        ) / (num_days * (event_probability ** 2))
 
         event_std = event_variance ** 0.5
 
         t_statistic = stats.t.ppf(0.975, num_effective_years, loc=0, scale=1)
 
-        exceedance_file.write('\n')
-        message_text = ('For the given number of samples, the 95% ' +
-                        'confidence bounds for the following event ' +
-                        'return intervals are as follows: ')
-        exceedance_file.write('\n'.join(textwrap.wrap(message_text, _STRING_LENGTH)))
-        exceedance_file.write('\n')
+        exceedance_file.write("\n")
+        message_text = (
+            "For the given number of samples, the 95% "
+            + "confidence bounds for the following event "
+            + "return intervals are as follows: "
+        )
+        exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+        exceedance_file.write("\n")
         for i in range(len(event_intervals)):
 
             min_expected_val = expected_rainfall[i] - t_statistic * event_std[i]
             max_expected_val = expected_rainfall[i] + t_statistic * event_std[i]
 
-            exceedance_file.write(('Expected range for the wet day total of the ' +
-                                   str(event_intervals[i]) +
-                                   ' year event is: (' +
-                                   str(np.round(min_expected_val, decimals=3)) + ', ' +
-                                   str(np.round(max_expected_val, decimals=3)) + ')\n'))
+            exceedance_file.write(
+                (
+                    "Expected range for the wet day total of the "
+                    + str(event_intervals[i])
+                    + " year event is: ("
+                    + str(np.round(min_expected_val, decimals=3))
+                    + ", "
+                    + str(np.round(max_expected_val, decimals=3))
+                    + ")\n"
+                )
+            )
         # next, calculate the emperical exceedance values, if a sufficient record
         # exists.
 
@@ -542,8 +644,8 @@ class StochasticErosionModel(ErosionModel):
 
             # identify the starting and ending index coorisponding to the
             # year
-            starting_index = yi*nwet
-            ending_index = starting_index+nwet
+            starting_index = yi * nwet
+            ending_index = starting_index + nwet
 
             # select the years portion of the wet_day_totals
             selected_wet_day_totals = wet_day_totals[starting_index:ending_index]
@@ -551,29 +653,37 @@ class StochasticErosionModel(ErosionModel):
             # record the yearly maximum precipitation
             maximum_yearly_precipitation[yi] = selected_wet_day_totals.max()
 
-
         # calculate the distribution percentiles associated with each interval
-        event_percentiles = (1. - (1./event_intervals)) * 100.
+        event_percentiles = (1. - (1. / event_intervals)) * 100.
 
         # calculated the event magnitudes associated with the percentiles.
-        event_magnitudes = np.percentile(maximum_yearly_precipitation, event_percentiles)
+        event_magnitudes = np.percentile(
+            maximum_yearly_precipitation, event_percentiles
+        )
 
         # write out the calculated event only if the duration
-        exceedance_file.write('\n\nSection 4: Empirical Values\n')
-        message_text = ('These empirical values should be interpreted in the ' +
-                        'context of the expected ranges printed in Section 3. ' +
-                        'If the expected range is large, consider using a longer ' +
-                        'record of rainfall. The empirical values should fall ' +
-                        'within the expected range at a 95% confidence level.')
-        exceedance_file.write('\n'.join(textwrap.wrap(message_text, _STRING_LENGTH)))
-        exceedance_file.write('\n')
+        exceedance_file.write("\n\nSection 4: Empirical Values\n")
+        message_text = (
+            "These empirical values should be interpreted in the "
+            + "context of the expected ranges printed in Section 3. "
+            + "If the expected range is large, consider using a longer "
+            + "record of rainfall. The empirical values should fall "
+            + "within the expected range at a 95% confidence level."
+        )
+        exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+        exceedance_file.write("\n")
 
         for i in range(len(event_percentiles)):
 
-            exceedance_file.write(('Estimated value for the wet day total of the ' +
-                                   str(np.round(event_intervals[i], decimals=3)) +
-                                   ' year event is: ' +
-                                   str(np.round(event_magnitudes[i], decimals=3)) + '\n'))
+            exceedance_file.write(
+                (
+                    "Estimated value for the wet day total of the "
+                    + str(np.round(event_intervals[i], decimals=3))
+                    + " year event is: "
+                    + str(np.round(event_magnitudes[i], decimals=3))
+                    + "\n"
+                )
+            )
 
         exceedance_file.close()
 
@@ -585,12 +695,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     sm = StochasticErosionModel(input_file=infile)
     sm.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

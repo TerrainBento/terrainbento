@@ -4,6 +4,7 @@ import os
 import numpy as np
 from scipy.interpolate import interp1d
 
+
 class SingleNodeBaselevelHandler(object):
     """Control the elevation of a single open boundary node.
 
@@ -20,13 +21,15 @@ class SingleNodeBaselevelHandler(object):
     **run_one_step** method.
     """
 
-    def __init__(self,
-                 grid,
-                 outlet_node,
-                 lowering_rate = None,
-                 lowering_file_path = None,
-                 model_end_elevation = None,
-                 **kwargs):
+    def __init__(
+        self,
+        grid,
+        outlet_node,
+        lowering_rate=None,
+        lowering_file_path=None,
+        model_end_elevation=None,
+        **kwargs
+    ):
         """
         Parameters
         ----------
@@ -93,40 +96,58 @@ class SingleNodeBaselevelHandler(object):
         self.model_time = 0.0
         self._grid = grid
         self.outlet_node = outlet_node
-        self.z = self._grid.at_node['topographic__elevation']
+        self.z = self._grid.at_node["topographic__elevation"]
 
         if (lowering_file_path is None) and (lowering_rate is None):
-            raise ValueError(('SingleNodeBaselevelHandler requires one of '
-                              'lowering_rate and lowering_file_path'))
+            raise ValueError(
+                (
+                    "SingleNodeBaselevelHandler requires one of "
+                    "lowering_rate and lowering_file_path"
+                )
+            )
         else:
-            if (lowering_rate is None):
+            if lowering_rate is None:
                 # initialize outlet elevation object
                 if os.path.exists(lowering_file_path):
 
                     model_start_elevation = self.z[self.outlet_node]
-                    elev_change_df = np.loadtxt(lowering_file_path, skiprows=1, delimiter =',')
+                    elev_change_df = np.loadtxt(
+                        lowering_file_path, skiprows=1, delimiter=","
+                    )
                     time = elev_change_df[:, 0]
                     elev_change = elev_change_df[:, 1]
 
                     if model_end_elevation is None:
                         scaling_factor = 1.0
                     else:
-                        scaling_factor = np.abs(model_start_elevation-model_end_elevation)/np.abs(elev_change[0]-elev_change[-1])
-                    outlet_elevation = (scaling_factor*elev_change_df[:, 1]) + model_start_elevation
+                        scaling_factor = np.abs(
+                            model_start_elevation - model_end_elevation
+                        ) / np.abs(elev_change[0] - elev_change[-1])
+                    outlet_elevation = (
+                        scaling_factor * elev_change_df[:, 1]
+                    ) + model_start_elevation
                     self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
                 else:
-                    raise ValueError(('The lowering_file_path provided '
-                                      'to SingleNodeBaselevelHandler does not '
-                                      'exist.'))
-            elif (lowering_file_path is None):
+                    raise ValueError(
+                        (
+                            "The lowering_file_path provided "
+                            "to SingleNodeBaselevelHandler does not "
+                            "exist."
+                        )
+                    )
+            elif lowering_file_path is None:
                 self.lowering_rate = lowering_rate
                 self.outlet_elevation_obj = None
             else:
-                raise ValueError(('Both an lowering_rate and a '
-                                  'lowering_file_path have been provided '
-                                  'to SingleNodeBaselevelHandler. Please provide '
-                                  'only one.'))
+                raise ValueError(
+                    (
+                        "Both an lowering_rate and a "
+                        "lowering_file_path have been provided "
+                        "to SingleNodeBaselevelHandler. Please provide "
+                        "only one."
+                    )
+                )
 
     def run_one_step(self, dt):
         """ Run ``SingleNodeBaselevelHandler`` to update outlet node elevation.
@@ -153,8 +174,10 @@ class SingleNodeBaselevelHandler(object):
             self.z[self.outlet_node] += self.lowering_rate * dt
 
             # if bedrock__elevation exists as a field, lower it also
-            if 'bedrock__elevation' in self._grid.at_node:
-                self._grid.at_node['bedrock__elevation'][self.outlet_node] += self.lowering_rate * dt
+            if "bedrock__elevation" in self._grid.at_node:
+                self._grid.at_node["bedrock__elevation"][self.outlet_node] += (
+                    self.lowering_rate * dt
+                )
 
         # if there is an outlet elevation object
         else:
@@ -162,10 +185,14 @@ class SingleNodeBaselevelHandler(object):
             # calcuate the topographic change required to match the current time's value for
             # outlet elevation. This must be done in case bedrock elevation exists, and must
             # be done before the topography is lowered
-            topo_change = self.z[self.outlet_node] - self.outlet_elevation_obj(self.model_time)
+            topo_change = self.z[self.outlet_node] - self.outlet_elevation_obj(
+                self.model_time
+            )
 
-            if 'bedrock__elevation' in self._grid.at_node:
-                self._grid.at_node['bedrock__elevation'][self.outlet_node] -= topo_change
+            if "bedrock__elevation" in self._grid.at_node:
+                self._grid.at_node["bedrock__elevation"][
+                    self.outlet_node
+                ] -= topo_change
 
             # lower topography
             self.z[self.outlet_node] -= topo_change

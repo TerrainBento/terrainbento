@@ -55,75 +55,86 @@ class BasicSt(StochasticErosionModel):
     water discharge at each node.
     """
 
-    def __init__(self, input_file=None, params=None,
-                 BoundaryHandlers=None, OutputWriters=None):
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """Initialize the StochasticDischargeHortonianModel."""
 
         # Call ErosionModel's init
-        super(BasicSt, self).__init__(input_file=input_file,
-                                      params=params,
-                                      BoundaryHandlers=BoundaryHandlers,
-                                        OutputWriters=OutputWriters)
+        super(BasicSt, self).__init__(
+            input_file=input_file,
+            params=params,
+            BoundaryHandlers=BoundaryHandlers,
+            OutputWriters=OutputWriters,
+        )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent('K_stochastic_sp', raise_error=False)
-        K_ss = self.get_parameter_from_exponent('K_stochastic_ss', raise_error=False)
-        regolith_transport_parameter = (self._length_factor**2.)*self.get_parameter_from_exponent('regolith_transport_parameter') # has units length^2/time
+        K_sp = self.get_parameter_from_exponent("K_stochastic_sp", raise_error=False)
+        K_ss = self.get_parameter_from_exponent("K_stochastic_ss", raise_error=False)
+        regolith_transport_parameter = (
+            self._length_factor ** 2.
+        ) * self.get_parameter_from_exponent(
+            "regolith_transport_parameter"
+        )  # has units length^2/time
 
         # check that a stream power and a shear stress parameter have not both been given
         if K_sp != None and K_ss != None:
-            raise ValueError('A parameter for both K_sp and K_ss has been'
-                             'provided. Only one of these may be provided')
+            raise ValueError(
+                "A parameter for both K_sp and K_ss has been"
+                "provided. Only one of these may be provided"
+            )
         elif K_sp != None or K_ss != None:
-            if K_sp!= None:
+            if K_sp != None:
                 K = K_sp
             else:
-                K = (self._length_factor**(1./2.))*K_ss # K_stochastic has units Lengtg^(1/2) per Time^(1/2_
+                K = (
+                    self._length_factor ** (1. / 2.)
+                ) * K_ss  # K_stochastic has units Lengtg^(1/2) per Time^(1/2_
         else:
-            raise ValueError('A value for K_sp or K_ss  must be provided.')
+            raise ValueError("A value for K_sp or K_ss  must be provided.")
 
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if 'surface_water__discharge' not in self.grid.at_node:
-            self.grid.add_zeros('node', 'surface_water__discharge')
-        self.discharge = self.grid.at_node['surface_water__discharge']
+        if "surface_water__discharge" not in self.grid.at_node:
+            self.grid.add_zeros("node", "surface_water__discharge")
+        self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        infiltration_capacity = (self._length_factor)*self.params['infiltration_capacity']# has units length per time
+        infiltration_capacity = (self._length_factor) * self.params[
+            "infiltration_capacity"
+        ]  # has units length per time
         self.infilt = infiltration_capacity
 
         # Keep a reference to drainage area
-        self.area = self.grid.at_node['drainage_area']
+        self.area = self.grid.at_node["drainage_area"]
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid,
-                                      K_sp=K,
-                                      m_sp=self.params['m_sp'],
-                                      n_sp=self.params['n_sp'])
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
+        )
 
         # Instantiate a LinearDiffuser component
-        self.diffuser = LinearDiffuser(self.grid,
-                                       linear_diffusivity=regolith_transport_parameter)
-
+        self.diffuser = LinearDiffuser(
+            self.grid, linear_diffusivity=regolith_transport_parameter
+        )
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
         if self.rain_rate > 0.0 and self.infilt > 0.0:
-            runoff = self.rain_rate - (self.infilt *
-                                       (1.0 -
-                                        np.exp(-self.rain_rate / self.infilt)))
+            runoff = self.rain_rate - (
+                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
+            )
             if runoff < 0:
                 runoff = 0
         else:
             runoff = self.rain_rate
         self.discharge[:] = runoff * self.area
         return runoff
-
 
     def run_one_step(self, dt):
         """
@@ -137,7 +148,9 @@ class BasicSt(StochasticErosionModel):
         if self.flow_accumulator.depression_finder is None:
             flooded = []
         else:
-            flooded = np.where(self.flow_accumulator.depression_finder.flood_status==3)[0]
+            flooded = np.where(
+                self.flow_accumulator.depression_finder.flood_status == 3
+            )[0]
 
         # Handle water erosion
         self.handle_water_erosion(dt, flooded)
@@ -156,12 +169,12 @@ def main():
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     em = BasicSt(input_file=infile)
     em.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

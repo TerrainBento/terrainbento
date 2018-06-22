@@ -198,22 +198,27 @@ from landlab import Component, CLOSED_BOUNDARY
 from landlab.components import FlowAccumulator, NormalFault
 
 from terrainbento.boundary_condition_handlers import (
-                            PrecipChanger,
-                            CaptureNodeBaselevelHandler,
-                            NotCoreNodeBaselevelHandler,
-                            SingleNodeBaselevelHandler)
+    PrecipChanger,
+    CaptureNodeBaselevelHandler,
+    NotCoreNodeBaselevelHandler,
+    SingleNodeBaselevelHandler,
+)
 
-_SUPPORTED_BOUNDARY_HANDLERS = ['NormalFault',
-                                'PrecipChanger',
-                                'CaptureNodeBaselevelHandler',
-                                'NotCoreNodeBaselevelHandler',
-                                'SingleNodeBaselevelHandler']
+_SUPPORTED_BOUNDARY_HANDLERS = [
+    "NormalFault",
+    "PrecipChanger",
+    "CaptureNodeBaselevelHandler",
+    "NotCoreNodeBaselevelHandler",
+    "SingleNodeBaselevelHandler",
+]
 
-_HANDLER_METHODS = {'NormalFault': NormalFault,
-                    'PrecipChanger': PrecipChanger,
-                    'CaptureNodeBaselevelHandler': CaptureNodeBaselevelHandler,
-                    'NotCoreNodeBaselevelHandler': NotCoreNodeBaselevelHandler,
-                    'SingleNodeBaselevelHandler': SingleNodeBaselevelHandler}
+_HANDLER_METHODS = {
+    "NormalFault": NormalFault,
+    "PrecipChanger": PrecipChanger,
+    "CaptureNodeBaselevelHandler": CaptureNodeBaselevelHandler,
+    "NotCoreNodeBaselevelHandler": NotCoreNodeBaselevelHandler,
+    "SingleNodeBaselevelHandler": SingleNodeBaselevelHandler,
+}
 
 
 class ErosionModel(object):
@@ -232,8 +237,10 @@ class ErosionModel(object):
     **run_one_step** method. If desired, the derived model can overwrite the
     existing **run_for**, **run**, and **finalize** methods.
     """
-    def __init__(self, input_file=None, params=None, BoundaryHandlers=None,
-                 OutputWriters=None):
+
+    def __init__(
+        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+    ):
         """
         Parameters
         ----------
@@ -265,11 +272,19 @@ class ErosionModel(object):
         # Import input file or parameter dictionary, checking that at least
         # one but not both were supplied.
         if input_file is None and params is None:
-            raise ValueError(('ErosionModel requires one of `input_file` or '
-                              '`params` dictionary but neither were supplied.'))
+            raise ValueError(
+                (
+                    "ErosionModel requires one of `input_file` or "
+                    "`params` dictionary but neither were supplied."
+                )
+            )
         elif input_file is not None and params is not None:
-            raise ValueError(('ErosionModel requires one of `input_file` or '
-                              '`params` dictionary but both were supplied.'))
+            raise ValueError(
+                (
+                    "ErosionModel requires one of `input_file` or "
+                    "`params` dictionary but both were supplied."
+                )
+            )
         else:
             # parameter dictionary
             if input_file is None:
@@ -279,22 +294,26 @@ class ErosionModel(object):
                 self.params = load_params(input_file)
 
         # ensure required values are provided
-        for req in ['dt', 'output_interval', 'run_duration']:
+        for req in ["dt", "output_interval", "run_duration"]:
             if req in self.params:
                 try:
                     val = float(self.params[req])
                 except ValueError:
-                    msg = 'Required parameter {0} is not compatible with type float.'.format(req),
+                    msg = (
+                        "Required parameter {0} is not compatible with type float.".format(
+                            req
+                        ),
+                    )
                     raise ValueError(msg)
             else:
-                msg = 'Required parameter {0} was not provided.'.format(req),
+                msg = ("Required parameter {0} was not provided.".format(req),)
 
                 raise ValueError(msg)
 
         # identify if initial conditions should be saved.
         # default behavior is to not save the first timestep
-        self.save_first_timestep = self.params.get('save_first_timestep', True)
-        self._out_file_name = self.params.get('output_filename', 'terrainbento_output')
+        self.save_first_timestep = self.params.get("save_first_timestep", True)
+        self._out_file_name = self.params.get("output_filename", "terrainbento_output")
         # instantiate model time.
         self._model_time = 0.
 
@@ -308,87 +327,92 @@ class ErosionModel(object):
         # Read the topography data and create a grid
         # first, check to make sure both DEM and node-rows are not both
         # specified.
-        if ((self.params.get('number_of_node_rows') is not None) and
-            (self.params.get('DEM_filename') is not None)):
-            raise ValueError('Both a DEM filename and number_of_node_rows have '
-                             'been specified.')
+        if (self.params.get("number_of_node_rows") is not None) and (
+            self.params.get("DEM_filename") is not None
+        ):
+            raise ValueError(
+                "Both a DEM filename and number_of_node_rows have " "been specified."
+            )
 
-        if 'DEM_filename' in self.params:
-            self._starting_topography = 'inputDEM'
-            (self.grid, self.z) = self.read_topography(self.params['DEM_filename'])
+        if "DEM_filename" in self.params:
+            self._starting_topography = "inputDEM"
+            (self.grid, self.z) = self.read_topography(self.params["DEM_filename"])
             self.opt_watershed = True
         else:
             # this routine will set self.opt_watershed internally
-            if self.params.get('model_grid', 'RasterModelGrid') == 'HexModelGrid':
-                self._starting_topography = 'HexModelGrid'
+            if self.params.get("model_grid", "RasterModelGrid") == "HexModelGrid":
+                self._starting_topography = "HexModelGrid"
                 self.setup_hexagonal_grid()
             else:
-                self._starting_topography = 'RasterModelGrid'
+                self._starting_topography = "RasterModelGrid"
                 self.setup_raster_grid()
 
         # Set DEM boundaries
         if self.opt_watershed:
-            if 'outlet_id' in self.params:
-                self.outlet_node = self.params['outlet_id']
-                self.grid.set_watershed_boundary_condition_outlet_id(self.outlet_node,
-                                                                     self.z,
-                                                                     nodata_value=-9999)
+            if "outlet_id" in self.params:
+                self.outlet_node = self.params["outlet_id"]
+                self.grid.set_watershed_boundary_condition_outlet_id(
+                    self.outlet_node, self.z, nodata_value=-9999
+                )
             else:
-                self.outlet_node = self.grid.set_watershed_boundary_condition(self.z,
-                                                                              nodata_value=-9999,
-                                                                              return_outlet_id=True)[0]
+                self.outlet_node = self.grid.set_watershed_boundary_condition(
+                    self.z, nodata_value=-9999, return_outlet_id=True
+                )[0]
 
         # Add fields for initial topography and cumulative erosion depth
-        z0 = self.grid.add_zeros('node', 'initial_topographic__elevation')
+        z0 = self.grid.add_zeros("node", "initial_topographic__elevation")
         z0[:] = self.z  # keep a copy of starting elevation
-        self.grid.add_zeros('node', 'cumulative_erosion__depth')
+        self.grid.add_zeros("node", "cumulative_erosion__depth")
 
         # identify which nodes are data nodes:
-        self.data_nodes = self.grid.at_node['topographic__elevation']!=-9999.
+        self.data_nodes = self.grid.at_node["topographic__elevation"] != -9999.
 
         ###################################################################
         # instantiate flow direction and accumulation
         ###################################################################
         # get flow direction, and depression finding options
-        self.flow_director = self.params.get('flow_director', 'FlowDirectorSteepest')
-        if ((self.flow_director == 'Steepest') or (self.flow_director == 'D4')):
-            self.flow_director = 'FlowDirectorSteepest'
-        self.depression_finder = self.params.get('depression_finder', None)
+        self.flow_director = self.params.get("flow_director", "FlowDirectorSteepest")
+        if (self.flow_director == "Steepest") or (self.flow_director == "D4"):
+            self.flow_director = "FlowDirectorSteepest"
+        self.depression_finder = self.params.get("depression_finder", None)
 
         # Instantiate a FlowAccumulator, if DepressionFinder is provided
         # AND director = Steepest, then we need routing to be D4,
         # otherwise, just passing params should be sufficient.
-        if ((self.depression_finder is not None) and
-            (self.flow_director == 'FlowDirectorSteepest')):
-            self.flow_accumulator = FlowAccumulator(self.grid,
-                                               routing = 'D4',
-                                               **self.params)
+        if (self.depression_finder is not None) and (
+            self.flow_director == "FlowDirectorSteepest"
+        ):
+            self.flow_accumulator = FlowAccumulator(
+                self.grid, routing="D4", **self.params
+            )
         else:
             self.flow_accumulator = FlowAccumulator(self.grid, **self.params)
 
         ###################################################################
         # get internal length scale adjustement
         ###################################################################
-        feet_to_meters = self.params.get('feet_to_meters', False)
-        meters_to_feet = self.params.get('meters_to_feet', False)
+        feet_to_meters = self.params.get("feet_to_meters", False)
+        meters_to_feet = self.params.get("meters_to_feet", False)
         if feet_to_meters and meters_to_feet:
-            raise ValueError('Both "feet_to_meters" and "meters_to_feet" are'
-                             'set as True. This is not realistic.')
+            raise ValueError(
+                'Both "feet_to_meters" and "meters_to_feet" are'
+                "set as True. This is not realistic."
+            )
         else:
             if feet_to_meters:
-                self._length_factor = 1.0/3.28084
+                self._length_factor = 1.0 / 3.28084
             elif meters_to_feet:
                 self._length_factor = 3.28084
             else:
                 self._length_factor = 1.0
-        self.params['length_factor'] = self._length_factor
+        self.params["length_factor"] = self._length_factor
 
         ###################################################################
         # Boundary Conditions
         ###################################################################
         self.boundary_handler = {}
-        if 'BoundaryHandlers' in self.params:
-                BoundaryHandlers = self.params['BoundaryHandlers']
+        if "BoundaryHandlers" in self.params:
+            BoundaryHandlers = self.params["BoundaryHandlers"]
 
         if BoundaryHandlers is None:
             pass
@@ -402,7 +426,7 @@ class ErosionModel(object):
         ###################################################################
         # Output Writers
         ###################################################################
-        self.output_writers = {'class': {}, 'function': []}
+        self.output_writers = {"class": {}, "function": []}
         if OutputWriters is None:
             pass
         else:
@@ -436,15 +460,23 @@ class ErosionModel(object):
             name = handler._name
 
             if isinstance(handler, Component):
-                raise ValueError(('Object passed to terrainbento is instantiated '
-                                  '. This is not permitted.'))
+                raise ValueError(
+                    (
+                        "Object passed to terrainbento is instantiated "
+                        ". This is not permitted."
+                    )
+                )
         except AttributeError:
-            try: # if handler is a string
+            try:  # if handler is a string
                 name = handler
                 handler = _HANDLER_METHODS[name]
             except KeyError:
-                raise ValueError(('Object passed to terrainbento init is not a '
-                                  'valid Boundary Handler.'))
+                raise ValueError(
+                    (
+                        "Object passed to terrainbento init is not a "
+                        "valid Boundary Handler."
+                    )
+                )
 
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 
@@ -452,7 +484,7 @@ class ErosionModel(object):
             # been passed, use them.
             if name in self.params:
                 handler_params = self.params[name]
-                handler_params['length_factor'] = self._length_factor
+                handler_params["length_factor"] = self._length_factor
 
             # otherwise pass all parameters
             else:
@@ -463,9 +495,13 @@ class ErosionModel(object):
 
         # Raise an error if the handler is not supported.
         else:
-            raise ValueError(('Only supported boundary condition handlers are '
-                              'permitted. These include:'
-                              '\n'.join(_SUPPORTED_BOUNDARY_HANDLERS)))
+            raise ValueError(
+                (
+                    "Only supported boundary condition handlers are "
+                    "permitted. These include:"
+                    "\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
+                )
+            )
 
     def setup_output_writer(self, writer):
         """Setup OutputWriter for use by a ``terrainbento`` model.
@@ -491,9 +527,9 @@ class ErosionModel(object):
         """
         if isinstance(writer, object):
             name = writer.__name__
-            self.output_writers['class'][name] = writer(self)
+            self.output_writers["class"][name] = writer(self)
         else:
-            self.output_writers['function'].append(writer)
+            self.output_writers["function"].append(writer)
 
     def setup_hexagonal_grid(self):
         """Create hexagonal grid based on input parameters.
@@ -568,26 +604,29 @@ class ErosionModel(object):
                 43.30127019,  43.30127019,  43.30127019])
         """
         try:
-            nr = self.params['number_of_node_rows']
-            nc = self.params['number_of_node_columns']
-            dx = self.params['node_spacing']
+            nr = self.params["number_of_node_rows"]
+            nc = self.params["number_of_node_columns"]
+            dx = self.params["node_spacing"]
 
         except KeyError:
             nr = 8
             nc = 5
             dx = 10.0
-        orientation = self.params.get('orientation', 'horizontal')
-        shape = self.params.get('shape', 'hex')
-        reorient_links = self.params.get('reorient_links', True)
+        orientation = self.params.get("orientation", "horizontal")
+        shape = self.params.get("shape", "hex")
+        reorient_links = self.params.get("reorient_links", True)
 
         # Create grid
         from landlab import HexModelGrid
-        self.grid = HexModelGrid(nr,
-                                 nc,
-                                 dx,
-                                 shape=shape,
-                                 orientation=orientation,
-                                 reorient_links=reorient_links)
+
+        self.grid = HexModelGrid(
+            nr,
+            nc,
+            dx,
+            shape=shape,
+            orientation=orientation,
+            reorient_links=reorient_links,
+        )
 
         # Create and initialize elevation field
         self._create_synthetic_topography()
@@ -651,9 +690,9 @@ class ErosionModel(object):
                 40.,  50.,  50.,  50.,  50.,  50.,  50.,  50.,  50.,  50.])
         """
         try:
-            nr = self.params['number_of_node_rows']
-            nc = self.params['number_of_node_columns']
-            dx = self.params['node_spacing']
+            nr = self.params["number_of_node_rows"]
+            nc = self.params["number_of_node_columns"]
+            dx = self.params["node_spacing"]
         except KeyError:
             nr = 4
             nc = 5
@@ -661,6 +700,7 @@ class ErosionModel(object):
 
         # Create grid
         from landlab import RasterModelGrid
+
         self.grid = RasterModelGrid((nr, nc), dx)
 
         # Create and initialize elevation field
@@ -676,19 +716,18 @@ class ErosionModel(object):
         If noise or initial elevation is added, it will only be added to the
         core nodes.
         """
-        add_noise = self.params.get('add_random_noise', True)
-        init_z = self.params.get('initial_elevation', 0.0)
-        init_sigma = self.params.get('initial_noise_std', 0.0)
-        seed = self.params.get('random_seed', 0)
-        self.z = self.grid.add_zeros('node', 'topographic__elevation')
-        noise_location = self.params.get('add_noise_to_all_nodes', False)
+        add_noise = self.params.get("add_random_noise", True)
+        init_z = self.params.get("initial_elevation", 0.0)
+        init_sigma = self.params.get("initial_noise_std", 0.0)
+        seed = self.params.get("random_seed", 0)
+        self.z = self.grid.add_zeros("node", "topographic__elevation")
+        noise_location = self.params.get("add_noise_to_all_nodes", False)
         np.random.seed(seed)
 
         if noise_location:
-            noise_nodes = np.arange(self.grid.size('node'))
+            noise_nodes = np.arange(self.grid.size("node"))
         else:
             noise_nodes = self.grid.core_nodes
-
 
         if add_noise:
             rs = np.random.randn(noise_nodes.size)
@@ -698,36 +737,34 @@ class ErosionModel(object):
 
     def _setup_synthetic_boundary_conditions(self):
         """Set up boundary conditions for synthetic grids."""
-        if self._starting_topography == 'HexModelGrid':
-            if 'outlet_id' in self.params:
+        if self._starting_topography == "HexModelGrid":
+            if "outlet_id" in self.params:
                 self.opt_watershed = True
-                self.outlet_node = self.params['outlet_id']
+                self.outlet_node = self.params["outlet_id"]
             else:
                 self.opt_watershed = False
                 self.outlet_node = 0
-                closed_boundaries = self.params.get('boundary_closed', False)
+                closed_boundaries = self.params.get("boundary_closed", False)
                 if closed_boundaries:
                     self.grid.status_at_node[self.grid.boundary_nodes] = CLOSED_BOUNDARY
 
         else:
-            if 'outlet_id' in self.params:
+            if "outlet_id" in self.params:
                 self.opt_watershed = True
-                self.outlet_node = self.params['outlet_id']
+                self.outlet_node = self.params["outlet_id"]
             else:
                 self.opt_watershed = False
                 self.outlet_node = 0
-                east_closed = self.params.get('east_boundary_closed', False)
-                north_closed = self.params.get('north_boundary_closed', False)
-                west_closed = self.params.get('west_boundary_closed', False)
-                south_closed = self.params.get('south_boundary_closed', False)
+                east_closed = self.params.get("east_boundary_closed", False)
+                north_closed = self.params.get("north_boundary_closed", False)
+                west_closed = self.params.get("west_boundary_closed", False)
+                south_closed = self.params.get("south_boundary_closed", False)
 
-                self.grid.set_closed_boundaries_at_grid_edges(east_closed,
-                                                              north_closed,
-                                                              west_closed,
-                                                              south_closed)
+                self.grid.set_closed_boundaries_at_grid_edges(
+                    east_closed, north_closed, west_closed, south_closed
+                )
 
-    def read_topography(self, file_path,
-                        name='topographic__elevation', halo=1):
+    def read_topography(self, file_path, name="topographic__elevation", halo=1):
         """Read and return topography from file.
 
         Parameters
@@ -751,9 +788,7 @@ class ErosionModel(object):
         examples of usage.
         """
         try:
-            (grid, vals) = read_esri_ascii(file_path,
-                                        name=name,
-                                        halo=halo)
+            (grid, vals) = read_esri_ascii(file_path, name=name, halo=halo)
         except:
             grid = read_netcdf(file_path)
             vals = grid.at_node[name]
@@ -800,27 +835,32 @@ class ErosionModel(object):
         0.5
 
         """
-        if (param_name in self.params) and (param_name+'_exp' in self.params):
-            raise ValueError('Parameter file includes both absolute value and'
-                             'exponent version of:'+ param_name)
+        if (param_name in self.params) and (param_name + "_exp" in self.params):
+            raise ValueError(
+                "Parameter file includes both absolute value and"
+                "exponent version of:" + param_name
+            )
 
-        if (param_name in self.params) and (param_name+'_exp' not in self.params):
+        if (param_name in self.params) and (param_name + "_exp" not in self.params):
             param = self.params[param_name]
-        elif (param_name not in self.params) and (param_name+'_exp' in self.params):
-            param = 10.**float(self.params[param_name+'_exp'])
+        elif (param_name not in self.params) and (param_name + "_exp" in self.params):
+            param = 10. ** float(self.params[param_name + "_exp"])
         else:
             if raise_error:
-                raise ValueError('Parameter file includes neither absolute'
-                                 'value or exponent version of:'+ param_name)
+                raise ValueError(
+                    "Parameter file includes neither absolute"
+                    "value or exponent version of:" + param_name
+                )
             else:
                 param = None
         return param
 
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
-        self.grid.at_node['cumulative_erosion__depth'] = \
-            self.grid.at_node['topographic__elevation'] - \
-            self.grid.at_node['initial_topographic__elevation']
+        self.grid.at_node["cumulative_erosion__depth"] = (
+            self.grid.at_node["topographic__elevation"]
+            - self.grid.at_node["initial_topographic__elevation"]
+        )
 
     def write_output(self, field_names=None):
         """Write output to file as a netCDF.
@@ -836,14 +876,19 @@ class ErosionModel(object):
             out all fields.
         """
         self.calculate_cumulative_change()
-        filename = self._out_file_name + str(self.iteration).zfill(4) \
-                    + '.nc'
+        filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
         try:
-            write_raster_netcdf(filename, self.grid, names=field_names, format='NETCDF4')
+            write_raster_netcdf(
+                filename, self.grid, names=field_names, format="NETCDF4"
+            )
         except NotImplementedError:
-            graph = Graph.from_dict({'y_of_node': self.grid.y_of_node,
-               'x_of_node': self.grid.x_of_node,
-               'nodes_at_link': self.grid.nodes_at_link})
+            graph = Graph.from_dict(
+                {
+                    "y_of_node": self.grid.y_of_node,
+                    "x_of_node": self.grid.x_of_node,
+                    "nodes_at_link": self.grid.nodes_at_link,
+                }
+            )
 
             if field_names:
                 pass
@@ -852,9 +897,11 @@ class ErosionModel(object):
 
             for field_name in field_names:
 
-                graph._ds.__setitem__(field_name, ('node', self.grid.at_node[field_name]))
+                graph._ds.__setitem__(
+                    field_name, ("node", self.grid.at_node[field_name])
+                )
 
-            graph.to_netcdf(path=filename, mode='w', format='NETCDF4')
+            graph.to_netcdf(path=filename, mode="w", format="NETCDF4")
 
         self.run_output_writers()
 
@@ -889,8 +936,8 @@ class ErosionModel(object):
         elapsed_time = 0.
         keep_running = True
         while keep_running:
-            if elapsed_time+dt >= runtime:
-                dt = runtime-elapsed_time
+            if elapsed_time + dt >= runtime:
+                dt = runtime - elapsed_time
                 keep_running = False
             self.run_one_step(dt)
             elapsed_time += dt
@@ -911,13 +958,13 @@ class ErosionModel(object):
         if self.save_first_timestep:
             self.iteration = 0
             self.write_output(field_names=output_fields)
-        total_run_duration = self.params['run_duration']
-        output_interval = self.params['output_interval']
+        total_run_duration = self.params["run_duration"]
+        output_interval = self.params["output_interval"]
         self.iteration = 1
         time_now = self._model_time
         while time_now < total_run_duration:
             next_run_pause = min(time_now + output_interval, total_run_duration)
-            self.run_for(self.params['dt'], next_run_pause - time_now)
+            self.run_for(self.params["dt"], next_run_pause - time_now)
             time_now = next_run_pause
             self.write_output(field_names=output_fields)
             self.iteration += 1
@@ -928,9 +975,9 @@ class ErosionModel(object):
     def run_output_writers(self):
         """Run all output writers."""
         if self.output_writers is not None:
-            for name in self.output_writers['class']:
+            for name in self.output_writers["class"]:
                 self.output_writers[name].run_one_step()
-            for function in self.output_writers['function']:
+            for function in self.output_writers["function"]:
                 function(self)
 
     def update_boundary_conditions(self, dt):
@@ -946,17 +993,18 @@ class ErosionModel(object):
             for handler_name in self.boundary_handler:
                 self.boundary_handler[handler_name].run_one_step(dt)
 
+
 def main():
     """Executes model."""
     try:
         infile = sys.argv[1]
     except IndexError:
-        print('Must include input file name on command line')
+        print("Must include input file name on command line")
         sys.exit(1)
 
     erosion_model = ErosionModel(input_file=infile)
     erosion_model.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
