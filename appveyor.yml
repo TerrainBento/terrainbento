@@ -55,7 +55,6 @@ install:
   - cmd: conda install -q anaconda-client
   - cmd: conda install -q numpy=1.11
   - cmd: pip install twine
-  - cmd: pip install --upgrade pip
   - cmd: pip install pytest
   - cmd: hash -r
   - cmd: conda config --set always_yes yes --set changeps1 no
