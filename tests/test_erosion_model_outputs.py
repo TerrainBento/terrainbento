@@ -16,12 +16,14 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 def test_write_output_raster():
     fp = os.path.join(_TEST_DATA_DIR, 'basic_raster_inputs.txt')
     model = Basic(input_file=fp)
+    model._out_file_name ='tb_raster_output'
     model.run()
-    fs = glob.glob('terrainbento_output*.nc')
+    fs = glob.glob(model._out_file_name + '*.nc')
 
     assert len(fs) == 5
 
     ds = xr.open_dataset(fs[0])
+    ds.close()
 
     # todo assess raster output.
 
@@ -32,8 +34,9 @@ def test_write_output_raster():
 def test_write_output_hex():
     fp = os.path.join(_TEST_DATA_DIR, 'basic_inputs.txt')
     model = Basic(input_file=fp)
+    model._out_file_name ='tb_hex_output'
     model.run()
-    fs = glob.glob('terrainbento_output*.nc')
+    fs = glob.glob(model._out_file_name + '*.nc')
 
     assert len(fs) == 5
     #ds = xr.open_dataset(fs[0])
