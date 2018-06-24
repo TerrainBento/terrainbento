@@ -8,6 +8,8 @@ import pytest
 from landlab import HexModelGrid
 from terrainbento import Basic
 
+_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+
 
 def test_no_Ksp_or_Kss():
     params = {'model_grid': 'RasterModelGrid',
@@ -238,8 +240,16 @@ def test_steady_m_025():
                               predicted_slopes[model.grid.core_nodes[1:-1]])
 
 def run_000_from_command_line_no_file():
-    result = suprocess.call(['python' 'terrainbento/derived_models/model_000_basic.py'])
+    call =  os.path.join(*['terrainbento', 'derived_models', 'model_000_basic.py'])
+    result = suprocess.call(['python', call])
     assert result == 1
 
 def run_000_from_command_line():
-    subprocess.call('')
+    call =  os.path.join(*['terrainbento', 'derived_models', 'model_000_basic.py'])
+    fp =  os.path.join(_TEST_DATA_DIR, 'model_000_inputs.txt')
+    result = suprocess.call(['python', call, fp])
+    assert result == 0
+
+    fs = glob.glob('model_000_output*.nc')
+    for f in fs:
+        os.remove(f)
