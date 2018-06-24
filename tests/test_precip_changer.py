@@ -81,9 +81,7 @@ def test_time_units_equivalent():
 
 def test_a_stop_time():
     """Test that it is possible to provide a stop time"""
-
     mg = HexModelGrid(5, 5)
-
 
     pc = PrecipChanger(mg,
                            daily_rainfall__daily_rainfall_intermittency_factor = 0.3,
@@ -94,7 +92,7 @@ def test_a_stop_time():
                            infiltration_capacity = 2.0,
                            time_unit = 'day',
                            precipchanger_start_time = 10.0,
-                           precipchanger_stop_time = 10.0)
+                           precipchanger_stop_time = 20.0)
 
 
     # for the first ten steps, nothing should change
