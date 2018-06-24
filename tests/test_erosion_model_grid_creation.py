@@ -55,10 +55,27 @@ def test_no_noise_sythetic_topo():
               'dt': 1,
               'output_interval': 2.,
               'run_duration': 10.,
-              'add_noise_to_all_nodes': True}
+              'add_random_noise': False}
     em = ErosionModel(params=params)
     assert np.array_equiv(em.z, 10.0) == True
 
+def test_noise_all_nodes_sythetic_topo():
+    params = {'initial_elevation': 10.,
+              'dt': 1,
+              'output_interval': 2.,
+              'run_duration': 10.,
+              'add_random_noise': True,
+              'add_noise_to_all_nodes': True,
+              'initial_noise_std': 2.0}
+    em = ErosionModel(params=params)
+    known_z = np.zeros(em.z.shape)
+    np.random.seed(0)
+    rs = np.random.randn(len(em.grid.number_of_nodes))
+    known_z += 10. + (2. * rs)
+    assert_array_equal(known_z, em.z)
+
+    np.random.seed(0)
+    rs = np.random.randn(len(em.grid.core_nodes))
 
 def test_sythetic_topo_default_seed():
     params = {'add_random_noise': True,
