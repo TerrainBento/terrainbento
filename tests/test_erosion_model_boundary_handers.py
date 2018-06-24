@@ -89,39 +89,6 @@ def test_boundary_condition_handler_with_special_part_of_params():
     assert bh.prefactor == -1
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
 
-def test_boundary_condition_handler_without_special_part_of_params():
-    U = 0.0001
-    K = 0.001
-    m = 1./3.
-    n = 2./3.
-    dt = 1000
-    # construct dictionary. note that D is turned off here
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              'number_of_node_rows' : 3,
-              'number_of_node_columns' : 20,
-              'node_spacing' : 100.0,
-              'north_boundary_closed': True,
-              'south_boundary_closed': True,
-              'regolith_transport_parameter': 0.,
-              'water_erodability': K,
-              'm_sp': m,
-              'n_sp': n,
-              'random_seed': 3141,
-              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-              'modify_core_nodes': True,
-              'lowering_rate': -U}
-
-    model = Basic(params=params)
-    bh = model.boundary_handler['NotCoreNodeBaselevelHandler']
-
-    # assertion tests
-    assert 'NotCoreNodeBaselevelHandler' in model.boundary_handler
-    assert bh.lowering_rate == -U
-    assert bh.prefactor == -1
-    assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
 
 def test_example_boundary_handlers():
     pass
