@@ -319,8 +319,8 @@ class PrecipChanger(object):
 
         >>> from terrainbento.boundary_condition_handlers import PrecipChanger
         >>> bh = PrecipChanger(mg,
-        ...                    daily_rainfall___intermittency_factor = 0.3,
-        ...                    daily_rainfall___intermittency_factor_time_rate_of_change = 0.01,
+        ...                    daily_rainfall__intermittency_factor = 0.3,
+        ...                    daily_rainfall__intermittency_factor_time_rate_of_change = 0.01,
         ...                    daily_rainfall__mean_intensity = 3.0,
         ...                    daily_rainfall__mean_intensity_time_rate_of_change = 0.2,
         ...                    daily_rainfall__precipitation_shape_factor = 0.65,
@@ -383,10 +383,10 @@ class PrecipChanger(object):
         self.start_time = precipchanger_start_time
 
         self.starting_frac_wet_days = (
-            daily_rainfall___intermittency_factor
+            daily_rainfall__intermittency_factor
         )
         self.frac_wet_days_rate_of_change = (
-            daily_rainfall___intermittency_factor_time_rate_of_change
+            daily_rainfall__intermittency_factor_time_rate_of_change
             / self._time_conversion
         )
 
