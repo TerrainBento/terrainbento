@@ -57,10 +57,6 @@ install:
   - cmd: pip install twine
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
-  - cmd: conda create -n _testing python=$TRAVIS_PYTHON_VERSION
-  - cmd: source activate _testing
-  - cmd: conda install -q conda-build=3.0 anaconda-client coverage sphinx
-  - cmd: conda install -q numpy=1.11
   - cmd: conda info -a && conda list
   - cmd: conda config --add channels landlab
 
