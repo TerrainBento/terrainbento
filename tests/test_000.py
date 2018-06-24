@@ -158,6 +158,7 @@ def test_diffusion_only():
 
 
 def test_with_precip_changer():
+    K =  0.01
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
               'output_interval': 2.,
@@ -168,7 +169,7 @@ def test_with_precip_changer():
               'north_boundary_closed': True,
               'south_boundary_closed': True,
               'regolith_transport_parameter': 0.,
-              'water_erodability': 0.01,
+              'water_erodability': K,
               'm_sp': 0.5,
               'n_sp': 1.0,
               'random_seed': 3141,
@@ -179,6 +180,12 @@ def test_with_precip_changer():
                                  'daily_rainfall__mean_intensity_time_rate_of_change': 0.2}}
 
     model = Basic(params=params)
+    assert model.eroder.K == K
+    assert 'PrecipChanger' in model.boundary_handler
+    model.run_one_step(1.0)
+    model.run_one_step(1.0)
+    assert round(model.eroder.K, 5) == 0.10326
+
 
 def test_steady_m_075():
     U = 0.0001
