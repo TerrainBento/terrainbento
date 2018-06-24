@@ -23,6 +23,7 @@ def test_write_output_raster():
     assert len(fs) == 5
 
     ds = xr.open_dataset(fs[0])
+    ds.close()
 
     # todo assess raster output.
 
