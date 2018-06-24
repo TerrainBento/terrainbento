@@ -158,8 +158,27 @@ def test_diffusion_only():
 
 
 def test_with_precip_changer():
-    pass
+    params = {'model_grid': 'RasterModelGrid',
+              'dt': 1,
+              'output_interval': 2.,
+              'run_duration': 200.,
+              'number_of_node_rows' : 3,
+              'number_of_node_columns' : 20,
+              'node_spacing' : 100.0,
+              'north_boundary_closed': True,
+              'south_boundary_closed': True,
+              'regolith_transport_parameter': 0.,
+              'water_erodability': 0.01,
+              'm_sp': 0.5,
+              'n_sp': 1.0,
+              'random_seed': 3141,
+              'BoundaryHandlers': 'PrecipChanger',
+              'PrecipChanger' : {'daily_rainfall__intermittency_factor': 0.5,
+                                 'daily_rainfall__intermittency_factor_time_rate_of_change': 0.1,
+                                 'daily_rainfall__mean_intensity': 1.0,
+                                 'daily_rainfall__mean_intensity_time_rate_of_change': 0.2}}
 
+    model = Basic(params=params)
 
 def test_steady_m_075():
     U = 0.0001
