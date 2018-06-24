@@ -1,4 +1,5 @@
 import os
+import subprocess
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal # assert_array_equal,
@@ -235,3 +236,10 @@ def test_steady_m_025():
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
                               predicted_slopes[model.grid.core_nodes[1:-1]])
+
+def run_000_from_command_line_no_file():
+    result = suprocess.call(['python' 'terrainbento/derived_models/model_000_basic.py'])
+    assert result == 1
+
+def run_000_from_command_line():
+    subprocess.call('')
