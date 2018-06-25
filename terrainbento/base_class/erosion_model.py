@@ -992,7 +992,7 @@ class ErosionModel(object):
                 self.boundary_handler[handler_name].run_one_step(dt)
 
 
-def main():
+def main(): #pragma: no cover
     """Executes model."""
     try:
         infile = sys.argv[1]

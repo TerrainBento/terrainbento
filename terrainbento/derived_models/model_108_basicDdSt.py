@@ -249,7 +249,7 @@ class BasicDdSt(StochasticErosionModel):
                 self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
 
 
-def main():
+def main(): #pragma: no cover
     """Executes model."""
     import sys
 
