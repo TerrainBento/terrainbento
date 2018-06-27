@@ -1,15 +1,16 @@
 #! /usr/env/python
-"""
-model_002_basicTh.py: erosion model using linear diffusion, stream
-power with a smoothed threshold, and discharge proportional to drainage area.
+"""``terrainbento`` Model ``BasicTh`` program.
 
-Model 002 BasicTh
+Erosion model program using linear diffusion, stream power with a smoothed
+threshold, and discharge proportional to drainage area.
 
 Landlab components used: LinearDiffuser, StreamPowerSmoothThresholdEroder
-
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
-import sys
 import numpy as np
 
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
@@ -17,16 +18,85 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicTh(ErosionModel):
-    """
-    A BasicTh computes erosion using linear diffusion, stream
-    power with a smoothed threshold, and Q~A.
+    """Model ``BasicTh`` program.
+
+    Model ``BasicTh`` is a model program that evolves a topographic surface
+    described by :math:`\eta` with the following governing equation:
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\right)\right) + D\\nabla^2 \eta
+
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    and \omega_c is the critical stream power needed for erosion to occur.
+    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    symbols, names, and dimensions.
+
+    Model ``BasicTh`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    class. 
     """
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the LinDifSPThresholdModel."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
 
+        Returns
+        -------
+        BasicTh : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model ``BasicTh``. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the ``terrainbento`` tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicTh
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability': 0.001,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'erosion__threshold': 0.01}
+
+        Construct the model.
+
+        >>> model = BasicTh(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+        
+        """
         # Call ErosionModel's init
         super(BasicTh, self).__init__(
             input_file=input_file,
