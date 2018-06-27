@@ -25,10 +25,12 @@ class BasicTh(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\right)\right) + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\ 
+        \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\
+        D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    and \omega_c is the critical stream power needed for erosion to occur.
+    and :math:`\omega_c` is the critical stream power needed for erosion to occur.
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
@@ -153,8 +155,30 @@ class BasicTh(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
+        """Advance model ``BasicTh`` for one time-step of duration dt.
+
+        The **run_one_step** method does the following:
+
+        1. Directs flow and accumulates drainage area.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+        not occur.
+
+        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        so, uses it to modify the erodability by water.
+
+        4. Calculates detachment-limited, threshold-modified erosion by water.
+
+        5. Calculates topographic change by linear diffusion.
+
+        6. Finalizes the step using the ``ErosionModel`` base class function
+        **finalize__run_one_step**. This function updates all BoundaryHandlers
+        by ``dt`` and increments model time by ``dt``.
+
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
         """
 
         # Route flow
