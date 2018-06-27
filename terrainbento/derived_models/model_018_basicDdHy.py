@@ -5,7 +5,7 @@ Erosion model program using linear diffusion, stream-power-driven sediment
 erosion and mass conservation with a smoothed threshold that varies with 
 incision depth, and discharge proportional to drainage area.
 
-Landlab components used: LinearDiffuser, StreamPowerSmoothThresholdEroder
+Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
     2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
     3. `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.erosion_deposition.html>`_

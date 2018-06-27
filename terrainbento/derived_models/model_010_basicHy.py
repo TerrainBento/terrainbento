@@ -4,7 +4,7 @@
 Erosion model program using linear diffusion, stream-power-driven sediment 
 erosion and mass conservation, and discharge proportional to drainage area.
 
-Landlab components used: LinearDiffuser, StreamPowerSmoothThresholdEroder
+Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
     2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
     3. `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.erosion_deposition.html>`_
@@ -30,6 +30,7 @@ class BasicHy(ErosionModel):
         \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length scale,
     :math:`\omega_c` is the critical stream power needed for erosion to occur,
     :math:`V` is effective sediment settling velocity, :math:`Q_s` is
     volumetric sediment flux, :math:`Q` is volumetric water discharge, and 
