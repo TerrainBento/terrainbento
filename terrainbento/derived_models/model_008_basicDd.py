@@ -49,7 +49,18 @@ class BasicDd(ErosionModel):
     symbols, names, and dimensions.
 
     Model ``BasicDd`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class. 
+    class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
+    and, :math:`n` this model program can be used to run the following two
+    ``terrainbento`` numerical models:
+
+    1) Model ``BasicDd``: Here :math:`m` has a value of 0.5 and
+    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
+    ``water_erodibility`` and :math:`D` is given by the parameter
+    ``regolith_transport_parameter``.
+
+    2) Model ``BasicDdSs``: In this model :math:`m` has a value of 1/3,
+    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
+    parameter ``water_erodibility~shear_stress``.
     """
 
     def __init__(
