@@ -5,7 +5,7 @@ from numpy.testing import assert_array_almost_equal # assert_array_equal,
 import pytest
 
 from landlab import HexModelGrid
-from terrainbento import BasicDd
+from terrainbento import BasicHy
 
 
 def test_no_Ksp_or_Kss():
@@ -15,7 +15,7 @@ def test_no_Ksp_or_Kss():
               'run_duration': 200.,
               'regolith_transport_parameter': 0.001}
 
-    pytest.raises(ValueError, BasicDd, params=params)
+    pytest.raises(ValueError, BasicHy, params=params)
 
 
 def test_both_Ksp_or_Kss():
@@ -26,16 +26,17 @@ def test_both_Ksp_or_Kss():
               'regolith_transport_parameter': 0.001,
               'water_erodability': 0.001,
               'water_erodability~shear_stress': 0.001}
-    pytest.raises(ValueError, BasicDd, params=params)
+    pytest.raises(ValueError, BasicHy, params=params)
 
 def test_steady_Ksp_no_precip_changer():
     U = 0.0001
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1000
-    threshold = 0.000001
-    thresh_change_per_depth = 0
+    dt = 10
+    v_sc = 0.001
+    phi = 0.1
+    F_f = 0.0
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
@@ -50,27 +51,32 @@ def test_steady_Ksp_no_precip_changer():
               'water_erodability': K,
               'm_sp': m,
               'n_sp': n,
-              'erosion__threshold': threshold,
-              'thresh_change_per_depth': thresh_change_per_depth,
+              'v_sc': v_sc,
+              'phi': phi,
+              'F_f': F_f,
+              'solver': 'basic',
               'random_seed': 3141,
               'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
               'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
                                               'lowering_rate': -U}}
 
     # construct and run model
-    model = BasicDd(params=params)
-    for i in range(100):
+    model = BasicHy(params=params)
+    for i in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node['topographic__steepest_slope']
     actual_areas = model.grid.at_node['drainage_area']
-    predicted_slopes = ((U/K + threshold)/((actual_areas**m))) ** (1./n)
+    predicted_slopes =  (np.power(((U * v_sc) / (K
+        * np.power(actual_areas, m)))
+        + (U / (K * np.power(actual_areas,
+        m))), 1./n))
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
                               predicted_slopes[model.grid.core_nodes[1:-1]],
-                              decimal=3)
+                              decimal=4)
     
 def test_diffusion_only():
     total_time = 5.0e6
@@ -79,8 +85,9 @@ def test_diffusion_only():
     m = 0.75
     n = 1.0
     dt = 1000
-    threshold = 0.01
-    thresh_change_per_depth = 0
+    v_sc = 0.001
+    phi = 0.1
+    F_f = 0.1
 
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
@@ -97,8 +104,10 @@ def test_diffusion_only():
               'water_erodability': 0.0,
               'm_sp': m,
               'n_sp': n,
-              'erosion__threshold': threshold,
-              'thresh_change_per_depth': thresh_change_per_depth,
+              'v_sc': v_sc,
+              'phi': phi,
+              'F_f':F_f,
+              'solver': 'basic',
               'random_seed': 3141,
               'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
               'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
@@ -107,7 +116,7 @@ def test_diffusion_only():
 
     reference_node = 9
     # construct and run model
-    model = BasicDd(params=params)
+    model = BasicHy(params=params)
     for i in range(nts):
         model.run_one_step(dt)
 
@@ -122,4 +131,3 @@ def test_diffusion_only():
     
 def test_with_precip_changer():
     pass
-
