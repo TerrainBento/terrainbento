@@ -30,7 +30,8 @@ class BasicDdHy(ErosionModel):
         \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + \\
         \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,,
+    where :math:`A` is the local drainage area, :math:`S` is the local slope, 
+    :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length scale,
     :math:`V` is effective sediment settling velocity, :math:`Q_s` is
     volumetric sediment flux, :math:`Q` is volumetric water discharge, and 
     :math:`\phi` is sediment porosity. :math:`\omega_{ct}` is the critical 
