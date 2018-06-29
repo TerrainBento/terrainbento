@@ -98,7 +98,8 @@ class BasicHy(ErosionModel):
         ...           'n_sp': 1.0,
         ...           'v_sc': 0.01,
         ...           'phi': 0,
-        ...           'F_f': 0}
+        ...           'F_f': 0,
+        ...           'solver': 'basic'}
 
         Construct the model.
 
