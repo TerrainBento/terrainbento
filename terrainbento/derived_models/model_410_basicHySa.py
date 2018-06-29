@@ -174,6 +174,8 @@ class BasicHySa(ErosionModel):
             self.grid,
             K_sed=self.K_sed,
             K_br=self.K_br,
+            sp_crit_br=self.params["sp_crit_br"],
+            sp_crit_sed=self.params["sp_crit_sed"],
             F_f=self.params["F_f"],
             phi=self.params["phi"],
             H_star=self.params["H_star"],
