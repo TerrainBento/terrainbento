@@ -99,6 +99,8 @@ class BasicHySa(ErosionModel):
         ...           'regolith_transport_parameter': 0.001,
         ...           'K_rock_sp': 0.001,
         ...           'K_sed_sp': 0.001,
+        ...           'sp_crit_br': 0,
+        ...           'sp_crit_sed': 0,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'v_sc': 0.01,
