@@ -688,7 +688,7 @@ class StochasticErosionModel(ErosionModel):
         exceedance_file.close()
 
 
-def main():
+def main(): #pragma: no cover
     """Executes model."""
     import sys
 

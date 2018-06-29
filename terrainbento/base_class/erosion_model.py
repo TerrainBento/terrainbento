@@ -890,9 +890,7 @@ class ErosionModel(object):
                 }
             )
 
-            if field_names:
-                pass
-            else:
+            if field_names is None:
                 field_names = self.grid.at_node.keys()
 
             for field_name in field_names:
@@ -994,7 +992,7 @@ class ErosionModel(object):
                 self.boundary_handler[handler_name].run_one_step(dt)
 
 
-def main():
+def main(): #pragma: no cover
     """Executes model."""
     try:
         infile = sys.argv[1]
