@@ -104,6 +104,7 @@ class BasicDdHy(ErosionModel):
         ...           'n_sp': 1.0,
         ...           'v_sc': 0.01,
         ...           'phi': 0,
+        ...           'F_f': 0,
         ...           'erosion__threshold': 0.01,
         ...           'thresh_change_per_depth': 0.01}
 

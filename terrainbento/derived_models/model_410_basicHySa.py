@@ -103,6 +103,7 @@ class BasicHySa(ErosionModel):
         ...           'n_sp': 1.0,
         ...           'v_sc': 0.01,
         ...           'phi': 0,
+        ...           'F_f': 0,
         ...           'H_star': 0.1,
         ...           'soil_transport_decay_depth': 1,
         ...           'soil_production__maximum_rate': 0.0001,
