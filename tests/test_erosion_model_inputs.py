@@ -33,6 +33,13 @@ def test_both_inputs():
 
     pytest.raises(ValueError, ErosionModel, params=params, input_file=fp)
 
+def test_both_node_rows_and_DEM():
+    params = {'model_grid': 'HexModelGrid',
+              'dt': 1,
+              'output_interval': 2.,
+              'number_of_node_rows': 5,
+              'DEM_filename': 'foo.nc'}
+    pytest.raises(ValueError, ErosionModel, params=params)
 
 def test_no_required_params():
     params = {'model_grid' : 'HexModelGrid',

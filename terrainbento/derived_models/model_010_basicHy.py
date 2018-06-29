@@ -243,7 +243,7 @@ class BasicHy(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main():
+def main(): #pragma: no cover
     """Execute model."""
     import sys
 

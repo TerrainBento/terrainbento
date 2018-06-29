@@ -313,7 +313,7 @@ class BasicHySa(ErosionModel):
                 exit
 
 
-def main():
+def main(): #pragma: no cover
     """Executes model."""
     import sys
 
