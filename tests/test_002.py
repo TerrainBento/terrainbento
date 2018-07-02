@@ -157,6 +157,37 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
                               predicted_slopes[model.grid.core_nodes[1:-1]],
                               decimal=4)
     
+def test_with_precip_changer():
+    K = 0.01
+    threshold = 0.000001
+    params = {'model_grid': 'RasterModelGrid',
+              'dt': 1,
+              'output_interval': 2.,
+              'run_duration': 200.,
+              'number_of_node_rows' : 3,
+              'number_of_node_columns' : 20,
+              'node_spacing' : 100.0,
+              'north_boundary_closed': True,
+              'south_boundary_closed': True,
+              'regolith_transport_parameter': 0.,
+              'water_erodability': K,
+              'm_sp': 0.5,
+              'n_sp': 1.0,
+              'erosion__threshold': threshold,
+              'random_seed': 3141,
+              'BoundaryHandlers': 'PrecipChanger',
+              'PrecipChanger' : {'daily_rainfall__intermittency_factor': 0.5,
+                                 'daily_rainfall__intermittency_factor_time_rate_of_change': 0.1,
+                                 'daily_rainfall__mean_intensity': 1.0,
+                                 'daily_rainfall__mean_intensity_time_rate_of_change': 0.2}}
+
+    model = BasicTh(params=params)
+    assert model.eroder.K == K
+    assert 'PrecipChanger' in model.boundary_handler
+    model.run_one_step(1.0)
+    model.run_one_step(1.0)
+    assert round(model.eroder.K, 5) == 0.10326
+    
 def test_diffusion_only():
     total_time = 5.0e6
     U = 0.001
