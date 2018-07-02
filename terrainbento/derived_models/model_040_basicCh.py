@@ -1,12 +1,15 @@
 #! /usr/env/python
-"""
-model_040_basicCh.py: erosion model using cubic diffusion, basic stream
+""" ``terrainbento`` Model ``BasicCh`` program.
+
+Erosion model using cubic diffusion, basic stream
 power, and discharge proportional to drainage area.
 
-Model 040 BasicCh
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         FastscapeStreamPower, LinearDiffuser
+Landlab components used: 
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`
+    4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`
 
 """
 
@@ -19,6 +22,14 @@ from terrainbento.base_class import ErosionModel
 
 class BasicCh(ErosionModel):
     """
+    
+    Model ``BasicCh`` is a model program that evolves a topographic surface 
+    described by :math:`\eta` with the following governing equation:
+
+    .. math::
+
+        
+
     A BasicCh computes erosion using cubic diffusion, basic stream
     power, and Q~A.
     """
