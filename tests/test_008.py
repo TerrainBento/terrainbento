@@ -13,7 +13,9 @@ def test_no_Ksp_or_Kss():
               'dt': 1,
               'output_interval': 2.,
               'run_duration': 200.,
-              'regolith_transport_parameter': 0.001}
+              'regolith_transport_parameter': 0.001,
+              'erosion__threshold': 0.001,
+              'thresh_change_per_depth': 0.001}
 
     pytest.raises(ValueError, BasicDd, params=params)
 
@@ -25,7 +27,9 @@ def test_both_Ksp_or_Kss():
               'run_duration': 200.,
               'regolith_transport_parameter': 0.001,
               'water_erodability': 0.001,
-              'water_erodability~shear_stress': 0.001}
+              'water_erodability~shear_stress': 0.001,
+              'erosion__threshold': 0.001,
+              'thresh_change_per_depth': 0.001}
     pytest.raises(ValueError, BasicDd, params=params)
 
 def test_steady_Ksp_no_precip_changer():
