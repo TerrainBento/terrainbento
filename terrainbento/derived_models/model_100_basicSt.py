@@ -162,7 +162,7 @@ class BasicSt(StochasticErosionModel):
         self.finalize_run_one_step(dt)
 
 
-def main():
+def main(): #pragma: no cover
     """Executes model."""
     import sys
 
