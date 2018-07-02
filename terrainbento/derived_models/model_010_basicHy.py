@@ -160,7 +160,7 @@ class BasicHy(ErosionModel):
         try:
             solver = self.params["solver"]
         except:
-            solver = "original"
+            solver = "basic"
 
         # Instantiate a Space component
         self.eroder = ErosionDeposition(
