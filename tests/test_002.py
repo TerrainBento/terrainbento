@@ -233,7 +233,3 @@ def test_diffusion_only():
     assert_array_almost_equal(predicted_z[model.grid.core_nodes],
                               model.z[model.grid.core_nodes],
                               decimal=2)
-    
-def test_with_precip_changer():
-    pass
-
