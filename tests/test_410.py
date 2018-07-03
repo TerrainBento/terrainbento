@@ -93,7 +93,61 @@ def test_steady_Ksp_no_precip_changer():
     assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
                               predicted_slopes[model.grid.core_nodes[1:-1]],
                               decimal=4)
-    
+
+def test_with_precip_changer():
+    K_rock_sp = 0.001
+    K_sed_sp = 0.01
+    sp_crit_br = 0
+    sp_crit_sed = 0
+    m = 0.5
+    n = 1.0
+    v_sc = 0.001
+    phi = 0.1
+    F_f = 0.0
+    H_star = 0.1
+    initial_soil_thickness = 0
+    soil_transport_decay_depth = 1
+    soil_production__maximum_rate = 0
+    soil_production__decay_depth = 0.5
+    params = {'model_grid': 'RasterModelGrid',
+              'dt': 1,
+              'output_interval': 2.,
+              'run_duration': 200.,
+              'number_of_node_rows' : 3,
+              'number_of_node_columns' : 20,
+              'node_spacing' : 100.0,
+              'north_boundary_closed': True,
+              'south_boundary_closed': True,
+              'regolith_transport_parameter': 0.,
+              'K_rock_sp': K_rock_sp,
+              'K_sed_sp': K_sed_sp,
+              'sp_crit_br': sp_crit_br,
+              'sp_crit_sed': sp_crit_sed,
+              'm_sp': m,
+              'n_sp': n,
+              'v_sc': v_sc,
+              'phi': phi,
+              'F_f': F_f,
+              'H_star': H_star,
+              'solver': 'basic',
+              'initial_soil_thickness': initial_soil_thickness,
+              'soil_transport_decay_depth': soil_transport_decay_depth,
+              'soil_production__maximum_rate': soil_production__maximum_rate,
+              'soil_production__decay_depth': soil_production__decay_depth,
+              'random_seed': 3141,
+              'BoundaryHandlers': 'PrecipChanger',
+              'PrecipChanger' : {'daily_rainfall__intermittency_factor': 0.5,
+                                 'daily_rainfall__intermittency_factor_time_rate_of_change': 0.1,
+                                 'daily_rainfall__mean_intensity': 1.0,
+                                 'daily_rainfall__mean_intensity_time_rate_of_change': 0.2}}
+
+    model = BasicHySa(params=params)
+    assert model.eroder.K_sed[0] == K_sed_sp
+    assert 'PrecipChanger' in model.boundary_handler
+    model.run_one_step(1.0)
+    model.run_one_step(1.0)
+    assert round(model.eroder.K_sed, 5) == 0.10326
+
 # =============================================================================
 # def test_diffusion_only():
 #     total_time = 500
@@ -164,5 +218,3 @@ def test_steady_Ksp_no_precip_changer():
 #                               decimal=2)
 #   
 # =============================================================================
-def test_with_precip_changer():
-    pass
