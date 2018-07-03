@@ -150,7 +150,7 @@ class BasicDdHy(ErosionModel):
         try:
             solver = self.params["solver"]
         except:
-            solver = "original"
+            solver = "basic"
 
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
