@@ -193,17 +193,15 @@ class BasicHySa(ErosionModel):
             K_noise_scale=K_noise_scale,
         )
 
-        # Create soil thickness (a.k.a. depth) field
-        if "soil__depth" in self.grid.at_node:
-            soil_thickness = self.grid.at_node["soil__depth"]
-        else:
-            soil_thickness = self.grid.add_zeros("node", "soil__depth")
+        # SPACE checks for and creates bedrock elevation and soil depth
+        # grid fields when instantiated, so no need to do that here in 
+        # the model.
+        
+        # Get soil thickness (a.k.a. depth) field
+        soil_thickness = self.grid.at_node["soil__depth"]
 
-        # Create bedrock elevation field
-        if "bedrock__elevation" in self.grid.at_node:
-            bedrock_elev = self.grid.at_node["bedrock__elevation"]
-        else:
-            bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        # Get bedrock elevation field
+        bedrock_elev = self.grid.at_node["bedrock__elevation"]
 
         # Set soil thickness and bedrock elevation
         try:
