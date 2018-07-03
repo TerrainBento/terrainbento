@@ -310,7 +310,7 @@ class BasicHySa(ErosionModel):
                 with open("model_failed.txt", "w") as f:
                     f.write("This model run became unstable\n")
 
-                exit
+                raise SystemExit('Model became unstable')
 
 
 def main(): #pragma: no cover
