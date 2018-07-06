@@ -48,6 +48,7 @@ def test_diffusion_only():
     x = 9*dx
     qs = U*dx
     nterms = 11
+    p = np.zeros(2*nterms-1)
     for i in range(1,nterms+1):
       p[2*i-2] = D*(1/(S_c**(2*(i-1))))
     p = np.fliplr([p])[0]
@@ -63,7 +64,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1000
+    dt = 10
     run_time = 10000
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',

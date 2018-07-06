@@ -87,7 +87,7 @@ class BasicCh(ErosionModel):
         ...           'number_of_node_columns' : 9,
         ...           'node_spacing' : 10.0,
         ...           'regolith_transport_parameter': 0.001,
-                      'slope_crit': 0.2,
+        ...           'slope_crit': 0.2,
         ...           'water_erodability': 0.001,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0}
