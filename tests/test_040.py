@@ -37,10 +37,10 @@ def test_diffusion_only():
                 'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
                                                 'lowering_rate': -U}}
 
-    # #Construct and run model
-    # model = BasicCh(params=params)
-    # for i in range(100):
-    #   model.run_one_step(dt)
+    #Construct and run model
+    model = BasicCh(params=params)
+    for i in range(100):
+      model.run_one_step(dt)
 
 
 
@@ -64,7 +64,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 10
+    dt = 1
     run_time = 10000
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
@@ -76,7 +76,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
               'node_spacing' : 100.0,
               'north_boundary_closed': True,
               'south_boundary_closed': True,
-              'regolith_transport_parameter': 0.,
+              'regolith_transport_parameter': 0.0,
               'water_erodability': K,
               'slope_crit': 0.0,
               'm_sp': m,
