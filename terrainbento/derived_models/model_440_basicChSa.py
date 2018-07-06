@@ -1,5 +1,6 @@
 #! /usr/env/python
-"""
+"""``terrainbento`` Model ``BasicChSa`` program.
+
 Erosion model program using depth-dependent cubic diffusion
 with a soil layer, basic stream power, and discharge proportional to drainage
 area.

@@ -18,6 +18,7 @@ def test_diffusion_only():
     D = 0.001
     S_c = 0.2
     dx = 10.0
+    runtime = 100000
 
     #Construct dictionary. Note that stream power is turned off
     params = {'model_grid': 'RasterModelGrid',
@@ -39,7 +40,7 @@ def test_diffusion_only():
 
     #Construct and run model
     model = BasicCh(params=params)
-    for i in range(100):
+    for i in range(runtime):
       model.run_one_step(dt)
 
 
@@ -54,9 +55,9 @@ def test_diffusion_only():
     p = np.fliplr([p])[0]
     p = np.append(p,qs)
     p_roots = np.roots(p)
-    predicted_slope = np.real(p_roots[-1])
+    predicted_slope = np.abs(np.real(p_roots[-1]))
 
-    actual_slope = model.grid.at_node['topographic__steepest_slope'][39]
+    actual_slope = np.abs(model.grid.at_node['topographic__steepest_slope'][39])
     assert_array_almost_equal(actual_slope, predicted_slope)
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
@@ -64,8 +65,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1
-    run_time = 10000
+    dt = 1.0
+    run_time = 800
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': dt,
