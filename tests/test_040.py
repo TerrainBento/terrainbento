@@ -87,7 +87,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
                                               'lowering_rate': -U}}
     
     # construct and run model
-    model = Basic(params=params)
+    model = BasicCh(params=params)
     for i in range(run_time):
         model.run_one_step(dt)
 
