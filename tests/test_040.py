@@ -37,26 +37,26 @@ def test_diffusion_only():
               'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
                                               'lowering_rate': -U}}
 
-    #Construct and run model
-    model = BasicCh(params=params)
-    for i in range(100):
-    	model.run_one_step(dt)
+  #Construct and run model
+  model = BasicCh(params=params)
+  for i in range(100):
+    model.run_one_step(dt)
 
 
 
-    #Construct actual and predicted slope at right edge of domain
-    x = 9*dx
-    qs = U*dx
-    nterms = 11
-    for i in range(1,nterms+1):
-      p[2*i-2] = D*(1/(S_c**(2*(i-1))))
-    p = np.fliplr([p])[0]
-    p = np.append(p,qs)
-    p_roots = np.roots(p)
-    predicted_slope = np.real(p_roots[-1])
+  #Construct actual and predicted slope at right edge of domain
+  x = 9*dx
+  qs = U*dx
+  nterms = 11
+  for i in range(1,nterms+1):
+    p[2*i-2] = D*(1/(S_c**(2*(i-1))))
+  p = np.fliplr([p])[0]
+  p = np.append(p,qs)
+  p_roots = np.roots(p)
+  predicted_slope = np.real(p_roots[-1])
 
-    actual_slope = model.grid.at_node['topographic__steepest_slope'][39]
-    assert_array_almost_equal(actual_slope, predicted_slope)
+  actual_slope = model.grid.at_node['topographic__steepest_slope'][39]
+  assert_array_almost_equal(actual_slope, predicted_slope)
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
     U = 0.0001

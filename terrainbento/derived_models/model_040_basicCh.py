@@ -32,11 +32,11 @@ class BasicCh(ErosionModel):
 
     where
 
-    :math::
+    .. math::
 
         \q_s = DS(1+(\\frac{S}{S_c}^2 + \\frac{S}{S_c}^4) + .. + (\frac{S}{S_c}^{2(n-1)})
 
-    where :math: `S_c` is the critical slope. Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    where :math: `S_c` is the critical slope, :math:`A` is the local drainage area and :math:`S` is the local slope. Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
     Model ``BasicCh`` inherits from the ``terrainbento`` ``ErosionModel`` base

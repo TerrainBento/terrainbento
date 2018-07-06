@@ -1,14 +1,15 @@
 #! /usr/env/python
 """
-model_440_basicChSa.py: erosion model using depth-dependent cubic diffusion
+Erosion model program using depth-dependent cubic diffusion
 with a soil layer, basic stream power, and discharge proportional to drainage
 area.
-
-Model 440 BasicChSa
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         FastscapeStreamPower, DepthDependentCubicDiffuser,
-                         ExponentialWeatherer
+ 
+Landlab components used: 
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`
+    4. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`                         
+    5. `DepthDependentTaylorDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_taylor_soil_creep/hillslope_depth_dependent_taylor_flux.html#DepthDependentTaylorDiffuser>`
 
 """
 
@@ -25,14 +26,95 @@ from terrainbento.base_class import ErosionModel
 
 class BasicChSa(ErosionModel):
     """
-    A BasicChSa model computes erosion using depth-dependent cubic diffusion
-    with a soil layer, basic stream power, and Q~A.
+    Model ``BasicChSa`` is a model program that evolves a topographic surface 
+    described by :math:`\eta` with the following governing equation:
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + nabla^2 q_s
+
+    where 
+
+    .. math::
+
+        \q_s = DS(1+(\\frac{S}{S_c}^2 + \\frac{S}{S_c}^4) + .. + (\frac{S}{S_c}^{2(n-1)})
+
+    where :math: `S_c` is the critical slope, :math:`A` is the local drainage area and :math:`S` is the local slope and
+
+        \D = k(1-e^{-H/h_*}) 
+
+    is a soil depth-dependent hillslope diffusivity with hillslope efficiency :math:: `k`, soil depth :math:: `H`, and characteristic soil transport depth :math:: `h_*`.
+    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+
+    Model ``BasicChSa`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    class.
     """
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the BasicChSa model."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        BasicChSa : model object
+        
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model ``BasicChSa``. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the ``terrainbento`` tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicChSa
+
+        Set up a parameters variable.
+       
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'initial_soil_thickness': 0.0,
+        ...           'soil_transport_decay_depth': 0.2,
+        ...           'max_soil_production_rate': 0.001,
+        ...           'soil_production_decay_depth': 0.1,
+        ...           'slope_crit': 0.2,                    
+        ...           'water_erodability': 0.001,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0}
+
+        Construct the model.
+
+        >>> model = BasicChSa(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
 
         # Call ErosionModel's init
         super(BasicChSa, self).__init__(
@@ -104,8 +186,32 @@ class BasicChSa(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
+        """Advance model ``BasicChSa`` for one time-step of duration dt.
+
+        The **run_one_step** method does the following:
+
+        1. Directs flow and accumulates drainage area.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+        not occur.
+
+        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        so, uses it to modify the erodability by water.
+
+        4. Calculates detachment-limited erosion by water.
+
+        5. Produces soil and calculates soil depth with exponential weathering.
+
+        6. Calculates topographic change by depth-dependent nonlinear diffusion.
+
+        7. Finalizes the step using the ``ErosionModel`` base class function
+        **finalize__run_one_step**. This function updates all BoundaryHandlers
+        by ``dt`` and increments model time by ``dt``.
+
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
         """
 
         # Route flow
