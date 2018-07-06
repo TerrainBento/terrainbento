@@ -129,7 +129,7 @@ class BasicCh(ErosionModel):
             n_sp=self.params["n_sp"],
         )
 
-        # Instantiate a LinearDiffuser component
+        # Instantiate a NonLinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
