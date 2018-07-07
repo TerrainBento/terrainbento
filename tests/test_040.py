@@ -15,11 +15,11 @@ def test_diffusion_only():
     K = 0.0
     m = 0.5
     n = 1.0
-    dt = 1
+    dt = 10
     D = 0.001
     S_c = 0.2
     dx = 10.0
-    runtime = 100000
+    runtime = 200000
 
     #Construct dictionary. Note that stream power is turned off
     params = {'model_grid': 'RasterModelGrid',
