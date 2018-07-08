@@ -126,40 +126,12 @@ class BasicRtVs(ErosionModel):
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
 
     def _update_erodability_field(self):
-        """Update erodability at each node based on elevation relative to
-        contact elevation.
+        """Update erodability at each node.
 
-        To promote smoothness in the solution, the erodability at a given point
-        (x,y) is set as follows:
-
-            1. Take the difference between elevation, z(x,y), and contact
-               elevation, b(x,y): D(x,y) = z(x,y) - b(x,y). This number could
-               be positive (if land surface is above the contact), negative
-               (if we're well within the rock), or zero (meaning the rock-till
-               contact is right at the surface).
-            2. Define a smoothing function as:
-                $F(D) = 1 / (1 + exp(-D/D*))$
-               This sigmoidal function has the property that F(0) = 0.5,
-               F(D >> D*) = 1, and F(-D << -D*) = 0.
-                   Here, D* describes the characteristic width of the "contact
-               zone", where the effective erodability is a mixture of the two.
-               If the surface is well above this contact zone, then F = 1. If
-               it's well below the contact zone, then F = 0.
-            3. Set the erodability using F:
-                $K = F K_till + (1-F) K_rock$
-               So, as F => 1, K => K_till, and as F => 0, K => K_rock. In
-               between, we have a weighted average.
-
-        Translating these symbols into variable names:
-
-            z = self.elev
-            b = self.rock_till_contact
-            D* = self.contact_width
-            F = self.erody_wt
-            K_till = self.till_erody
-            K_rock = self.rock_erody
+        The erodability at each node is a smooth function between the rock and
+        till erodabilities and is based on the contact zone width and the
+        elevation of the surface relative to contact elevation.
         """
-
         # Update the erodability weighting function (this is "F")
         core = self.grid.core_nodes
         if self.contact_width > 0.0:
