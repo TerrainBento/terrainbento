@@ -3,10 +3,10 @@
 
 This ``terrainbento`` boundary-condition handler was designed to change the
 precipitation frequency and intensity over time in order to modify the water
-erodibility coefficient.
+erodability coefficient.
 
 In order to accomplish this, we need a theory by which to relate changes in
-the precipitation to changes in erodibility.
+the precipitation to changes in erodability.
 
 We start by describing the assumed precipitation model.
 
@@ -108,10 +108,10 @@ we can solve for the effective erosion coefficient, :math:`K`:
 
 In this case, what is of interest is the `change` in :math:`K` given some change
 in precipitation frequency distribution :math:`f(p)`. Suppose we have an original
-value of the effective erodibility coefficient, :math:`K_0`, and an original
+value of the effective erodability coefficient, :math:`K_0`, and an original
 precipitation distribution, :math:`f_0(p)`. Given a future change to a new
 precipitation distribution :math:`f(p)`, we wish to know what is the ratio of the
-new effective erodibility coefficient :math:`K` to its original value. Using the
+new effective erodability coefficient :math:`K` to its original value. Using the
 definition of :math:`K` above, the ratio of old to new coefficient is:
 
 .. math::
@@ -146,7 +146,7 @@ rainfall in excess of infiltration.
 
     \Psi = \int_{I_c}^\infty (p - I_{c})^m f(p) dp
 
-Finally we define the erodibility adjustment factor :math:`F_{w}`:
+Finally we define the erodability adjustment factor :math:`F_{w}`:
 
 .. math::
 
@@ -352,9 +352,9 @@ class PrecipChanger(object):
         If we are using an erosion model that requires the raw values of the
         precipitation parameters, we can use them. If instead we are using
         a model that does not explicitly treat event-scale precipitation, we can
-        use the bulk erodibility adjustment factor :math:`F_w`.
+        use the bulk erodability adjustment factor :math:`F_w`.
 
-        >>> fw = bh.get_erodibility_adjustment_factor()
+        >>> fw = bh.get_erodability_adjustment_factor()
         >>> print(round(fw, 3))
         1.721
         """
@@ -524,10 +524,10 @@ class PrecipChanger(object):
             # otherwise return starting values.
             return self.starting_frac_wet_days, self.starting_daily_mean_depth
 
-    def get_erodibility_adjustment_factor(self):
-        """Calculates the erodibility adjustment factor at the current time.
+    def get_erodability_adjustment_factor(self):
+        """Calculates the erodability adjustment factor at the current time.
 
-        Calculates and returns the factor :math:`F_{w}` by which an erodibility
+        Calculates and returns the factor :math:`F_{w}` by which an erodability
         by water should be adjusted.
 
         .. math::
@@ -536,7 +536,7 @@ class PrecipChanger(object):
 
         Returns
         -------
-        erodibility_adjustment_factor : float
+        erodability_adjustment_factor : float
 
         """
         # if after start time

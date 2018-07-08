@@ -72,9 +72,9 @@ def test_time_units_equivalent():
         assert_almost_equal(p_day, p_yr)
         assert_almost_equal(p_day, p_sec)
 
-        f_day = pc_day.get_erodibility_adjustment_factor()
-        f_yr = pc_yr.get_erodibility_adjustment_factor()
-        f_sec = pc_sec.get_erodibility_adjustment_factor()
+        f_day = pc_day.get_erodability_adjustment_factor()
+        f_yr = pc_yr.get_erodability_adjustment_factor()
+        f_sec = pc_sec.get_erodability_adjustment_factor()
         assert_almost_equal(f_day, f_yr)
         assert_almost_equal(f_day, f_sec)
 
@@ -99,7 +99,7 @@ def test_a_stop_time():
     for i in range(10):
         pc.run_one_step(1.0)
         i, p = pc.get_current_precip_params()
-        f = pc.get_erodibility_adjustment_factor()
+        f = pc.get_erodability_adjustment_factor()
         assert i == pc.starting_frac_wet_days
         assert p == pc.starting_daily_mean_depth
         assert f == 1.0
@@ -107,13 +107,13 @@ def test_a_stop_time():
     # run 10 more steps and save
     pc.run_one_step(10.0)
     i_end, p_end = pc.get_current_precip_params()
-    f_end = pc.get_erodibility_adjustment_factor()
+    f_end = pc.get_erodability_adjustment_factor()
 
     # then verify that no change occurs again.
     for i in range(10):
         pc.run_one_step(1.0)
         i, p = pc.get_current_precip_params()
-        f = pc.get_erodibility_adjustment_factor()
+        f = pc.get_erodability_adjustment_factor()
         assert i == i_end
         assert p == p_end
         assert f == f_end

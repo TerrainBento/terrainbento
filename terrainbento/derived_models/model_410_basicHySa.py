@@ -31,7 +31,7 @@ class BasicHySa(ErosionModel):
         -K_{w}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\ 
         + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_s
 
-    where :math:`K_r` and :math:`K_s` are rock and sediment erodibility 
+    where :math:`K_r` and :math:`K_s` are rock and sediment erodability 
     respectively, :math:`A` is the local drainage area, :math:`S` is the local 
     slope, :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length 
     scale, :math:`\omega_c` is the critical stream power needed for erosion to 
@@ -271,7 +271,7 @@ class BasicHySa(ErosionModel):
         if "PrecipChanger" in self.boundary_handler:
             erode_factor = self.boundary_handler[
                 "PrecipChanger"
-            ].get_erodibility_adjustment_factor()
+            ].get_erodability_adjustment_factor()
             self.eroder.K_sed = self.K_sed * erode_factor
             self.eroder.K_br = self.K_br * erode_factor
 

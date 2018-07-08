@@ -55,12 +55,12 @@ class BasicDd(ErosionModel):
 
     1) Model ``BasicDd``: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodibility`` and :math:`D` is given by the parameter
+    ``water_erodability`` and :math:`D` is given by the parameter
     ``regolith_transport_parameter``.
 
     2) Model ``BasicDdSs``: In this model :math:`m` has a value of 1/3,
     :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodibility~shear_stress``.
+    parameter ``water_erodability~shear_stress``.
     """
 
     def __init__(
@@ -266,7 +266,7 @@ class BasicDd(ErosionModel):
                 self.K
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 

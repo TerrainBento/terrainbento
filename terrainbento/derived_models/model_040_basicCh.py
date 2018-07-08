@@ -83,7 +83,7 @@ class BasicCh(ErosionModel):
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 

@@ -80,7 +80,7 @@ class BasicDdRt(ErosionModel):
         )
 
     def _setup_rock_and_till(self, file_name, rock_erody, till_erody, contact_width):
-        """Set up lithology handling for two layers with different erodibility.
+        """Set up lithology handling for two layers with different erodability.
 
         Parameters
         ----------
@@ -96,7 +96,7 @@ class BasicDdRt(ErosionModel):
 
         Read elevation of rock-till contact from an esri-ascii format file
         containing the basal elevation value at each node, create a field for
-        erodibility.
+        erodability.
         """
         # Read input data on rock-till contact elevation
         read_esri_ascii(
@@ -106,27 +106,27 @@ class BasicDdRt(ErosionModel):
         # Get a reference to the rock-till field
         self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
 
-        # Create field for erodibility
-        if "substrate__erodibility" in self.grid.at_node:
-            self.erody = self.grid.at_node["substrate__erodibility"]
+        # Create field for erodability
+        if "substrate__erodability" in self.grid.at_node:
+            self.erody = self.grid.at_node["substrate__erodability"]
         else:
-            self.erody = self.grid.add_zeros("node", "substrate__erodibility")
+            self.erody = self.grid.add_zeros("node", "substrate__erodability")
 
-        # Create array for erodibility weighting function
+        # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
 
-        # Read the erodibility value of rock and till
+        # Read the erodability value of rock and till
         self.rock_erody = rock_erody
         self.till_erody = till_erody
 
         # Read and remember the contact zone characteristic width
         self.contact_width = contact_width
 
-    def _update_erodibility_field(self):
-        """Update erodibility at each node based on elevation
+    def _update_erodability_field(self):
+        """Update erodability at each node based on elevation
         relative to contact elevation.
 
-        To promote smoothness in the solution, the erodibility at a given point
+        To promote smoothness in the solution, the erodability at a given point
         (x,y) is set as follows:
 
             1. Take the difference between elevation, z(x,y), and contact
@@ -139,10 +139,10 @@ class BasicDdRt(ErosionModel):
                This sigmoidal function has the property that F(0) = 0.5,
                F(D >> D*) = 1, and F(-D << -D*) = 0.
                    Here, D* describes the characteristic width of the "contact
-               zone", where the effective erodibility is a mixture of the two.
+               zone", where the effective erodability is a mixture of the two.
                If the surface is well above this contact zone, then F = 1. If
                it's well below the contact zone, then F = 0.
-            3. Set the erodibility using F:
+            3. Set the erodability using F:
                 $K = F K_till + (1-F) K_rock$
                So, as F => 1, K => K_till, and as F => 0, K => K_rock. In
                between, we have a weighted average.
@@ -160,7 +160,7 @@ class BasicDdRt(ErosionModel):
             K_rock = self.rock_erody
         """
 
-        # Update the erodibility weighting function (this is "F")
+        # Update the erodability weighting function (this is "F")
         self.erody_wt[self.data_nodes] = 1.0 / (
             1.0
             + np.exp(
@@ -173,7 +173,7 @@ class BasicDdRt(ErosionModel):
         if "PrecipChanger" in self.boundary_handler:
             erode_factor = self.boundary_handler[
                 "PrecipChanger"
-            ].get_erodibility_adjustment_factor()
+            ].get_erodability_adjustment_factor()
             self.till_erody = self.K_till_sp * erode_factor
             self.rock_erody = self.K_rock_sp * erode_factor
 
@@ -215,8 +215,8 @@ class BasicDdRt(ErosionModel):
                 self.flow_accumulator.depression_finder.flood_status == 3
             )[0]
 
-        # Update the erodibility and threshold field
-        self._update_erodibility_field()
+        # Update the erodability and threshold field
+        self._update_erodability_field()
 
         # Calculate the new threshold values given cumulative erosion
         self.update_erosion_threshold_values()
