@@ -187,7 +187,7 @@ class BasicRt(ErosionModel):
         else:
             raise ValueError("A value for water_erodability~till or water_erodability~till~shear_stress  must be provided.")
 
-        # Set up rock-till
+        # Set up rock-till boundary and associated grid fields.
         self.setup_rock_and_till(
             self.params["rock_till_file__name"],
             self.K_rock,
