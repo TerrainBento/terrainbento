@@ -13,6 +13,7 @@ import sys
 import numpy as np
 
 from landlab.components import StreamPowerEroder, LinearDiffuser
+from landlab.io import read_esri_ascii
 from terrainbento.base_class import ErosionModel
 
 
@@ -131,8 +132,6 @@ class BasicRtVs(ErosionModel):
                this model was originally written for an application with lots
                of erosion expected but no tectonics.
         """
-        from landlab.io import read_esri_ascii
-
         # Read input data on rock-till contact elevation
         read_esri_ascii(
             file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1

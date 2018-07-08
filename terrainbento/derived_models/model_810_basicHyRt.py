@@ -18,6 +18,7 @@ import sys
 import numpy as np
 
 from landlab.components import ErosionDeposition, LinearDiffuser
+from landlab.io import read_esri_ascii
 from terrainbento.base_class import ErosionModel
 
 
@@ -121,8 +122,6 @@ class BasicHyRt(ErosionModel):
         containing the basal elevation value at each node, create a field for
         erodibility.
         """
-        from landlab.io import read_esri_ascii
-
         # Read input data on rock-till contact elevation
         read_esri_ascii(
             file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1

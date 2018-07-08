@@ -16,6 +16,7 @@ import sys
 import numpy as np
 
 from landlab.components import FastscapeEroder, LinearDiffuser
+from landlab.io import read_esri_ascii
 from terrainbento.base_class import ErosionModel
 
 
@@ -131,7 +132,6 @@ class BasicRt(ErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicRt, self).__init__(
             input_file=input_file,
@@ -234,8 +234,6 @@ class BasicRt(ErosionModel):
                this model was originally written for an application with lots
                of erosion expected but no tectonics.
         """
-        from landlab.io import read_esri_ascii
-
         # Read input data on rock-till contact elevation
         read_esri_ascii(
             file_name, grid=self.grid, halo=1, name="rock_till_contact__elevation"
