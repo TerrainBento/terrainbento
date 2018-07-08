@@ -89,7 +89,7 @@ class BasicSt(StochasticErosionModel):
             else:
                 K = (
                     self._length_factor ** (1. / 2.)
-                ) * K_ss  # K_stochastic has units Lengtg^(1/2) per Time^(1/2_
+                ) * K_ss  # K_stochastic has units Length^(1/2) per Time^(1/2_
         else:
             raise ValueError("A value for K_sp or K_ss  must be provided.")
 

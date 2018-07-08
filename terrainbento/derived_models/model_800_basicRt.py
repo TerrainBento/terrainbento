@@ -196,7 +196,7 @@ class BasicRt(ErosionModel):
             else:
                 self.K_till = (
                     self._length_factor ** (1. / 3.)
-                ) * K_till_ss  # K_ss has units Lengtg^(1/3) per Time
+                ) * K_till_ss  # K_ss has units Length^(1/3) per Time
         else:
             raise ValueError(
                 "A value for water_erodability~till or water_erodability~till~shear_stress  must be provided."

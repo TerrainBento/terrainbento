@@ -72,7 +72,7 @@ class BasicVs(ErosionModel):
             else:
                 self.K = (
                     self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Lengtg^(1/3) per Time
+                ) * K_ss  # K_ss has units Length^(1/3) per Time
         else:
             raise ValueError("A value for K_sp or K_ss  must be provided.")
 
