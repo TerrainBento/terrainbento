@@ -255,7 +255,7 @@ class BasicHySa(ErosionModel):
         dt : float
             Increment of time for which the model is run.
         """
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
