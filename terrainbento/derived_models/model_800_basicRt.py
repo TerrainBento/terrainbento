@@ -144,10 +144,18 @@ class BasicRt(ErosionModel):
         contact_zone__width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock", raise_error=False)
-        K_rock_ss = self.get_parameter_from_exponent("water_erodability~rock~shear_stress", raise_error=False)
-        K_till_sp = self.get_parameter_from_exponent("water_erodability~till", raise_error=False)
-        K_till_ss = self.get_parameter_from_exponent("water_erodability~till~shear_stress", raise_error=False)
+        K_rock_sp = self.get_parameter_from_exponent(
+            "water_erodability~rock", raise_error=False
+        )
+        K_rock_ss = self.get_parameter_from_exponent(
+            "water_erodability~rock~shear_stress", raise_error=False
+        )
+        K_till_sp = self.get_parameter_from_exponent(
+            "water_erodability~till", raise_error=False
+        )
+        K_till_ss = self.get_parameter_from_exponent(
+            "water_erodability~till~shear_stress", raise_error=False
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -169,7 +177,9 @@ class BasicRt(ErosionModel):
                     self._length_factor ** (1. / 3.)
                 ) * K_rock_ss  # K_ss has units Lengtg^(1/3) per Time
         else:
-            raise ValueError("A value for water_erodability~rock or water_erodability~rock~shear_stress  must be provided.")
+            raise ValueError(
+                "A value for water_erodability~rock or water_erodability~rock~shear_stress  must be provided."
+            )
 
         # Then for Till Ks
         if K_till_sp != None and K_till_ss != None:
@@ -185,7 +195,9 @@ class BasicRt(ErosionModel):
                     self._length_factor ** (1. / 3.)
                 ) * K_till_ss  # K_ss has units Lengtg^(1/3) per Time
         else:
-            raise ValueError("A value for water_erodability~till or water_erodability~till~shear_stress  must be provided.")
+            raise ValueError(
+                "A value for water_erodability~till or water_erodability~till~shear_stress  must be provided."
+            )
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till(
@@ -344,7 +356,7 @@ class BasicRt(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

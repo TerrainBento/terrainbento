@@ -382,9 +382,7 @@ class PrecipChanger(object):
             self.stop_time = precipchanger_stop_time
         self.start_time = precipchanger_start_time
 
-        self.starting_frac_wet_days = (
-            daily_rainfall__intermittency_factor
-        )
+        self.starting_frac_wet_days = daily_rainfall__intermittency_factor
         self.frac_wet_days_rate_of_change = (
             daily_rainfall__intermittency_factor_time_rate_of_change
             / self._time_conversion

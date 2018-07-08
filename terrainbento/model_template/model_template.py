@@ -108,7 +108,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
 
 # this portion makes it possible to run the model from the command line.
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 
