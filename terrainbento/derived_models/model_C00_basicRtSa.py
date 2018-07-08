@@ -165,7 +165,7 @@ class BasicRtSa(ErosionModel):
         # Read and remember the contact zone characteristic width
         self.contact_width = contact_width
 
-    def update_erodibility_field(self):
+    def _update_erodibility_field(self):
         """Update erodibility at each node based on elevation relative to
         contact elevation.
 
@@ -240,7 +240,7 @@ class BasicRtSa(ErosionModel):
             )[0]
 
         # Update the erodibility field
-        self.update_erodibility_field()
+        self._update_erodibility_field()
 
         # Do some erosion (but not on the flooded nodes)
         self.eroder.run_one_step(dt, flooded_nodes=flooded, K_if_used=self.erody)

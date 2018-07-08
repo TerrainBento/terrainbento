@@ -122,7 +122,7 @@ class BasicDdRt(ErosionModel):
         # Read and remember the contact zone characteristic width
         self.contact_width = contact_width
 
-    def update_erodibility_field(self):
+    def _update_erodibility_field(self):
         """Update erodibility at each node based on elevation
         relative to contact elevation.
 
@@ -216,7 +216,7 @@ class BasicDdRt(ErosionModel):
             )[0]
 
         # Update the erodibility and threshold field
-        self.update_erodibility_field()
+        self._update_erodibility_field()
 
         # Calculate the new threshold values given cumulative erosion
         self.update_erosion_threshold_values()

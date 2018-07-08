@@ -136,7 +136,7 @@ class BasicRtTh(ErosionModel):
         # Read and remember the contact zone characteristic width
         self.contact_width = contact_width
 
-    def update_erodibility_and_threshold_fields(self):
+    def _update_erodibility_and_threshold_fields(self):
         """Update erodibility and threshold at each node based on elevation
         relative to contact elevation.
 
@@ -216,7 +216,7 @@ class BasicRtTh(ErosionModel):
             )[0]
 
         # Update the erodibility and threshold field
-        self.update_erodibility_and_threshold_fields()
+        self._update_erodibility_and_threshold_fields()
 
         # Do some erosion (but not on the flooded nodes)
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
