@@ -1,14 +1,15 @@
 #! /usr/env/python
-"""
-model_800_basicRt.py: erosion model using linear diffusion, basic stream
-power with spatially varying K and two bedrock units, and discharge
-proportional to drainage area.
+"""``terrainbento`` Model ``BasicRt`` program.
 
-Model 800 BasicRt
+Erosion model program using linear diffusion, stream power with spatially
+varying erodability based on two bedrock units, and discharge proportional to
+drainage area.
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         FastscapeStreamPower, LinearDiffuser
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import sys
@@ -19,6 +20,39 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicRt(ErosionModel):
+    """Model ``BasicRt`` program.
+
+    Model ``BasicRt`` is a model program that evolves a topographic surface
+    described by :math:`\eta` with the following governing equation:
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+
+    where :math:`A` is the local drainage area and :math:`S` is the local slope.
+    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    symbols, names, and dimensions.
+
+    :math:`K_{w}` is the erodability of the ground substrate by water and is
+    permitted to vary spatially through the file **rock_till_file__name**.
+
+
+
+    Model ``BasicRt`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
+    and, :math:`n` this model program can be used to run the following two
+    ``terrainbento`` numerical models:
+
+    1) Model ``BasicRt``: Here :math:`m` has a value of 0.5 and
+    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
+    ``water_erodibility`` and :math:`D` is given by the parameter
+    ``regolith_transport_parameter``.
+
+    2) Model ``BasicRtSs``: In this model :math:`m` has a value of 1/3,
+    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
+    parameter ``water_erodibility~shear_stress``.
+    """
+
     """
     A BasicRt model computes erosion using linear diffusion, basic stream
     power with two rock units, and Q~A.
