@@ -22,46 +22,115 @@ from terrainbento.base_class import ErosionModel
 class BasicRt(ErosionModel):
     """Model ``BasicRt`` program.
 
-    Model ``BasicRt`` is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    Model ``BasicRt`` improves upon the ``Basic`` model by allowing for two
+    lithologies. Given a spatially varying contact zone elevation, :math:`\eta_C(x,y)$)`,
+    model ``BasicRt`` evolves a topographic surface described by :math:`\eta` with
+    the following governing equation:
 
     .. math::
+        :nowrap:
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+         \\begin{eqnarray}
+             \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\nabla^2 \eta,\\
+             K(\eta, \eta_C ) = w K_1 + (1 - w) K_2,\\
+             w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
+         \end{eqnarray}
 
-    where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
+    erodabilities of the upper and lower lithologies, and :math:`D` is the
+    regolith transport parameter. :math:`w` is a weight used to calculate the
+    erodability based on the depth to the contact zone and the width of the
+    contact zone.
 
-    :math:`K_{w}` is the erodability of the ground substrate by water and is
-    permitted to vary spatially through the file **rock_till_file__name**.
-
-    **contact_zone__width**
+    Refer to the ``terrainbento`` manuscript Table XX (URL here) for
+    parameter symbols, names, and dimensions.where
 
     Model ``BasicRt`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
-    and, :math:`n` this model program can be used to run the following two
-    ``terrainbento`` numerical models:
+    class. Depending on the paramters provided, this model program can be used
+    to run the following two ``terrainbento`` numerical models:
 
     1) Model ``BasicRt``: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodibility`` and :math:`D` is given by the parameter
+    :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
+    ``water_erodibility~till``, :math:`K_{2}` is given by the parameter
+    ``water_erodibility~rock`` and :math:`D` is given by the parameter
     ``regolith_transport_parameter``.
 
-    2) Model ``BasicRtSs``: In this model :math:`m` has a value of 1/3,
-    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodibility~shear_stress``.
-    """
+    2) Model ``BasicRtSs``: In this model :math:`m` has a value of 1/3 and
+    :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
+    ``water_erodibility~till~shear_stress``, :math:`K_{2}` is given by the
+    parameter ``water_erodibility~rock~shear_stress
+    `` and :math:`D` is given by the parameter ``regolith_transport_parameter``.
 
-    """
-    A BasicRt model computes erosion using linear diffusion, basic stream
-    power with two rock units, and Q~A.
+    In both models, a value for :math:`Wc` must be given by the parameter name
+    ``contact_zone__width`` and the spatially variable elevation of the contact
+    elevation must be given as the file path to an ESRII ASCII format file of
+    the same size as the topography using the parameter ``rock_till_file__name``.
     """
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the BasicRt model."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        BasicRt : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model ``BasicRt``. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the ``terrainbento`` tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicRt
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability~rock': 0.001,
+        ...           'water_erodability~till': 0.01,
+        ...           'contact_zone__width': 1.0,
+        ...           'rock_till_file__name': 'example_rock_till.txt',
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0}
+
+        Construct the model.
+
+        >>> model = BasicRt(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
 
         # Call ErosionModel's init
         super(BasicRt, self).__init__(
