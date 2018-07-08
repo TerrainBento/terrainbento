@@ -30,14 +30,15 @@ class BasicRt(ErosionModel):
     model ``BasicRt`` evolves a topographic surface described by :math:`\eta` with
     the following governing equation:
 
-    .. math::
-        :nowrap:
 
-         \\begin{eqnarray}
-             \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\nabla^2 \eta,\\
-             K(\eta, \eta_C ) = w K_1 + (1 - w) K_2,\\
-             w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
-         \end{eqnarray}
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\\nabla^2 \eta
+
+        K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
+
+        w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
+
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the

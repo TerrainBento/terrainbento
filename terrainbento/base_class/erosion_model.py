@@ -509,7 +509,7 @@ class ErosionModel(object):
         An OutputWriter can be either a function or a class designed to create
         output, calculate a loss function, or do some other task that is not
         inherent to running a ``terrainbento`` model but is desired by the
-         user. An example might be making a plot of topography while the model
+        user. An example might be making a plot of topography while the model
         is running. ``terrainbento`` saves output to NetCDF format at each
         interval defined by the parameter ``'output_interval'``.
 
