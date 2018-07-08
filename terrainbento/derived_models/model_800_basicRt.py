@@ -44,13 +44,17 @@ class BasicRt(ErosionModel):
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
     erodability based on the depth to the contact zone and the width of the
-    contact zone.
+    contact zone. Refer to the ``terrainbento`` manuscript Table XX (URL here)
+    for parameter symbols, names, and dimensions.
 
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for
-    parameter symbols, names, and dimensions.where
+    Here, the weight :math:`w` promotes smoothness in the solution of
+    erodability at a given point. When the surface elevation is at the contact
+    elevation, the erodability is the average of :math:`K_1` and :math:`K_2`;
+    above and below the contact, the erodability approaches the value of :math:`K_1`
+    and :math:`K_2` at a rate related to the contact zone width.
 
     Model ``BasicRt`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class. Depending on the paramters provided, this model program can be used
+    class. Depending on the parameters provided, this model program can be used
     to run the following two ``terrainbento`` numerical models:
 
     1) Model ``BasicRt``: Here :math:`m` has a value of 0.5 and
@@ -65,49 +69,31 @@ class BasicRt(ErosionModel):
     parameter ``water_erodability~rock~shear_stress
     `` and :math:`D` is given by the parameter ``regolith_transport_parameter``.
 
-    In both models, a value for :math:`Wc` must be given by the parameter name
+    In both models, a value for :math:`Wc` is given by the parameter name
     ``contact_zone__width`` and the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
-    the parameter ``lithology_contact_elevation__file_name``. If topography was created with an
-    input DEM, then the shape of the contact
-    fill must be the same as  of
+    the parameter ``lithology_contact_elevation__file_name``. If topography was
+    created using an input DEM, then the shape of the field contained in the
+    file must be the same as the input DEM. If synthetic topography is used then
+    the shape of the field must be ``number_of_node_rows-2`` by
+    ``number_of_node_columns-2``. This is because the read-in-DEM will be padded
+    by a halo of size 2.
 
+    Note that the developers had to make a decision about how to represent the
+    contact. We could represent the contact between two layers either as a depth
+    below present land surface, or as an altitude. Using a depth would allow for
+    vertical motion, because for a fixed surface, the depth remains constant
+    while the altitude changes. But the depth must be updated every time the
+    surface is eroded or aggrades. Using an altitude avoids having to update the
+    contact position every time the surface erodes or aggrades, but any tectonic
+    motion would need to be applied to the contact position as well. We chose to
+    use the altitude approach because this model was originally written for an
+    application with lots of erosion expected but no tectonics.
 
-    We could represent the contact between two layers either as a
-    depth below present land surface, or as an altitude. Using a
-    depth would allow for vertical motion, because for a fixed
-    surface, the depth remains constant while the altitude changes.
-    But the depth must be updated every time the surface is eroded
-    or aggrades. Using an altitude avoids having to update the
-    contact position every time the surface erodes or aggrades, but
-    any tectonic motion would need to be applied to the contact
-    position as well. Here we'll use the altitude approach because
-    this model was originally written for an application with lots
-    of erosion expected but no tectonics.
-
-
-            To promote smoothness in the solution, the erodability at a given point
-            (x,y) is set as follows:
-
-                1. Take the difference between elevation, z(x,y), and contact
-                   elevation, b(x,y): D(x,y) = z(x,y) - b(x,y). This number could
-                   be positive (if land surface is above the contact), negative
-                   (if we're well within the rock), or zero (meaning the rock-till
-                   contact is right at the surface).
-                2. Define a smoothing function as:
-                    $F(D) = 1 / (1 + exp(-D/D*))$
-                   This sigmoidal function has the property that F(0) = 0.5,
-                   F(D >> D*) = 1, and F(-D << -D*) = 0.
-                       Here, D* describes the characteristic width of the "contact
-                   zone", where the effective erodability is a mixture of the two.
-                   If the surface is well above this contact zone, then F = 1. If
-                   it's well below the contact zone, then F = 0.
-                3. Set the erodability using F:
-                    $K = F K_till + (1-F) K_rock$
-                   So, as F => 1, K => K_till, and as F => 0, K => K_rock. In
-                   between, we have a weighted average.
-
-
+    If implementing tectonics is desired, consider using either the
+    ``SingleNodeBaselevelHandler`` or the ``NotCoreNodeBaselevelHandler`` which
+    modify both the ``topographic__elevation`` and the ``bedrock__elevation``
+    fields.
     """
 
     def __init__(
@@ -316,11 +302,37 @@ class BasicRt(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
+        """Advance model ``BasicRt`` for one time-step of duration dt.
+
+        The **run_one_step** method does the following:
+
+        1. Directs flow and accumulates drainage area.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+        not occur.
+
+        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        so, uses it to modify the two erodability by water values.
+
+        4. Updates the spatially variable erodability value based on the
+        relative distance between the topographic surface and the lithology
+        contact.
+
+        5. Calculates detachment-limited erosion by water.
+
+        6. Calculates topographic change by linear diffusion.
+
+        7. Finalizes the step using the ``ErosionModel`` base class function
+        **finalize__run_one_step**. This function updates all BoundaryHandlers
+        by ``dt`` and increments model time by ``dt``.
+
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
