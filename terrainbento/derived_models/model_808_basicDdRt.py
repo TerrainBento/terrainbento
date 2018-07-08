@@ -50,7 +50,7 @@ class BasicDdRt(ErosionModel):
         )  # has units length/time
 
         # Set up rock-till
-        self.setup_rock_and_till(
+        self._setup_rock_and_till(
             self.params["rock_till_file__name"],
             self.K_rock_sp,
             self.K_till_sp,
@@ -78,7 +78,7 @@ class BasicDdRt(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def setup_rock_and_till(self, file_name, rock_erody, till_erody, contact_width):
+    def _setup_rock_and_till(self, file_name, rock_erody, till_erody, contact_width):
         """Set up lithology handling for two layers with different erodibility.
 
         Parameters

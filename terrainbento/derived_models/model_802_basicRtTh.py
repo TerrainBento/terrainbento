@@ -53,7 +53,7 @@ class BasicRtTh(ErosionModel):
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
         # Set up rock-till
-        self.setup_rock_and_till(
+        self._setup_rock_and_till(
             self.params["rock_till_file__name"],
             self.K_rock_sp,
             self.K_till_sp,
@@ -76,7 +76,7 @@ class BasicRtTh(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def setup_rock_and_till(
+    def _setup_rock_and_till(
         self, file_name, rock_erody, till_erody, rock_thresh, till_thresh, contact_width
     ):
         """Set up lithology handling for two layers with different erodibility.

@@ -55,7 +55,7 @@ class BasicHyRt(ErosionModel):
         )  # normalized settling velocity. Unitless.
 
         # Set up rock-till
-        self.setup_rock_and_till(
+        self._setup_rock_and_till(
             self.params["rock_till_file__name"],
             rock_erody_br=self.K_rock_sp,
             till_erody_br=self.K_till_sp,
@@ -90,7 +90,7 @@ class BasicHyRt(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def setup_rock_and_till(
+    def _setup_rock_and_till(
         self,
         file_name="file",
         rock_erody_br=1,

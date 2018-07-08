@@ -188,7 +188,7 @@ class BasicRt(ErosionModel):
             raise ValueError("A value for water_erodability~till or water_erodability~till~shear_stress  must be provided.")
 
         # Set up rock-till boundary and associated grid fields.
-        self.setup_rock_and_till(
+        self._setup_rock_and_till(
             self.params["rock_till_file__name"],
             self.K_rock,
             self.K_till,
@@ -208,7 +208,7 @@ class BasicRt(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def setup_rock_and_till(self, file_name, rock_erody, till_erody, contact_width):
+    def _setup_rock_and_till(self, file_name, rock_erody, till_erody, contact_width):
         """Set up lithology handling for two layers with different erodibility.
 
         Parameters
