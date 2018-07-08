@@ -81,10 +81,7 @@ class BasicChRt(ErosionModel):
         self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
 
         # Create field for erodability
-        if "substrate__erodability" in self.grid.at_node:
-            self.erody = self.grid.at_node["substrate__erodability"]
-        else:
-            self.erody = self.grid.add_zeros("node", "substrate__erodability")
+        self.erody = self.grid.add_zeros("node", "substrate__erodability")
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)

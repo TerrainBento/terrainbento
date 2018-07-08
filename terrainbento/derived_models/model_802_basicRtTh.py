@@ -90,16 +90,10 @@ class BasicRtTh(ErosionModel):
         self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
 
         # Create field for erodability
-        if "substrate__erodability" in self.grid.at_node:
-            self.erody = self.grid.at_node["substrate__erodability"]
-        else:
-            self.erody = self.grid.add_zeros("node", "substrate__erodability")
+        self.erody = self.grid.add_zeros("node", "substrate__erodability")
 
         # Create field for threshold values
-        if "erosion__threshold" in self.grid.at_node:
-            self.threshold = self.grid.at_node["erosion__threshold"]
-        else:
-            self.threshold = self.grid.add_zeros("node", "erosion__threshold")
+        self.threshold = self.grid.add_zeros("node", "erosion__threshold")
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)

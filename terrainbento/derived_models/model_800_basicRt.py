@@ -77,8 +77,8 @@ class BasicRt(ErosionModel):
     created using an input DEM, then the shape of the field contained in the
     file must be the same as the input DEM. If synthetic topography is used then
     the shape of the field must be ``number_of_node_rows-2`` by
-    ``number_of_node_columns-2``. This is because the read-in-DEM will be padded
-    by a halo of size 2.
+    ``number_of_node_columns-2``. This is because the read in DEM will be padded
+    by a halo of size 1.
 
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
@@ -265,10 +265,7 @@ class BasicRt(ErosionModel):
         self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
 
         # Create field for erodability
-        if "substrate__erodability" in self.grid.at_node:
-            self.erody = self.grid.at_node["substrate__erodability"]
-        else:
-            self.erody = self.grid.add_zeros("node", "substrate__erodability")
+        self.erody = self.grid.add_zeros("node", "substrate__erodability")
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)

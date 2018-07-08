@@ -104,18 +104,10 @@ class BasicHyRt(ErosionModel):
         self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
 
         # Create field for rock erodability
-        if "K_br" in self.grid.at_node:
-            self.erody_br = self.grid.at_node["K_br"]
-        else:
-            self.erody_br = self.grid.add_ones("node", "K_br")
-            self.erody_br[:] = self.rock_erody_br
+        self.erody_br = self.grid.add_ones("node", "K_br")
 
         # field for rock threshold values
-        if "sp_crit_br" in self.grid.at_node:
-            self.threshold_br = self.grid.at_node["sp_crit_br"]
-        else:
-            self.threshold_br = self.grid.add_ones("node", "sp_crit_br")
-            self.threshold_br[:] = self.rock_thresh_br
+        self.threshold_br = self.grid.add_ones("node", "sp_crit_br")
 
         # Create array for erodability weighting function for BEDROCK
         self.erody_wt_br = np.zeros(self.grid.number_of_nodes)
