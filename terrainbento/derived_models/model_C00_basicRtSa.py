@@ -68,16 +68,10 @@ class BasicRtSa(ErosionModel):
         )
 
         # Create soil thickness (a.k.a. depth) field
-        if "soil__depth" in self.grid.at_node:
-            soil_thickness = self.grid.at_node["soil__depth"]
-        else:
-            soil_thickness = self.grid.add_zeros("node", "soil__depth")
+        soil_thickness = self.grid.add_zeros("node", "soil__depth")
 
         # Create bedrock elevation field
-        if "bedrock__elevation" in self.grid.at_node:
-            bedrock_elev = self.grid.at_node["bedrock__elevation"]
-        else:
-            bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
 
         # Set soil thickness and bedrock elevation
         try:
