@@ -89,7 +89,7 @@ class BasicRt(ErosionModel):
         # first for rock Ks
         if K_rock_sp != None and K_rock_ss != None:
             raise ValueError(
-                "A parameter for both K_rock_sp and K_rock_ss has been"
+                "A parameter for both  water_erodability~rock and water_erodability~rock~shear_stress has been"
                 "provided. Only one of these may be provided"
             )
         elif K_rock_sp != None or K_rock_ss != None:
@@ -100,12 +100,12 @@ class BasicRt(ErosionModel):
                     self._length_factor ** (1. / 3.)
                 ) * K_rock_ss  # K_ss has units Lengtg^(1/3) per Time
         else:
-            raise ValueError("A value for K_rock_sp or K_rock_ss  must be provided.")
+            raise ValueError("A value for water_erodability~rock or water_erodability~rock~shear_stress  must be provided.")
 
         # Then for Till Ks
         if K_till_sp != None and K_till_ss != None:
             raise ValueError(
-                "A parameter for both K_till_sp and K_rock_ss has been"
+                "A parameter for both water_erodability~till and water_erodability~till~shear_stress has been"
                 "provided. Only one of these may be provided"
             )
         elif K_till_sp != None or K_till_ss != None:
@@ -116,7 +116,7 @@ class BasicRt(ErosionModel):
                     self._length_factor ** (1. / 3.)
                 ) * K_till_ss  # K_ss has units Lengtg^(1/3) per Time
         else:
-            raise ValueError("A value for K_till_sp or K_till_ss  must be provided.")
+            raise ValueError("A value for water_erodability~till or water_erodability~till~shear_stress  must be provided.")
 
         # Set up rock-till
         self.setup_rock_and_till(

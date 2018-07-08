@@ -54,7 +54,7 @@ class BasicHyTh(ErosionModel):
                     self._length_factor ** (1. / 3.)
                 ) * K_ss  # K_ss has units Lengtg^(1/3) per Time
         else:
-            raise ValueError("A value for K_rock_sp or K_rock_ss  must be provided.")
+            raise ValueError("A value for water_erodability~rock or water_erodability~rock~shear_stress  must be provided.")
 
         # Unit conversion for linear_diffusivity, with units L^2/T
         regolith_transport_parameter = (
