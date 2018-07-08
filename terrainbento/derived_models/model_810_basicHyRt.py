@@ -57,7 +57,7 @@ class BasicHyRt(ErosionModel):
 
         # Set up rock-till
         self._setup_rock_and_till(
-            self.params["rock_till_file__name"],
+            self.params["lithology_contact_elevation__file_name"],
             rock_erody_br=self.K_rock_sp,
             till_erody_br=self.K_till_sp,
             rock_thresh_br=0.0,

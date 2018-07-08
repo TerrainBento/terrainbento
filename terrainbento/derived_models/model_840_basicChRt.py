@@ -48,7 +48,7 @@ class BasicChRt(ErosionModel):
 
         # Set up rock-till
         self._setup_rock_and_till(
-            self.params["rock_till_file__name"],
+            self.params["lithology_contact_elevation__file_name"],
             self.K_rock_sp,
             self.K_till_sp,
             contact_zone__width,

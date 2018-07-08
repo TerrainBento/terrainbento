@@ -19,6 +19,7 @@ from landlab.components import FastscapeEroder, LinearDiffuser
 from landlab.io import read_esri_ascii
 from terrainbento.base_class import ErosionModel
 
+import os
 
 class BasicRt(ErosionModel):
     """Model ``BasicRt`` program.
@@ -65,8 +66,10 @@ class BasicRt(ErosionModel):
 
     In both models, a value for :math:`Wc` must be given by the parameter name
     ``contact_zone__width`` and the spatially variable elevation of the contact
-    elevation must be given as the file path to an ESRII ASCII format file of
-    the same size as the topography using the parameter ``rock_till_file__name``.
+    elevation must be given as the file path to an ESRII ASCII format file using
+    the parameter ``lithology_contact_elevation__file_name``. If topography was created with an
+    input DEM, then the shape of the contact
+    fill must be the same as  of
     """
 
     def __init__(
@@ -116,7 +119,7 @@ class BasicRt(ErosionModel):
         ...           'water_erodability~rock': 0.001,
         ...           'water_erodability~till': 0.01,
         ...           'contact_zone__width': 1.0,
-        ...           'rock_till_file__name': 'example_rock_till.txt',
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0}
 
@@ -201,7 +204,7 @@ class BasicRt(ErosionModel):
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till(
-            self.params["rock_till_file__name"],
+            self.params["lithology_contact_elevation__file_name"],
             self.K_rock,
             self.K_till,
             contact_zone__width,
