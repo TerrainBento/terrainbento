@@ -41,7 +41,7 @@ class BasicHyRt(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        contact_zone__width = (
+        self.contact_width = (
             self._length_factor * self.params["contact_zone__width"]
         )  # L
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock")
@@ -55,15 +55,16 @@ class BasicHyRt(ErosionModel):
             "v_sc"
         )  # normalized settling velocity. Unitless.
 
-        # Set up rock-till
-        self._setup_rock_and_till(
-            self.params["lithology_contact_elevation__file_name"],
-            rock_erody_br=self.K_rock_sp,
-            till_erody_br=self.K_till_sp,
-            rock_thresh_br=0.0,
-            till_thresh_br=0.0,
-            contact_width=contact_zone__width,
-        )
+        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
+        self.rock_erody_br = self.K_rock_sp
+        self.till_erody_br = self.K_till_sp
+
+        # Save the threshold values for rock and till
+        self.rock_thresh_br = 0.
+        self.till_thresh_br = 0.
+
+        # Set up rock-till boundary and associated grid fields.
+        self._setup_rock_and_till()
 
         # Handle solver option
         try:
@@ -91,37 +92,9 @@ class BasicHyRt(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def _setup_rock_and_till(
-        self,
-        file_name="file",
-        rock_erody_br=1,
-        till_erody_br=1,
-        rock_thresh_br=0,
-        till_thresh_br=0,
-        contact_width=1,
-    ):
-        """Set up lithology handling for two layers with different erodability.
-
-        Parameters
-        ----------
-        file_name : string
-            Name of arc-ascii format file containing elevation of contact
-            position at each grid node (or NODATA)
-        rock_erody : float
-            Water erosion coefficient for bedrock
-        till_erody : float
-            Water erosion coefficient for till
-        rock_thresh : float
-            Water erosion threshold for bedrock
-        till_thresh : float
-            Water erosion threshold for till
-        contact_width : float [L]
-            Characteristic width of the interface zone between rock and till
-
-        Read elevation of rock-till contact from an esri-ascii format file
-        containing the basal elevation value at each node, create a field for
-        erodability.
-        """
+    def _setup_rock_and_till(self):
+        """Set up fields to handle for two layers with different erodability."""
+        file_name = self.params["lithology_contact_elevation__file_name"]
         # Read input data on rock-till contact elevation
         read_esri_ascii(
             file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
@@ -135,28 +108,17 @@ class BasicHyRt(ErosionModel):
             self.erody_br = self.grid.at_node["K_br"]
         else:
             self.erody_br = self.grid.add_ones("node", "K_br")
-            self.erody_br[:] = rock_erody_br
+            self.erody_br[:] = self.rock_erody_br
 
         # field for rock threshold values
         if "sp_crit_br" in self.grid.at_node:
             self.threshold_br = self.grid.at_node["sp_crit_br"]
         else:
             self.threshold_br = self.grid.add_ones("node", "sp_crit_br")
-            self.threshold_br[:] = rock_thresh_br
+            self.threshold_br[:] = self.rock_thresh_br
 
         # Create array for erodability weighting function for BEDROCK
         self.erody_wt_br = np.zeros(self.grid.number_of_nodes)
-
-        # Read the erodability value of rock and till
-        self.rock_erody_br = rock_erody_br
-        self.till_erody_br = till_erody_br
-
-        # Read the threshold values for rock and till
-        self.rock_thresh_br = rock_thresh_br
-        self.till_thresh_br = till_thresh_br
-
-        # Read and remember the contact zone characteristic width
-        self.contact_width = contact_width
 
     def _update_erodability_and_threshold_fields(self):
         """Update erodability and threshold at each node based on elevation

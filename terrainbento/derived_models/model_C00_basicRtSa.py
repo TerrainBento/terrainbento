@@ -43,7 +43,7 @@ class BasicRtSa(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-        contact_zone__width = (self._length_factor) * self.params[
+        self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock")
@@ -52,13 +52,12 @@ class BasicRtSa(ErosionModel):
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
-        # Set up rock-till
-        self._setup_rock_and_till(
-            self.params["lithology_contact_elevation__file_name"],
-            self.K_rock_sp,
-            self.K_till_sp,
-            contact_zone__width,
-        )
+        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
+        self.rock_erody = self.K_rock_sp
+        self.till_erody = self.K_till_sp
+
+        # Set up rock-till boundary and associated grid fields.
+        self._setup_rock_and_till()
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
@@ -114,33 +113,9 @@ class BasicRtSa(ErosionModel):
             soil_production_decay_depth=soil_production_decay_depth,
         )
 
-    def _setup_rock_and_till(self, file_name, rock_erody, till_erody, contact_width):
-        """Set up lithology handling for two layers with different erodability.
-
-        Parameters
-        ----------
-        file_name : string
-            Name of arc-ascii format file containing elevation of contact
-            position at each grid node (or NODATA)
-
-        Read elevation of rock-till contact from an esri-ascii format file
-        containing the basal elevation value at each node, create a field for
-        erodability.
-
-        Some considerations here:
-            1. We could represent the contact between two layers either as a
-               depth below present land surface, or as an altitude. Using a
-               depth would allow for vertical motion, because for a fixed
-               surface, the depth remains constant while the altitude changes.
-               But the depth must be updated every time the surface is eroded
-               or aggrades. Using an altitude avoids having to update the
-               contact position every time the surface erodes or aggrades, but
-               any tectonic motion would need to be applied to the contact
-               position as well. Here we'll use the altitude approach because
-               this model was originally written for an application with lots
-               of erosion expected but no tectonics.
-
-        """
+    def _setup_rock_and_till(self):
+        """Set up fields to handle for two layers with different erodability."""
+        file_name = self.params["lithology_contact_elevation__file_name"]
         # Read input data on rock-till contact elevation
         read_esri_ascii(
             file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
@@ -157,13 +132,6 @@ class BasicRtSa(ErosionModel):
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
-
-        # Read the erodability value of rock and till
-        self.rock_erody = rock_erody
-        self.till_erody = till_erody
-
-        # Read and remember the contact zone characteristic width
-        self.contact_width = contact_width
 
     def _update_erodability_field(self):
         """Update erodability at each node based on elevation relative to

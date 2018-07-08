@@ -38,7 +38,7 @@ class BasicDdRt(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        contact_zone__width = (self._length_factor) * self.params[
+        self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock")
@@ -50,13 +50,12 @@ class BasicDdRt(ErosionModel):
             "erosion__threshold"
         )  # has units length/time
 
-        # Set up rock-till
-        self._setup_rock_and_till(
-            self.params["lithology_contact_elevation__file_name"],
-            self.K_rock_sp,
-            self.K_till_sp,
-            contact_zone__width,
-        )
+        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
+        self.rock_erody = self.K_rock_sp
+        self.till_erody = self.K_till_sp
+
+        # Set up rock-till boundary and associated grid fields.
+        self._setup_rock_and_till()
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros("node", "erosion__threshold")
@@ -79,25 +78,10 @@ class BasicDdRt(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def _setup_rock_and_till(self, file_name, rock_erody, till_erody, contact_width):
-        """Set up lithology handling for two layers with different erodability.
+    def _setup_rock_and_till(self):
+        """Set up fields to handle for two layers with different erodability."""
+        file_name = self.params["lithology_contact_elevation__file_name"]
 
-        Parameters
-        ----------
-        file_name : string
-            Name of arc-ascii format file containing elevation of contact
-            position at each grid node (or NODATA)
-        rock_erody : float
-            Water erosion coefficient for bedrock
-        till_erody : float
-            Water erosion coefficient for till
-        contact_width : float [L]
-            Characteristic width of the interface zone between rock and till
-
-        Read elevation of rock-till contact from an esri-ascii format file
-        containing the basal elevation value at each node, create a field for
-        erodability.
-        """
         # Read input data on rock-till contact elevation
         read_esri_ascii(
             file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
@@ -114,13 +98,6 @@ class BasicDdRt(ErosionModel):
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
-
-        # Read the erodability value of rock and till
-        self.rock_erody = rock_erody
-        self.till_erody = till_erody
-
-        # Read and remember the contact zone characteristic width
-        self.contact_width = contact_width
 
     def _update_erodability_field(self):
         """Update erodability at each node based on elevation

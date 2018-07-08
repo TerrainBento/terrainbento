@@ -37,7 +37,7 @@ class BasicChRtTh(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        contact_zone__width = (self._length_factor) * self.params[
+        self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock")
@@ -52,15 +52,16 @@ class BasicChRtTh(ErosionModel):
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
-        # Set up rock-till
-        self._setup_rock_and_till(
-            self.params["lithology_contact_elevation__file_name"],
-            self.K_rock_sp,
-            self.K_till_sp,
-            rock_erosion__threshold,
-            till_erosion__threshold,
-            contact_zone__width,
-        )
+        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
+        self.rock_erody = self.K_rock_sp
+        self.till_erody = self.K_till_sp
+
+        # Save the threshold values for rock and till
+        self.rock_thresh = rock_erosion__threshold
+        self.till_thresh = till_erosion__threshold
+
+        # Set up rock-till boundary and associated grid fields.
+        self._setup_rock_and_till()
 
         # Instantiate a StreamPowerSmoothThresholdEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
@@ -79,31 +80,9 @@ class BasicChRtTh(ErosionModel):
             nterms=7,
         )
 
-    def _setup_rock_and_till(
-        self, file_name, rock_erody, till_erody, rock_thresh, till_thresh, contact_width
-    ):
-        """Set up lithology handling for two layers with different erodability.
-
-        Parameters
-        ----------
-        file_name : string
-            Name of arc-ascii format file containing elevation of contact
-            position at each grid node (or NODATA)
-        rock_erody : float
-            Water erosion coefficient for bedrock
-        till_erody : float
-            Water erosion coefficient for till
-        rock_thresh : float
-            Water erosion threshold for bedrock
-        till_thresh : float
-            Water erosion threshold for till
-        contact_width : float [L]
-            Characteristic width of the interface zone between rock and till
-
-        Read elevation of rock-till contact from an esri-ascii format file
-        containing the basal elevation value at each node, create a field for
-        erodability.
-        """
+    def _setup_rock_and_till(self):
+        """Set up fields to handle for two layers with different erodability."""
+        file_name = self.params["lithology_contact_elevation__file_name"]
         # Read input data on rock-till contact elevation
         read_esri_ascii(
             file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
@@ -126,17 +105,6 @@ class BasicChRtTh(ErosionModel):
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
-
-        # Read the erodability value of rock and till
-        self.rock_erody = rock_erody
-        self.till_erody = till_erody
-
-        # Read the threshold values for rock and till
-        self.rock_thresh = rock_thresh
-        self.till_thresh = till_thresh
-
-        # Read and remember the contact zone characteristic width
-        self.contact_width = contact_width
 
     def _update_erodability_and_threshold_fields(self):
         """Update erodability and threshold at each node based on elevation
