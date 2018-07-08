@@ -37,8 +37,8 @@ class BasicRtVs(ErosionModel):
         contact_zone__width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("K_rock_sp")
-        self.K_till_sp = self.get_parameter_from_exponent("K_till_sp")
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock")
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~till")
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")

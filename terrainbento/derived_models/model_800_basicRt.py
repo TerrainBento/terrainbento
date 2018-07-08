@@ -36,7 +36,7 @@ class BasicRt(ErosionModel):
     :math:`K_{w}` is the erodability of the ground substrate by water and is
     permitted to vary spatially through the file **rock_till_file__name**.
 
-
+    **contact_zone__width**
 
     Model ``BasicRt`` inherits from the ``terrainbento`` ``ErosionModel`` base
     class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
@@ -75,10 +75,10 @@ class BasicRt(ErosionModel):
         contact_zone__width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        K_rock_sp = self.get_parameter_from_exponent("K_rock_sp", raise_error=False)
-        K_rock_ss = self.get_parameter_from_exponent("K_rock_ss", raise_error=False)
-        K_till_sp = self.get_parameter_from_exponent("K_till_sp", raise_error=False)
-        K_till_ss = self.get_parameter_from_exponent("K_till_ss", raise_error=False)
+        K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock", raise_error=False)
+        K_rock_ss = self.get_parameter_from_exponent("water_erodability~rock~shear_stress", raise_error=False)
+        K_till_sp = self.get_parameter_from_exponent("water_erodability~till", raise_error=False)
+        K_till_ss = self.get_parameter_from_exponent("water_erodability~till~shear_stress", raise_error=False)
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(

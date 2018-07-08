@@ -133,7 +133,7 @@ class BasicHySa(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        self.K_br = self.get_parameter_from_exponent("K_rock_sp")
+        self.K_br = self.get_parameter_from_exponent("water_erodability~rock")
         self.K_sed = self.get_parameter_from_exponent("K_sed_sp")
         regolith_transport_parameter = (
             self._length_factor ** 2.
