@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicRt`` program.
+"""terrainbento model **BasicRt** program.
 
 Erosion model program using linear diffusion, stream power with spatially
 varying erodability based on two bedrock units, and discharge proportional to
@@ -23,11 +23,11 @@ import os
 
 
 class BasicRt(ErosionModel):
-    """Model ``BasicRt`` program.
+    """Model **BasicRt** program.
 
-    Model ``BasicRt`` improves upon the ``Basic`` model by allowing for two
-    lithologies. Given a spatially varying contact zone elevation, :math:`\eta_C(x,y)$)`,
-    model ``BasicRt`` evolves a topographic surface described by :math:`\eta` with
+    Model **BasicRt** improves upon the **Basic** model by allowing for two
+    lithologies. Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
+    model **BasicRt** evolves a topographic surface described by :math:`\eta` with
     the following governing equation:
 
 
@@ -45,7 +45,7 @@ class BasicRt(ErosionModel):
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
     erodability based on the depth to the contact zone and the width of the
-    contact zone. Refer to the ``terrainbento`` manuscript Table XX (URL here)
+    contact zone. Refer to the terrainbentomanuscript Table XX (URL here)
     for parameter symbols, names, and dimensions.
 
     Here, the weight :math:`w` promotes smoothness in the solution of
@@ -54,21 +54,21 @@ class BasicRt(ErosionModel):
     above and below the contact, the erodability approaches the value of :math:`K_1`
     and :math:`K_2` at a rate related to the contact zone width.
 
-    Model ``BasicRt`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    Model **BasicRt** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
-    to run the following two ``terrainbento`` numerical models:
+    to run the following two terrainbentonumerical models:
 
-    1) Model ``BasicRt``: Here :math:`m` has a value of 0.5 and
+    1) Model **BasicRt**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
     ``water_erodability~till``, :math:`K_{2}` is given by the parameter
     ``water_erodability~rock`` and :math:`D` is given by the parameter
     ``regolith_transport_parameter``.
 
-    2) Model ``BasicRtSs``: In this model :math:`m` has a value of 1/3 and
+    2) Model **BasicRtSs**: In this model :math:`m` has a value of 1/3 and
     :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
     ``water_erodability~till~shear_stress``, :math:`K_{2}` is given by the
-    parameter ``water_erodability~rock~shear_stress
-    `` and :math:`D` is given by the parameter ``regolith_transport_parameter``.
+    parameter ``water_erodability~rock~shear_stress`` and :math:`D` is given by
+    the parameter ``regolith_transport_parameter``.
 
     In both models, a value for :math:`Wc` is given by the parameter name
     ``contact_zone__width`` and the spatially variable elevation of the contact
@@ -92,7 +92,7 @@ class BasicRt(ErosionModel):
     application with lots of erosion expected but no tectonics.
 
     If implementing tectonics is desired, consider using either the
-    ``SingleNodeBaselevelHandler`` or the ``NotCoreNodeBaselevelHandler`` which
+    **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
     """
@@ -123,9 +123,9 @@ class BasicRt(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicRt``. Note that a YAML input file can be used instead of
+        of model **BasicRt**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -303,7 +303,7 @@ class BasicRt(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``BasicRt`` for one time-step of duration dt.
+        """Advance model **BasicRt** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -312,7 +312,7 @@ class BasicRt(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
         not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
         so, uses it to modify the two erodability by water values.
 
         4. Updates the spatially variable erodability value based on the
@@ -323,7 +323,7 @@ class BasicRt(ErosionModel):
 
         6. Calculates topographic change by linear diffusion.
 
-        7. Finalizes the step using the ``ErosionModel`` base class function
+        7. Finalizes the step using the **ErosionModel** base class function
         **finalize__run_one_step**. This function updates all BoundaryHandlers
         by ``dt`` and increments model time by ``dt``.
 

@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicHySa`` program.
+"""terrainbento model **BasicHySa** program.
 
 Erosion model program using exponential weathering, soil-depth-dependent
 linear diffusion, stream-power-driven sediment erosion, mass conservation, and
@@ -20,9 +20,9 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHySa(ErosionModel):
-    """Model ``BasicHySa`` program.
+    """Model **BasicHySa** program.
 
-    Model ``BasicHySa`` is a model program that evolves a topographic surface
+    Model **BasicHySa** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
@@ -46,10 +46,10 @@ class BasicHySa(ErosionModel):
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.
 
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    Refer to the terrainbentomanuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model ``BasicHySa`` inherits from the ``terrainbento`` ``ErosionModel``
+    Model **BasicHySa** inherits from the terrainbento **ErosionModel**
     base class.
     """
 
@@ -79,9 +79,9 @@ class BasicHySa(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicHySa``. Note that a YAML input file can be used instead of
+        of model **BasicHySa**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -230,7 +230,7 @@ class BasicHySa(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``BasicHySa`` for one time-step of duration dt.
+        """Advance model **BasicHySa** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -239,14 +239,14 @@ class BasicHySa(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
         not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
         so, uses it to modify the erodability by water.
 
         4. Calculates erosion and deposition by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
+        6. Finalizes the step using the **ErosionModel** base class function
         **finalize__run_one_step**. This function updates all BoundaryHandlers
         by ``dt`` and increments model time by ``dt``.
 

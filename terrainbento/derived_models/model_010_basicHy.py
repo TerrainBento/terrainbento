@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicHy`` program.
+"""terrainbento model **BasicHy** program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment 
 erosion and mass conservation, and discharge proportional to drainage area.
@@ -18,9 +18,9 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHy(ErosionModel):
-    """Model ``BasicHy`` program.
+    """Model **BasicHy** program.
 
-    Model ``BasicHy`` is a model program that evolves a topographic surface
+    Model **BasicHy** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
@@ -34,18 +34,18 @@ class BasicHy(ErosionModel):
     :math:`\omega_c` is the critical stream power needed for erosion to occur,
     :math:`V` is effective sediment settling velocity, :math:`Q_s` is
     volumetric sediment flux, :math:`Q` is volumetric water discharge, and 
-    :math:`\phi` is sediment porosity. Refer to the ``terrainbento`` 
+    :math:`\phi` is sediment porosity. Refer to the terrainbento
     manuscript Table XX (URL here) for parameter symbols, names, and 
     dimensions.
 
-    Model ``BasicHy`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    Model **BasicHy** inherits from the terrainbento **ErosionModel** base
     class. Depending on the value of :math:`\omega_c`, this model program can 
-    be used to run the following two ``terrainbento`` numerical models:
+    be used to run the following two terrainbentonumerical models:
 
-    1) Model ``BasicHy``: Here there is no erosion threshold, i.e. 
+    1) Model **BasicHy**: Here there is no erosion threshold, i.e. 
     :math:`\omega_c=0`.
 
-    2) Model ``BasicHyTh``: This model is identical to Model BasicHy except
+    2) Model **BasicHyTh**: This model is identical to Model BasicHy except
     that the erosion threshold :math:`\omega_c` is nonzero.
     """
 
@@ -75,9 +75,9 @@ class BasicHy(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicHy``. Note that a YAML input file can be used instead of
+        of model **BasicHy**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -185,7 +185,7 @@ class BasicHy(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``BasicHy`` for one time-step of duration dt.
+        """Advance model **BasicHy** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -194,14 +194,14 @@ class BasicHy(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
         not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
         so, uses it to modify the erodability by water.
 
         4. Calculates erosion and deposition by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
+        6. Finalizes the step using the **ErosionModel** base class function
         **finalize__run_one_step**. This function updates all BoundaryHandlers
         by ``dt`` and increments model time by ``dt``.
 

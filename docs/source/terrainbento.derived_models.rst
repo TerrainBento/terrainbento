@@ -1,7 +1,7 @@
 Derived Models
 ==============
 
-Presently ``TerrainBento`` has four types of derived models: the basic model and
+Presently terrainbento has four types of derived models: the basic model and
 models with one, two, or three components.
 
 .. automodule:: terrainbento.derived_models

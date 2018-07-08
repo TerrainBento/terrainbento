@@ -1,9 +1,9 @@
 #! /usr/env/python
 """
-Base class for common functions of ``terrainbento`` stochastic erosion models.
+Base class for common functions of terrainbentostochastic erosion models.
 
-The ``StochasticErosionModel`` is a base class that contains all of the
-functionality shared by the ``terrainbento`` models that use stochastic
+The **StochasticErosionModel** is a base class that contains all of the
+functionality shared by the terrainbento models that use stochastic
 hydrology.
 
 
@@ -79,9 +79,9 @@ _STRING_LENGTH = 80
 
 
 class StochasticErosionModel(ErosionModel):
-    """ Base class for stochastic-precipitation ``terrainbento`` models.
+    """ Base class for stochastic-precipitation terrainbento models.
 
-    A ``StochasticErosionModel`` inherits from ``ErosionModel`` and provides
+    A **StochasticErosionModel** inherits from **ErosionModel** and provides
     functionality needed by all stochastic-precipitation models.
 
     This is a base class that handles processes related to the generation of
@@ -117,7 +117,7 @@ class StochasticErosionModel(ErosionModel):
 
         Examples
         --------
-        We recommend that you look at the ``terrainbento`` tutorials for
+        We recommend that you look at the terrainbento tutorials for
         examples of usage.
         """
 
@@ -343,7 +343,7 @@ class StochasticErosionModel(ErosionModel):
     def finalize(self):
         """Finalize stochastic erosion models.
 
-        The finalization step of stochastic erosion models in ``terrainbento``
+        The finalization step of stochastic erosion models in terrainbento
         results in writing out the storm sequence file and the precipitation
         exceedence statistics summary if ``record_rain`` was set to ``True``.
         """

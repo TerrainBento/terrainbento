@@ -1,7 +1,7 @@
 #! /usr/env/python
-""" ``PrecipChanger`` changes precipitation frequency and intensity over time.
+""" **PrecipChanger** changes precipitation frequency and intensity over time.
 
-This ``terrainbento`` boundary-condition handler was designed to change the
+This terrainbento boundary-condition handler was designed to change the
 precipitation frequency and intensity over time in order to modify the water
 erodability coefficient.
 
@@ -155,7 +155,7 @@ Finally we define the erodability adjustment factor :math:`F_{w}`:
 Here :math:`F_0` and :math:`\Psi_0` are the starting fraction of wet days and
 starting value for :math:`\Psi`.
 
-``PrecipChanger`` presently supports changes in :math:`F` and :math:`p_d` but
+**PrecipChanger** presently supports changes in :math:`F` and :math:`p_d` but
 not :math:`c`.
 """
 
@@ -230,12 +230,12 @@ def _scale_fac(pmean, c):
 class PrecipChanger(object):
     """Handle time varying precipitation.
 
-    The ``PrecipChanger`` handles time-varying precipitation by changing the
+    The **PrecipChanger** handles time-varying precipitation by changing the
     proportion of time rain occurs (``daily_rainfall_daily_rainfall_intermittency_factor``)
     and the mean of the daily rainfall Weibull distribution
     (``daily_rainfall__mean_intensity``).
 
-    Note that ``PrecipChanger`` increments time at the end of the
+    Note that **PrecipChanger** increments time at the end of the
     **run_one_step** method.
     """
 
@@ -292,7 +292,7 @@ class PrecipChanger(object):
             Time unit of input parameters. Currently only 'second', 'day', and
             'year' are supported. Default value is 'year'.
         length_factor : float, optional
-            ``terrainbento`` model interal length factor conversion related to
+            terrainbento model internal length factor conversion related to
             ``meters_to_feet`` and ``feet_to_meters`` input paramters. Default
             is 1.0.
 
@@ -315,7 +315,7 @@ class PrecipChanger(object):
         >>> from landlab import RasterModelGrid
         >>> mg = RasterModelGrid(5, 5)
 
-        Now import the ``PrecipChanger`` and instantiate.
+        Now import the **PrecipChanger** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import PrecipChanger
         >>> bh = PrecipChanger(mg,
@@ -572,12 +572,12 @@ class PrecipChanger(object):
             return 1.0
 
     def run_one_step(self, dt):
-        """Run ``PrecipChanger`` forward and update model time.
+        """Run **PrecipChanger** forward and update model time.
 
         The **run_one_step** method provides a consistent interface to update
-        the ``terrainbento`` boundary condition handlers.
+        the terrainbento boundary condition handlers.
 
-        In the **run_one_step** routine, the ``PrecipChanger`` will update its
+        In the **run_one_step** routine, the **PrecipChanger** will update its
         internal record of model time.
 
         Parameters
