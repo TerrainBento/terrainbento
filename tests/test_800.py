@@ -48,7 +48,7 @@ def test_no_Ksp_or_Kss_till():
         "run_duration": 200.,
         "contact_zone__width": 1.0,
         "regolith_transport_parameter": 0.001,
-        "water_erodability~till": 0.005,
+        "water_erodability~rock": 0.005,
     }
 
     pytest.raises(ValueError, BasicRt, params=params)
