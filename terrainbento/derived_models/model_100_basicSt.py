@@ -1,47 +1,19 @@
 #! /usr/env/python
 """
-model_100_basicSt.py: models discharge and erosion across a topographic
-surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
-flow routing, and (3) Hortonian infiltration model. Includes stream-power
-erosion plus linear diffusion.
+``terrainbento`` Model ``BasicSt`` program.
 
-Model 100 BasicSt
+Erosion model program using linear diffusion and stream power. Discharge is
+calculated from drainage area, infiltration capacity (a parameter), and 
+precipitation rate, which is a stochastic variable.
 
-The hydrology uses calculation of drainage area using the standard "D8"
-approach (assuming the input grid is a raster; "DN" if not), then modifies it
-by running a lake-filling component. It then performs one of two options,
-depending on the user's choice of "opt_stochastic_duration" (True or False).
-
-If the user requests stochastic duration, the model iterates through a sequence
-of storm and interstorm periods. Storm depth is drawn at random from a gamma
-distribution, and storm duration from an exponential distribution; storm
-intensity is then depth divided by duration. This sequencing is implemented by
-overriding the run_for method.
-
-If the user does not request stochastic duration (indicated by setting
-opt_stochastic_duration to False), then the default (erosion_model base class)
-run_for method is used. Whenever run_one_step is called, storm intensity is
-generated at random from an exponential distribution with mean given by the
-parameter daily_rainfall__mean_intensity. The stream power component is run for only a
-fraction of the time step duration dt, as specified by the parameter
-daily_rainfall_intermittency_factor. For example, if dt is 10 years and the intermittency
-factor is 0.25, then the stream power component is run for only 2.5 years.
-
-In either case, given a storm precipitation intensity :math:`P`, the runoff
-production rate :math:`R` [L/T] is calculated using:
-
-.. math::
-    R = P - I (1 - \exp ( -P / I ))
-
-where :math:`I` is the soil infiltration capacity. At the sub-grid scale, soil
-infiltration capacity is assumed to have an exponential distribution of which
-$I$ is the mean. Hence, there are always some spots within any given grid cell
-that will generate runoff. This approach yields a smooth transition from
-near-zero runoff (when :math:`I>>P`) to :math:`R \approx P` (when :math`P>>I`),
-without a "hard threshold."
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    5. `PrecipitationDistribution <http://landlab.readthedocs.io/en/latest/landlab.components.html#landlab.components.PrecipitationDistribution>`_
 """
 
-import sys
 import numpy as np
 
 from landlab.components import LinearDiffuser, FastscapeEroder
@@ -50,15 +22,139 @@ from terrainbento.base_class import StochasticErosionModel
 
 class BasicSt(StochasticErosionModel):
     """
-    A StochasticHortonianSPModel generates a random sequency of
-    runoff events across a topographic surface, calculating the resulting
-    water discharge at each node.
+    Model `BasicSt` program.
+
+    Model ``BasicSt`` is a model program that evolves a topographic surface
+    described by :math:`\eta (x,y,t)` with the following governing equation:
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -K_{q}\hat{Q}^{m}S^{n} + D\\nabla^2 \eta
+
+    where :math:`\hat{Q}` is the local stream discharge (the hat symbol
+    indicates that it is a random-in-time variable) and :math:`S` is the local
+    slope gradient. Refer to the ``terrainbento`` manuscript Table XX (URL here) 
+    for parameter symbols, names, and dimensions.
+
+    Model ``BasicSt`` inherits from the ``terrainbento`` 
+    ``StochasticErosionModel`` base
+    class. Depending on the values of :math:`K_{q}`, :math:`m`
+    and, :math:`n` this model program can be used to run the following two
+    ``terrainbento`` numerical models:
+
+    1) Model ``BasicSt``: Here :math:`m` has a value of 0.5 and
+    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
+    ``water_erodibility``.
+
+    2) Model ``BasicSsSt``: In this model :math:`m` has a value of 1/3,
+    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
+    parameter ``water_erodibility~shear_stress``.
+
+    Model BasicSt models discharge and erosion across a topographic
+    surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
+    flow routing, and (3) Hortonian infiltration model. Includes stream-power
+    erosion plus linear diffusion.
+    
+    The hydrology uses calculation of drainage area using the standard "D8"
+    approach (assuming the input grid is a raster; "DN" if not), then modifies it
+    by running a lake-filling component. It then performs one of two options,
+    depending on the user's choice of "opt_stochastic_duration" (True or False).
+    
+    If the user requests stochastic duration, the model iterates through a sequence
+    of storm and interstorm periods. Storm depth is drawn at random from a gamma
+    distribution, and storm duration from an exponential distribution; storm
+    intensity is then depth divided by duration. This sequencing is implemented by
+    overriding the run_for method.
+    
+    If the user does not request stochastic duration (indicated by setting
+    opt_stochastic_duration to False), then the default (erosion_model base class)
+    run_for method is used. Whenever run_one_step is called, storm intensity is
+    generated at random from an exponential distribution with mean given by the
+    parameter daily_rainfall__mean_intensity. The stream power component is run for 
+    only a fraction of the time step duration dt, as specified by the parameter
+    daily_rainfall_intermittency_factor. For example, if dt is 10 years and the 
+    intermittency factor is 0.25, then the stream power component is run for only
+    2.5 years.
+    
+    In either case, given a storm precipitation intensity :math:`P`, the runoff
+    production rate :math:`R` [L/T] is calculated using:
+    
+    .. math::
+        R = P - I (1 - \exp ( -P / I ))
+    
+    where :math:`I` is the soil infiltration capacity. At the sub-grid scale, soil
+    infiltration capacity is assumed to have an exponential distribution of which
+    $I$ is the mean. Hence, there are always some spots within any given grid cell
+    that will generate runoff. This approach yields a smooth transition from
+    near-zero runoff (when :math:`I>>P`) to :math:`R \approx P` (when :math`P>>I`),
+    without a "hard threshold."
     """
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the StochasticDischargeHortonianModel."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        BasicSt : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model ``BasicSt``. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the ``terrainbento`` tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicSt
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability': 0.001,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'opt_stochastic_duration': False,
+        ...           'number_of_sub_time_steps': 1,
+        ...           'daily_rainfall_intermittency_factor': 0.5,
+        ...           'daily_rainfall__mean_intensity': 1.0,
+        ...           'daily_rainfall__precipitation_shape_factor': 1.0}
+
+        Construct the model.
+
+        >>> model = BasicSt(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
 
         # Call ErosionModel's init
         super(BasicSt, self).__init__(
@@ -137,8 +233,28 @@ class BasicSt(StochasticErosionModel):
         return runoff
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
+        """Advance model ``Basic`` for one time-step of duration dt.
+
+        The **run_one_step** method does the following:
+
+        1. Directs flow and accumulates drainage area.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+        not occur.
+
+        3. Calculates precipitation, runoff, discharge, and detachment-limited 
+        erosion by water.
+
+        4. Calculates topographic change by linear diffusion.
+
+        5. Finalizes the step using the ``ErosionModel`` base class function
+        **finalize_run_one_step**. This function updates all BoundaryHandlers
+        by ``dt`` and increments model time by ``dt``.
+
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
         """
 
         # Route flow
@@ -163,13 +279,18 @@ class BasicSt(StochasticErosionModel):
 
 
 def main(): #pragma: no cover
-    """Executes model."""
+    """Execute model."""
     import sys
 
     try:
         infile = sys.argv[1]
     except IndexError:
-        print("Must include input file name on command line")
+        print(
+            (
+                "To run a terrainbento model from the command line you must "
+                "include input file name on command line"
+            )
+        )
         sys.exit(1)
 
     em = BasicSt(input_file=infile)
