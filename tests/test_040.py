@@ -18,7 +18,7 @@ def test_diffusion_only():
     D = 1.0
     S_c = 0.3
     dx = 10.0
-    runtime = 100000/dt 
+    runtime = 10000 
 
     #Construct dictionary. Note that stream power is turned off
     params = {'model_grid': 'RasterModelGrid',
@@ -119,7 +119,7 @@ def test_steady_Ksp_no_precip_changer():
     m = 0.5
     n = 1.0
     dt = 10
-    runtime = 20000/dt
+    runtime = 20000
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
