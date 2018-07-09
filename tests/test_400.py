@@ -10,7 +10,7 @@ from terrainbento import BasicSa
 
 #test diffusion without stream power
 def test_diffusion_only():
-    U = 0.001
+	U = 0.001
     K = 0.0
     m = 0.5
     n = 1.0
@@ -76,8 +76,8 @@ def test_diffusion_only():
 
 
 
-    def test_steady_Ksp_no_precip_changer_with_depression_finding():
-    U = 0.001
+def test_steady_Ksp_no_precip_changer_with_depression_finding():
+	U = 0.001
     K = 0.01
     m = 0.5
     n = 1.0
