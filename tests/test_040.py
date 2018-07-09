@@ -18,7 +18,7 @@ def test_diffusion_only():
     D = 1.0
     S_c = 0.3
     dx = 10.0
-    runtime = 10000 
+    runtime = 30000
 
     #Construct dictionary. Note that stream power is turned off
     params = {'model_grid': 'RasterModelGrid',
@@ -65,7 +65,7 @@ def test_diffusion_only():
 
     actual_slope = np.abs(model.grid.at_node['topographic__steepest_slope'][39])
     #print model.grid.at_node['topographic__steepest_slope']
-    assert_array_almost_equal(actual_slope, predicted_slope)
+    assert_array_almost_equal(actual_slope, predicted_slope, decimal = 3)
 
 
 
