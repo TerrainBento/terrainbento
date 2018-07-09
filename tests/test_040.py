@@ -64,7 +64,7 @@ def test_diffusion_only():
     #print(predicted_slope)
 
     actual_slope = np.abs(model.grid.at_node['topographic__steepest_slope'][39])
-    print model.grid.at_node['topographic__steepest_slope']
+    #print model.grid.at_node['topographic__steepest_slope']
     assert_array_almost_equal(actual_slope, predicted_slope)
 
 
