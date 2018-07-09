@@ -72,7 +72,7 @@ def test_diffusion_only():
     steady_z_profile = np.append([-steady_z_profile_firsthalf],[steady_z_profile_secondhalf])
     predicted_profile = steady_z_profile - np.min(steady_z_profile)
 
-        assert_array_almost_equal(actual_profile,predicted_profile)
+    assert_array_almost_equal(actual_profile,predicted_profile)
 
 
 
