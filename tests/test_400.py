@@ -14,13 +14,15 @@ def test_diffusion_only():
     K = 0.0
     m = 0.5
     n = 1.0
-    dt = 1
+    dt = 10
     dx = 10.0
+    number_of_node_columns = 21
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2
     regolith_transport_parameter = 1.0
     soil_transport_decay_depth = 0.5
-    runtime = 1
+    initial_soil_thickness = 0.0
+    runtime = 100000
 
     #Construct dictionary. Note that stream power is turned off
     params = {'model_grid': 'RasterModelGrid',
@@ -36,7 +38,7 @@ def test_diffusion_only():
                 'soil_transport_decay_depth': soil_transport_decay_depth,
                 'max_soil_production_rate': max_soil_production_rate,
                 'soil_production_decay_depth': soil_production_decay_depth,
-                'initial_soil_thickness': 0.0,
+                'initial_soil_thickness': initial_soil_thickness,
                 'water_erodability': K,
                 'm_sp': m,
                 'n_sp': n,
@@ -54,14 +56,23 @@ def test_diffusion_only():
     #test steady state soil depth
     actual_depth = model.grid.at_node['soil__depth'][30]
     predicted_depth = -soil_production_decay_depth*np.log(U/max_soil_production_rate)
-    assert_array_almost_equal(actual_slope,predicted_slope,decimal = 3)
+    assert_array_almost_equal(actual_depth,predicted_depth,decimal = 3)
 
     #test steady state slope
-    actual_slope = model.grid.at_node['topographic__steepest_slope']
+    actual_profile = model.grid.at_node['topographic__elevation'][21:42]
 
     domain = np.arange(0, max(model.grid.node_x + dx), dx)
-    x = np.arange(-max(domain)/2., max(domain)/2. + dx, dx)
-    #predicted_slope = U*
+    steady_domain = np.arange(-max(domain)/2., max(domain)/2. + dx, dx)
+    
+    steady_z_profile_firsthalf = (steady_domain[0:len(domain)/2])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))-(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
+    steady_z_profile_secondhalf = -(steady_domain[len(domain)/2:])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))+(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
+
+
+
+    steady_z_profile = np.append([-steady_z_profile_firsthalf],[steady_z_profile_secondhalf])
+    predicted_profile = steady_z_profile - np.min(steady_z_profile)
+
+        assert_array_almost_equal(actual_profile,predicted_profile)
 
 
 
@@ -125,7 +136,7 @@ def test_steady_Ksp_no_precip_changer():
     dx = 10.0
     max_soil_production_rate = 0.0
     soil_production_decay_depth = 0.2
-    regolith_transport_parameter = 0.0
+    regolith_transport_parameter = 1.0
     soil_transport_decay_depth = 0.5
     run_time = 1000
     # construct dictionary. note that D is turned off here
