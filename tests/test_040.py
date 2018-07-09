@@ -119,7 +119,7 @@ def test_steady_Ksp_no_precip_changer():
     m = 0.5
     n = 1.0
     dt = 10
-    runtime = 10000/dt
+    runtime = 20000/dt
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
@@ -152,7 +152,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
-                              predicted_slopes[model.grid.core_nodes[1:-1]])
+                              predicted_slopes[model.grid.core_nodes[1:-1]], decimal = 4)
 
 
 def test_with_precip_changer():
