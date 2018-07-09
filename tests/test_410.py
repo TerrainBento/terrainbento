@@ -292,7 +292,7 @@ def test_stability_checker():
         model = BasicHySa(params=params)
         for i in range(800):
             model.run_one_step(dt)
-
+    os.remove('model_failed.txt')
 
 # =============================================================================
 # def test_diffusion_only():
