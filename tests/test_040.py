@@ -8,7 +8,7 @@ import pytest
 from landlab import HexModelGrid
 from terrainbento import BasicCh
 
-
+#test diffusion without stream power
 def test_diffusion_only():
     U = 0.0005
     K = 0.0
