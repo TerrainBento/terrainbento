@@ -77,7 +77,7 @@ def test_diffusion_only():
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
-	U = 0.001
+    U = 0.001
     K = 0.01
     m = 0.5
     n = 1.0
@@ -110,7 +110,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
           	    'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
                 'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
                                                 'lowering_rate': -U}}
-    
+
     # construct and run model
     model = BasicSa(params=params)
     for i in range(run_time):
