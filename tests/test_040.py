@@ -7,7 +7,6 @@ import pytest
 
 from landlab import HexModelGrid
 from terrainbento import BasicCh
-from terrainbento import Basic
 
 
 def test_diffusion_only():
@@ -17,9 +16,9 @@ def test_diffusion_only():
     n = 1.0
     dt = 10
     D = 0.001
-    S_c = 0.2
+    S_c = 1.0
     dx = 10.0
-    runtime = 200000
+    runtime = 10000
 
     #Construct dictionary. Note that stream power is turned off
     params = {'model_grid': 'RasterModelGrid',
@@ -46,8 +45,9 @@ def test_diffusion_only():
 
 
 
+
     #Construct actual and predicted slope at right edge of domain
-    x = 9*dx
+    x = 10*dx
     qs = U*dx
     nterms = 11
     p = np.zeros(2*nterms-1)
@@ -57,8 +57,10 @@ def test_diffusion_only():
     p = np.append(p,qs)
     p_roots = np.roots(p)
     predicted_slope = np.abs(np.real(p_roots[-1]))
+    print predicted_slope
 
     actual_slope = np.abs(model.grid.at_node['topographic__steepest_slope'][39])
+    print model.grid.at_node['topographic__steepest_slope']
     assert_array_almost_equal(actual_slope, predicted_slope)
 
 
@@ -68,8 +70,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1.0
-    run_time = 800
+    dt = 10.0
+    run_time = 20000
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': dt,
@@ -82,7 +84,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
               'south_boundary_closed': True,
               'regolith_transport_parameter': 0.0,
               'water_erodability': K,
-              'slope_crit': 0.0,
+              'slope_crit': 0.2,
               'm_sp': m,
               'n_sp': n,
               'random_seed': 3141,
@@ -112,7 +114,8 @@ def test_steady_Ksp_no_precip_changer():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1000
+    dt = 10
+    runtime = 20000
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
@@ -124,7 +127,7 @@ def test_steady_Ksp_no_precip_changer():
               'north_boundary_closed': True,
               'south_boundary_closed': True,
               'regolith_transport_parameter': 0.,
-              'slope_crit': 0.0,
+              'slope_crit': 0.2,
               'water_erodability': K,
               'm_sp': m,
               'n_sp': n,
@@ -160,7 +163,7 @@ def test_with_precip_changer():
               'north_boundary_closed': True,
               'south_boundary_closed': True,
               'regolith_transport_parameter': 0.,
-              'slope_crit': 0.0,
+              'slope_crit': 0.2,
               'water_erodability': K,
               'm_sp': 0.5,
               'n_sp': 1.0,
