@@ -61,7 +61,7 @@ def test_diffusion_only():
     p = np.append(p,qs)
     p_roots = np.roots(p)
     predicted_slope = np.abs(np.real(p_roots[-1]))
-    print predicted_slope
+    #print(predicted_slope)
 
     actual_slope = np.abs(model.grid.at_node['topographic__steepest_slope'][39])
     print model.grid.at_node['topographic__steepest_slope']
