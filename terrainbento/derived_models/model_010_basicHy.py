@@ -40,7 +40,7 @@ class BasicHy(ErosionModel):
 
     Model **BasicHy** inherits from the terrainbento **ErosionModel** base
     class. Depending on the value of :math:`\omega_c`, this model program can 
-    be used to run the following two terrainbentonumerical models:
+    be used to run the following two terrainbento numerical models:
 
     1) Model **BasicHy**: Here there is no erosion threshold, i.e. 
     :math:`\omega_c=0`.

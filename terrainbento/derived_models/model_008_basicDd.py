@@ -45,13 +45,13 @@ class BasicDd(ErosionModel):
     and :math:`D_I` is the cumulative incision depth at location 
     :math:`\left(x,y\\right)` and time :math:`t`.
         
-    Refer to the terrainbentomanuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
     Model **BasicDd** inherits from the terrainbento **ErosionModel** base
     class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
     and, :math:`n` this model program can be used to run the following two
-    terrainbentonumerical models:
+    terrainbento numerical models:
 
     1) Model **BasicDd**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter

@@ -48,7 +48,7 @@ class BasicDdHy(ErosionModel):
     and :math:`D_I` is the cumulative incision depth at location 
     :math:`\left(x,y\\right)` and time :math:`t`.
     
-    Refer to the terrainbentomanuscript Table XX (URL here) for parameter 
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter 
     symbols, names, and dimensions.
 
     Model **BasicDdHy** inherits from the terrainbento **ErosionModel** 

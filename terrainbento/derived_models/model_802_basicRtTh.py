@@ -21,8 +21,66 @@ from terrainbento.base_class import ErosionModel
 
 class BasicRtTh(ErosionModel):
     """
-    A BasicThRt computes erosion using linear diffusion, stream
-    power with a smoothed threshold, Q~A, and two lithologies: rock and till.
+    Parameters
+    ----------
+    input_file : str
+        Path to model input file. See wiki for discussion of input file
+        formatting. One of input_file or params is required.
+    params : dict
+        Dictionary containing the input file. One of input_file or params is
+        required.
+    BoundaryHandlers : class or list of classes, optional
+        Classes used to handle boundary conditions. Alternatively can be
+        passed by input file as string. Valid options described above.
+    OutputWriters : class, function, or list of classes and/or functions, optional
+        Classes or functions used to write incremental output (e.g. make a
+        diagnostic plot).
+
+    Returns
+    -------
+    BasicRtTh : model object
+
+    Examples
+    --------
+    This is a minimal example to demonstrate how to construct an instance
+    of model **BasicRtTh**. Note that a YAML input file can be used instead of
+    a parameter dictionary. For more detailed examples, including steady-
+    state test examples, see the terrainbento tutorials.
+
+    To begin, import the model class.
+
+    >>> from terrainbento import BasicRtTh
+
+    Set up a parameters variable.
+
+    >>> params = {'model_grid': 'RasterModelGrid',
+    ...           'dt': 1,
+    ...           'output_interval': 2.,
+    ...           'run_duration': 200.,
+    ...           'number_of_node_rows' : 6,
+    ...           'number_of_node_columns' : 9,
+    ...           'node_spacing' : 10.0,
+    ...           'regolith_transport_parameter': 0.001,
+    ...           'water_erodability~rock': 0.001,
+    ...           'water_erodability~till': 0.01,
+    ...           'water_erosion_rule~till~threshold___parameter': 0.1,
+    ...           'water_erosion_rule~rock~threshold___parameter': 0.2,
+    ...           'contact_zone__width': 1.0,
+    ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+    ...           'm_sp': 0.5,
+    ...           'n_sp': 1.0}
+
+    Construct the model.
+
+    >>> model = BasicRtTh(params=params)
+
+    Running the model with ``model.run()`` would create output, so here we
+    will just run it one step.
+
+    >>> model.run_one_step(1.)
+    >>> model.model_time
+    1.0
+
     """
 
     def __init__(
@@ -43,10 +101,10 @@ class BasicRtTh(ErosionModel):
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock")
         self.K_till_sp = self.get_parameter_from_exponent("water_erodability~till")
         rock_erosion__threshold = self.get_parameter_from_exponent(
-            "rock_erosion__threshold"
+            "water_erosion_rule~rock~threshold___parameter"
         )
         till_erosion__threshold = self.get_parameter_from_exponent(
-            "till_erosion__threshold"
+            "water_erosion_rule~till~threshold___parameter"
         )
         regolith_transport_parameter = (
             self._length_factor ** 2.

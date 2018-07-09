@@ -28,7 +28,68 @@ class BasicDdRt(ErosionModel):
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the BasicDdRt."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        BasicDdRt : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicDdRt**. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicDdRt
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability~rock': 0.001,
+        ...           'water_erodability~till': 0.01,
+        ...           'water_erosion_rule~substrate~threshold___parameter': 0.2,
+        ...           'water_erosion_rule~substrate~threshold__depth_derivative_of_parameter': 0.001,
+        ...           'contact_zone__width': 1.0,
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0}
+
+        Construct the model.
+
+        >>> model = BasicDdRt(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
 
         # Call ErosionModel's init
         super(BasicDdRt, self).__init__(
@@ -47,7 +108,7 @@ class BasicDdRt(ErosionModel):
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
-            "erosion__threshold"
+            "water_erosion_rule~substrate~threshold___parameter"
         )  # has units length/time
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
@@ -71,7 +132,7 @@ class BasicDdRt(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["thresh_change_per_depth"]
+        self.thresh_change_per_depth = self.params["water_erosion_rule~substrate~threshold__depth_derivative_of_parameter"]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

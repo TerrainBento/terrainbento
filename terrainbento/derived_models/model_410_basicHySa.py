@@ -46,7 +46,7 @@ class BasicHySa(ErosionModel):
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.
 
-    Refer to the terrainbentomanuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
     Model **BasicHySa** inherits from the terrainbento **ErosionModel**

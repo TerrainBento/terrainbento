@@ -34,7 +34,66 @@ class BasicRtSa(ErosionModel):
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the BasicSaRt."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        BasicRtSa : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicRtSa**. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicRtSa
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability~rock': 0.001,
+        ...           'water_erodability~till': 0.01,
+        ...           'contact_zone__width': 1.0,
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0}
+
+        Construct the model.
+
+        >>> model = BasicRtSa(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
 
         # Call ErosionModel's init
         super(BasicSaRt, self).__init__(

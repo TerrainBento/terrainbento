@@ -28,13 +28,13 @@ class Basic(ErosionModel):
         \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    Refer to the terrainbentomanuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
     Model **Basic** inherits from the terrainbento **ErosionModel** base
     class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
     and, :math:`n` this model program can be used to run the following three
-    terrainbentonumerical models:
+    terrainbento numerical models:
 
     1) Model **Basic**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter

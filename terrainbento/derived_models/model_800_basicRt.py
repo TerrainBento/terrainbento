@@ -45,7 +45,7 @@ class BasicRt(ErosionModel):
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
     erodability based on the depth to the contact zone and the width of the
-    contact zone. Refer to the terrainbentomanuscript Table XX (URL here)
+    contact zone. Refer to the terrainbento manuscript Table XX (URL here)
     for parameter symbols, names, and dimensions.
 
     Here, the weight :math:`w` promotes smoothness in the solution of
@@ -56,7 +56,7 @@ class BasicRt(ErosionModel):
 
     Model **BasicRt** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbentonumerical models:
+    to run the following two terrainbento numerical models:
 
     1) Model **BasicRt**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter

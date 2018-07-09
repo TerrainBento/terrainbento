@@ -31,7 +31,7 @@ class BasicTh(ErosionModel):
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     and :math:`\omega_c` is the critical stream power needed for erosion to occur.
-    Refer to the terrainbentomanuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
     Model **BasicTh** inherits from the terrainbento **ErosionModel** base
