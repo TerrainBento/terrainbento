@@ -10,7 +10,7 @@ from terrainbento import BasicSa
 
 #test diffusion without stream power
 def test_diffusion_only():
-	U = 0.001
+    U = 0.001
     K = 0.0
     m = 0.5
     n = 1.0
