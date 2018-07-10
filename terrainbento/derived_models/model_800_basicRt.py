@@ -26,7 +26,7 @@ class BasicRt(ErosionModel):
     """Model **BasicRt** program.
 
     Model **BasicRt** improves upon the **Basic** model by allowing for two
-    lithologies, and "upper" layer and a "lower" layer. Given a spatially
+    lithologies, an "upper" layer and a "lower" layer. Given a spatially
     varying contact zone elevation, :math:`\eta_C(x,y))`, model **BasicRt**
     evolves a topographic surface described by :math:`\eta` with the following
     governing equations:
