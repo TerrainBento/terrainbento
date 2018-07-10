@@ -4,7 +4,7 @@ model_802_basicThRt.py: erosion model using linear diffusion, stream
 power with a smoothed threshold, discharge proportional to drainage area, and
 two lithologies: rock and till.
 
-Model 802 BasicThRt
+Model 802 BasicRtTh
 
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
                          StreamPowerSmoothThresholdEroder, LinearDiffuser
@@ -86,9 +86,9 @@ class BasicRtTh(ErosionModel):
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the BasicThRt."""
+        """Initialize the BasicRtTh."""
         # Call ErosionModel's init
-        super(BasicThRt, self).__init__(
+        super(BasicRtTh, self).__init__(
             input_file=input_file,
             params=params,
             BoundaryHandlers=BoundaryHandlers,
@@ -229,7 +229,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    thrt = BasicThRt(input_file=infile)
+    thrt = BasicRtTh(input_file=infile)
     thrt.run()
 
 
