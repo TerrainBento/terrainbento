@@ -11,64 +11,6 @@ from terrainbento import BasicRtSa
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def test_no_Ksp_or_Kss_rock():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "contact_zone__width": 1.0,
-        "regolith_transport_parameter": 0.001,
-        "water_erodability~upper": 0.005,
-    }
-
-    pytest.raises(ValueError, BasicRtSa, params=params)
-
-
-def test_both_Ksp_or_Kss_rock():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "contact_zone__width": 1.0,
-        "regolith_transport_parameter": 0.001,
-        "water_erodability~lower": 0.001,
-        "water_erodability~lower~shear_stress": 0.001,
-        "water_erodability~upper": 0.005,
-    }
-    pytest.raises(ValueError, BasicRtSa, params=params)
-
-
-def test_no_Ksp_or_Kss_till():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "contact_zone__width": 1.0,
-        "regolith_transport_parameter": 0.001,
-        "water_erodability~lower": 0.005,
-    }
-
-    pytest.raises(ValueError, BasicRtSa, params=params)
-
-
-def test_both_Ksp_or_Kss_till():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "regolith_transport_parameter": 0.001,
-        "contact_zone__width": 1.0,
-        "water_erodability~lower": 0.001,
-        "water_erodability~upper": 0.005,
-        "water_erodability~upper~shear_stress": 0.005,
-    }
-    pytest.raises(ValueError, BasicRtSa, params=params)
-
-
 def test_steady_Kss_no_precip_changer():
     U = 0.0001
     Kr = 0.001
@@ -90,8 +32,8 @@ def test_steady_Kss_no_precip_changer():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~lower~shear_stress": Kr,
-        "water_erodability~upper~shear_stress": Kt,
+        "water_erodability~lower": Kr,
+        "water_erodability~upper": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -99,55 +41,10 @@ def test_steady_Kss_no_precip_changer():
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
-    }
-
-    # construct and run model
-    model = BasicRtSa(params=params)
-    for i in range(100):
-        model.run_one_step(dt)
-
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    rock_predicted_slopes = (U / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
-
-    # assert actual and predicted slopes are the same for rock and till portions.
-    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
-
-    # assert actual and predicted slopes are the same for rock and till portions.
-    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
-
-
-def test_steady_Ksp_no_precip_changer():
-    U = 0.0001
-    Kr = 0.001
-    Kt = 0.005
-    m = 0.5
-    n = 1.0
-    dt = 1000
-
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 8,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability~lower~shear_stress": Kr,
-        "water_erodability~upper~shear_stress": Kt,
-        "lithology_contact_elevation__file_name": file_name,
-        "contact_zone__width": 1.,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        'soil__initial_thickness': 0.,
+        'soil_transport_decay_depth': 1.0,
+        'max_soil_production_rate': 0.,
+        'soil_production_decay_depth': 1.0
     }
 
     # construct and run model
@@ -188,8 +85,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~lower~shear_stress": Kr,
-        "water_erodability~upper~shear_stress": Kt,
+        "water_erodability~lower": Kr,
+        "water_erodability~upper": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -198,6 +95,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        'soil__initial_thickness': 1.,
+        'soil_transport_decay_depth': 1.0,
+        'max_soil_production_rate': 0.,
+        'soil_production_decay_depth': 1.0
     }
 
     # construct and run model
@@ -217,59 +118,59 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
 
 
-def test_diffusion_only():
-
-    total_time = 5.0e6
-    U = 0.001
-    D = 1
-    m = 0.75
-    n = 1.0
-    dt = 1000
-
-    # construct dictionary. note that D is turned off here
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 21,
-        "number_of_node_columns": 3,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": D,
-        "water_erodability~lower~shear_stress": 0,
-        "water_erodability~upper~shear_stress": 0,
-        "lithology_contact_elevation__file_name": file_name,
-        "contact_zone__width": 1.,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
-    }
-    nts = int(total_time / dt)
-
-    reference_node = 9
-    # construct and run model
-    model = BasicRtSa(params=params)
-    for i in range(nts):
-        model.run_one_step(dt)
-
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
-        (
-            model.grid.x_of_node
-            - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
-        )
-        ** 2
-    )
-
-    # assert actual and predicted elevations are the same.
-    assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
-    )
+# def test_diffusion_only():
+#
+#     total_time = 5.0e6
+#     U = 0.001
+#     D = 1
+#     m = 0.75
+#     n = 1.0
+#     dt = 1000
+#
+#     # construct dictionary. note that D is turned off here
+#     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
+#     # construct dictionary. note that D is turned off here
+#     params = {
+#         "model_grid": "RasterModelGrid",
+#         "dt": 1,
+#         "output_interval": 2.,
+#         "run_duration": 200.,
+#         "number_of_node_rows": 21,
+#         "number_of_node_columns": 3,
+#         "node_spacing": 100.0,
+#         "north_boundary_closed": True,
+#         "south_boundary_closed": True,
+#         "regolith_transport_parameter": D,
+#         "water_erodability~lower": 0,
+#         "water_erodability~upper": 0,
+#         "lithology_contact_elevation__file_name": file_name,
+#         "contact_zone__width": 1.,
+#         "m_sp": m,
+#         "n_sp": n,
+#         "random_seed": 3141,
+#         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
+#         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+#     }
+#     nts = int(total_time / dt)
+#
+#     reference_node = 9
+#     # construct and run model
+#     model = BasicRtSa(params=params)
+#     for i in range(nts):
+#         model.run_one_step(dt)
+#
+#     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
+#         (
+#             model.grid.x_of_node
+#             - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
+#         )
+#         ** 2
+#     )
+#
+#     # assert actual and predicted elevations are the same.
+#     assert_array_almost_equal(
+#         predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+#     )
 
 
 def test_with_precip_changer():
@@ -288,13 +189,17 @@ def test_with_precip_changer():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~lower~shear_stress": Kr,
-        "water_erodability~upper~shear_stress": Kt,
+        "water_erodability~lower": Kr,
+        "water_erodability~upper": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": 0.5,
         "n_sp": 1.0,
         "random_seed": 3141,
+        'soil__initial_thickness': 0.,
+        'soil_transport_decay_depth': 1.0,
+        'max_soil_production_rate': 0.,
+        'soil_production_decay_depth': 1.0,
         "BoundaryHandlers": "PrecipChanger",
         "PrecipChanger": {
             "daily_rainfall__intermittency_factor": 0.5,

@@ -305,7 +305,7 @@ def test_with_precip_changer():
     }
 
     model = BasicChRtTh(params=params)
-    model._update_erodability_field()
+    model._update_erodability_and_threshold_fields()
     assert np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) == True
     assert np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) == True
 
