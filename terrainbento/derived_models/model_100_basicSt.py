@@ -134,7 +134,7 @@ class BasicSt(StochasticErosionModel):
         ...           'number_of_node_columns' : 9,
         ...           'node_spacing' : 10.0,
         ...           'regolith_transport_parameter': 0.001,
-        ...           'water_erodability': 0.001,
+        ...           'water_erodability~stochastic': 0.001,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'opt_stochastic_duration': False,
@@ -167,9 +167,10 @@ class BasicSt(StochasticErosionModel):
         )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
+        K_sp = self.get_parameter_from_exponent(
+            "water_erodability~stochastic", raise_error=False)
         K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
+            "water_erodability~stochastic~shear_stress", raise_error=False
         )
         regolith_transport_parameter = (
             self._length_factor ** 2.
