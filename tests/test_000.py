@@ -170,7 +170,7 @@ def test_diffusion_only():
     total_time = 5.0e6
     U = 0.001
     D = 1
-    m = 0.75
+    m = 0.5
     n = 1.0
     dt = 1000
 
