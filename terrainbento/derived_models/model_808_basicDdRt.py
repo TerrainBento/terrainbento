@@ -190,9 +190,7 @@ class BasicDdRt(ErosionModel):
         )
 
     def _update_erosion_threshold_values(self):
-        """Updates the erosion threshold at each node based on cumulative
-        erosion so far."""
-
+        """Update the depth dependent erosion threshold at each node."""
         # Set the erosion threshold.
         #
         # Note that a minus sign is used because cum ero depth is negative for
