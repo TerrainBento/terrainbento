@@ -63,8 +63,8 @@ class BasicRtTh(ErosionModel):
     ...           'regolith_transport_parameter': 0.001,
     ...           'water_erodability~lower': 0.001,
     ...           'water_erodability~upper': 0.01,
-    ...           'water_erosion_rule~till~threshold___parameter': 0.1,
-    ...           'water_erosion_rule~rock~threshold___parameter': 0.2,
+    ...           'water_erosion_rule~upper~threshold___parameter': 0.1,
+    ...           'water_erosion_rule~lower~threshold___parameter': 0.2,
     ...           'contact_zone__width': 1.0,
     ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
     ...           'm_sp': 0.5,
@@ -101,10 +101,10 @@ class BasicRtTh(ErosionModel):
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
         self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
         rock_erosion__threshold = self.get_parameter_from_exponent(
-            "water_erosion_rule~rock~threshold___parameter"
+            "water_erosion_rule~lower~threshold___parameter"
         )
         till_erosion__threshold = self.get_parameter_from_exponent(
-            "water_erosion_rule~till~threshold___parameter"
+            "water_erosion_rule~upper~threshold___parameter"
         )
         regolith_transport_parameter = (
             self._length_factor ** 2.
