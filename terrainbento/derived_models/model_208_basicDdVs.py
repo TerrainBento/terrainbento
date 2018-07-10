@@ -57,7 +57,7 @@ class BasicDdVs(ErosionModel):
             "initial_soil_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(

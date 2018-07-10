@@ -72,7 +72,7 @@ class BasicSaVs(ErosionModel):
             "recharge_rate"
         ]  # has units length per time
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # Create soil thickness (a.k.a. depth) field

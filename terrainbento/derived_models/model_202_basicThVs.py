@@ -57,7 +57,7 @@ class BasicThVs(ErosionModel):
             "initial_soil_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # Add a field for effective drainage area

@@ -4,7 +4,7 @@ model_A00_basicVsRt.py: erosion model using linear diffusion, basic stream
 power with 2 lithologies (rock and till), and discharge proportional to
 effective drainage area.
 
-Model A00 BasicVsRt
+Model A00 BasicRtVs
 
 Landlab components used: FlowRouter, StreamPowerEroder, LinearDiffuser
 """
@@ -19,7 +19,7 @@ from terrainbento.base_class import ErosionModel
 
 class BasicRtVs(ErosionModel):
     """
-    A BasicVsRt computes erosion using linear diffusion, basic stream
+    A BasicRtVs computes erosion using linear diffusion, basic stream
     power with 2 lithologies, and Q ~ A exp( -b S / A).
     """
 
@@ -88,7 +88,7 @@ class BasicRtVs(ErosionModel):
         """
 
         # Call ErosionModel's init
-        super(BasicVsRt, self).__init__(
+        super(BasicRtVs, self).__init__(
             input_file=input_file,
             params=params,
             BoundaryHandlers=BoundaryHandlers,
@@ -258,7 +258,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    vsrt = BasicVsRt(input_file=infile)
+    vsrt = BasicRtVs(input_file=infile)
     vsrt.run()
 
 

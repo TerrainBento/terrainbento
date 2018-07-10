@@ -63,7 +63,7 @@ class BasicStVs(StochasticErosionModel):
             "initial_soil_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # instantiate rain generator

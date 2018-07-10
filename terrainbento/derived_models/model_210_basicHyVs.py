@@ -52,7 +52,7 @@ class BasicHyVs(ErosionModel):
             self._length_factor * self.params["initial_soil_thickness"]
         )  # L
         K_hydraulic_conductivity = (
-            self._length_factor * self.params["K_hydraulic_conductivity"]
+            self._length_factor * self.params["hydraulic_conductivity"]
         )  # has units length per time
 
         v_sc = self.get_parameter_from_exponent(

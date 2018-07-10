@@ -57,7 +57,7 @@ class BasicVs(ErosionModel):
             "initial_soil_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # check that a stream power and a shear stress parameter have not both been given
