@@ -78,7 +78,7 @@ def test_diffusion_only():
     assert_array_almost_equal(actual_slope, predicted_slope, decimal = 3)
 
 
-def test_grield_in_grid():
+def test_no_initial_soil():
     U = 0.001
     K = 0.0
     m = 0.5
@@ -120,7 +120,7 @@ def test_grield_in_grid():
 
     #Construct and run model
     model = BasicChSa(params=params)
-    model = BasicChSa(params=params)
+
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
