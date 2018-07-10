@@ -33,10 +33,10 @@ def test_both_Ksp_or_Kss():
 def test_steady_Kss_no_precip_changer():
     U = 0.0001
     K = 0.001
-    m = 1./3.
-    n = 1.
+    m = 1. / 3.
+    n = 2. / 3.
     dt = 1000
-    threshold = 0.000001
+    threshold = 0.001
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
@@ -63,22 +63,26 @@ def test_steady_Kss_no_precip_changer():
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node['topographic__steepest_slope']
-    actual_areas = model.grid.at_node['drainage_area']
-    predicted_slopes = ((U/K + threshold)/((actual_areas**m))) ** (1./n)
+    # note that since we have a smooth threshold, we do not have a true
+    # analytical solution, but a bracket within wich we expect the actual slopes
+    # to fall.
+    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+    actual_areas = model.grid.at_node["drainage_area"]
+    predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (1. / n)
+    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
-                              predicted_slopes[model.grid.core_nodes[1:-1]],
-                              decimal=4)
-    
+    # assert actual and predicted slopes are in the correct range for the slopes.
+    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] > predicted_slopes_lower[model.grid.core_nodes[1:-1]]) == True
+    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] < predicted_slopes_upper[model.grid.core_nodes[1:-1]]) == True
+
+
 def test_steady_Ksp_no_precip_changer():
     U = 0.0001
     K = 0.001
     m = 0.5
     n = 1.0
     dt = 1000
-    threshold = 0.000001
+    threshold = 0.01
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
@@ -105,15 +109,18 @@ def test_steady_Ksp_no_precip_changer():
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node['topographic__steepest_slope']
-    actual_areas = model.grid.at_node['drainage_area']
-    predicted_slopes = ((U/K + threshold)/((actual_areas**m))) ** (1./n)
+    # note that since we have a smooth threshold, we do not have a true
+    # analytical solution, but a bracket within wich we expect the actual slopes
+    # to fall.
+    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+    actual_areas = model.grid.at_node["drainage_area"]
+    predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (1. / n)
+    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
-                              predicted_slopes[model.grid.core_nodes[1:-1]],
-                              decimal=4)
-    
+    # assert actual and predicted slopes are in the correct range for the slopes.
+    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] > predicted_slopes_lower[model.grid.core_nodes[1:-1]]) == True
+    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] < predicted_slopes_upper[model.grid.core_nodes[1:-1]]) == True
+
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
     U = 0.0001
     K = 0.001

@@ -25,7 +25,7 @@ class BasicTh(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\ 
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
         \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\
         D\\nabla^2 \eta
 
@@ -34,8 +34,19 @@ class BasicTh(ErosionModel):
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model ``BasicTh`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class. 
+    Model **BasicTh** inherits from the terrainbento **ErosionModel** base
+    class.  Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
+    and, :math:`n` this model program can be used to run the following three
+    terrainbento numerical models:
+
+    1) Model **BasicTh**: Here :math:`m` has a value of 0.5 and
+    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
+    ``water_erodability`` and :math:`D` is given by the parameter
+    ``regolith_transport_parameter``.
+
+    2) Model **BasicSsTh**: In this model :math:`m` has a value of 1/3,
+    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
+    parameter ``water_erodability~shear_stress``.
     """
 
     def __init__(
@@ -97,7 +108,7 @@ class BasicTh(ErosionModel):
         >>> model.run_one_step(1.)
         >>> model.model_time
         1.0
-        
+
         """
         # Call ErosionModel's init
         super(BasicTh, self).__init__(
