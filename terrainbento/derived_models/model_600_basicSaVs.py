@@ -121,7 +121,7 @@ class BasicSaVs(ErosionModel):
             soil_production_decay_depth=soil_production_decay_depth,
         )
 
-    def calc_effective_drainage_area(self):
+    def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area.
 
         Effective drainage area is defined as:
@@ -150,7 +150,7 @@ class BasicSaVs(ErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
-        self.calc_effective_drainage_area()
+        self._calc_effective_drainage_area()
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:

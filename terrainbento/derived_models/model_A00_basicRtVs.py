@@ -142,7 +142,7 @@ class BasicRtVs(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def calc_effective_drainage_area_(self):
+    def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area.
 
         Effective drainage area is defined as:
@@ -219,7 +219,7 @@ class BasicRtVs(ErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
-        self.calc_effective_drainage_area_()
+        self._calc_effective_drainage_area_()
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
