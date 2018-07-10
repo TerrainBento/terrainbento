@@ -19,7 +19,7 @@ def test_no_Ksp_or_Kss_rock():
         "run_duration": 200.,
         "contact_zone__width": 1.0,
         "regolith_transport_parameter": 0.001,
-        "water_erodability~till": 0.005,
+        "water_erodability~upper": 0.005,
     }
 
     pytest.raises(ValueError, BasicRt, params=params)
@@ -33,9 +33,9 @@ def test_both_Ksp_or_Kss_rock():
         "run_duration": 200.,
         "contact_zone__width": 1.0,
         "regolith_transport_parameter": 0.001,
-        "water_erodability~rock": 0.001,
-        "water_erodability~rock~shear_stress": 0.001,
-        "water_erodability~till": 0.005,
+        "water_erodability~lower": 0.001,
+        "water_erodability~lower~shear_stress": 0.001,
+        "water_erodability~upper": 0.005,
     }
     pytest.raises(ValueError, BasicRt, params=params)
 
@@ -48,7 +48,7 @@ def test_no_Ksp_or_Kss_till():
         "run_duration": 200.,
         "contact_zone__width": 1.0,
         "regolith_transport_parameter": 0.001,
-        "water_erodability~rock": 0.005,
+        "water_erodability~lower": 0.005,
     }
 
     pytest.raises(ValueError, BasicRt, params=params)
@@ -62,9 +62,9 @@ def test_both_Ksp_or_Kss_till():
         "run_duration": 200.,
         "regolith_transport_parameter": 0.001,
         "contact_zone__width": 1.0,
-        "water_erodability~rock": 0.001,
-        "water_erodability~till": 0.005,
-        "water_erodability~till~shear_stress": 0.005,
+        "water_erodability~lower": 0.001,
+        "water_erodability~upper": 0.005,
+        "water_erodability~upper~shear_stress": 0.005,
     }
     pytest.raises(ValueError, BasicRt, params=params)
 
@@ -90,8 +90,8 @@ def test_steady_Kss_no_precip_changer():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~rock~shear_stress": Kr,
-        "water_erodability~till~shear_stress": Kt,
+        "water_erodability~lower~shear_stress": Kr,
+        "water_erodability~upper~shear_stress": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -144,8 +144,8 @@ def test_steady_Ksp_no_precip_changer():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~rock~shear_stress": Kr,
-        "water_erodability~till~shear_stress": Kt,
+        "water_erodability~lower~shear_stress": Kr,
+        "water_erodability~upper~shear_stress": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -198,8 +198,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~rock~shear_stress": Kr,
-        "water_erodability~till~shear_stress": Kt,
+        "water_erodability~lower~shear_stress": Kr,
+        "water_erodability~upper~shear_stress": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -256,8 +256,8 @@ def test_diffusion_only():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": D,
-        "water_erodability~rock~shear_stress": 0,
-        "water_erodability~till~shear_stress": 0,
+        "water_erodability~lower~shear_stress": 0,
+        "water_erodability~upper~shear_stress": 0,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -304,8 +304,8 @@ def test_with_precip_changer():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~rock~shear_stress": Kr,
-        "water_erodability~till~shear_stress": Kt,
+        "water_erodability~lower~shear_stress": Kr,
+        "water_erodability~upper~shear_stress": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": 0.5,

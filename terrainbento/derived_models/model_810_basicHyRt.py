@@ -64,8 +64,8 @@ class BasicHyRt(ErosionModel):
     ...           'number_of_node_columns' : 9,
     ...           'node_spacing' : 10.0,
     ...           'regolith_transport_parameter': 0.001,
-    ...           'water_erodability~rock': 0.001,
-    ...           'water_erodability~till': 0.01,
+    ...           'water_erodability~lower': 0.001,
+    ...           'water_erodability~upper': 0.01,
     ...           'contact_zone__width': 1.0,
     ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
     ...           'm_sp': 0.5,
@@ -100,8 +100,8 @@ class BasicHyRt(ErosionModel):
         self.contact_width = (
             self._length_factor * self.params["contact_zone__width"]
         )  # L
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~rock")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~till")
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
 
         regolith_transport_parameter = (
             self._length_factor ** 2

@@ -52,7 +52,8 @@ class BasicRt(ErosionModel):
     erodability at a given point. When the surface elevation is at the contact
     elevation, the erodability is the average of :math:`K_1` and :math:`K_2`;
     above and below the contact, the erodability approaches the value of :math:`K_1`
-    and :math:`K_2` at a rate related to the contact zone width.
+    and :math:`K_2` at a rate related to the contact zone width. Thus, to make
+    a very sharp transition, use a small value for the contact zone width.
 
     Model **BasicRt** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
@@ -60,14 +61,14 @@ class BasicRt(ErosionModel):
 
     1) Model **BasicRt**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
-    ``water_erodability~till``, :math:`K_{2}` is given by the parameter
-    ``water_erodability~rock`` and :math:`D` is given by the parameter
+    ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
+    ``water_erodability~lower`` and :math:`D` is given by the parameter
     ``regolith_transport_parameter``.
 
     2) Model **BasicRtSs**: In this model :math:`m` has a value of 1/3 and
     :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
-    ``water_erodability~till~shear_stress``, :math:`K_{2}` is given by the
-    parameter ``water_erodability~rock~shear_stress`` and :math:`D` is given by
+    ``water_erodability~upper~shear_stress``, :math:`K_{2}` is given by the
+    parameter ``water_erodability~lower~shear_stress`` and :math:`D` is given by
     the parameter ``regolith_transport_parameter``.
 
     In both models, a value for :math:`Wc` is given by the parameter name
@@ -141,8 +142,8 @@ class BasicRt(ErosionModel):
         ...           'number_of_node_columns' : 9,
         ...           'node_spacing' : 10.0,
         ...           'regolith_transport_parameter': 0.001,
-        ...           'water_erodability~rock': 0.001,
-        ...           'water_erodability~till': 0.01,
+        ...           'water_erodability~lower': 0.001,
+        ...           'water_erodability~upper': 0.01,
         ...           'contact_zone__width': 1.0,
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
@@ -174,19 +175,19 @@ class BasicRt(ErosionModel):
         ]  # has units length
 
         K_rock_sp = self.get_parameter_from_exponent(
-            "water_erodability~rock", raise_error=False
+            "water_erodability~lower", raise_error=False
         )
 
         K_rock_ss = self.get_parameter_from_exponent(
-            "water_erodability~rock~shear_stress", raise_error=False
+            "water_erodability~lower~shear_stress", raise_error=False
         )
 
         K_till_sp = self.get_parameter_from_exponent(
-            "water_erodability~till", raise_error=False
+            "water_erodability~upper", raise_error=False
         )
 
         K_till_ss = self.get_parameter_from_exponent(
-            "water_erodability~till~shear_stress", raise_error=False
+            "water_erodability~upper~shear_stress", raise_error=False
         )
 
         regolith_transport_parameter = (
@@ -199,7 +200,7 @@ class BasicRt(ErosionModel):
         # first for rock Ks
         if K_rock_sp != None and K_rock_ss != None:
             raise ValueError(
-                "A parameter for both  water_erodability~rock and water_erodability~rock~shear_stress has been"
+                "A parameter for both  water_erodability~lower and water_erodability~lower~shear_stress has been"
                 "provided. Only one of these may be provided"
             )
         elif K_rock_sp != None or K_rock_ss != None:
@@ -211,13 +212,13 @@ class BasicRt(ErosionModel):
                 ) * K_rock_ss  # K_ss has units Length^(1/3) per Time
         else:
             raise ValueError(
-                "A value for water_erodability~rock or water_erodability~rock~shear_stress  must be provided."
+                "A value for water_erodability~lower or water_erodability~lower~shear_stress  must be provided."
             )
 
         # Then for Till Ks
         if K_till_sp != None and K_till_ss != None:
             raise ValueError(
-                "A parameter for both water_erodability~till and water_erodability~till~shear_stress has been"
+                "A parameter for both water_erodability~upper and water_erodability~upper~shear_stress has been"
                 "provided. Only one of these may be provided"
             )
         elif K_till_sp != None or K_till_ss != None:
@@ -229,7 +230,7 @@ class BasicRt(ErosionModel):
                 ) * K_till_ss  # K_ss has units Length^(1/3) per Time
         else:
             raise ValueError(
-                "A value for water_erodability~till or water_erodability~till~shear_stress  must be provided."
+                "A value for water_erodability~upper or water_erodability~upper~shear_stress  must be provided."
             )
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
