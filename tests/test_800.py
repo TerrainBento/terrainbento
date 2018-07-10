@@ -139,8 +139,8 @@ def test_steady_Ksp_no_precip_changer():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~lower~shear_stress": Kr,
-        "water_erodability~upper~shear_stress": Kt,
+        "water_erodability~lower": Kr,
+        "water_erodability~upper": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -171,8 +171,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     U = 0.0001
     Kr = 0.001
     Kt = 0.005
-    m = 1. / 3.
-    n = 2. / 3.
+    m = 0.5
+    n = 1.0
     dt = 1000
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
@@ -188,8 +188,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~lower~shear_stress": Kr,
-        "water_erodability~upper~shear_stress": Kt,
+        "water_erodability~lower": Kr,
+        "water_erodability~upper": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -218,11 +218,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
 
 def test_diffusion_only():
-
     total_time = 5.0e6
     U = 0.001
     D = 1
-    m = 0.75
+    m = 0.5
     n = 1.0
     dt = 1000
 
