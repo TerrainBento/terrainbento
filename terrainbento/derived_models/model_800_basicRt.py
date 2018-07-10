@@ -52,9 +52,9 @@ class BasicRt(ErosionModel):
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1`
-    and :math:`K_2` at a rate related to the contact zone width. Thus, to make
-    a very sharp transition, use a small value for the contact zone width.
+    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
+    at a rate related to the contact zone width. Thus, to make a very sharp
+    transition, use a small value for the contact zone width.
 
     Model **BasicRt** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
@@ -79,7 +79,7 @@ class BasicRt(ErosionModel):
     created using an input DEM, then the shape of the field contained in the
     file must be the same as the input DEM. If synthetic topography is used then
     the shape of the field must be ``number_of_node_rows-2`` by
-    ``number_of_node_columns-2``. This is because the read in DEM will be padded
+    ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
     Note that the developers had to make a decision about how to represent the
