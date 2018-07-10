@@ -69,7 +69,10 @@ class BasicHyRt(ErosionModel):
     ...           'contact_zone__width': 1.0,
     ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
     ...           'm_sp': 0.5,
-    ...           'n_sp': 1.0}
+    ...           'n_sp': 1.0,
+    ...           'v_sc': 0.1,
+    ...           'F_f': 0.2,
+    ...           'phi': 0.3}
 
     Construct the model.
 
@@ -123,10 +126,7 @@ class BasicHyRt(ErosionModel):
         self._setup_rock_and_till()
 
         # Handle solver option
-        try:
-            solver = self.params["solver"]
-        except:
-            solver = "original"
+        solver = self.params.get("solver", "basic")
 
         # Instantiate an ErosionDeposition ("hybrid") component
         self.eroder = ErosionDeposition(

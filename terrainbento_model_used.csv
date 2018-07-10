@@ -32,7 +32,7 @@ BasicDdRt,808,BasicDdRt
 BasicHyRt,810,BasicHyRt
 BasicChRt,840,BasicChRt
 BasicSsDd,00C,BasicDd
-BasicVsRt,A00,BasicVsRt
-BasicSaRt,C00,BasicSaRt
+BasicRtVs,A00,BasicRtVs
+BasicRtSa,C00,BasicRtSa
 BasicCv,CCC,BasicCv
 BasicChRtTh,842,BasicChRtTh

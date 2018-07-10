@@ -73,7 +73,8 @@ class BasicChRt(ErosionModel):
         ...           'contact_zone__width': 1.0,
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0}
+        ...           'n_sp': 1.0,
+        ...           'slope_crit': 0.1}
 
         Construct the model.
 
@@ -106,8 +107,8 @@ class BasicChRt(ErosionModel):
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
-        self.rock_erody = rock_erody
-        self.till_erody = till_erody
+        self.rock_erody = self.K_rock_sp
+        self.till_erody = self.K_till_sp
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

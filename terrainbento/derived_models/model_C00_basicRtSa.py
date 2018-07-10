@@ -4,7 +4,7 @@ model_C00_basicSaRt.py: erosion model using depth-dependent linear
 diffusion, basic stream power with till and rocklayers, and discharge
 proportional to drainage area.
 
-Model C00 BasicSaRt
+Model C00 BasicRtSa
 
 Landlab components used: FlowRouter, FastscapeStreamPower,
 DepthDependentDiffuser, ExponentialWeatherer
@@ -24,7 +24,7 @@ from terrainbento.base_class import ErosionModel
 
 class BasicRtSa(ErosionModel):
     """
-    A BasicSaRt computes erosion using linear diffusion, basic
+    A BasicRtSa computes erosion using linear diffusion, basic
     stream power with rock and till layers, and Q~A.
 
     It creates soil through weathering and consideres soil thickness
@@ -96,7 +96,7 @@ class BasicRtSa(ErosionModel):
         """
 
         # Call ErosionModel's init
-        super(BasicSaRt, self).__init__(
+        super(BasicRtSa, self).__init__(
             input_file=input_file,
             params=params,
             BoundaryHandlers=BoundaryHandlers,
@@ -259,7 +259,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    sart = BasicSaRt(input_file=infile)
+    sart = BasicRtSa(input_file=infile)
     sart.run()
 
 
