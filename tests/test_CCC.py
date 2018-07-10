@@ -101,6 +101,8 @@ def test_diffusion_only():
 
 def test_with_precip_changer():
     K =  0.01
+    climate_factor = 0.5
+    climate_constant_date = 10
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
               'output_interval': 2.,
@@ -111,6 +113,8 @@ def test_with_precip_changer():
               'north_boundary_closed': True,
               'south_boundary_closed': True,
               'regolith_transport_parameter': 0.,
+              'climate_factor': climate_factor,
+              'climate_constant_date': climate_constant_date,
               'water_erodability': K,
               'm_sp': 0.5,
               'n_sp': 1.0,
