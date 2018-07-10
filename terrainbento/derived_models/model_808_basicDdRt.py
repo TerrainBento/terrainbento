@@ -132,7 +132,9 @@ class BasicDdRt(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["water_erosion_rule~substrate~threshold__depth_derivative_of_parameter"]
+        self.thresh_change_per_depth = self.params[
+            "water_erosion_rule~substrate~threshold__depth_derivative_of_parameter"
+        ]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

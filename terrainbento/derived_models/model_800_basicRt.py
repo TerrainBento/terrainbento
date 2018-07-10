@@ -26,9 +26,10 @@ class BasicRt(ErosionModel):
     """Model **BasicRt** program.
 
     Model **BasicRt** improves upon the **Basic** model by allowing for two
-    lithologies. Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
-    model **BasicRt** evolves a topographic surface described by :math:`\eta` with
-    the following governing equation:
+    lithologies, and "upper" layer and a "lower" layer. Given a spatially
+    varying contact zone elevation, :math:`\eta_C(x,y))`, model **BasicRt**
+    evolves a topographic surface described by :math:`\eta` with the following
+    governing equations:
 
 
     .. math::
@@ -44,14 +45,14 @@ class BasicRt(ErosionModel):
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
-    erodability based on the depth to the contact zone and the width of the
-    contact zone. Refer to the terrainbento manuscript Table XX (URL here)
-    for parameter symbols, names, and dimensions.
+    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
+    contact zone and the width of the contact zone. Refer to the terrainbento
+    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
 
-    Here, the weight :math:`w` promotes smoothness in the solution of
-    erodability at a given point. When the surface elevation is at the contact
-    elevation, the erodability is the average of :math:`K_1` and :math:`K_2`;
-    above and below the contact, the erodability approaches the value of :math:`K_1`
+    The weight :math:`w` promotes smoothness in the solution of erodability at a
+    given point. When the surface elevation is at the contact elevation, the
+    erodability is the average of :math:`K_1` and :math:`K_2`; above and below
+    the contact, the erodability approaches the value of :math:`K_1`
     and :math:`K_2` at a rate related to the contact zone width. Thus, to make
     a very sharp transition, use a small value for the contact zone width.
 
