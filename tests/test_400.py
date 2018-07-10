@@ -74,7 +74,7 @@ def test_diffusion_only():
 
     assert_array_almost_equal(actual_profile,predicted_profile)
 
-def test_field_in_grid
+def test_field_in_grid():
     U = 0.001
     K = 0.0
     m = 0.5

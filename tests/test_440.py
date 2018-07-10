@@ -78,7 +78,7 @@ def test_diffusion_only():
     assert_array_almost_equal(actual_slope, predicted_slope, decimal = 3)
 
 
-def test_grield_in_grid
+def test_grield_in_grid():
     U = 0.001
     K = 0.0
     m = 0.5
