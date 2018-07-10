@@ -49,7 +49,7 @@ class BasicHyVs(ErosionModel):
         )  # has units length^2/time
         recharge_rate = self._length_factor * self.params["recharge_rate"]  # L/T
         soil_thickness = (
-            self._length_factor * self.params["initial_soil_thickness"]
+            self._length_factor * self.params["soil__initial_thickness"]
         )  # L
         K_hydraulic_conductivity = (
             self._length_factor * self.params["hydraulic_conductivity"]

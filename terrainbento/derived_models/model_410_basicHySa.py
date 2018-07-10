@@ -151,7 +151,7 @@ class BasicHySa(ErosionModel):
         )  # has units length^2/time
         try:
             initial_soil_thickness = (self._length_factor) * self.params[
-                "initial_soil_thickness"
+                "soil__initial_thickness"
             ]  # has units length
         except KeyError:
             initial_soil_thickness = 1.0  # default value
@@ -205,7 +205,7 @@ class BasicHySa(ErosionModel):
 
         # Set soil thickness and bedrock elevation
         try:
-            initial_soil_thickness = self.params["initial_soil_thickness"]
+            initial_soil_thickness = self.params["soil__initial_thickness"]
         except KeyError:
             initial_soil_thickness = 1.0  # default value
         soil_thickness[:] = initial_soil_thickness

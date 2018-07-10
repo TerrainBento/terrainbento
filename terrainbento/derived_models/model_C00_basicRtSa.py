@@ -134,7 +134,7 @@ class BasicRtSa(ErosionModel):
 
         # Set soil thickness and bedrock elevation
         initial_soil_thickness = (self._length_factor) * self.params.get(
-            "initial_soil_thickness", 1.0
+            "soil__initial_thickness", 1.0
         )  # has units length
 
         soil_transport_decay_depth = (self._length_factor) * self.params[

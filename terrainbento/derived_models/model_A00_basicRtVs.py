@@ -107,10 +107,10 @@ class BasicRtVs(ErosionModel):
             "recharge_rate"
         ]  # has units length per time
         soil_thickness = (self._length_factor) * self.params[
-            "initial_soil_thickness"
+            "soil__initial_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
@@ -121,10 +121,7 @@ class BasicRtVs(ErosionModel):
         self._setup_rock_and_till()
 
         # Add a field for effective drainage area
-        if "effective_drainage_area" in self.grid.at_node:
-            self.eff_area = self.grid.at_node["effective_drainage_area"]
-        else:
-            self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
+        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
         self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (

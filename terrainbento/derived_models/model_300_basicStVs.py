@@ -60,7 +60,7 @@ class BasicStVs(StochasticErosionModel):
         )  # has units length^2/time
 
         soil_thickness = (self._length_factor) * self.params[
-            "initial_soil_thickness"
+            "soil__initial_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
             "hydraulic_conductivity"
