@@ -80,7 +80,11 @@ class BasicRtSa(ErosionModel):
         ...           'contact_zone__width': 1.0,
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0}
+        ...           'n_sp': 1.0,
+        ...           'soil__initial_thickness': 2,
+        ...           'soil_transport_decay_depth': 1.5,
+        ...           'max_soil_production_rate': 0.001,
+        ...           'soil_production_decay_depth': 0.7}
 
         Construct the model.
 
@@ -133,9 +137,9 @@ class BasicRtSa(ErosionModel):
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
 
         # Set soil thickness and bedrock elevation
-        initial_soil_thickness = (self._length_factor) * self.params.get(
-            "soil__initial_thickness", 1.0
-        )  # has units length
+        initial_soil_thickness = (self._length_factor) * self.params[
+            "soil__initial_thickness"
+        ]  # has units length
 
         soil_transport_decay_depth = (self._length_factor) * self.params[
             "soil_transport_decay_depth"

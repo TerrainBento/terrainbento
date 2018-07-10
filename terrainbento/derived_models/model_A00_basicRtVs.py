@@ -72,7 +72,10 @@ class BasicRtVs(ErosionModel):
         ...           'contact_zone__width': 1.0,
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0}
+        ...           'n_sp': 1.0,
+        ...           'recharge_rate': 0.5,
+        ...           'soil__initial_thickness': 2.0,
+        ...           'hydraulic_conductivity': 0.1}
 
         Construct the model.
 
@@ -86,7 +89,6 @@ class BasicRtVs(ErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicRtVs, self).__init__(
             input_file=input_file,
@@ -153,7 +155,6 @@ class BasicRtVs(ErosionModel):
         area, $R_r$ is the runoff ratio, and $\alpha$ is the saturation
         parameter.
         """
-
         area = self.grid.at_node["drainage_area"]
         slope = self.grid.at_node["topographic__steepest_slope"]
         cores = self.grid.core_nodes
@@ -219,7 +220,7 @@ class BasicRtVs(ErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
-        self._calc_effective_drainage_area_()
+        self._calc_effective_drainage_area()
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
