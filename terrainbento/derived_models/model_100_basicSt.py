@@ -141,7 +141,9 @@ class BasicSt(StochasticErosionModel):
         ...           'number_of_sub_time_steps': 1,
         ...           'daily_rainfall_intermittency_factor': 0.5,
         ...           'daily_rainfall__mean_intensity': 1.0,
-        ...           'daily_rainfall__precipitation_shape_factor': 1.0}
+        ...           'daily_rainfall__precipitation_shape_factor': 1.0,
+        ...           'infiltration_capacity': 1.0,
+        ...           'random_seed': 0}
 
         Construct the model.
 
@@ -165,8 +167,10 @@ class BasicSt(StochasticErosionModel):
         )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("K_stochastic_sp", raise_error=False)
-        K_ss = self.get_parameter_from_exponent("K_stochastic_ss", raise_error=False)
+        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
+        K_ss = self.get_parameter_from_exponent(
+            "water_erodability~shear_stress", raise_error=False
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -248,7 +252,7 @@ class BasicSt(StochasticErosionModel):
         4. Calculates topographic change by linear diffusion.
 
         5. Finalizes the step using the ``ErosionModel`` base class function
-        **finalize_run_one_step**. This function updates all BoundaryHandlers
+        **finalize__run_one_step**. This function updates all BoundaryHandlers
         by ``dt`` and increments model time by ``dt``.
 
         Parameters
@@ -275,7 +279,7 @@ class BasicSt(StochasticErosionModel):
         self.diffuser.run_one_step(dt)
 
         # Finalize the run_one_step_method
-        self.finalize_run_one_step(dt)
+        self.finalize__run_one_step(dt)
 
 
 def main(): #pragma: no cover
