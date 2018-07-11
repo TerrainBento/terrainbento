@@ -21,7 +21,80 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicRtTh(ErosionModel):
-    """
+    """Model **BasicRt** program.
+
+    Model **BasicRt** improves upon the **Basic** model by allowing for two
+    lithologies, an "upper" layer and a "lower" layer. Given a spatially
+    varying contact zone elevation, :math:`\eta_C(x,y))`, model **BasicRt**
+    evolves a topographic surface described by :math:`\eta` with the following
+    governing equations:
+
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\\nabla^2 \eta
+
+        K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
+
+        w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
+
+
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
+    erodabilities of the upper and lower lithologies, and :math:`D` is the
+    regolith transport parameter. :math:`w` is a weight used to calculate the
+    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
+    contact zone and the width of the contact zone. Refer to the terrainbento
+    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+
+    The weight :math:`w` promotes smoothness in the solution of erodability at a
+    given point. When the surface elevation is at the contact elevation, the
+    erodability is the average of :math:`K_1` and :math:`K_2`; above and below
+    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
+    at a rate related to the contact zone width. Thus, to make a very sharp
+    transition, use a small value for the contact zone width.
+
+    Model **BasicRt** inherits from the terrainbento **ErosionModel** base
+    class. Depending on the parameters provided, this model program can be used
+    to run the following two terrainbento numerical models:
+
+    1) Model **BasicRt**: Here :math:`m` has a value of 0.5 and
+    :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
+    ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
+    ``water_erodability~lower`` and :math:`D` is given by the parameter
+    ``regolith_transport_parameter``.
+
+    2) Model **BasicRtSs**: In this model :math:`m` has a value of 1/3 and
+    :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
+    ``water_erodability~upper~shear_stress``, :math:`K_{2}` is given by the
+    parameter ``water_erodability~lower~shear_stress`` and :math:`D` is given by
+    the parameter ``regolith_transport_parameter``.
+
+    In both models, a value for :math:`Wc` is given by the parameter name
+    ``contact_zone__width`` and the spatially variable elevation of the contact
+    elevation must be given as the file path to an ESRII ASCII format file using
+    the parameter ``lithology_contact_elevation__file_name``. If topography was
+    created using an input DEM, then the shape of the field contained in the
+    file must be the same as the input DEM. If synthetic topography is used then
+    the shape of the field must be ``number_of_node_rows-2`` by
+    ``number_of_node_columns-2``. This is because the read-in DEM will be padded
+    by a halo of size 1.
+
+    Note that the developers had to make a decision about how to represent the
+    contact. We could represent the contact between two layers either as a depth
+    below present land surface, or as an altitude. Using a depth would allow for
+    vertical motion, because for a fixed surface, the depth remains constant
+    while the altitude changes. But the depth must be updated every time the
+    surface is eroded or aggrades. Using an altitude avoids having to update the
+    contact position every time the surface erodes or aggrades, but any tectonic
+    motion would need to be applied to the contact position as well. We chose to
+    use the altitude approach because this model was originally written for an
+    application with lots of erosion expected but no tectonics.
+
+    If implementing tectonics is desired, consider using either the
+    **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
+    modify both the ``topographic__elevation`` and the ``bedrock__elevation``
+    fields.
     """
 
     def __init__(
