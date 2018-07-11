@@ -134,7 +134,7 @@ class BasicDd(ErosionModel):
         )
 
         if float(self.params["n_sp"]) != 1.0:
-            raise ValueError('Model BasicDd only supports n = 1.')
+            raise ValueError("Model BasicDd only supports n = 1.")
 
         # Get Parameters and convert units if necessary:
         self.K = self.get_parameter_from_exponent("water_erodability")
@@ -261,7 +261,7 @@ class BasicDd(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

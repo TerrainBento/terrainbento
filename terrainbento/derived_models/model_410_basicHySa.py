@@ -194,9 +194,9 @@ class BasicHySa(ErosionModel):
         )
 
         # SPACE checks for and creates bedrock elevation and soil depth
-        # grid fields when instantiated, so no need to do that here in 
+        # grid fields when instantiated, so no need to do that here in
         # the model.
-        
+
         # Get soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.at_node["soil__depth"]
 
@@ -308,10 +308,10 @@ class BasicHySa(ErosionModel):
                 with open("model_failed.txt", "w") as f:
                     f.write("This model run became unstable\n")
 
-                raise SystemExit('Model became unstable')
+                raise SystemExit("Model became unstable")
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 
