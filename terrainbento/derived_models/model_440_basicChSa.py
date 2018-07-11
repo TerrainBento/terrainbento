@@ -38,14 +38,17 @@ class BasicChSa(ErosionModel):
 
     .. math::
 
-        \q_h = DS(1+(\\frac{S}{S_c}^2 + \\frac{S}{S_c}^4) + .. + (\frac{S}{S_c}^{2(n-1)})
+        \q_h = DS(1+(\\frac{S}{S_c}^2 + \\frac{S}{S_c}^4) + .. + (\frac{S}{S_c}^{2(N-1)})
 
     where :math: `S_c` is the critical slope, :math:`A` is the local drainage area and :math:`S` is the local slope and
 
         \D = k(1-e^{-H/h_*})
 
-    is a soil depth-dependent hillslope diffusivity with hillslope efficiency :math:: `k`, soil depth :math:: `H`, and characteristic soil transport depth :math:: `h_*`.
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    is a soil depth-dependent hillslope diffusivity with hillslope efficiency
+    :math:: `k`, soil depth :math:: `H`, and characteristic soil transport depth :math:: `h_*`.
+    :math:`N` is the number of terms in the Taylor Expansion and is set at 7.
+    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    symbols, names, and dimensions.
 
     Model ``BasicChSa`` inherits from the ``terrainbento`` ``ErosionModel`` base
     class.
