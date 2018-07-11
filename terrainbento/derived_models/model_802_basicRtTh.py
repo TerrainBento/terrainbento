@@ -21,30 +21,38 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicRtTh(ErosionModel):
-    """Model **BasicRt** program.
+    """Model **BasicRtTh** program.
 
-    Model **BasicRt** improves upon the **Basic** model by allowing for two
-    lithologies, an "upper" layer and a "lower" layer. Given a spatially
-    varying contact zone elevation, :math:`\eta_C(x,y))`, model **BasicRt**
-    evolves a topographic surface described by :math:`\eta` with the following
-    governing equations:
-
+    Model **BasicRtTh** improves upon the **Basic** model by allowing for two
+    lithologies, an "upper" layer and a "lower" layer. It combines the
+    **BasicTh** and **BasicRt** model by permitting the use of an smooth erosion
+    threshold for each lithology. Given a spatially varying contact zone
+    elevation, :math:`\eta_C(x,y))`, model **BasicRtTh** evolves a topographic
+    surface described by :math:`\eta` with the following governing equations:
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_c (1 - e^{-\omega /\omega_c}) \\right]  + D\\nabla^2 \eta
 
-        K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
+        \omega = K(\eta, \eta_C) A^{1/2} S
+
+        K(\eta, \eta_C ) = w K_1 + (1 - w) K_2,
+
+        \omega_c(\eta, \eta_C ) = w \omega_{c1} + (1 - w) \omega_{c2}
 
         w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`w` is a weight used to calculate the
-    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone. Refer to the terrainbento
+    erodabilities of the upper and lower lithologies, :math:`\omega_{c1}` and
+    :math:`\omega_{c2}` are the erosion thresholds of the upper and lower
+    lithologies, and :math:`D` is the regolith transport parameter. :math:`w` is
+    a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
+    based on the depth to the contact zone and the width of the contact zone.
+    :math:`\omega` is the erosion rate that would be calculated without the use
+    of a threshold and as the threshold increases the erosion rate smoothly
+    transitions between zero and :math:`\omega`. Refer to the terrainbento
     manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
@@ -54,21 +62,17 @@ class BasicRtTh(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRt** inherits from the terrainbento **ErosionModel** base
+    Model **BasicRtTh** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbento numerical models:
+    to run the following two terrainbento numerical model:
 
-    1) Model **BasicRt**: Here :math:`m` has a value of 0.5 and
+    1) Model **BasicRtTh**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
     ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
     ``water_erodability~lower`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``.
-
-    2) Model **BasicRtSs**: In this model :math:`m` has a value of 1/3 and
-    :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper~shear_stress``, :math:`K_{2}` is given by the
-    parameter ``water_erodability~lower~shear_stress`` and :math:`D` is given by
-    the parameter ``regolith_transport_parameter``.
+    ``regolith_transport_parameter``. :math:`\omega_{c1}` is given by the
+    parameter ``water_erosion_rule~upper~threshold___parameter`` and :math:`\omega_{c2}`
+    is given by ``water_erosion_rule~lower~threshold___parameter``.
 
     In both models, a value for :math:`Wc` is given by the parameter name
     ``contact_zone__width`` and the spatially variable elevation of the contact
@@ -266,7 +270,7 @@ class BasicRtTh(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model **BasicRt** for one time-step of duration dt.
+        """Advance model **BasicRtTh** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
