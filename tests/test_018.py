@@ -8,28 +8,8 @@ from landlab import HexModelGrid
 from terrainbento import BasicDdHy
 
 
-def test_no_Ksp_or_Kss():
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              'regolith_transport_parameter': 0.001}
-
-    pytest.raises(ValueError, BasicDdHy, params=params)
-
-
-def test_both_Ksp_or_Kss():
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              'regolith_transport_parameter': 0.001,
-              'water_erodability': 0.001,
-              'water_erodability~shear_stress': 0.001}
-    pytest.raises(ValueError, BasicDdHy, params=params)
-
-def test_steady_Ksp_no_precip_changer():
-    U = 0.0001
+def test_steady_Ksp_no_precip_changer_no_thresh():
+    U = 0.001
     K = 0.001
     m = 0.5
     n = 1.0
@@ -37,7 +17,7 @@ def test_steady_Ksp_no_precip_changer():
     v_sc = 0.001
     phi = 0.1
     F_f = 0.0
-    threshold = 0.000001
+    threshold = 0
     thresh_change_per_depth = 0
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
@@ -66,7 +46,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicDdHy(params=params)
-    for i in range(800):
+    for i in range(1000):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
