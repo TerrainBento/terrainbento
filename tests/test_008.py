@@ -29,8 +29,8 @@ def test_steady_Ksp_no_precip_changer_no_thresh():
     m = 0.5
     n = 1.0
     dt = 1000
-    threshold = 1e-10
-    thresh_change_per_depth = 0
+    threshold = 0.0
+    thresh_change_per_depth = 0.0
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
