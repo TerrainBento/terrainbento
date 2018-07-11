@@ -278,35 +278,35 @@ class BasicDdRt(ErosionModel):
         self.threshold[self.threshold < self.threshold_value] = self.threshold_value
 
     def run_one_step(self, dt):
-    """Advance model **BasicRt** for one time-step of duration dt.
+        """Advance model **BasicRt** for one time-step of duration dt.
 
-    The **run_one_step** method does the following:
+        The **run_one_step** method does the following:
 
-    1. Directs flow and accumulates drainage area.
+        1. Directs flow and accumulates drainage area.
 
-    2. Assesses the location, if any, of flooded nodes where erosion should
-    not occur.
+        2. Assesses the location, if any, of flooded nodes where erosion should
+        not occur.
 
-    3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-    so, uses it to modify the two erodability by water values.
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+        so, uses it to modify the two erodability by water values.
 
-    4. Updates the spatially variable erodability value based on the
-    relative distance between the topographic surface and the lithology
-    contact.
+        4. Updates the spatially variable erodability value based on the
+        relative distance between the topographic surface and the lithology
+        contact.
 
-    5. Calculates detachment-limited erosion by water.
+        5. Calculates detachment-limited erosion by water.
 
-    6. Calculates topographic change by linear diffusion.
+        6. Calculates topographic change by linear diffusion.
 
-    7. Finalizes the step using the **ErosionModel** base class function
-    **finalize__run_one_step**. This function updates all BoundaryHandlers
-    by ``dt`` and increments model time by ``dt``.
+        7. Finalizes the step using the **ErosionModel** base class function
+        **finalize__run_one_step**. This function updates all BoundaryHandlers
+        by ``dt`` and increments model time by ``dt``.
 
-    Parameters
-    ----------
-    dt : float
-        Increment of time for which the model is run.
-    """
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
+        """
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
