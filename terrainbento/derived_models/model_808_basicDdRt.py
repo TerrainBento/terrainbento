@@ -90,7 +90,6 @@ class BasicDdRt(ErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicDdRt, self).__init__(
             input_file=input_file,
