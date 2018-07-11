@@ -29,7 +29,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh():
     m = 0.5
     n = 1.0
     dt = 1000
-    threshold = 0.0
+    threshold = 1e-10
     thresh_change_per_depth = 0
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
@@ -73,7 +73,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change():
     n = 1.0
     dt = 1000
     threshold = 0.1
-    thresh_change_per_depth = 0
+    thresh_change_per_depth = 0.0
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
@@ -97,7 +97,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change():
 
     # construct and run model
     model = BasicDd(params=params)
-    for i in range(100):
+    for i in range(200):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -145,7 +145,7 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change():
 
     # construct and run model
     model = BasicDd(params=params)
-    for i in range(100):
+    for i in range(200):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
