@@ -1,8 +1,8 @@
 #! /usr/env/python
 """``terrainbento`` Model ``BasicHySa`` program.
 
-Erosion model program using exponential weathering, soil-depth-dependent 
-linear diffusion, stream-power-driven sediment erosion, mass conservation, and 
+Erosion model program using exponential weathering, soil-depth-dependent
+linear diffusion, stream-power-driven sediment erosion, mass conservation, and
 bedrock erosion, and discharge proportional to drainage area.
 
 Landlab components used:
@@ -28,28 +28,28 @@ class BasicHySa(ErosionModel):
     .. math::
 
         \\frac{\partial \eta}{\partial t} = -K_{r}A^{m}S^{n}\left(e^{-H/H_*}\\right) \\
-        -K_{w}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\ 
-        + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_s
+        -K_{w}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\
+        + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_h
 
-    where :math:`K_r` and :math:`K_s` are rock and sediment erodibility 
-    respectively, :math:`A` is the local drainage area, :math:`S` is the local 
-    slope, :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length 
-    scale, :math:`\omega_c` is the critical stream power needed for erosion to 
+    where :math:`K_r` and :math:`K_s` are rock and sediment erodibility
+    respectively, :math:`A` is the local drainage area, :math:`S` is the local
+    slope, :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length
+    scale, :math:`\omega_c` is the critical stream power needed for erosion to
     occur, :math:`V` is effective sediment settling velocity, :math:`Q_s` is
-    volumetric fluvial sediment flux, :math:`Q` is volumetric water discharge, 
-    and :math:`\phi` is sediment porosity. Hillslope sediment flux per unit 
-    width :math:`q_s` is given by:
-        
+    volumetric fluvial sediment flux, :math:`Q` is volumetric water discharge,
+    and :math:`\phi` is sediment porosity. Hillslope sediment flux per unit
+    width :math:`q_h` is given by:
+
     .. math::
-        q_s=-DS\left(1-e^{-H/H_0}\\right)
-    
-    where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport 
+        q_h=-DS\left(1-e^{-H/H_0}\\right)
+
+    where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.
-    
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter 
+
+    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model ``BasicHySa`` inherits from the ``terrainbento`` ``ErosionModel`` 
+    Model ``BasicHySa`` inherits from the ``terrainbento`` ``ErosionModel``
     base class.
     """
 
@@ -122,7 +122,7 @@ class BasicHySa(ErosionModel):
         >>> model.run_one_step(1.)
         >>> model.model_time
         1.0
-        
+
         """
 
         # Call ErosionModel's init
@@ -194,9 +194,9 @@ class BasicHySa(ErosionModel):
         )
 
         # SPACE checks for and creates bedrock elevation and soil depth
-        # grid fields when instantiated, so no need to do that here in 
+        # grid fields when instantiated, so no need to do that here in
         # the model.
-        
+
         # Get soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.at_node["soil__depth"]
 

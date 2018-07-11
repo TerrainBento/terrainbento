@@ -32,13 +32,13 @@ class BasicChSa(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + nabla^2 q_s
+        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + nabla^2 q_h
 
     where
 
     .. math::
 
-        \q_s = DS(1+(\\frac{S}{S_c}^2 + \\frac{S}{S_c}^4) + .. + (\frac{S}{S_c}^{2(n-1)})
+        \q_h = DS(1+(\\frac{S}{S_c}^2 + \\frac{S}{S_c}^4) + .. + (\frac{S}{S_c}^{2(n-1)})
 
     where :math: `S_c` is the critical slope, :math:`A` is the local drainage area and :math:`S` is the local slope and
 
