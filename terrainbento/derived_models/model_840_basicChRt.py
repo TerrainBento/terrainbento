@@ -39,16 +39,18 @@ class BasicChRt(ErosionModel):
 
         w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
 
-        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \left( \\nabla \eta + \\frac{1}{S_c^2} \left[ \\nabla \eta \\right]^3 \\right)
-
+        q_h = DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`w` is a weight used to calculate the
-    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    regolith transport parameter. :math:`S_c$ is the critical slope parameter
+    and :math:`N` is the number of terms in the Taylor Series expansion.
+    Presently :math:`N` is set at 7 and is not a user defined parameter. :math:`w`
+    is a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
+    based on the depth to the contact zone and the width of the contact zone.
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
+    symbols, names, and dimensions.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -273,7 +275,7 @@ class BasicChRt(ErosionModel):
 
         5. Calculates detachment-limited erosion by water.
 
-        6. Calculates topographic change by linear diffusion.
+        6. Calculates topographic change by non-linear diffusion.
 
         7. Finalizes the step using the **ErosionModel** base class function
         **finalize__run_one_step**. This function updates all BoundaryHandlers
