@@ -4,12 +4,12 @@
 Erosion model program using depth-dependent cubic diffusion
 with a soil layer, basic stream power, and discharge proportional to drainage
 area.
- 
-Landlab components used: 
+
+Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`
     2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`
-    4. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`                         
+    4. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`
     5. `DepthDependentTaylorDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_taylor_soil_creep/hillslope_depth_dependent_taylor_flux.html#DepthDependentTaylorDiffuser>`
 
 """
@@ -27,14 +27,14 @@ from terrainbento.base_class import ErosionModel
 
 class BasicChSa(ErosionModel):
     """
-    Model ``BasicChSa`` is a model program that evolves a topographic surface 
+    Model ``BasicChSa`` is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
 
         \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + nabla^2 q_s
 
-    where 
+    where
 
     .. math::
 
@@ -42,7 +42,7 @@ class BasicChSa(ErosionModel):
 
     where :math: `S_c` is the critical slope, :math:`A` is the local drainage area and :math:`S` is the local slope and
 
-        \D = k(1-e^{-H/h_*}) 
+        \D = k(1-e^{-H/h_*})
 
     is a soil depth-dependent hillslope diffusivity with hillslope efficiency :math:: `k`, soil depth :math:: `H`, and characteristic soil transport depth :math:: `h_*`.
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
@@ -73,7 +73,7 @@ class BasicChSa(ErosionModel):
         Returns
         -------
         BasicChSa : model object
-        
+
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
@@ -86,7 +86,7 @@ class BasicChSa(ErosionModel):
         >>> from terrainbento import BasicChSa
 
         Set up a parameters variable.
-       
+
         >>> params = {'model_grid': 'RasterModelGrid',
         ...           'dt': 1,
         ...           'output_interval': 2.,
@@ -99,7 +99,7 @@ class BasicChSa(ErosionModel):
         ...           'soil_transport_decay_depth': 0.2,
         ...           'max_soil_production_rate': 0.001,
         ...           'soil_production_decay_depth': 0.1,
-        ...           'slope_crit': 0.2,                    
+        ...           'slope_crit': 0.2,
         ...           'water_erodability': 0.001,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0}
@@ -148,16 +148,10 @@ class BasicChSa(ErosionModel):
         ]  # has units length
 
         # Create soil thickness (a.k.a. depth) field
-        if "soil__depth" in self.grid.at_node:
-            soil_thickness = self.grid.at_node["soil__depth"]
-        else:
-            soil_thickness = self.grid.add_zeros("node", "soil__depth")
+        soil_thickness = self.grid.add_zeros("node", "soil__depth")
 
         # Create bedrock elevation field
-        if "bedrock__elevation" in self.grid.at_node:
-            bedrock_elev = self.grid.at_node["bedrock__elevation"]
-        else:
-            bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
 
         soil_thickness[:] = initial_soil_thickness
         bedrock_elev[:] = self.z - initial_soil_thickness

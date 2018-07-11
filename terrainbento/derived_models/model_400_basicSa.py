@@ -5,12 +5,12 @@ Erosion model using depth-dependent linear
 diffusion with a soil layer, basic stream power, and discharge proportional to drainage area.
 
 
-Landlab components used: 
+Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
     2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `DepthDependentDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_diffusion/hillslope_depth_dependent_linear_flux.html#DepthDependentDiffuser>`
-    5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`                         
+    5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`
 
 """
 
@@ -28,7 +28,7 @@ from terrainbento.base_class import ErosionModel
 class BasicSa(ErosionModel):
     """Model ``BasicSa`` program.
 
-    Model ``MasicSa`` is a model program that creates soil and evolves a topographics surface 
+    Model ``MasicSa`` is a model program that creates soil and evolves a topographics surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
@@ -39,9 +39,9 @@ class BasicSa(ErosionModel):
 
     .. math::
 
-        D = k(1-e^{-H/h_*}) 
+        D = k(1-e^{-H/h_*})
 
-    is a soil depth-dependent hillslope diffusivity. Refer to the ``terrainbento`` manuscript 
+    is a soil depth-dependent hillslope diffusivity. Refer to the ``terrainbento`` manuscript
     Table XX (URL here) for parameter symbols, names, and dimensions
 
     """
@@ -151,16 +151,10 @@ class BasicSa(ErosionModel):
         )
 
         # Create soil thickness (a.k.a. depth) field
-        if "soil__depth" in self.grid.at_node:
-            soil_thickness = self.grid.at_node["soil__depth"]
-        else:
-            soil_thickness = self.grid.add_zeros("node", "soil__depth")
+        soil_thickness = self.grid.add_zeros("node", "soil__depth")
 
         # Create bedrock elevation field
-        if "bedrock__elevation" in self.grid.at_node:
-            bedrock_elev = self.grid.at_node["bedrock__elevation"]
-        else:
-            bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
 
         # Set soil thickness and bedrock elevation
         soil_thickness[:] = initial_soil_thickness
@@ -194,7 +188,7 @@ class BasicSa(ErosionModel):
 
         4. Calculates detachment-limited erosion by water.
 
-        5. Produces soil and calculates soil depth with exponential weathering. 
+        5. Produces soil and calculates soil depth with exponential weathering.
 
         6. Calculates topographic change by depth-dependent linear diffusion.
 
