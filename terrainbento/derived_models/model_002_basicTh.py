@@ -108,7 +108,7 @@ class BasicTh(ErosionModel):
         )
 
         if float(self.params["n_sp"]) != 1.0:
-            raise ValueError('Model BasicTh only supports n = 1.')
+            raise ValueError("Model BasicTh only supports n equals 1.")
 
         # Get Parameters and convert units if necessary:
         self.K = self.get_parameter_from_exponent("water_erodability")
