@@ -35,18 +35,7 @@ class BasicTh(ErosionModel):
     symbols, names, and dimensions.
 
     Model **BasicTh** inherits from the terrainbento **ErosionModel** base
-    class.  Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
-    and, :math:`n` this model program can be used to run the following three
-    terrainbento numerical models:
-
-    1) Model **BasicTh**: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodability`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``.
-
-    2) Model **BasicSsTh**: In this model :math:`m` has a value of 1/3,
-    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodability~shear_stress``.
+    class.
     """
 
     def __init__(
@@ -120,9 +109,7 @@ class BasicTh(ErosionModel):
 
         # Get Parameters and convert units if necessary:
         K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
-        )
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -135,21 +122,8 @@ class BasicTh(ErosionModel):
             "erosion__threshold"
         )  # has units length/time
 
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                "A parameter for both K_sp and K_ss has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                self.K = K_sp
-            else:
-                self.K = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Lengtg^(1/3) per Time
-        else:
-            raise ValueError("A value for K_sp or K_ss  must be provided.")
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError('Model BasicTh only supports n = 1.')
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
