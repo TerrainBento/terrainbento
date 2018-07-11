@@ -1,14 +1,16 @@
 #! /usr/env/python
-"""
-model_808_basicDdRt.py: erosion model using linear diffusion, stream
-power with a smoothed threshold that increases with incision depth, discharge
-proportional to drainage area, and two lithologies: rock and till.
+"""terrainbento model **BasicDdRt** program.
 
-Model 808 BasicDdRt
+Erosion model program using linear diffusion, stream power with stream
+power with a smoothed threshold that increases with incision depth and spatially
+varying erodability based on two bedrock units, and discharge proportional to
+drainage area.
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerSmoothThresholdEroder, LinearDiffuser
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import sys

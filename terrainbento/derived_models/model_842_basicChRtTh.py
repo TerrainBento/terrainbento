@@ -1,13 +1,15 @@
 #! /usr/env/python
-"""
-model_840_basicChRtTh.py: erosion model using cubic diffusion, basic stream
-power with a threshold and spatially varying K and two bedrock units, and discharge
-proportional to drainage area.
+"""terrainbento model **BasicChRtTh** program.
 
-Model 842 BasicChRtTh
+Erosion model program using non-linear diffusion, stream power with stream power
+with a smoothed threshold and spatially varying erodability based on two bedrock
+units, and discharge proportional to drainage area.
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerSmoothThresholdEroder, CubicNonLinearDiffuser
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
 """
 
 import sys
@@ -20,7 +22,7 @@ from terrainbento.base_class import ErosionModel
 
 class BasicChRtTh(ErosionModel):
     """
-    A BasicChRt model computes erosion using cubic diffusion, basic stream
+    A BasicChRtTh model computes erosion using cubic diffusion, basic stream
     power with two rock units, and Q~A.
     """
 

@@ -1,15 +1,18 @@
 #! /usr/env/python
+"""terrainbento model **BasicRt** program.
+
+Erosion model program using depth-dependent linear diffusion, soil production
+by exponential weathering, stream power with spatially varying erodability based
+on two bedrock units, and discharge proportional to drainage area.
+
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `DepthDependentDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.depth_dependent_diffusion.html>`_
+    5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/landlab.components.weathering.html>`_
 """
-model_C00_basicSaRt.py: erosion model using depth-dependent linear
-diffusion, basic stream power with till and rocklayers, and discharge
-proportional to drainage area.
 
-Model C00 BasicRtSa
-
-Landlab components used: FlowRouter, FastscapeStreamPower,
-DepthDependentDiffuser, ExponentialWeatherer
-
-"""
 import sys
 import numpy as np
 

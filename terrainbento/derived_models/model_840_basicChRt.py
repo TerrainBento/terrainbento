@@ -1,13 +1,15 @@
 #! /usr/env/python
-"""
-model_840_basicChRt.py: erosion model using cubic diffusion, basic stream
-power with spatially varying K and two bedrock units, and discharge
-proportional to drainage area.
+"""terrainbento model **BasicChRt** program.
 
-Model 840 BasicChRt
+Erosion model program using non-linear diffusion, stream power with spatially
+varying erodability based on two bedrock units, and discharge proportional to
+drainage area.
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         FastscapeStreamPower, CubicNonLinearDiffuser
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
 """
 
 import sys

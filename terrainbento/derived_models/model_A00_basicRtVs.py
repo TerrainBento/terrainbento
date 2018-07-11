@@ -1,12 +1,15 @@
 #! /usr/env/python
-"""
-model_A00_basicVsRt.py: erosion model using linear diffusion, basic stream
-power with 2 lithologies (rock and till), and discharge proportional to
+"""terrainbento model **BasicRtVs** program.
+
+Erosion model program using linear diffusion, stream power with spatially
+varying erodability based on two bedrock units, and discharge proportional to
 effective drainage area.
 
-Model A00 BasicRtVs
-
-Landlab components used: FlowRouter, StreamPowerEroder, LinearDiffuser
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import sys
