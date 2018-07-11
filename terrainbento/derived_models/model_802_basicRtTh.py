@@ -23,12 +23,12 @@ from terrainbento.base_class import ErosionModel
 class BasicRtTh(ErosionModel):
     """Model **BasicRtTh** program.
 
-    Model **BasicRtTh** improves upon the **Basic** model by allowing for two
-    lithologies, an "upper" layer and a "lower" layer. It combines the
-    **BasicTh** and **BasicRt** model by permitting the use of an smooth erosion
-    threshold for each lithology. Given a spatially varying contact zone
-    elevation, :math:`\eta_C(x,y))`, model **BasicRtTh** evolves a topographic
-    surface described by :math:`\eta` with the following governing equations:
+    Model **BasicRtTh** combines the **BasicRt** and **BasicTh** models by
+    allowing for two lithologies, an "upper" layer and a "lower" layer, and
+    permitting the use of an smooth erosion threshold for each lithology. Given
+    a spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model \
+    **BasicRtTh** evolves a topographic surface described by :math:`\eta` with
+    the following governing equations:
 
     .. math::
 
@@ -74,7 +74,7 @@ class BasicRtTh(ErosionModel):
     parameter ``water_erosion_rule~upper~threshold___parameter`` and :math:`\omega_{c2}`
     is given by ``water_erosion_rule~lower~threshold___parameter``.
 
-    In both models, a value for :math:`Wc` is given by the parameter name
+    In all models, a value for :math:`Wc` is given by the parameter name
     ``contact_zone__width`` and the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was

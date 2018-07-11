@@ -24,11 +24,10 @@ from terrainbento.base_class import ErosionModel
 class BasicDdRt(ErosionModel):
     """Model **BasicDdRt** program.
 
-    Model **BasicDdRt** improves upon the **Basic** model by allowing for two
-    lithologies, an "upper" layer and a "lower" layer. It combines the
-    **BasicDd** and **BasicRt** model by permitting the use of an smooth erosion
-    threshold that increases with erosion depth. The threshold is the same for
-    both lithologies. Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
+    Model **BasicRtTh** combines the **BasicRt** and **BasicDd** models by
+    allowing for two lithologies, an "upper" layer and a "lower" layer, and
+    permitting the use of an smooth erosion threshold that increases with
+    erosion depth. Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
     model **BasicDdRt** evolves a topographic surface described by :math:`\eta`
     with the following governing equations:
 
@@ -284,7 +283,7 @@ class BasicDdRt(ErosionModel):
         self.threshold[self.threshold < self.threshold_value] = self.threshold_value
 
     def run_one_step(self, dt):
-        """Advance model **BasicRt** for one time-step of duration dt.
+        """Advance model **BasicDdRt** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -300,11 +299,14 @@ class BasicDdRt(ErosionModel):
         relative distance between the topographic surface and the lithology
         contact.
 
-        5. Calculates detachment-limited erosion by water.
+        5. Updates the threshold value based on the cumulative amount of erosion
+        that has occured since model run onset.
 
-        6. Calculates topographic change by linear diffusion.
+        6. Calculates detachment-limited erosion by water.
 
-        7. Finalizes the step using the **ErosionModel** base class function
+        7. Calculates topographic change by linear diffusion.
+
+        8. Finalizes the step using the **ErosionModel** base class function
         **finalize__run_one_step**. This function updates all BoundaryHandlers
         by ``dt`` and increments model time by ``dt``.
 

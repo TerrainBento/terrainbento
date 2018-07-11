@@ -21,18 +21,21 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHyRt(ErosionModel):
-    """Model **BasicRt** program.
+    """Model **BasicHyRt** program.
 
-    Model **BasicRt** improves upon the **Basic** model by allowing for two
-    lithologies, an "upper" layer and a "lower" layer. Given a spatially
-    varying contact zone elevation, :math:`\eta_C(x,y))`, model **BasicRt**
-    evolves a topographic surface described by :math:`\eta` with the following
-    governing equations:
+    Model **BasicHyRt** combines the **BasicRt** and **BasicHy** models by
+    allowing for two lithologies, an "upper" layer and a "lower" layer,
+    stream-power-driven sediment erosion and mass conservation. Given a
+    spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
+    **BasicHyRt** evolves a topographic surface described by :math:`\eta` with
+    the following governing equations:
 
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = \\frac{V Q_s}{A} - K A^{1/2}S + D\\nabla^2 \eta
+
+        Q_s = \int_0^A \left(KA^{1/2}S - \\frac{V Q_s}{A} \\right) dA
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -42,10 +45,12 @@ class BasicHyRt(ErosionModel):
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`w` is a weight used to calculate the
-    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    regolith transport parameter. :math:`Q_s` is the volumetric sediment
+    discharge and :math:`V` is the effective settling velocity of the sediment
+    :math:`w` is a weight used to calculate the effective erodability
+    :math:`K(\eta, \eta_C)` based on the depth to the contact zone and the width
+    of the contact zone. Refer to the terrainbento manuscript Table XX
+    (URL here) for parameter symbols, names, and dimensions.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -54,23 +59,18 @@ class BasicHyRt(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRt** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbento numerical models:
+    Model **BasicHyRt** inherits from the terrainbento **ErosionModel** base
+    class. This model program can be used
+    to run the following two terrainbento numerical model:
 
-    1) Model **BasicRt**: Here :math:`m` has a value of 0.5 and
+    1) Model **BasicHyRt**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
     ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
     ``water_erodability~lower`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``.
+    ``regolith_transport_parameter``. :math:`V` is given by the parameter
+    ``normalized_settling_velocity``.
 
-    2) Model **BasicRtSs**: In this model :math:`m` has a value of 1/3 and
-    :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper~shear_stress``, :math:`K_{2}` is given by the
-    parameter ``water_erodability~lower~shear_stress`` and :math:`D` is given by
-    the parameter ``regolith_transport_parameter``.
-
-    In both models, a value for :math:`Wc` is given by the parameter name
+    In all models, a value for :math:`Wc` is given by the parameter name
     ``contact_zone__width`` and the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -95,10 +95,6 @@ class BasicHyRt(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
-
-    IMPORTANT: This model allows changes in erodability and threshold for bedrock
-    abd sediment INDEPENDENTLY, meaning that weighting functions etc. exist for
-    both.
 
     """
 
@@ -153,7 +149,7 @@ class BasicHyRt(ErosionModel):
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
-        ...           'v_sc': 0.1,
+        ...           'normalized_settling_velocity': 0.1,
         ...           'F_f': 0.2,
         ...           'phi': 0.3}
 
@@ -187,8 +183,8 @@ class BasicHyRt(ErosionModel):
             self._length_factor ** 2
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
-        v_sc = self.get_parameter_from_exponent(
-            "v_sc"
+        normalized_settling_velocity = self.get_parameter_from_exponent(
+            "normalized_settling_velocity"
         )  # normalized settling velocity. Unitless.
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
@@ -211,7 +207,7 @@ class BasicHyRt(ErosionModel):
             K="K_br",
             F_f=self.params["F_f"],
             phi=self.params["phi"],
-            v_s=v_sc,
+            v_s=normalized_settling_velocity,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
             method="simple_stream_power",
@@ -283,7 +279,7 @@ class BasicHyRt(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model **BasicRt** for one time-step of duration dt.
+        """Advance model **BasicHyRt** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
