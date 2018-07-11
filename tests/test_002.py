@@ -8,7 +8,7 @@ from landlab import HexModelGrid
 from terrainbento import BasicTh
 
 
-def bad_n_sp():
+def test_bad_n_sp():
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
               'output_interval': 2.,
