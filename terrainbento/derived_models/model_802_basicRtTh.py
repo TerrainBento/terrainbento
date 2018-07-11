@@ -26,7 +26,7 @@ class BasicRtTh(ErosionModel):
     Model **BasicRtTh** combines the **BasicRt** and **BasicTh** models by
     allowing for two lithologies, an "upper" layer and a "lower" layer, and
     permitting the use of an smooth erosion threshold for each lithology. Given
-    a spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model \
+    a spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
     **BasicRtTh** evolves a topographic surface described by :math:`\eta` with
     the following governing equations:
 

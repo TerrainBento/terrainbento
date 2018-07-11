@@ -21,23 +21,25 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicChRt(ErosionModel):
-    """Model **BasicRt** program.
+    """Model **BasicChRt** program.
 
-    Model **BasicRtTh** combines the **BasicRt** and **BasicTh** models by
+    Model **BasicChRt** combines the **BasicRt** and **BasicCh** models by
     allowing for two lithologies, an "upper" layer and a "lower" layer, and
-    permitting the use of an smooth erosion threshold for each lithology. Given
-    a spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model \
-    **BasicRtTh** evolves a topographic surface described by :math:`\eta` with
-    the following governing equations:
+    non-linear hillslope sediment transport. Given a spatially varying contact
+    zone elevation, :math:`\eta_C(x,y))`, model **BasicChRt** evolves a
+    topographic surface described by :math:`\eta` with the following governing
+    equations:
 
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S - \\nabla q_h
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
         w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
+
+        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \left( \\nabla \eta + \\frac{1}{S_c^2} \left[ \\nabla \eta \\right]^3 \\right)
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -55,17 +57,17 @@ class BasicChRt(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRt** inherits from the terrainbento **ErosionModel** base
+    Model **BasicChRt** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
     to run the following two terrainbento numerical models:
 
-    1) Model **BasicRt**: Here :math:`m` has a value of 0.5 and
+    1) Model **BasicChRt**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
     ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
     ``water_erodability~lower`` and :math:`D` is given by the parameter
     ``regolith_transport_parameter``.
 
-    2) Model **BasicRtSs**: In this model :math:`m` has a value of 1/3 and
+    2) Model **BasicChRtSs**: In this model :math:`m` has a value of 1/3 and
     :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
     ``water_erodability~upper~shear_stress``, :math:`K_{2}` is given by the
     parameter ``water_erodability~lower~shear_stress`` and :math:`D` is given by
@@ -253,7 +255,7 @@ class BasicChRt(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model **BasicRt** for one time-step of duration dt.
+        """Advance model **BasicChRt** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
