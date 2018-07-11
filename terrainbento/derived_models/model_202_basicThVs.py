@@ -31,7 +31,6 @@ class BasicThVs(ErosionModel):
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
         """Initialize the BasicThVs."""
-
         # Call ErosionModel's init
         super(BasicThVs, self).__init__(
             input_file=input_file,
@@ -39,6 +38,9 @@ class BasicThVs(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
+
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError('Model BasicThVs only supports n = 1.')
 
         self.K_sp = self.get_parameter_from_exponent("water_erodability")
         regolith_transport_parameter = (

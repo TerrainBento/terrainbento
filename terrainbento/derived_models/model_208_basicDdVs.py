@@ -43,6 +43,9 @@ class BasicDdVs(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError('Model BasicDdVs only supports n = 1.')
+
         self.K_sp = self.get_parameter_from_exponent("water_erodability")
         regolith_transport_parameter = (
             self._length_factor ** 2.

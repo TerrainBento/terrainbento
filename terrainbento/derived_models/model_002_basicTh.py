@@ -107,8 +107,11 @@ class BasicTh(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError('Model BasicTh only supports n = 1.')
+
         # Get Parameters and convert units if necessary:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
+        self.K = self.get_parameter_from_exponent("water_erodability")
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -121,9 +124,6 @@ class BasicTh(ErosionModel):
         threshold = self._length_factor * self.get_parameter_from_exponent(
             "erosion__threshold"
         )  # has units length/time
-
-        if float(self.params["n_sp"]) != 1.0:
-            raise ValueError('Model BasicTh only supports n = 1.')
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(

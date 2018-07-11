@@ -2,7 +2,7 @@
 """``terrainbento`` Model ``BasicDd`` program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
-threshold that varies with incision depth, and discharge proportional to 
+threshold that varies with incision depth, and discharge proportional to
 drainage area.
 
 Landlab components used:
@@ -26,25 +26,25 @@ class BasicDd(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\ 
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
         \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + \\
         D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    :math:`\omega_{ct}` is the critical stream power needed for erosion to 
+    :math:`\omega_{ct}` is the critical stream power needed for erosion to
     occur, which may change through time as it increases with cumulative
     incision depth:
-        
+
     .. math::
-        
+
         \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
         b D_I\left(x, y, t\\right), \omega_c \\right)
-            
-    where :math:`\omega_c` is the threshold when no incision has taken place, 
+
+    where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
-    and :math:`D_I` is the cumulative incision depth at location 
+    and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
-        
+
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
@@ -123,9 +123,8 @@ class BasicDd(ErosionModel):
         >>> model.run_one_step(1.)
         >>> model.model_time
         1.0
-        
-        """
 
+        """
         # Call ErosionModel's init
         super(BasicDd, self).__init__(
             input_file=input_file,
@@ -134,11 +133,12 @@ class BasicDd(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError('Model BasicDd only supports n = 1.')
+
         # Get Parameters and convert units if necessary:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
-        )
+        self.K = self.get_parameter_from_exponent("water_erodability")
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -150,22 +150,6 @@ class BasicDd(ErosionModel):
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
             "erosion__threshold"
         )  # has units length/time
-
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                "A parameter for both K_sp and K_ss has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                self.K = K_sp
-            else:
-                self.K = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Lengtg^(1/3) per Time
-        else:
-            raise ValueError("A value for K_sp or K_ss  must be provided.")
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros("node", "erosion__threshold")
@@ -191,17 +175,17 @@ class BasicDd(ErosionModel):
     def update_erosion_threshold_values(self):
         """Update the erosion threshold at each node based on cumulative
         incision so far using:
-            
+
         .. math::
-        
+
             \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
             b D_I\left(x, y, t\\right), \omega_c \\right)
-            
-        where :math:`\omega_c` is the threshold when no incision has taken place, 
+
+        where :math:`\omega_c` is the threshold when no incision has taken place,
         :math:`b` is the rate at which the threshold increases with incision depth,
-        and :math:`D_I` is the cumulative incision depth at location 
+        and :math:`D_I` is the cumulative incision depth at location
         :math:`\left(x,y\\right)` and time :math:`t`.
-            
+
         """
 
         # Set the erosion threshold.
