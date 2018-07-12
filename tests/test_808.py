@@ -36,8 +36,8 @@ def test_steady_Ksp_no_precip_changer():
         "regolith_transport_parameter": 0.,
         "water_erodability~lower": Kr,
         "water_erodability~upper": Kt,
-        'water_erosion_rule~substrate~threshold___parameter': T,
-        'water_erosion_rule~substrate~threshold__depth_derivative_of_parameter': dTdz,
+        "water_erosion_rule~substrate__threshold": T,
+        'water_erosion_rule__thresh_depth_derivative': dTdz,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -89,8 +89,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "regolith_transport_parameter": 0.,
         "water_erodability~lower": Kr,
         "water_erodability~upper": Kt,
-        'water_erosion_rule~substrate~threshold___parameter': T,
-        'water_erosion_rule~substrate~threshold__depth_derivative_of_parameter': dTdz,
+        "water_erosion_rule~substrate__threshold": T,
+        'water_erosion_rule__thresh_depth_derivative': dTdz,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -119,13 +119,14 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
 
 def test_diffusion_only():
-
     total_time = 5.0e6
     U = 0.001
     D = 1
     m = 0.5
     n = 1.0
     dt = 1000
+    T = 0.001
+    dTdz = 0.005
 
     # construct dictionary. note that D is turned off here
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
@@ -143,8 +144,8 @@ def test_diffusion_only():
         "regolith_transport_parameter": D,
         "water_erodability~lower": 0,
         "water_erodability~upper": 0,
-        'water_erosion_rule~substrate~threshold___parameter': T,
-        'water_erosion_rule~substrate~threshold__depth_derivative_of_parameter': dTdz,
+        "water_erosion_rule~substrate__threshold": T,
+        'water_erosion_rule__thresh_depth_derivative': dTdz,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": m,
@@ -202,8 +203,8 @@ def test_with_precip_changer():
         "regolith_transport_parameter": 0.,
         "water_erodability~lower": Kr,
         "water_erodability~upper": Kt,
-        'water_erosion_rule~substrate~threshold___parameter': T,
-        'water_erosion_rule~substrate~threshold__depth_derivative_of_parameter': dTdz,
+        "water_erosion_rule~substrate__threshold": T,
+        'water_erosion_rule__thresh_depth_derivative': dTdz,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
         "m_sp": 0.5,
