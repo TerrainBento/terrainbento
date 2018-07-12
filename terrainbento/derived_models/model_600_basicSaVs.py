@@ -62,10 +62,10 @@ class BasicSaVs(ErosionModel):
             "soil_transport_decay_depth"
         ]  # has units length
         max_soil_production_rate = (self._length_factor) * self.params[
-            "max_soil_production_rate"
+            "soil_production__maximum_rate"
         ]  # has units length per time
         soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production_decay_depth"
+            "soil_production__decay_depth"
         ]  # has units length
 
         recharge_rate = (self._length_factor) * self.params[

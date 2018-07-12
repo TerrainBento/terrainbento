@@ -56,7 +56,7 @@ class BasicCh(ErosionModel):
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            slope_crit=self.params["slope_crit"],
+            critical_slope=self.params["critical_slope"],
             nterms=11,
         )
 

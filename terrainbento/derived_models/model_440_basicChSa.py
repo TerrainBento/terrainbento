@@ -58,10 +58,10 @@ class BasicChSa(ErosionModel):
             "soil_transport_decay_depth"
         ]  # has units length
         max_soil_production_rate = (self._length_factor) * self.params[
-            "max_soil_production_rate"
+            "soil_production__maximum_rate"
         ]  # has units length per time
         soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production_decay_depth"
+            "soil_production__decay_depth"
         ]  # has units length
 
         # Create soil thickness (a.k.a. depth) field
@@ -98,7 +98,7 @@ class BasicChSa(ErosionModel):
         self.diffuser = DepthDependentTaylorDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            slope_crit=self.params["slope_crit"],
+            critical_slope=self.params["critical_slope"],
             soil_transport_decay_depth=soil_transport_decay_depth,
             nterms=11,
         )
