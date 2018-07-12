@@ -77,10 +77,7 @@ class BasicHyVs(ErosionModel):
         ) / recharge_rate
 
         # Handle solver option
-        try:
-            solver = self.params["solver"]
-        except KeyError:
-            solver = "original"
+        solver = self.params.get("solver", "basic")
 
         # Instantiate a SPACE component
         self.eroder = ErosionDeposition(

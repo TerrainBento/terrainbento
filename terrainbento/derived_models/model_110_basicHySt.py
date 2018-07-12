@@ -129,10 +129,7 @@ class BasicHySt(StochasticErosionModel):
         self.area = self.grid.at_node["drainage_area"]
 
         # Handle solver option
-        try:
-            solver = self.params["solver"]
-        except:
-            solver = "original"
+        solver = self.params.get("solver", "basic")
 
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(

@@ -74,10 +74,7 @@ class BasicHyTh(ErosionModel):
         #        discharge_field = None
 
         # Handle solver option
-        try:
-            solver = self.params["solver"]
-        except:
-            solver = "original"
+        solver = self.params.get("solver", "basic")
 
         # Instantiate a Space component
         self.eroder = ErosionDeposition(

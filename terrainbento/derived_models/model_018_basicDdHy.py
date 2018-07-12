@@ -147,10 +147,7 @@ class BasicDdHy(ErosionModel):
         self.threshold[:] = self.sp_crit  # starting value
 
         # Handle solver option
-        try:
-            solver = self.params["solver"]
-        except:
-            solver = "basic"
+        solver = self.params.get("solver", "basic")
 
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
