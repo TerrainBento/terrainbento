@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """terrainbento model **BasicChRtTh** program.
 

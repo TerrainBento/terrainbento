@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_100_basicSt.py: models discharge and erosion across a topographic

@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_208_basicDdVs.py: erosion model using linear diffusion,
@@ -42,6 +43,9 @@ class BasicDdVs(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
+
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError('Model BasicDdVs only supports n = 1.')
 
         self.K_sp = self.get_parameter_from_exponent("water_erodability")
         regolith_transport_parameter = (

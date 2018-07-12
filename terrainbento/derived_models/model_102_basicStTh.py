@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_102_basicStTh.py: erosion model using a thresholded stream

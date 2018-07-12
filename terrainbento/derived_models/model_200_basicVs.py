@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_200_basicVs.py: erosion model using linear diffusion, basic stream

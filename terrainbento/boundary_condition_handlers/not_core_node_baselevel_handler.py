@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """**NotCoreNodeBaselevelHandler** modifies elevation for all not-core nodes."""
 

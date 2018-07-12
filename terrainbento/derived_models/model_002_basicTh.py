@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """terrainbento model **BasicTh** program.
 
@@ -25,7 +26,7 @@ class BasicTh(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\ 
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
         \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\
         D\\nabla^2 \eta
 
@@ -35,7 +36,25 @@ class BasicTh(ErosionModel):
     symbols, names, and dimensions.
 
     Model **BasicTh** inherits from the terrainbento **ErosionModel** base
-    class. 
+    class. Depending on the parameters provided, this model program can be used
+    to run the following terrainbento numerical model:
+
+    1) Model **BasicTh**:
+
+    +--------------------+-----------------------------------------+-----------------+
+    | Parameter Symbol   | Input File Parameter Name               | Value           |
+    +====================+=========================================+=================+
+    |:math:`m`           | ``m_sp``                                | 0.5             |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`n`           | ``n_sp``                                | 1               |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`K`           | ``water_erodability``                   | user specified  |
+    +--------------------+-----------------------------------------+-----------------
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`D`           | ``regolith_transport_parameter``        | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+
     """
 
     def __init__(
@@ -97,7 +116,7 @@ class BasicTh(ErosionModel):
         >>> model.run_one_step(1.)
         >>> model.model_time
         1.0
-        
+
         """
         # Call ErosionModel's init
         super(BasicTh, self).__init__(
@@ -107,11 +126,12 @@ class BasicTh(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError("Model BasicTh only supports n equals 1.")
+
         # Get Parameters and convert units if necessary:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
-        )
+        self.K = self.get_parameter_from_exponent("water_erodability")
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -123,22 +143,6 @@ class BasicTh(ErosionModel):
         threshold = self._length_factor * self.get_parameter_from_exponent(
             "erosion__threshold"
         )  # has units length/time
-
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                "A parameter for both K_sp and K_ss has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                self.K = K_sp
-            else:
-                self.K = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Length^(1/3) per Time
-        else:
-            raise ValueError("A value for K_sp or K_ss  must be provided.")
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
@@ -162,18 +166,18 @@ class BasicTh(ErosionModel):
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-        so, uses it to modify the erodability by water.
+           so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited, threshold-modified erosion by water.
 
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the **ErosionModel** base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------
