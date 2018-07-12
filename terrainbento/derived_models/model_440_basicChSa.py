@@ -136,7 +136,7 @@ class BasicChSa(ErosionModel):
         )  # has units length^2/time
         try:
             initial_soil_thickness = (self._length_factor) * self.params[
-                "initial_soil_thickness"
+                "soil__initial_thickness"
             ]  # has units length
         except KeyError:
             initial_soil_thickness = 1.0  # default value
@@ -144,10 +144,10 @@ class BasicChSa(ErosionModel):
             "soil_transport_decay_depth"
         ]  # has units length
         max_soil_production_rate = (self._length_factor) * self.params[
-            "max_soil_production_rate"
+            "soil_production__maximum_rate"
         ]  # has units length per time
         soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production_decay_depth"
+            "soil_production__decay_depth"
         ]  # has units length
 
         # Create soil thickness (a.k.a. depth) field
@@ -178,7 +178,7 @@ class BasicChSa(ErosionModel):
         self.diffuser = DepthDependentTaylorDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            slope_crit=self.params["slope_crit"],
+            critical_slope=self.params["critical_slope"],
             soil_transport_decay_depth=soil_transport_decay_depth,
             nterms=11,
         )
@@ -212,7 +212,7 @@ class BasicChSa(ErosionModel):
             Increment of time for which the model is run.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -230,7 +230,7 @@ class BasicChSa(ErosionModel):
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
 
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
@@ -254,7 +254,7 @@ class BasicChSa(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

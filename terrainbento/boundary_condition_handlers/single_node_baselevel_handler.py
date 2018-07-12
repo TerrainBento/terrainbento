@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``SingleNodeBaselevelHandler`` changes elevation for a single boundary node."""
+"""**SingleNodeBaselevelHandler** changes elevation for a single boundary node."""
 import os
 import numpy as np
 from scipy.interpolate import interp1d
@@ -8,16 +8,16 @@ from scipy.interpolate import interp1d
 class SingleNodeBaselevelHandler(object):
     """Control the elevation of a single open boundary node.
 
-    The ``SingleNodeBaselevelHandler`` controls the elevation of a single open
+    The **SingleNodeBaselevelHandler** controls the elevation of a single open
     boundary node, referred to here as the *outlet*. The outlet lowering rate is
     specified either as a constant or through a time or through a textfile that
     specifies the elevation change through time.
 
-    The ``SingleNodeBaselevelHandler`` expects that ``topographic__elevation``
+    The **SingleNodeBaselevelHandler** expects that ``topographic__elevation``
     is a at-node model grid field. It will modify this field and, if it exists,
     the field ``bedrock__elevation``.
 
-    Note that ``SingleNodeBaselevelHandler`` increments time at the end of the
+    Note that **SingleNodeBaselevelHandler** increments time at the end of the
     **run_one_step** method.
     """
 
@@ -71,7 +71,7 @@ class SingleNodeBaselevelHandler(object):
          [ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]]
 
-        Now import the ``SingleNodeBaselevelHandler`` and instantiate.
+        Now import the **SingleNodeBaselevelHandler** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
         ...                                         SingleNodeBaselevelHandler)
@@ -150,16 +150,16 @@ class SingleNodeBaselevelHandler(object):
                 )
 
     def run_one_step(self, dt):
-        """ Run ``SingleNodeBaselevelHandler`` to update outlet node elevation.
+        """ Run **SingleNodeBaselevelHandler** to update outlet node elevation.
 
         The **run_one_step** method provides a consistent interface to update
-        the ``terrainbento`` boundary condition handlers.
+        the terrainbento boundary condition handlers.
 
-        In the **run_one_step** routine, the ``SingleNodeBaselevelHandler``
+        In the **run_one_step** routine, the **SingleNodeBaselevelHandler**
         will change the elevation of the outlet node based on inputs specified
         at instantiation.
 
-        Note that ``SingleNodeBaselevelHandler`` increments time at the end of
+        Note that **SingleNodeBaselevelHandler** increments time at the end of
         the **run_one_step** method.
 
         Parameters

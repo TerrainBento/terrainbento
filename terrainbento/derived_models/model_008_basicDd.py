@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicDd`` program.
+"""terrainbento model **BasicDd** program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
 threshold that varies with incision depth, and discharge proportional to 
@@ -19,9 +19,9 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDd(ErosionModel):
-    """Model ``BasicDd`` program.
+    """Model **BasicDd** program.
 
-    Model ``BasicDd`` is a model program that evolves a topographic surface
+    Model **BasicDd** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
@@ -45,22 +45,22 @@ class BasicDd(ErosionModel):
     and :math:`D_I` is the cumulative incision depth at location 
     :math:`\left(x,y\\right)` and time :math:`t`.
         
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model ``BasicDd`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    Model **BasicDd** inherits from the terrainbento **ErosionModel** base
     class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
     and, :math:`n` this model program can be used to run the following two
-    ``terrainbento`` numerical models:
+    terrainbento numerical models:
 
-    1) Model ``BasicDd``: Here :math:`m` has a value of 0.5 and
+    1) Model **BasicDd**: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodibility`` and :math:`D` is given by the parameter
+    ``water_erodability`` and :math:`D` is given by the parameter
     ``regolith_transport_parameter``.
 
-    2) Model ``BasicDdSs``: In this model :math:`m` has a value of 1/3,
+    2) Model **BasicDdSs**: In this model :math:`m` has a value of 1/3,
     :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodibility~shear_stress``.
+    parameter ``water_erodability~shear_stress``.
     """
 
     def __init__(
@@ -89,9 +89,9 @@ class BasicDd(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicDd``. Note that a YAML input file can be used instead of
+        of model **BasicDd**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -163,7 +163,7 @@ class BasicDd(ErosionModel):
             else:
                 self.K = (
                     self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Lengtg^(1/3) per Time
+                ) * K_ss  # K_ss has units Length^(1/3) per Time
         else:
             raise ValueError("A value for K_sp or K_ss  must be provided.")
 
@@ -219,7 +219,7 @@ class BasicDd(ErosionModel):
         self.threshold[self.threshold < self.threshold_value] = self.threshold_value
 
     def run_one_step(self, dt):
-        """Advance model ``BasicDd`` for one time-step of duration dt.
+        """Advance model **BasicDd** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -228,14 +228,14 @@ class BasicDd(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
         not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
         so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited, threshold-modified erosion by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
+        6. Finalizes the step using the **ErosionModel** base class function
         **finalize__run_one_step**. This function updates all BoundaryHandlers
         by ``dt`` and increments model time by ``dt``.
 
@@ -245,7 +245,7 @@ class BasicDd(ErosionModel):
             Increment of time for which the model is run.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -266,7 +266,7 @@ class BasicDd(ErosionModel):
                 self.K
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
@@ -277,7 +277,7 @@ class BasicDd(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

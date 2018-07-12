@@ -128,7 +128,7 @@ class BasicSa(ErosionModel):
         )  # has units length^2/time
         try:
             initial_soil_thickness = (self._length_factor) * self.params[
-                "initial_soil_thickness"
+                "soil__initial_thickness"
             ]  # has units length
         except KeyError:
             initial_soil_thickness = 1.0  # default value
@@ -136,10 +136,10 @@ class BasicSa(ErosionModel):
             "soil_transport_decay_depth"
         ]  # has units length
         max_soil_production_rate = (self._length_factor) * self.params[
-            "max_soil_production_rate"
+            "soil_production__maximum_rate"
         ]  # has units length per time
         soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production_decay_depth"
+            "soil_production__decay_depth"
         ]  # has units length
 
         # Instantiate a FastscapeEroder component
@@ -202,7 +202,7 @@ class BasicSa(ErosionModel):
             Increment of time for which the model is run.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -220,7 +220,7 @@ class BasicSa(ErosionModel):
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
@@ -241,7 +241,7 @@ class BasicSa(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

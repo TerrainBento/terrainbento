@@ -1,4 +1,4 @@
-"""Classes to assist with boundary conditions in the ``terrainbento`` package."""
+"""Classes to assist with boundary conditions in the terrainbento package."""
 
 from .capture_node_baselevel_handler import CaptureNodeBaselevelHandler
 from .not_core_node_baselevel_handler import NotCoreNodeBaselevelHandler

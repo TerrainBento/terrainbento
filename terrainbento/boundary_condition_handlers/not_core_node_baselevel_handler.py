@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``NotCoreNodeBaselevelHandler`` modifies elevation for all not-core nodes."""
+"""**NotCoreNodeBaselevelHandler** modifies elevation for all not-core nodes."""
 
 import os
 import numpy as np
@@ -9,7 +9,7 @@ from scipy.interpolate import interp1d
 class NotCoreNodeBaselevelHandler(object):
     """Control the elevation of all nodes that are not core nodes.
 
-    The ``NotCoreNodeBaselevelHandler`` controls the elevation of all nodes on
+    The **NotCoreNodeBaselevelHandler** controls the elevation of all nodes on
     the model grid with ``status != 0`` (core nodes). The elevation change at
     these nodes is specified either as a constant rate, or through a
     text file that specifies the elevation change through time.
@@ -19,11 +19,11 @@ class NotCoreNodeBaselevelHandler(object):
     elevation change directive, or if the non-core nodes should be moved in
     the opposite direction.
 
-    The ``NotCoreNodeBaselevelHandler`` expects that ``topographic__elevation``
+    The **NotCoreNodeBaselevelHandler** expects that ``topographic__elevation``
     is an at-node model grid field. It will modify this field as well as
     the field ``bedrock__elevation``, if it exists.
 
-    Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of the
+    Note that **NotCoreNodeBaselevelHandler** increments time at the end of the
     **run_one_step** method.
     """
 
@@ -85,7 +85,7 @@ class NotCoreNodeBaselevelHandler(object):
          [ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]]
 
-        Now import the ``NotCoreNodeBaselevelHandler`` and instantiate.
+        Now import the **NotCoreNodeBaselevelHandler** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
         ...                                         NotCoreNodeBaselevelHandler)
@@ -201,16 +201,16 @@ class NotCoreNodeBaselevelHandler(object):
                 )
 
     def run_one_step(self, dt):
-        """ Run ``NotCoreNodeBaselevelHandler`` forward and update elevations.
+        """ Run **NotCoreNodeBaselevelHandler** forward and update elevations.
 
         The **run_one_step** method provides a consistent interface to update
-        the ``terrainbento`` boundary condition handlers.
+        the terrainbento boundary condition handlers.
 
-        In the **run_one_step** routine, the ``NotCoreNodeBaselevelHandler`` will
+        In the **run_one_step** routine, the **NotCoreNodeBaselevelHandler** will
         either lower the closed or raise the non-closed nodes based on inputs
         specified at instantiation.
 
-        Note that ``NotCoreNodeBaselevelHandler`` increments time at the end of
+        Note that **NotCoreNodeBaselevelHandler** increments time at the end of
         the **run_one_step** method.
 
         Parameters

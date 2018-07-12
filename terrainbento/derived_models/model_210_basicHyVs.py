@@ -49,10 +49,10 @@ class BasicHyVs(ErosionModel):
         )  # has units length^2/time
         recharge_rate = self._length_factor * self.params["recharge_rate"]  # L/T
         soil_thickness = (
-            self._length_factor * self.params["initial_soil_thickness"]
+            self._length_factor * self.params["soil__initial_thickness"]
         )  # L
         K_hydraulic_conductivity = (
-            self._length_factor * self.params["K_hydraulic_conductivity"]
+            self._length_factor * self.params["hydraulic_conductivity"]
         )  # has units length per time
 
         v_sc = self.get_parameter_from_exponent(
@@ -103,7 +103,7 @@ class BasicHyVs(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def calc_effective_drainage_area(self):
+    def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area.
 
         Effective drainage area is defined as:
@@ -127,11 +127,11 @@ class BasicHyVs(ErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
-        self.calc_effective_drainage_area()
+        self._calc_effective_drainage_area()
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
@@ -151,7 +151,7 @@ class BasicHyVs(ErosionModel):
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt)
 
@@ -162,7 +162,7 @@ class BasicHyVs(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

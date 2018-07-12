@@ -89,7 +89,7 @@ class BasicSt(StochasticErosionModel):
             else:
                 K = (
                     self._length_factor ** (1. / 2.)
-                ) * K_ss  # K_stochastic has units Lengtg^(1/2) per Time^(1/2_
+                ) * K_ss  # K_stochastic has units Length^(1/2) per Time^(1/2_
         else:
             raise ValueError("A value for K_sp or K_ss  must be provided.")
 
@@ -141,7 +141,7 @@ class BasicSt(StochasticErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -162,7 +162,7 @@ class BasicSt(StochasticErosionModel):
         self.finalize_run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 
