@@ -42,7 +42,24 @@ class BasicHy(ErosionModel):
     class. Depending on the value of :math:`\omega_c`, this model program can
     be used to run the following two terrainbento numerical models:
 
-    1) Model **BasicHy**: Here there is no erosion threshold, i.e.
+    1) Model **BasicHy**:
+
+    +------------------+----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name        | Value           |
+    +==================+==================================+=================+
+    |:math:`m`         | ``m_sp``                         | 0.5             |
+    +------------------+----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                         | 1               |
+    +------------------+----------------------------------+-----------------+
+    |:math:`K`     | ``water_erodability ``      | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`V`         | ``normalized_settling_velocity`` | user specified  |
+    +------------------+----------------------------------+-----------------+
+
+
+    Here there is no erosion threshold, i.e.
     :math:`\omega_c=0`.
 
     2) Model **BasicHyTh**: This model is identical to Model BasicHy except
