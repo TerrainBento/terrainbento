@@ -159,9 +159,7 @@ class BasicDdHy(ErosionModel):
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
             sp_crit="erosion__threshold",
-            method="threshold_stream_power",
-            discharge_method="drainage_area",
-            area_field="drainage_area",
+            discharge_field='surface_water__discharge',
             solver=solver,
         )
 

@@ -165,13 +165,6 @@ class BasicHySa(ErosionModel):
             "soil_production__decay_depth"
         ]  # has units length
 
-        # set methods and fields. K's and sp_crits need to be field names
-        method = self.params.get("space_method", "simple_stream_power")
-        discharge_method = self.params.get("discharge_method", "discharge_field")
-        area_field = self.params.get("area_field", None)
-        discharge_field = self.params.get("discharge_field", "surface_water__discharge")
-        K_noise_scale = self.params.get("K_noise_scale", 0)
-
         # Handle solver option
         solver = self.params.get("solver", "basic")
 
@@ -188,12 +181,8 @@ class BasicHySa(ErosionModel):
             v_s=v_sc,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            method=method,
-            discharge_method=discharge_method,
-            area_field=area_field,
-            discharge_field=discharge_field,
-            solver=solver,
-            K_noise_scale=K_noise_scale,
+            discharge_field='surface_water__discharge',
+            solver=solver
         )
 
         # SPACE checks for and creates bedrock elevation and soil depth

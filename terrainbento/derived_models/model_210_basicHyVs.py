@@ -59,12 +59,6 @@ class BasicHyVs(ErosionModel):
             "v_sc"
         )  # normalized settling velocity. Unitless.
 
-        # set methods and fields. K's and sp_crits need to be field names
-        method = "simple_stream_power"
-        discharge_method = "drainage_area"
-        area_field = "effective_drainage_area"
-        discharge_field = None
-
         # Add a field for effective drainage area
         if "effective_drainage_area" in self.grid.at_node:
             self.eff_area = self.grid.at_node["effective_drainage_area"]
@@ -88,10 +82,7 @@ class BasicHyVs(ErosionModel):
             v_s=v_sc,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            method=method,
-            discharge_method=discharge_method,
-            area_field=area_field,
-            discharge_field=discharge_field,
+            discharge_field='surface_water__discharge',
             solver=solver,
         )
 

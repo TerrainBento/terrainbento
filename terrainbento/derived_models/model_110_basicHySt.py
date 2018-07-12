@@ -140,10 +140,7 @@ class BasicHySt(StochasticErosionModel):
             v_s=v_s,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            method=method,
-            discharge_method=discharge_method,
-            area_field=area_field,
-            discharge_field=discharge_field,
+            discharge_field='surface_water__discharge',
             solver=solver,
         )
 

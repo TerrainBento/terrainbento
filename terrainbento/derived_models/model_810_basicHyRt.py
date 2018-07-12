@@ -221,9 +221,7 @@ class BasicHyRt(ErosionModel):
             v_s=normalized_settling_velocity,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            method="simple_stream_power",
-            discharge_method="drainage_area",
-            area_field="drainage_area",
+            discharge_field='surface_water__discharge',
             solver=solver,
         )
 

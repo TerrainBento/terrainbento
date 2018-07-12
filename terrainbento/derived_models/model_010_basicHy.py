@@ -171,10 +171,6 @@ class BasicHy(ErosionModel):
         # Normalized settling velocity (dimensionless)
         v_sc = self.get_parameter_from_exponent("v_sc")
 
-        # make area_field and/or discharge_field depending on discharge_method
-        #        area_field = self.grid.at_node['drainage_area']
-        #        discharge_field = None
-
         # Handle solver option
         solver = self.params.get("solver", "basic")
 
@@ -187,9 +183,7 @@ class BasicHy(ErosionModel):
             v_s=v_sc,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            method="simple_stream_power",
-            discharge_method="drainage_area",
-            area_field="drainage_area",
+            discharge_field='surface_water__discharge',
             solver=solver,
         )
 
