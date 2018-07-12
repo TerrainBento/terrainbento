@@ -36,8 +36,8 @@ def test_diffusion_only():
                 'south_boundary_closed': True,
                 'regolith_transport_parameter': regolith_transport_parameter,
                 'soil_transport_decay_depth': soil_transport_decay_depth,
-                'max_soil_production_rate': max_soil_production_rate,
-                'soil_production_decay_depth': soil_production_decay_depth,
+                'soil_production__maximum_rate': max_soil_production_rate,
+                'soil_production__decay_depth': soil_production_decay_depth,
                 'initial_soil_thickness': initial_soil_thickness,
                 'water_erodability': K,
                 'm_sp': m,
@@ -63,9 +63,10 @@ def test_diffusion_only():
 
     domain = np.arange(0, max(model.grid.node_x + dx), dx)
     steady_domain = np.arange(-max(domain)/2., max(domain)/2. + dx, dx)
-    
-    steady_z_profile_firsthalf = (steady_domain[0:len(domain)/2])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))-(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
-    steady_z_profile_secondhalf = -(steady_domain[len(domain)/2:])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))+(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
+
+    half_space = int(len(domain)/2)
+    steady_z_profile_firsthalf = (steady_domain[0:half_space])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))-(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
+    steady_z_profile_secondhalf = -(steady_domain[half_space:])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))+(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
 
 
 
@@ -99,8 +100,8 @@ def test_no_initial_soil():
                 'south_boundary_closed': True,
                 'regolith_transport_parameter': regolith_transport_parameter,
                 'soil_transport_decay_depth': soil_transport_decay_depth,
-                'max_soil_production_rate': max_soil_production_rate,
-                'soil_production_decay_depth': soil_production_decay_depth,
+                'soil_production__maximum_rate': max_soil_production_rate,
+                'soil_production__decay_depth': soil_production_decay_depth,
                 'water_erodability': K,
                 'm_sp': m,
                 'n_sp': n,
@@ -141,8 +142,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
                 'south_boundary_closed': True,
                 'regolith_transport_parameter': regolith_transport_parameter,
                 'soil_transport_decay_depth': soil_transport_decay_depth,
-                'max_soil_production_rate': max_soil_production_rate,
-                'soil_production_decay_depth': soil_production_decay_depth,
+                'soil_production__maximum_rate': max_soil_production_rate,
+                'soil_production__decay_depth': soil_production_decay_depth,
                 'initial_soil_thickness': 0.0,
                 'water_erodability': K,
                 'm_sp': m,
@@ -192,8 +193,8 @@ def test_steady_Ksp_no_precip_changer():
                 'south_boundary_closed': True,
                 'regolith_transport_parameter': regolith_transport_parameter,
                 'soil_transport_decay_depth': soil_transport_decay_depth,
-                'max_soil_production_rate': max_soil_production_rate,
-                'soil_production_decay_depth': soil_production_decay_depth,
+                'soil_production__maximum_rate': max_soil_production_rate,
+                'soil_production__decay_depth': soil_production_decay_depth,
                 'initial_soil_thickness': 0.0,
                 'water_erodability': K,
                 'm_sp': m,
@@ -241,8 +242,8 @@ def test_with_precip_changer():
               'south_boundary_closed': True,
               'regolith_transport_parameter': 0.,
               'soil_transport_decay_depth': soil_transport_decay_depth,
-              'max_soil_production_rate': max_soil_production_rate,
-              'soil_production_decay_depth': soil_production_decay_depth,
+              'soil_production__maximum_rate': max_soil_production_rate,
+              'soil_production__decay_depth': soil_production_decay_depth,
               'initial_soil_thickness': 0.0,
               'slope_crit': 0.2,
               'water_erodability': K,
@@ -261,6 +262,3 @@ def test_with_precip_changer():
     model.run_one_step(1.0)
     model.run_one_step(1.0)
     assert round(model.eroder.K, 5) == 0.10326
-
-
-
