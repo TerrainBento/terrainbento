@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_210_basicHyVs.py: erosion model using linear diffusion,

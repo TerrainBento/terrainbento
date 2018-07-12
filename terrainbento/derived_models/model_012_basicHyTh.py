@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_012_basicThHy.py: calculates water erosion using the

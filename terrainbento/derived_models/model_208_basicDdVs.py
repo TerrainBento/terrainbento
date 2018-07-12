@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_208_basicDdVs.py: erosion model using linear diffusion,

@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_202_basicThVs.py: erosion model using linear diffusion, thresholded

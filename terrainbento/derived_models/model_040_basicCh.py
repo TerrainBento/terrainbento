@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_040_basicCh.py: erosion model using cubic diffusion, basic stream

@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """terrainbento model **BasicDdHy** program.
 
@@ -148,7 +149,6 @@ class BasicDdHy(ErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicDdHy, self).__init__(
             input_file=input_file,

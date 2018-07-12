@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_108_basicDdSt.py: erosion model with stochastic
