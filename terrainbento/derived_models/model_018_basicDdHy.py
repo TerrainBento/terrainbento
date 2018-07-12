@@ -53,6 +53,33 @@ class BasicDdHy(ErosionModel):
 
     Model **BasicDdHy** inherits from the terrainbento **ErosionModel**
     base class.
+
+    +--------------------+-------------------------------------------------+-----------------+
+    | Parameter Symbol   | Input File Parameter Name                       | Value           |
+    +====================+=================================================+=================+
+    |:math:`m`           | ``m_sp``                                        | 0.5             |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`n`           | ``n_sp``                                        | 1               |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`K`           | ``water_erodability ``                          | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`D`           | ``regolith_transport_parameter``                | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`V`           | ``settling_velocity``                           | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`F_f`         | ``fraction_fines``                              | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`\phi`        | ``sediment_porosity``                           | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+
+    A value for the paramter ``solver`` can also be used to indicate if the
+    default internal timestepping is used for the **ErosionDeposition**
+    component or if an adaptive internal timestep is used.
+
     """
 
     def __init__(

@@ -79,8 +79,16 @@ class BasicHyRt(ErosionModel):
     +------------------+----------------------------------+-----------------+
     |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
     +------------------+----------------------------------+-----------------+
-    |:math:`V`         | ``normalized_settling_velocity`` | user specified  |
+    |:math:`V`         | ``settling_velocity``            | user specified  |
     +------------------+----------------------------------+-----------------+
+    |:math:`F_f`       | ``fraction_fines``               | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`\phi`      | ``sediment_porosity``            | user specified  |
+    +------------------+----------------------------------+-----------------+
+
+    A value for the paramter ``solver`` can also be used to indicate if the
+    default internal timestepping is used for the **ErosionDeposition**
+    component or if an adaptive internal timestep is used.
 
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
@@ -160,7 +168,7 @@ class BasicHyRt(ErosionModel):
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
-        ...           'normalized_settling_velocity': 0.1,
+        ...           'settling_velocity': 0.1,
         ...           'F_f': 0.2,
         ...           'phi': 0.3}
 
@@ -194,8 +202,8 @@ class BasicHyRt(ErosionModel):
             self._length_factor ** 2
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
-        normalized_settling_velocity = self.get_parameter_from_exponent(
-            "normalized_settling_velocity"
+        settling_velocity = self.get_parameter_from_exponent(
+            "settling_velocity"
         )  # normalized settling velocity. Unitless.
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
@@ -218,7 +226,7 @@ class BasicHyRt(ErosionModel):
             K="K_br",
             F_f=self.params["F_f"],
             phi=self.params["phi"],
-            v_s=normalized_settling_velocity,
+            v_s=settling_velocity,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
             discharge_field='surface_water__discharge',
