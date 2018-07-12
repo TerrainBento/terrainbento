@@ -130,7 +130,7 @@ class BasicTh(ErosionModel):
             raise ValueError("Model BasicTh only supports n equals 1.")
 
         # Get Parameters and convert units if necessary:
-        self.K = self.get_parameter_from_expone nt("water_erodability")
+        self.K = self.get_parameter_from_exponent("water_erodability")
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
