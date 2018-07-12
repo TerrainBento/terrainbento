@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``Basic`` program.
+"""terrainbento model **Basic** program.
 
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area.
@@ -18,9 +18,9 @@ from terrainbento.base_class import ErosionModel
 
 
 class Basic(ErosionModel):
-    """Model ``Basic`` program.
+    """Model **Basic** program.
 
-    Model ``Basic`` is a model program that evolves a topographic surface
+    Model **Basic** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
@@ -28,13 +28,13 @@ class Basic(ErosionModel):
         \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    Model **Basic** inherits from the terrainbento **ErosionModel** base
     class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
     and, :math:`n` this model program can be used to run the following three
-    ``terrainbento`` numerical models:
+    terrainbento numerical models:
 
     1) Model **Basic**:
     +------------------+----------------------------------+-----------------+
@@ -104,9 +104,9 @@ class Basic(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``Basic``. Note that a YAML input file can be used instead of
+        of model **Basic**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -193,7 +193,7 @@ class Basic(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``Basic`` for one time-step of duration dt.
+        """Advance model **Basic** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -235,7 +235,7 @@ class Basic(ErosionModel):
                 self.K
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
 
         # Do some water erosion (but not on the flooded nodes)
@@ -248,7 +248,7 @@ class Basic(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Execute model."""
     import sys
 

@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicTh`` program.
+"""terrainbento model **BasicTh** program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
 threshold, and discharge proportional to drainage area.
@@ -18,9 +18,9 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicTh(ErosionModel):
-    """Model ``BasicTh`` program.
+    """Model **BasicTh** program.
 
-    Model ``BasicTh`` is a model program that evolves a topographic surface
+    Model **BasicTh** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
@@ -31,7 +31,7 @@ class BasicTh(ErosionModel):
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     and :math:`\omega_c` is the critical stream power needed for erosion to occur.
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
     Model **BasicTh** inherits from the terrainbento **ErosionModel** base
@@ -82,9 +82,9 @@ class BasicTh(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicTh``. Note that a YAML input file can be used instead of
+        of model **BasicTh**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -158,7 +158,7 @@ class BasicTh(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``BasicTh`` for one time-step of duration dt.
+        """Advance model **BasicTh** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -184,7 +184,7 @@ class BasicTh(ErosionModel):
             Increment of time for which the model is run.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -202,7 +202,7 @@ class BasicTh(ErosionModel):
                 self.K
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 

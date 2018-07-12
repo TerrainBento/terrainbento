@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicDdHy`` program.
+"""terrainbento model **BasicDdHy** program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment
 erosion and mass conservation with a smoothed threshold that varies with
@@ -19,9 +19,9 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDdHy(ErosionModel):
-    """Model ``BasicDdHy`` program.
+    """Model **BasicDdHy** program.
 
-    Model ``BasicDdHy`` is a model program that evolves a topographic surface
+    Model **BasicDdHy** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
@@ -47,12 +47,12 @@ class BasicDdHy(ErosionModel):
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
-
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter 
     symbols, names, and dimensions.
 
-    Model ``BasicDdHy`` inherits from the ``terrainbento`` ``ErosionModel``
-    base class.
+    Model **BasicDdHy** inherits from the terrainbento **ErosionModel** 
+    base class. 
     """
 
     def __init__(
@@ -81,9 +81,9 @@ class BasicDdHy(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicDdHy``. Note that a YAML input file can be used instead of
+        of model **BasicDdHy**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -174,7 +174,7 @@ class BasicDdHy(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``BasicDdHy`` for one time-step of duration dt.
+        """Advance model **BasicDdHy** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -200,7 +200,7 @@ class BasicDdHy(ErosionModel):
             Increment of time for which the model is run.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -224,7 +224,7 @@ class BasicDdHy(ErosionModel):
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 

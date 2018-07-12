@@ -52,9 +52,11 @@ class BasicHyTh(ErosionModel):
             else:
                 self.K = (
                     self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Lengtg^(1/3) per Time
+                ) * K_ss  # K_ss has units Length^(1/3) per Time
         else:
-            raise ValueError("A value for K_rock_sp or K_rock_ss  must be provided.")
+            raise ValueError(
+                "A value for water_erodability~rock or water_erodability~rock~shear_stress  must be provided."
+            )
 
         # Unit conversion for linear_diffusivity, with units L^2/T
         regolith_transport_parameter = (
@@ -102,7 +104,7 @@ class BasicHyTh(ErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -120,7 +122,7 @@ class BasicHyTh(ErosionModel):
                 self.K
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(
             dt,

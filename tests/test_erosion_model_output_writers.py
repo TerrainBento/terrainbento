@@ -1,11 +1,12 @@
 import os
 import numpy as np
-#from numpy.testing import assert_array_equal, assert_array_almost_equal
+
+# from numpy.testing import assert_array_equal, assert_array_almost_equal
 import pytest
 
 from terrainbento import ErosionModel
 
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def output_writer_function_a(model):
@@ -18,7 +19,7 @@ def output_writer_function_b(model):
 
 class output_writer_class_a(object):
     def __init__(model):
-        self.model=model
+        self.model = model
 
     def run_one_step(self):
         pass
@@ -26,14 +27,14 @@ class output_writer_class_a(object):
 
 class output_writer_class_b(object):
     def __init__(model):
-        self.model=model
+        self.model = model
+
     def run_one_step(self):
         pass
 
 
 def output_writer_function_b(model):
     pass
-
 
 
 def test_pickle_with_output_writers():

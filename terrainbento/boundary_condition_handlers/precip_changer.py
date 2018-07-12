@@ -1,12 +1,12 @@
 #! /usr/env/python
-""" ``PrecipChanger`` changes precipitation frequency and intensity over time.
+""" **PrecipChanger** changes precipitation frequency and intensity over time.
 
-This ``terrainbento`` boundary-condition handler was designed to change the
+This terrainbento boundary-condition handler was designed to change the
 precipitation frequency and intensity over time in order to modify the water
-erodibility coefficient.
+erodability coefficient.
 
 In order to accomplish this, we need a theory by which to relate changes in
-the precipitation to changes in erodibility.
+the precipitation to changes in erodability.
 
 We start by describing the assumed precipitation model.
 
@@ -108,10 +108,10 @@ we can solve for the effective erosion coefficient, :math:`K`:
 
 In this case, what is of interest is the `change` in :math:`K` given some change
 in precipitation frequency distribution :math:`f(p)`. Suppose we have an original
-value of the effective erodibility coefficient, :math:`K_0`, and an original
+value of the effective erodability coefficient, :math:`K_0`, and an original
 precipitation distribution, :math:`f_0(p)`. Given a future change to a new
 precipitation distribution :math:`f(p)`, we wish to know what is the ratio of the
-new effective erodibility coefficient :math:`K` to its original value. Using the
+new effective erodability coefficient :math:`K` to its original value. Using the
 definition of :math:`K` above, the ratio of old to new coefficient is:
 
 .. math::
@@ -146,7 +146,7 @@ rainfall in excess of infiltration.
 
     \Psi = \int_{I_c}^\infty (p - I_{c})^m f(p) dp
 
-Finally we define the erodibility adjustment factor :math:`F_{w}`:
+Finally we define the erodability adjustment factor :math:`F_{w}`:
 
 .. math::
 
@@ -155,7 +155,7 @@ Finally we define the erodibility adjustment factor :math:`F_{w}`:
 Here :math:`F_0` and :math:`\Psi_0` are the starting fraction of wet days and
 starting value for :math:`\Psi`.
 
-``PrecipChanger`` presently supports changes in :math:`F` and :math:`p_d` but
+**PrecipChanger** presently supports changes in :math:`F` and :math:`p_d` but
 not :math:`c`.
 """
 
@@ -230,12 +230,12 @@ def _scale_fac(pmean, c):
 class PrecipChanger(object):
     """Handle time varying precipitation.
 
-    The ``PrecipChanger`` handles time-varying precipitation by changing the
+    The **PrecipChanger** handles time-varying precipitation by changing the
     proportion of time rain occurs (``daily_rainfall_daily_rainfall_intermittency_factor``)
     and the mean of the daily rainfall Weibull distribution
     (``daily_rainfall__mean_intensity``).
 
-    Note that ``PrecipChanger`` increments time at the end of the
+    Note that **PrecipChanger** increments time at the end of the
     **run_one_step** method.
     """
 
@@ -292,7 +292,7 @@ class PrecipChanger(object):
             Time unit of input parameters. Currently only 'second', 'day', and
             'year' are supported. Default value is 'year'.
         length_factor : float, optional
-            ``terrainbento`` model interal length factor conversion related to
+            terrainbento model internal length factor conversion related to
             ``meters_to_feet`` and ``feet_to_meters`` input paramters. Default
             is 1.0.
 
@@ -315,7 +315,7 @@ class PrecipChanger(object):
         >>> from landlab import RasterModelGrid
         >>> mg = RasterModelGrid(5, 5)
 
-        Now import the ``PrecipChanger`` and instantiate.
+        Now import the **PrecipChanger** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import PrecipChanger
         >>> bh = PrecipChanger(mg,
@@ -352,9 +352,9 @@ class PrecipChanger(object):
         If we are using an erosion model that requires the raw values of the
         precipitation parameters, we can use them. If instead we are using
         a model that does not explicitly treat event-scale precipitation, we can
-        use the bulk erodibility adjustment factor :math:`F_w`.
+        use the bulk erodability adjustment factor :math:`F_w`.
 
-        >>> fw = bh.get_erodibility_adjustment_factor()
+        >>> fw = bh.get_erodability_adjustment_factor()
         >>> print(round(fw, 3))
         1.721
         """
@@ -382,9 +382,7 @@ class PrecipChanger(object):
             self.stop_time = precipchanger_stop_time
         self.start_time = precipchanger_start_time
 
-        self.starting_frac_wet_days = (
-            daily_rainfall__intermittency_factor
-        )
+        self.starting_frac_wet_days = daily_rainfall__intermittency_factor
         self.frac_wet_days_rate_of_change = (
             daily_rainfall__intermittency_factor_time_rate_of_change
             / self._time_conversion
@@ -524,10 +522,10 @@ class PrecipChanger(object):
             # otherwise return starting values.
             return self.starting_frac_wet_days, self.starting_daily_mean_depth
 
-    def get_erodibility_adjustment_factor(self):
-        """Calculates the erodibility adjustment factor at the current time.
+    def get_erodability_adjustment_factor(self):
+        """Calculates the erodability adjustment factor at the current time.
 
-        Calculates and returns the factor :math:`F_{w}` by which an erodibility
+        Calculates and returns the factor :math:`F_{w}` by which an erodability
         by water should be adjusted.
 
         .. math::
@@ -536,7 +534,7 @@ class PrecipChanger(object):
 
         Returns
         -------
-        erodibility_adjustment_factor : float
+        erodability_adjustment_factor : float
 
         """
         # if after start time
@@ -574,12 +572,12 @@ class PrecipChanger(object):
             return 1.0
 
     def run_one_step(self, dt):
-        """Run ``PrecipChanger`` forward and update model time.
+        """Run **PrecipChanger** forward and update model time.
 
         The **run_one_step** method provides a consistent interface to update
-        the ``terrainbento`` boundary condition handlers.
+        the terrainbento boundary condition handlers.
 
-        In the **run_one_step** routine, the ``PrecipChanger`` will update its
+        In the **run_one_step** routine, the **PrecipChanger** will update its
         internal record of model time.
 
         Parameters

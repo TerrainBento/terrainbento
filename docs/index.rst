@@ -3,15 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the ``terrainbento`` documentation!
+Welcome to the terrainbento documentation!
 ==============================================
 
-``terrainbento`` is a python package for multi-model analysis in Earth surface
+terrainbento is a python package for multi-model analysis in Earth surface
 dynamics. It was built on top of the `Landlab Toolkit`_.
 
 .. _Landlab Toolkit: https://landlab.github.io
 
-The goal of ``terrainbento`` is to make it easier to create alternative Earth
+The goal of terrainbento is to make it easier to create alternative Earth
 surface dynamics models. The package has four main parts that support this
 goal. First, a **Model Base Class** that contains the functionality required
 across models (e.g. reading in input files, writing out output).
@@ -23,7 +23,7 @@ in complexity from a base model to models with one, two, or three differences
 from the base mode.
 
 Finally, a **ModelTemplate** provides an skeleton of a model made with the main
-base class that can be used to create your own ``terrainbento`` model.
+base class that can be used to create your own terrainbento model.
 
 
 Model Base Class
