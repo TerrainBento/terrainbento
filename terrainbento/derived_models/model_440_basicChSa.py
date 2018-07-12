@@ -27,31 +27,67 @@ from terrainbento.base_class import ErosionModel
 
 class BasicChSa(ErosionModel):
     """
-    Model ``BasicChSa`` is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    Model **BasicSa** explicitly resolves a soil layer. This soil layer is
+    produced by weathering that decays exponentially with soil thickness and
+    hillslope transport is soil-depth dependent. Given a spatially varying soil
+    thickness :math:`H` and a spatially varying bedrock elevation :math:`\eta_b`,
+    model **BasicSa** evolves a topographic surface described by :math:`\eta`
+    with the following governing equations:
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + nabla^2 q_h
+        \eta = \eta_b + H
 
-    where
+        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{1/2} S -\\nabla q_h
 
-    .. math::
+        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{1/2} S
 
-        \q_h = DS(1+(\\frac{S}{S_c}^2 + \\frac{S}{S_c}^4) + .. + (\frac{S}{S_c}^{2(N-1)})
+        q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
-    where :math: `S_c` is the critical slope, :math:`A` is the local drainage area and :math:`S` is the local slope and
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    parameter, :math:`H_s` is the sediment production decay depth, :math:`H_s`
+    is the sediment production decay depth, :math:`P_0` is the maximum sediment
+    production rate, and :math:`H_0` is the sediment transport decay depth.
+    :math:`S_c` is the critical slope parameter and :math:`N` is the number of
+    terms in the Taylor Series expansion. Presently :math:`N` is set at 11 and
+    is not a user defined parameter.
 
-        \D = k(1-e^{-H/h_*})
+    The function :math:`\delta (H)` is used to indicate that water erosion will
+    act on soil where it exists, and on the underlying lithology where soil is
+    absent. To achieve this, :math:`\delta (H)` is defined to equal 1 when
+    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
+    underlying parent material is exposed).
 
-    is a soil depth-dependent hillslope diffusivity with hillslope efficiency
-    :math:: `k`, soil depth :math:: `H`, and characteristic soil transport depth :math:: `h_*`.
-    :math:`N` is the number of terms in the Taylor Expansion and is set at 7.
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
     Model ``BasicChSa`` inherits from the ``terrainbento`` ``ErosionModel`` base
     class.
+
+    +------------------+-----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name         | Value           |
+    +==================+===================================+=================+
+    |:math:`m`         | ``m_sp``                          | 0.5             |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                          | 1               |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`K`         | ``water_erodability``             | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``       | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`P_{0}`     | ``soil_production__maximum_rate`` | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{s}`     | ``soil_production__decay_depth``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{0}`     | ``soil_transport__decay_depth``   | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`S_c`       | ``critical_slope``                | user specified  |
+    +------------------+-----------------------------------+-----------------+
+
+
     """
 
     def __init__(
@@ -178,7 +214,7 @@ class BasicChSa(ErosionModel):
         self.diffuser = DepthDependentTaylorDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            critical_slope=self.params["critical_slope"],
+            slope_crit=self.params["critical_slope"],
             soil_transport_decay_depth=soil_transport_decay_depth,
             nterms=11,
         )

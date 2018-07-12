@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicSa`` program.
+"""``terrainbento`` Model **BasicSa** program.
 
 Erosion model using depth-dependent linear
 diffusion with a soil layer, basic stream power, and discharge proportional to drainage area.
@@ -26,23 +26,59 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicSa(ErosionModel):
-    """Model ``BasicSa`` program.
+    """Model **BasicSa** program.
 
-    Model ``MasicSa`` is a model program that creates soil and evolves a topographics surface
-    described by :math:`\eta` with the following governing equation:
-
-    .. math::
-
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
-
-    where :math:`A` is the local drainage area and :math:`S` is the local slope, and:
+    Model **BasicSa** explicitly resolves a soil layer. This soil layer is
+    produced by weathering that decays exponentially with soil thickness and
+    hillslope transport is soil-depth dependent. Given a spatially varying soil
+    thickness :math:`H` and a spatially varying bedrock elevation :math:`\eta_b`,
+    model **BasicSa** evolves a topographic surface described by :math:`\eta`
+    with the following governing equations:
 
     .. math::
 
-        D = k(1-e^{-H/h_*})
+        \eta = \eta_b + H
 
-    is a soil depth-dependent hillslope diffusivity. Refer to the ``terrainbento`` manuscript
-    Table XX (URL here) for parameter symbols, names, and dimensions
+        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{1/2} S -\\nabla q_h
+
+        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{1/2} S
+
+        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \\nabla \eta
+
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    parameter, :math:`H_s` is the sediment production decay depth, :math:`H_s`
+    is the sediment production decay depth, :math:`P_0` is the maximum sediment
+    production rate, and :math:`H_0` is the sediment transport decay depth.
+
+    The function :math:`\delta (H)` is used to indicate that water erosion will
+    act on soil where it exists, and on the underlying lithology where soil is
+    absent. To achieve this, :math:`\delta (H)` is defined to equal 1 when
+    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
+    underlying parent material is exposed).
+
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
+    symbols, names, and dimensions.
+
+    +------------------+-----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name         | Value           |
+    +==================+===================================+=================+
+    |:math:`m`         | ``m_sp``                          | 0.5             |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                          | 1               |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`K`         | ``water_erodability``             | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``       | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`P_{0}`     | ``soil_production__maximum_rate`` | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{s}`     | ``soil_production__decay_depth``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{0}`     | ``soil_transport__decay_depth``   | user specified  |
+    +------------------+-----------------------------------+-----------------+
 
     """
 
@@ -72,7 +108,7 @@ class BasicSa(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicSa``. Note that a YAML input file can be used instead of
+        of model **BasicSa**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
         state test examples, see the ``terrainbento`` tutorials.
 
@@ -174,7 +210,7 @@ class BasicSa(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``BasicSa`` for one time-step of duration dt.
+        """Advance model **BasicSa** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 

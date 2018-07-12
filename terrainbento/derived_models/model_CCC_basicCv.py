@@ -1,5 +1,5 @@
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicCv`` program.
+"""``terrainbento`` Model **BasicCv** program.
 
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area with climate change.
@@ -19,14 +19,16 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicCv(ErosionModel):
-    """Model ``BasicCv`` program.
+    """Model **BasicCv** program.
 
-    Model ``BasicCv`` is a model program that evolves a topographic surface
+    Model **BasicCv** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
+
 
     .. math::
 
         \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
     This model also has a basic parameterization of climate change such that
@@ -42,6 +44,7 @@ class BasicCv(ErosionModel):
     class and can be used to construct the following models.
 
     1) Model **BasicCv**:
+
     +------------------+----------------------------------+-----------------+
     | Parameter Symbol | Input File Parameter Name        | Value           |
     +==================+==================================+=================+

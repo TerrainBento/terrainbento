@@ -61,7 +61,7 @@ class BasicChRt(ErosionModel):
 
     Model **BasicChRt** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbento numerical models:
+    to run the following terrainbento numerical model:
 
     1) Model **BasicChRt**:
 

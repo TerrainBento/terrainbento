@@ -38,11 +38,27 @@ class BasicCh(ErosionModel):
 
     where :math: `S_c` is the critical slope, :math:`A` is the local drainage
     area and :math:`S` is the local slope. :math:`N` is the number of terms in
-    the Taylor Expansion and is set at 7. Refer to the ``terrainbento``
+    the Taylor Expansion and is set at 11. Refer to the ``terrainbento``
     manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
 
     Model ``BasicCh`` inherits from the ``terrainbento`` ``ErosionModel`` base
     class.
+
+    +------------------+----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name        | Value           |
+    +==================+==================================+=================+
+    |:math:`m`         | ``m_sp``                         | 0.5             |
+    +------------------+----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                         | 1               |
+    +------------------+----------------------------------+-----------------+
+    |:math:`K`         | ``water_erodability``            | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`S_c`       | ``critical_slope``               | user specified  |
+    +------------------+----------------------------------+-----------------+
+
+
     """
 
     def __init__(
