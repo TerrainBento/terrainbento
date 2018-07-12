@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_440_basicChSa.py: erosion model using depth-dependent cubic diffusion

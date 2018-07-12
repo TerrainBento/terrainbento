@@ -32,7 +32,6 @@ def test_both_Ksp_or_Kss():
     }
     pytest.raises(ValueError, BasicHySa, params=params)
 
-
 def test_steady_Ksp_no_precip_changer():
     U = 0.0001
     K_rock_sp = 0.001
@@ -293,8 +292,6 @@ def test_stability_checker():
         for i in range(800):
             model.run_one_step(dt)
     os.remove("model_failed.txt")
-
-
 # =============================================================================
 # def test_diffusion_only():
 #     total_time = 500
@@ -339,7 +336,7 @@ def test_stability_checker():
 #               'F_f':F_f,
 #               'H_star': H_star,
 #               'solver': 'basic',
-#               'initial_soil_thickness': initial_soil_thickness,
+#               "soil__initial_thickness": initial_soil_thickness,
 #               'soil_transport_decay_depth': soil_transport_decay_depth,
 #               'soil_production__maximum_rate': soil_production__maximum_rate,
 #               'soil_production__decay_depth': soil_production__decay_depth,

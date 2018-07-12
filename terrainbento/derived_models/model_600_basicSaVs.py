@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_600_basicVsSa.py: erosion model using depth-dependent linear diffusion,

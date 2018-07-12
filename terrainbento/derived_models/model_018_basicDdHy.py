@@ -1,8 +1,9 @@
+# coding: utf8
 #! /usr/env/python
 """terrainbento model **BasicDdHy** program.
 
-Erosion model program using linear diffusion, stream-power-driven sediment 
-erosion and mass conservation with a smoothed threshold that varies with 
+Erosion model program using linear diffusion, stream-power-driven sediment
+erosion and mass conservation with a smoothed threshold that varies with
 incision depth, and discharge proportional to drainage area.
 
 Landlab components used:
@@ -26,33 +27,60 @@ class BasicDdHy(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\ 
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
         \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + \\
         \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope, 
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length scale,
     :math:`V` is effective sediment settling velocity, :math:`Q_s` is
-    volumetric sediment flux, :math:`Q` is volumetric water discharge, and 
-    :math:`\phi` is sediment porosity. :math:`\omega_{ct}` is the critical 
-    stream power needed for erosion to occur, which may change through time as 
+    volumetric sediment flux, :math:`Q` is volumetric water discharge, and
+    :math:`\phi` is sediment porosity. :math:`\omega_{ct}` is the critical
+    stream power needed for erosion to occur, which may change through time as
     it increases with cumulative incision depth:
-        
+
     .. math::
-        
+
         \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
         b D_I\left(x, y, t\\right), \omega_c \\right)
-            
-    where :math:`\omega_c` is the threshold when no incision has taken place, 
+
+    where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
-    and :math:`D_I` is the cumulative incision depth at location 
+    and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
-    
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter 
+
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model **BasicDdHy** inherits from the terrainbento **ErosionModel** 
-    base class. 
+    Model **BasicDdHy** inherits from the terrainbento **ErosionModel**
+    base class.
+
+    +--------------------+-------------------------------------------------+-----------------+
+    | Parameter Symbol   | Input File Parameter Name                       | Value           |
+    +====================+=================================================+=================+
+    |:math:`m`           | ``m_sp``                                        | 0.5             |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`n`           | ``n_sp``                                        | 1               |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`K`           | ``water_erodability ``                          | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`D`           | ``regolith_transport_parameter``                | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`V`           | ``settling_velocity``                           | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`F_f`         | ``fraction_fines``                              | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`\phi`        | ``sediment_porosity``                           | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+
+    A value for the paramter ``solver`` can also be used to indicate if the
+    default internal timestepping is used for the **ErosionDeposition**
+    component or if an adaptive internal timestep is used.
+
     """
 
     def __init__(
@@ -119,9 +147,8 @@ class BasicDdHy(ErosionModel):
         >>> model.run_one_step(1.)
         >>> model.model_time
         1.0
-        
-        """
 
+        """
         # Call ErosionModel's init
         super(BasicDdHy, self).__init__(
             input_file=input_file,
@@ -147,10 +174,7 @@ class BasicDdHy(ErosionModel):
         self.threshold[:] = self.sp_crit  # starting value
 
         # Handle solver option
-        try:
-            solver = self.params["solver"]
-        except:
-            solver = "basic"
+        solver = self.params.get("solver", "basic")
 
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
@@ -162,9 +186,7 @@ class BasicDdHy(ErosionModel):
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
             sp_crit="erosion__threshold",
-            method="threshold_stream_power",
-            discharge_method="drainage_area",
-            area_field="drainage_area",
+            discharge_field='surface_water__discharge',
             solver=solver,
         )
 
@@ -184,18 +206,18 @@ class BasicDdHy(ErosionModel):
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-        so, uses it to modify the erodability by water.
+           so, uses it to modify the erodability by water.
 
         4. Calculates threshold-modified erosion and deposition by water.
 
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the **ErosionModel** base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------

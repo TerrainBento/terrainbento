@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """terrainbento model **BasicDdRt** program.
 
@@ -81,7 +82,7 @@ class BasicDdRt(ErosionModel):
     +--------------------+-------------------------------------------------+-----------------+
     |:math:`K_{2}`       | ``water_erodability~lower``                     | user specified  |
     +--------------------+-------------------------------------------------+-----------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule~substrate__threshold``     | user specified  |
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               | user specified  |
     +--------------------+-------------------------------------------------+-----------------+
     |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` | user specified  |
     +--------------------+-------------------------------------------------+-----------------+
@@ -162,7 +163,7 @@ class BasicDdRt(ErosionModel):
         ...           'regolith_transport_parameter': 0.001,
         ...           'water_erodability~lower': 0.001,
         ...           'water_erodability~upper': 0.01,
-        ...           "water_erosion_rule~substrate__threshold": 0.2,
+        ...           "water_erosion_rule__threshold": 0.2,
         ...           'water_erosion_rule__thresh_depth_derivative': 0.001,
         ...           'contact_zone__width': 1.0,
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
@@ -198,7 +199,7 @@ class BasicDdRt(ErosionModel):
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
-            "water_erosion_rule~substrate__threshold"
+            "water_erosion_rule__threshold"
         )  # has units length/time
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them

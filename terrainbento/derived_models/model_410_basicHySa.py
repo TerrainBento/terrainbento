@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """terrainbento model **BasicHySa** program.
 
@@ -29,7 +30,7 @@ class BasicHySa(ErosionModel):
 
         \\frac{\partial \eta}{\partial t} = -K_{r}A^{m}S^{n}\left(e^{-H/H_*}\\right) \\
         -K_{w}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\
-        + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_s
+        + \\frac{V_c\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_s
 
     where :math:`K_r` and :math:`K_s` are rock and sediment erodability
     respectively, :math:`A` is the local drainage area, :math:`S` is the local
@@ -50,7 +51,40 @@ class BasicHySa(ErosionModel):
     symbols, names, and dimensions.
 
     Model **BasicHySa** inherits from the terrainbento **ErosionModel**
-    base class.
+    base class. It can be used to construct the following model:
+
+    1. **BasicHySa**:
+
+    +------------------+-----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name         | Value           |
+    +==================+===================================+=================+
+    |:math:`m`         | ``m_sp``                          | 0.5             |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                          | 1               |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`K`         | ``water_erodability ``            | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`V_c`       | ``normalized_settling_velocity``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`F_f`       | ``fraction_fines``                | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`\phi`      | ``sediment_porosity``             | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``       | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`P_{0}`     | ``soil_production__maximum_rate`` | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{s}`     | ``soil_production__decay_depth``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{0}`     | ``soil_transport__decay_depth``   | user specified  |
+    +------------------+-----------------------------------+-----------------+
+
+    A value for the paramter ``solver`` can also be used to indicate if the
+    default internal timestepping is used for the **Space** component or if an
+    adaptive internal timestep is used.
+
     """
 
     def __init__(
@@ -110,7 +144,8 @@ class BasicHySa(ErosionModel):
         ...           'solver': 'basic',
         ...           'soil_transport_decay_depth': 1,
         ...           'soil_production__maximum_rate': 0.0001,
-        ...           'soil_production__decay_depth': 0.5}
+        ...           'soil_production__decay_depth': 0.5,
+        ...           'soil__initial_thickness': 1.0}
 
         Construct the model.
 
@@ -149,12 +184,11 @@ class BasicHySa(ErosionModel):
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-        try:
-            initial_soil_thickness = (self._length_factor) * self.params[
+
+        initial_soil_thickness = (self._length_factor) * self.params[
                 "soil__initial_thickness"
             ]  # has units length
-        except KeyError:
-            initial_soil_thickness = 1.0  # default value
+
         soil_transport_decay_depth = (self._length_factor) * self.params[
             "soil_transport_decay_depth"
         ]  # has units length
@@ -165,12 +199,8 @@ class BasicHySa(ErosionModel):
             "soil_production__decay_depth"
         ]  # has units length
 
-        # set methods and fields. K's and sp_crits need to be field names
-        method = self.params.get("space_method", "simple_stream_power")
-        discharge_method = self.params.get("discharge_method", "discharge_field")
-        area_field = self.params.get("area_field", None)
-        discharge_field = self.params.get("discharge_field", "surface_water__discharge")
-        K_noise_scale = self.params.get("K_noise_scale", 0)
+        # Handle solver option
+        solver = self.params.get("solver", "basic")
 
         # Instantiate a SPACE component
         self.eroder = Space(
@@ -185,12 +215,8 @@ class BasicHySa(ErosionModel):
             v_s=v_sc,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            method=method,
-            discharge_method=discharge_method,
-            area_field=area_field,
-            discharge_field=discharge_field,
-            solver=self.params["solver"],
-            K_noise_scale=K_noise_scale,
+            discharge_field='surface_water__discharge',
+            solver=solver
         )
 
         # SPACE checks for and creates bedrock elevation and soil depth

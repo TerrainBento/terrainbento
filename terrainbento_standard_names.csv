@@ -33,7 +33,7 @@ $V_c$ , {\tt v\_sc} ,,quotient_of,,quotient_of_channel_water_sediment~suspended_
 $V$ , {\tt v\_s} ,channel_water_sediment~suspended,,effective_settling_velocity,channel_water_sediment~suspended___effective_settling_velocity,settling_velocity,, $LT^{-1}$,
 $W_c$ , {\tt contact\_zone\_\_width} ,rock_till_contact_zone,,width,rock_till_contact_zone___width,contact_zone_width,, $L$,
 $\phi$ , {\tt phi} ,sediment_layer,,porosity,sediment_layer___porosity,sediment_porosity,, -,
-$\omega_c$ , {\tt erosion\_\_threshold}$^1$ ,water_erosion_rule~substrate~threshold,,parameter,water_erosion_rule~substrate~threshold___parameter,,, $LT^{-1}$,
+$\omega_c$ , {\tt erosion\_\_threshold}$^1$ ,water_erosion_rule~substrate~threshold,,parameter,water_erosion_rule__threshold,,, $LT^{-1}$,
 $\omega_{c1}$ , {\tt till\_erosion\_\_threshold}$^1$ ,water_erosion_rule~till~threshold,,parameter,water_erosion_rule~upper__threshold,,, $LT^{-1}$,
 $\omega_{c2}$ , {\tt rock\_erosion\_\_threshold}$^1$ ,water_erosion_rule~rock~threshold,,parameter,water_erosion_rule~lower__threshold,,, $LT^{-1}$,
 ,mean_storm_duration,,,,,mean_storm_duration,,,
