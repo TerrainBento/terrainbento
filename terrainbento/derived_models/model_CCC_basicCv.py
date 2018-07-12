@@ -33,9 +33,9 @@ class BasicCv(ErosionModel):
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
     This model also has a basic parameterization of climate change such that
     :math:`K_{w}` varies through time. Between model run onset and a time at
-    which the climate becomes constant, the value of :math:`K_{w}` changes from
-    :math:`fK` to :math:`K`, at which point it remains at :math:`K` for the
-    remainder of the modeling time period.
+    which the climate becomes constant, the value of :math:`K_{w}` linearly
+    changes from :math:`fK` to :math:`K`, at which point it remains at :math:`K`
+    for the remainder of the modeling time period.
 
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.

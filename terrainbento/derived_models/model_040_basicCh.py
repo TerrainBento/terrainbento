@@ -6,10 +6,10 @@ power, and discharge proportional to drainage area.
 
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
     2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`
-    4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
 
 """
 
@@ -26,17 +26,21 @@ class BasicCh(ErosionModel):
     Model ``BasicCh`` is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
+
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + nabla^2 q_h
+        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + \\nabla^2 q_h
+
 
     where
 
+
     .. math::
 
-        \q_h = DS(1+(\\frac{S}{S_c}^2 + \\frac{S}{S_c}^4) + .. + (\frac{S}{S_c}^{2(N-1)})
+        q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
-    where :math: `S_c` is the critical slope, :math:`A` is the local drainage
+
+    where :math:`S_c` is the critical slope, :math:`A` is the local drainage
     area and :math:`S` is the local slope. :math:`N` is the number of terms in
     the Taylor Expansion and is set at 11. Refer to the ``terrainbento``
     manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
