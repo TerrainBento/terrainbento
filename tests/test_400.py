@@ -245,7 +245,7 @@ def test_with_precip_changer():
               'soil_production__maximum_rate': max_soil_production_rate,
               'soil_production__decay_depth': soil_production_decay_depth,
               'initial_soil_thickness': 0.0,
-              'slope_crit': 0.2,
+              'critical_slope': 0.2,
               'water_erodability': K,
               'm_sp': 0.5,
               'n_sp': 1.0,

@@ -28,7 +28,7 @@ $P_0$ , {\tt max\_soil\_production\_rate } ,soil_production,maximum,rate,soil_pr
 $R_m$ , {\tt recharge\_rate} ,soil_water,,recharge_rate,soil_water___recharge_rate,recharge_rate,, $LT^{-1}$,
 $S_c$ , {\tt slope\_crit} ,elevation~critical_value,,slope,elevation~critical_value___slope,critical_slope,, -,
 $S_r$ , {\tt random\_seed} ,random_seed,,parameter,random_seed___parameter,random_seed,, integer,
-$T_s$ , {\tt climate\_constant\_date} ,model_climate_constant,,date,model_climate_constant___date,climate_constant date,, $T$,
+$T_s$ , {\tt climate\_constant\_date} ,model_climate_constant,,date,model_climate_constant___date,climate_constant_date,, $T$,
 $V_c$ , {\tt v\_sc} ,,quotient_of,,quotient_of_channel_water_sediment~suspended__effective_settling_velocity_and_land_surface_water__runoff_rate,normalized_settling_velocity,, -,
 $V$ , {\tt v\_s} ,channel_water_sediment~suspended,,effective_settling_velocity,channel_water_sediment~suspended___effective_settling_velocity,settling_velocity,, $LT^{-1}$,
 $W_c$ , {\tt contact\_zone\_\_width} ,rock_till_contact_zone,,width,rock_till_contact_zone___width,contact_zone_width,, $L$,

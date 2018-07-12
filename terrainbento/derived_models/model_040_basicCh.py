@@ -89,7 +89,7 @@ class BasicCh(ErosionModel):
         ...           'number_of_node_columns' : 9,
         ...           'node_spacing' : 10.0,
         ...           'regolith_transport_parameter': 0.001,
-        ...           'slope_crit': 0.2,
+        ...           'critical_slope': 0.2,
         ...           'water_erodability': 0.001,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0}
@@ -135,7 +135,7 @@ class BasicCh(ErosionModel):
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            critical_slope=self.params["critical_slope"],
+            slope_crit=self.params["critical_slope"],
             nterms=11,
         )
 
@@ -147,18 +147,18 @@ class BasicCh(ErosionModel):
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
-        so, uses it to modify the erodability by water.
+           so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited erosion by water.
 
         5. Calculates topographic change by nonlinear diffusion.
 
         6. Finalizes the step using the ``ErosionModel`` base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------
