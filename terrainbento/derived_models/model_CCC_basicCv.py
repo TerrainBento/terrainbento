@@ -2,7 +2,7 @@
 """``terrainbento`` Model ``BasicCv`` program.
 
 Erosion model program using linear diffusion, stream power, and discharge
-proportional to drainage area with climate change. 
+proportional to drainage area with climate change.
 
 Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
@@ -29,11 +29,35 @@ class BasicCv(ErosionModel):
         \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
+    This model also has a basic parameterization of climate change such that
+    :math:`K_{w}` varies through time. Between model run onset and a time at
+    which the climate becomes constant, the value of :math:`K_{w}` changes from
+    :math:`fK` to :math:`K`, at which point it remains at :math:`K` for the
+    remainder of the modeling time period.
+
     Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
     Model ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class. It also has basic climate change. 
+    class and can be used to construct the following models.
+
+    1) Model **BasicCv**:
+    +------------------+----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name        | Value           |
+    +==================+==================================+=================+
+    |:math:`m`         | ``m_sp``                         | 0.5             |
+    +------------------+----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                         | 1               |
+    +------------------+----------------------------------+-----------------+
+    |:math:`K`         | ``water_erodability``            | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`f`         | ``climate_factor``               | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`T_s`       | ``climate_constant_date``        | user specified  |
+    +------------------+----------------------------------+-----------------+
+
     """
 
     def __init__(
@@ -136,7 +160,7 @@ class BasicCv(ErosionModel):
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Updates detachment-limited erosion based on climate.
 
@@ -145,8 +169,8 @@ class BasicCv(ErosionModel):
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the ``ErosionModel`` base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------
