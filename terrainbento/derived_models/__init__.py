@@ -1,4 +1,4 @@
-"""Derived models in the ``terrainbento`` package."""
+"""Derived models in the terrainbento package."""
 from .model_000_basic import Basic
 
 from .model_002_basicTh import BasicTh

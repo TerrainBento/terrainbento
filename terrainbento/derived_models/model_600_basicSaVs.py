@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_600_basicVsSa.py: erosion model using depth-dependent linear diffusion,
@@ -54,7 +55,7 @@ class BasicSaVs(ErosionModel):
         )  # has units length^2/time
         try:
             initial_soil_thickness = (self._length_factor) * self.params[
-                "initial_soil_thickness"
+                "soil__initial_thickness"
             ]  # has units length
         except KeyError:
             initial_soil_thickness = 1.0  # default value
@@ -62,17 +63,17 @@ class BasicSaVs(ErosionModel):
             "soil_transport_decay_depth"
         ]  # has units length
         max_soil_production_rate = (self._length_factor) * self.params[
-            "max_soil_production_rate"
+            "soil_production__maximum_rate"
         ]  # has units length per time
         soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production_decay_depth"
+            "soil_production__decay_depth"
         ]  # has units length
 
         recharge_rate = (self._length_factor) * self.params[
             "recharge_rate"
         ]  # has units length per time
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # Create soil thickness (a.k.a. depth) field
@@ -121,7 +122,7 @@ class BasicSaVs(ErosionModel):
             soil_production_decay_depth=soil_production_decay_depth,
         )
 
-    def calc_effective_drainage_area(self):
+    def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area.
 
         Effective drainage area is defined as:
@@ -146,11 +147,11 @@ class BasicSaVs(ErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
-        self.calc_effective_drainage_area()
+        self._calc_effective_drainage_area()
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
@@ -170,7 +171,7 @@ class BasicSaVs(ErosionModel):
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt)
 
@@ -191,7 +192,7 @@ class BasicSaVs(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

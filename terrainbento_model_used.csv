@@ -26,13 +26,13 @@ BasicHySa,410,BasicHySa
 BasicChSa,440,BasicChSa
 BasicVsSa,600,BasicVsSa
 BasicRt,800,BasicRt
-BasicThRt,802,BasicThRt
+BasicRtTh,802,BasicRtTh
 BasicSsRt,804,BasicRt
 BasicDdRt,808,BasicDdRt
 BasicHyRt,810,BasicHyRt
 BasicChRt,840,BasicChRt
 BasicSsDd,00C,BasicDd
-BasicVsRt,A00,BasicVsRt
-BasicSaRt,C00,BasicSaRt
+BasicRtVs,A00,BasicRtVs
+BasicRtSa,C00,BasicRtSa
 BasicCv,CCC,BasicCv
 BasicChRtTh,842,BasicChRtTh

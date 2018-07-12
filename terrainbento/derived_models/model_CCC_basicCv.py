@@ -1,11 +1,15 @@
+# coding: utf8
 #! /usr/env/python
-"""
-model_000_basic.py: erosion model using linear diffusion, basic stream
-power, and discharge proportional to drainage area.
+"""``terrainbento`` Model **BasicCv** program.
 
-Model 000 Basic
+Erosion model program using linear diffusion, stream power, and discharge
+proportional to drainage area with climate change.
 
-Landlab components used: FastscapeStreamPower, LinearDiffuser
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 import sys
 import numpy as np
@@ -16,17 +20,112 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicCv(ErosionModel):
-    """
-    A BasicCV computes erosion using linear diffusion, basic stream
-    power, and Q~A.
+    """Model **BasicCv** program.
 
-    It also has basic climate change
+    Model **BasicCv** is a model program that evolves a topographic surface
+    described by :math:`\eta` with the following governing equation:
+
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+
+
+    where :math:`A` is the local drainage area and :math:`S` is the local slope.
+    This model also has a basic parameterization of climate change such that
+    :math:`K_{w}` varies through time. Between model run onset and a time at
+    which the climate becomes constant, the value of :math:`K_{w}` linearly
+    changes from :math:`fK` to :math:`K`, at which point it remains at :math:`K`
+    for the remainder of the modeling time period.
+
+    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    symbols, names, and dimensions.
+
+    Model ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    class and can be used to construct the following models.
+
+    1) Model **BasicCv**:
+
+    +------------------+----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name        | Value           |
+    +==================+==================================+=================+
+    |:math:`m`         | ``m_sp``                         | 0.5             |
+    +------------------+----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                         | 1               |
+    +------------------+----------------------------------+-----------------+
+    |:math:`K`         | ``water_erodability``            | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`f`         | ``climate_factor``               | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`T_s`       | ``climate_constant_date``        | user specified  |
+    +------------------+----------------------------------+-----------------+
+
     """
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the BasicCv model."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        Basic : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model ``Basic``. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the ``terrainbento`` tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import Basic
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability': 0.001,
+        ...           'climate_factor': 1.0,
+        ...           'climate_constant_date': 1.0,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0}
+
+        Construct the model.
+
+        >>> model = BasicCv(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
         # Call ErosionModel's init
         super(BasicCv, self).__init__(
             input_file=input_file,
@@ -58,10 +157,31 @@ class BasicCv(ErosionModel):
         )
 
     def run_one_step(self, dt):
+        """Advance model ``Basic`` for one time-step of duration dt.
+
+        The **run_one_step** method does the following:
+
+        1. Directs flow and accumulates drainage area.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+           not occur.
+
+        3. Updates detachment-limited erosion based on climate.
+
+        4. Calculates detachment-limited erosion by water.
+
+        5. Calculates topographic change by linear diffusion.
+
+        6. Finalizes the step using the ``ErosionModel`` base class function
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
+
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
         """
-        Advance model for one time-step of duration dt.
-        """
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -85,7 +205,7 @@ class BasicCv(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

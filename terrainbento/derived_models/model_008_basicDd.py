@@ -1,8 +1,9 @@
+# coding: utf8
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicDd`` program.
+"""terrainbento model **BasicDd** program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
-threshold that varies with incision depth, and discharge proportional to 
+threshold that varies with incision depth, and discharge proportional to
 drainage area.
 
 Landlab components used:
@@ -19,48 +20,58 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDd(ErosionModel):
-    """Model ``BasicDd`` program.
+    """Model **BasicDd** program.
 
-    Model ``BasicDd`` is a model program that evolves a topographic surface
+    Model **BasicDd** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\ 
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
         \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + \\
         D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    :math:`\omega_{ct}` is the critical stream power needed for erosion to 
+    :math:`\omega_{ct}` is the critical stream power needed for erosion to
     occur, which may change through time as it increases with cumulative
     incision depth:
-        
+
     .. math::
-        
+
         \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
         b D_I\left(x, y, t\\right), \omega_c \\right)
-            
-    where :math:`\omega_c` is the threshold when no incision has taken place, 
+
+    where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
-    and :math:`D_I` is the cumulative incision depth at location 
+    and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
-        
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model ``BasicDd`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    Model **BasicDd** inherits from the terrainbento **ErosionModel** base
     class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
     and, :math:`n` this model program can be used to run the following two
-    ``terrainbento`` numerical models:
+    terrainbento numerical models:
 
-    1) Model ``BasicDd``: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodibility`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``.
+    1) Model **BasicDd**:
 
-    2) Model ``BasicDdSs``: In this model :math:`m` has a value of 1/3,
-    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodibility~shear_stress``.
+    +--------------------+-------------------------------------------------+-----------------+
+    | Parameter Symbol   | Input File Parameter Name                       | Value           |
+    +====================+=================================================+=================+
+    |:math:`m`           | ``m_sp``                                        | 0.5             |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`n`           | ``n_sp``                                        | 1               |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`K`           | ``water_erodability``                           | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`D`           | ``regolith_transport_parameter``                | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+
     """
 
     def __init__(
@@ -89,9 +100,9 @@ class BasicDd(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicDd``. Note that a YAML input file can be used instead of
+        of model **BasicDd**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -123,9 +134,8 @@ class BasicDd(ErosionModel):
         >>> model.run_one_step(1.)
         >>> model.model_time
         1.0
-        
-        """
 
+        """
         # Call ErosionModel's init
         super(BasicDd, self).__init__(
             input_file=input_file,
@@ -134,11 +144,12 @@ class BasicDd(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError("Model BasicDd only supports n equals 1.")
+
         # Get Parameters and convert units if necessary:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
-        )
+        self.K = self.get_parameter_from_exponent("water_erodability")
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -150,22 +161,6 @@ class BasicDd(ErosionModel):
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
             "erosion__threshold"
         )  # has units length/time
-
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                "A parameter for both K_sp and K_ss has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                self.K = K_sp
-            else:
-                self.K = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Lengtg^(1/3) per Time
-        else:
-            raise ValueError("A value for K_sp or K_ss  must be provided.")
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros("node", "erosion__threshold")
@@ -191,17 +186,17 @@ class BasicDd(ErosionModel):
     def update_erosion_threshold_values(self):
         """Update the erosion threshold at each node based on cumulative
         incision so far using:
-            
+
         .. math::
-        
+
             \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
             b D_I\left(x, y, t\\right), \omega_c \\right)
-            
-        where :math:`\omega_c` is the threshold when no incision has taken place, 
+
+        where :math:`\omega_c` is the threshold when no incision has taken place,
         :math:`b` is the rate at which the threshold increases with incision depth,
-        and :math:`D_I` is the cumulative incision depth at location 
+        and :math:`D_I` is the cumulative incision depth at location
         :math:`\left(x,y\\right)` and time :math:`t`.
-            
+
         """
 
         # Set the erosion threshold.
@@ -219,25 +214,25 @@ class BasicDd(ErosionModel):
         self.threshold[self.threshold < self.threshold_value] = self.threshold_value
 
     def run_one_step(self, dt):
-        """Advance model ``BasicDd`` for one time-step of duration dt.
+        """Advance model **BasicDd** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
-        so, uses it to modify the erodability by water.
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+           so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited, threshold-modified erosion by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+        6. Finalizes the step using the **ErosionModel** base class function
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------
@@ -245,7 +240,7 @@ class BasicDd(ErosionModel):
             Increment of time for which the model is run.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -266,7 +261,7 @@ class BasicDd(ErosionModel):
                 self.K
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
@@ -277,7 +272,7 @@ class BasicDd(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

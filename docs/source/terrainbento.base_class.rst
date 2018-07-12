@@ -1,8 +1,8 @@
 Model Base Classes
 ==================
 
-Presently ``TerrainBento`` has two built in base classes. The ``ErosionModel``
-provides functionality used by all models while the ``StochasticErosionModel``
+Presently terrainbento has two built in base classes. The **ErosionModel**
+provides functionality used by all models while the **StochasticErosionModel**
 provides functionality used by models that explicitly treat precipitation.
 
 .. toctree::
