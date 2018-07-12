@@ -336,7 +336,7 @@ def test_stability_checker():
 #               'F_f':F_f,
 #               'H_star': H_star,
 #               'solver': 'basic',
-#               'initial_soil_thickness': initial_soil_thickness,
+#               "soil__initial_thickness": initial_soil_thickness,
 #               'soil_transport_decay_depth': soil_transport_decay_depth,
 #               'soil_production__maximum_rate': soil_production__maximum_rate,
 #               'soil_production__decay_depth': soil_production__decay_depth,

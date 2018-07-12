@@ -110,7 +110,8 @@ class BasicHySa(ErosionModel):
         ...           'solver': 'basic',
         ...           'soil_transport_decay_depth': 1,
         ...           'soil_production__maximum_rate': 0.0001,
-        ...           'soil_production__decay_depth': 0.5}
+        ...           'soil_production__decay_depth': 0.5,
+        ...           'soil__initial_thickness': 1.0}
 
         Construct the model.
 
@@ -151,7 +152,7 @@ class BasicHySa(ErosionModel):
         )  # has units length^2/time
 
         initial_soil_thickness = (self._length_factor) * self.params[
-                "initial_soil_thickness"
+                "soil__initial_thickness"
             ]  # has units length
 
         soil_transport_decay_depth = (self._length_factor) * self.params[

@@ -33,16 +33,16 @@ class BasicHy(ErosionModel):
     :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length scale,
     :math:`\omega_c` is the critical stream power needed for erosion to occur,
     :math:`V` is effective sediment settling velocity, :math:`Q_s` is
-    volumetric sediment flux, :math:`Q` is volumetric water discharge, and 
+    volumetric sediment flux, :math:`Q` is volumetric water discharge, and
     :math:`\phi` is sediment porosity. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and 
+    manuscript Table XX (URL here) for parameter symbols, names, and
     dimensions.
 
     Model **BasicHy** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the value of :math:`\omega_c`, this model program can 
+    class. Depending on the value of :math:`\omega_c`, this model program can
     be used to run the following two terrainbento numerical models:
 
-    1) Model **BasicHy**: Here there is no erosion threshold, i.e. 
+    1) Model **BasicHy**: Here there is no erosion threshold, i.e.
     :math:`\omega_c=0`.
 
     2) Model **BasicHyTh**: This model is identical to Model BasicHy except
@@ -191,14 +191,14 @@ class BasicHy(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
            so, uses it to modify the erodability by water.
 
         4. Calculates erosion and deposition by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
+        6. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
            by ``dt`` and increments model time by ``dt``.
 

@@ -47,12 +47,12 @@ class BasicDdHy(ErosionModel):
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
-    
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter 
+
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model **BasicDdHy** inherits from the terrainbento **ErosionModel** 
-    base class. 
+    Model **BasicDdHy** inherits from the terrainbento **ErosionModel**
+    base class.
     """
 
     def __init__(
@@ -183,14 +183,14 @@ class BasicDdHy(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
            so, uses it to modify the erodability by water.
 
         4. Calculates threshold-modified erosion and deposition by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
+        6. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
            by ``dt`` and increments model time by ``dt``.
 
