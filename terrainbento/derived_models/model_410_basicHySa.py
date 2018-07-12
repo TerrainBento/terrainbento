@@ -149,12 +149,11 @@ class BasicHySa(ErosionModel):
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-        try:
-            initial_soil_thickness = (self._length_factor) * self.params[
+
+        initial_soil_thickness = (self._length_factor) * self.params[
                 "initial_soil_thickness"
             ]  # has units length
-        except KeyError:
-            initial_soil_thickness = 1.0  # default value
+
         soil_transport_decay_depth = (self._length_factor) * self.params[
             "soil_transport_decay_depth"
         ]  # has units length
