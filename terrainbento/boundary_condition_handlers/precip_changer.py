@@ -294,7 +294,7 @@ class PrecipChanger(object):
             'year' are supported. Default value is 'year'.
         length_factor : float, optional
             terrainbento model internal length factor conversion related to
-            ``meters_to_feet`` and ``feet_to_meters`` input paramters. Default
+            ``meters_to_feet`` and ``feet_to_meters`` input parameters. Default
             is 1.0.
 
         Notes
@@ -341,7 +341,7 @@ class PrecipChanger(object):
         3.0
 
         Since we did not specify a start time or stop time the PrecipChanger
-        will immediate start to modify the values of precipitation paramters.
+        will immediate start to modify the values of precipitation parameters.
 
         >>> bh.run_one_step(10.0)
         >>> I, pd = bh.get_current_precip_params()
@@ -541,7 +541,7 @@ class PrecipChanger(object):
         # if after start time
         if self.model_time > self.start_time:
 
-            # get the updated precipitation paramters
+            # get the updated precipitation parameters
             frac_wet, mean_depth = self.get_current_precip_params()
 
             # calculate the mean intensity and the scale factor

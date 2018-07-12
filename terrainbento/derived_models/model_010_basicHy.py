@@ -24,11 +24,11 @@ class BasicHy(ErosionModel):
     Model **BasicHy** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
+
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
-        \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\
-        \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`H` is soil depth, :math:`H_*` is the bedrock roughness length scale,
@@ -41,7 +41,9 @@ class BasicHy(ErosionModel):
 
     Model **BasicHy** inherits from the terrainbento **ErosionModel** base
     class. This model program can be used to run the following terrainbento
-    numerical models:
+    numerical models: **BasicHy**, **BasicHySs**, **BasicFi**. In addition to
+    the parameters required by the **ErosionModel** base class, models built
+    with this program require the following parameters.
 
     1) Model **BasicHy**:
 
@@ -76,7 +78,7 @@ class BasicHy(ErosionModel):
     +------------------+------------------------------------+-----------------+
     |:math:`D`         | ``regolith_transport_parameter``   | user specified  |
     +------------------+------------------------------------+-----------------+
-    |:math:`V`         | ``settling_velocity``            | user specified  |
+    |:math:`V`         | ``settling_velocity``              | user specified  |
     +------------------+------------------------------------+-----------------+
     |:math:`F_f`       | ``fraction_fines``                 | 0               |
     +------------------+------------------------------------+-----------------+
@@ -103,9 +105,10 @@ class BasicHy(ErosionModel):
     |:math:`\phi`      | ``sediment_porosity``            | user specified  |
     +------------------+----------------------------------+-----------------+
 
-    A value for the paramter ``solver`` can also be used to indicate if the
+    A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **ErosionDeposition**
-    component or if an adaptive internal timestep is used.
+    component or if an adaptive internal timestep is used. Refer to the
+    **ErosionDeposition** documentation for details.
 
     """
 

@@ -61,7 +61,9 @@ class BasicHyRt(ErosionModel):
     transition, use a small value for the contact zone width.
 
     Model **BasicHyRt** inherits from the terrainbento **ErosionModel** base
-    class. This model program can be used to run the following terrainbento numerical model:
+    class and can be used to run the **BasicHyRt** numerical model. In addition
+    to the parameters required by the **ErosionModel** base class, models built
+    with this program require the following parameters.
 
     1) Model **BasicHyRt**:
 
@@ -89,7 +91,8 @@ class BasicHyRt(ErosionModel):
 
     A value for the paramter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **ErosionDeposition**
-    component or if an adaptive internal timestep is used.
+    component or if an adaptive internal timestep is used. Refer to the
+    **ErosionDeposition** documentation for details.
 
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
@@ -117,7 +120,6 @@ class BasicHyRt(ErosionModel):
     fields.
 
     """
-
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None

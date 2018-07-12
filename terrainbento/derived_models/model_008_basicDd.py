@@ -50,9 +50,9 @@ class BasicDd(ErosionModel):
     symbols, names, and dimensions.
 
     Model **BasicDd** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
-    and, :math:`n` this model program can be used to run the following two
-    terrainbento numerical models:
+    class and can be used to run the **BasicDd** numerical model. In addition to
+    the parameters required by the **ErosionModel** base class, models built
+    with this program require the following parameters.
 
     1) Model **BasicDd**:
 

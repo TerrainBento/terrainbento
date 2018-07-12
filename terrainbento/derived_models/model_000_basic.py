@@ -35,9 +35,13 @@ class Basic(ErosionModel):
     Model **Basic** inherits from the terrainbento **ErosionModel** base
     class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
     and, :math:`n` this model program can be used to run the following three
-    terrainbento numerical models:
+    terrainbento numerical models: **Basic**, **BasicVm**, and **BasicSs**.
+
+    In addition to the parameters required by the **ErosionModel** base class,
+    models build with this program require the following parameters.
 
     1) Model **Basic**:
+
     +------------------+----------------------------------+-----------------+
     | Parameter Symbol | Input File Parameter Name        | Value           |
     +==================+==================================+=================+
@@ -51,6 +55,7 @@ class Basic(ErosionModel):
     +------------------+----------------------------------+-----------------+
 
     2) Model **BasicSs**:
+
     +------------------+------------------------------------------+-----------------+
     | Parameter Symbol | Input File Parameter Name                | Value           |
     +==================+==========================================+=================+

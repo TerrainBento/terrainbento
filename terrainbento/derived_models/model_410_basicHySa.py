@@ -50,8 +50,10 @@ class BasicHySa(ErosionModel):
     Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model **BasicHySa** inherits from the terrainbento **ErosionModel**
-    base class. It can be used to construct the following model:
+    Model **BasicHySa** inherits from the terrainbento **ErosionModel** base
+    class and can be used to run the **BasicSa** numerical model. In addition
+    to the parameters required by the **ErosionModel** base class, models built
+    with this program require the following parameters.
 
     1. **BasicHySa**:
 
@@ -83,7 +85,8 @@ class BasicHySa(ErosionModel):
 
     A value for the paramter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **Space** component or if an
-    adaptive internal timestep is used.
+    adaptive internal timestep is used. Refer to the **Space** documentation for
+    details.
 
     """
 

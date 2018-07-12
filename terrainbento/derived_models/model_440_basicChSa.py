@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""``terrainbento`` Model ``BasicChSa`` program.
+"""terrainbento Model **BasicChSa** program.
 
 Erosion model program using depth-dependent cubic diffusion
 with a soil layer, basic stream power, and discharge proportional to drainage
@@ -63,8 +63,12 @@ class BasicChSa(ErosionModel):
     Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model ``BasicChSa`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class.
+    Model **BasicChSa** inherits from the terrainbento **ErosionModel** base
+    class and can be used to run the **BasicChSa** numerical model. In addition
+    to the parameters required by the **ErosionModel** base class, models built
+    with this program require the following parameters.
+
+    1) Model **BasicChSa**:
 
     +------------------+-----------------------------------+-----------------+
     | Parameter Symbol | Input File Parameter Name         | Value           |
@@ -87,7 +91,6 @@ class BasicChSa(ErosionModel):
     +------------------+-----------------------------------+-----------------+
     |:math:`S_c`       | ``critical_slope``                | user specified  |
     +------------------+-----------------------------------+-----------------+
-
 
     """
 
@@ -117,9 +120,9 @@ class BasicChSa(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicChSa``. Note that a YAML input file can be used instead of
+        of model **BasicChSa**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -221,7 +224,7 @@ class BasicChSa(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``BasicChSa`` for one time-step of duration dt.
+        """Advance model **BasicChSa** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -239,7 +242,7 @@ class BasicChSa(ErosionModel):
 
         6. Calculates topographic change by depth-dependent nonlinear diffusion.
 
-        7. Finalizes the step using the ``ErosionModel`` base class function
+        7. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
            by ``dt`` and increments model time by ``dt``.
 

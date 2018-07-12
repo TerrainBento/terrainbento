@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""``terrainbento`` Model **BasicSa** program.
+"""terrainbento Model **BasicSa** program.
 
 Erosion model using depth-dependent linear
 diffusion with a soil layer, basic stream power, and discharge proportional to drainage area.
@@ -61,6 +61,13 @@ class BasicSa(ErosionModel):
     Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
+    Model **BasicSa** inherits from the terrainbento **ErosionModel** base
+    class and can be used to run the **BasicSa** numerical model. In addition
+    to the parameters required by the **ErosionModel** base class, models built
+    with this program require the following parameters.
+
+    1) Model **BasicSa**:
+
     +------------------+-----------------------------------+-----------------+
     | Parameter Symbol | Input File Parameter Name         | Value           |
     +==================+===================================+=================+
@@ -111,7 +118,7 @@ class BasicSa(ErosionModel):
         This is a minimal example to demonstrate how to construct an instance
         of model **BasicSa**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -229,7 +236,7 @@ class BasicSa(ErosionModel):
 
         6. Calculates topographic change by depth-dependent linear diffusion.
 
-        7. Finalizes the step using the ``ErosionModel`` base class function
+        7. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
            by ``dt`` and increments model time by ``dt``.
 

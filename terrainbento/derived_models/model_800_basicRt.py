@@ -59,7 +59,8 @@ class BasicRt(ErosionModel):
 
     Model **BasicRt** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbento numerical models:
+    to run the following two terrainbento numerical models: **BasicRt**,
+    **BasicSs**.
 
     1) Model **BasicRt**:
 

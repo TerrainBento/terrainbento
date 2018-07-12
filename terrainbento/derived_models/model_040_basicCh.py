@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-""" ``terrainbento`` Model ``BasicCh`` program.
+""" terrainbento Model **BasicCh** program.
 
 Erosion model program using cubic diffusion, basic stream
 power, and discharge proportional to drainage area.
@@ -24,30 +24,27 @@ from terrainbento.base_class import ErosionModel
 class BasicCh(ErosionModel):
     """
 
-    Model ``BasicCh`` is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    Model **BasicCh** is a model program that evolves a topographic surface
+    described by :math:`\eta` with the following governing equations:
 
 
     .. math::
 
         \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + \\nabla^2 q_h
-
-
-    where
-
-
-    .. math::
-
         q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
 
     where :math:`S_c` is the critical slope, :math:`A` is the local drainage
     area and :math:`S` is the local slope. :math:`N` is the number of terms in
-    the Taylor Expansion and is set at 11. Refer to the ``terrainbento``
+    the Taylor Expansion and is set at 11. Refer to the terrainbento
     manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
 
-    Model ``BasicCh`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class.
+    Model **BasicCh** inherits from the terrainbento **ErosionModel** base
+    class and can be used to run the **BasicCh** numerical model. In addition
+    to the parameters required by the **ErosionModel** base class, models built
+    with this program require the following parameters.
+
+    1) Model **BasicCh**:
 
     +------------------+----------------------------------+-----------------+
     | Parameter Symbol | Input File Parameter Name        | Value           |
@@ -62,7 +59,6 @@ class BasicCh(ErosionModel):
     +------------------+----------------------------------+-----------------+
     |:math:`S_c`       | ``critical_slope``               | user specified  |
     +------------------+----------------------------------+-----------------+
-
 
     """
 
@@ -92,9 +88,9 @@ class BasicCh(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``BasicCh``. Note that a YAML input file can be used instead of
+        of model **BasicCh**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -161,7 +157,7 @@ class BasicCh(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``BasicCh`` for one time-step of duration dt.
+        """Advance model **BasicCh** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
@@ -177,7 +173,7 @@ class BasicCh(ErosionModel):
 
         5. Calculates topographic change by nonlinear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
+        6. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
            by ``dt`` and increments model time by ``dt``.
 

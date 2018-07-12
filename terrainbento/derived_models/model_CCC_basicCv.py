@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""``terrainbento`` Model **BasicCv** program.
+"""terrainbento Model **BasicCv** program.
 
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area with climate change.
@@ -38,10 +38,10 @@ class BasicCv(ErosionModel):
     changes from :math:`fK` to :math:`K`, at which point it remains at :math:`K`
     for the remainder of the modeling time period.
 
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
+    Model ``Basic`` inherits from the terrainbento **ErosionModel** base
     class and can be used to construct the following models.
 
     1) Model **BasicCv**:
@@ -92,7 +92,7 @@ class BasicCv(ErosionModel):
         This is a minimal example to demonstrate how to construct an instance
         of model ``Basic``. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -172,7 +172,7 @@ class BasicCv(ErosionModel):
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
+        6. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
            by ``dt`` and increments model time by ``dt``.
 
