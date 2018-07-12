@@ -30,19 +30,19 @@ class BasicHySa(ErosionModel):
 
         \\frac{\partial \eta}{\partial t} = -K_{r}A^{m}S^{n}\left(e^{-H/H_*}\\right) \\
         -K_{w}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\
-        + \\frac{V_c\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_s
+        + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_h
 
-    where :math:`K_r` and :math:`K_s` are rock and sediment erodability
+    where :math:`K_r` and :math:`K_s` are rock and sediment erodibility
     respectively, :math:`A` is the local drainage area, :math:`S` is the local
     slope, :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length
     scale, :math:`\omega_c` is the critical stream power needed for erosion to
     occur, :math:`V` is effective sediment settling velocity, :math:`Q_s` is
     volumetric fluvial sediment flux, :math:`Q` is volumetric water discharge,
     and :math:`\phi` is sediment porosity. Hillslope sediment flux per unit
-    width :math:`q_s` is given by:
+    width :math:`q_h` is given by:
 
     .. math::
-        q_s=-DS\left(1-e^{-H/H_0}\\right)
+        q_h=-DS\left(1-e^{-H/H_0}\\right)
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.
