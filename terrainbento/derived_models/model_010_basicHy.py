@@ -1,7 +1,7 @@
 #! /usr/env/python
 """``terrainbento`` Model ``BasicHy`` program.
 
-Erosion model program using linear diffusion, stream-power-driven sediment 
+Erosion model program using linear diffusion, stream-power-driven sediment
 erosion and mass conservation, and discharge proportional to drainage area.
 
 Landlab components used:
@@ -25,7 +25,7 @@ class BasicHy(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\ 
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
         \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\
         \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
 
@@ -33,16 +33,16 @@ class BasicHy(ErosionModel):
     :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length scale,
     :math:`\omega_c` is the critical stream power needed for erosion to occur,
     :math:`V` is effective sediment settling velocity, :math:`Q_s` is
-    volumetric sediment flux, :math:`Q` is volumetric water discharge, and 
-    :math:`\phi` is sediment porosity. Refer to the ``terrainbento`` 
-    manuscript Table XX (URL here) for parameter symbols, names, and 
+    volumetric sediment flux, :math:`Q` is volumetric water discharge, and
+    :math:`\phi` is sediment porosity. Refer to the ``terrainbento``
+    manuscript Table XX (URL here) for parameter symbols, names, and
     dimensions.
 
     Model ``BasicHy`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class. Depending on the value of :math:`\omega_c`, this model program can 
+    class. Depending on the value of :math:`\omega_c`, this model program can
     be used to run the following two ``terrainbento`` numerical models:
 
-    1) Model ``BasicHy``: Here there is no erosion threshold, i.e. 
+    1) Model ``BasicHy``: Here there is no erosion threshold, i.e.
     :math:`\omega_c=0`.
 
     2) Model ``BasicHyTh``: This model is identical to Model BasicHy except
@@ -111,7 +111,7 @@ class BasicHy(ErosionModel):
         >>> model.run_one_step(1.)
         >>> model.model_time
         1.0
-        
+
         """
 
         # Call ErosionModel's init
@@ -190,18 +190,18 @@ class BasicHy(ErosionModel):
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
-        so, uses it to modify the erodability by water.
+           so, uses it to modify the erodability by water.
 
         4. Calculates erosion and deposition by water.
 
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the ``ErosionModel`` base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------
