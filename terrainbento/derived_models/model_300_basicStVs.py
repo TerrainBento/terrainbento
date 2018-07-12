@@ -60,10 +60,10 @@ class BasicStVs(StochasticErosionModel):
         )  # has units length^2/time
 
         soil_thickness = (self._length_factor) * self.params[
-            "initial_soil_thickness"
+            "soil__initial_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # instantiate rain generator
@@ -133,7 +133,7 @@ class BasicStVs(StochasticErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -154,7 +154,7 @@ class BasicStVs(StochasticErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

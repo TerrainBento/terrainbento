@@ -169,7 +169,7 @@ class BasicDdSt(StochasticErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -249,7 +249,7 @@ class BasicDdSt(StochasticErosionModel):
                 self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

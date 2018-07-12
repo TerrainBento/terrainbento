@@ -56,7 +56,7 @@ class BasicCh(ErosionModel):
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            slope_crit=self.params["slope_crit"],
+            critical_slope=self.params["critical_slope"],
             nterms=11,
         )
 
@@ -65,7 +65,7 @@ class BasicCh(ErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -83,7 +83,7 @@ class BasicCh(ErosionModel):
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt, flooded_nodes=flooded)
 
@@ -96,7 +96,7 @@ class BasicCh(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

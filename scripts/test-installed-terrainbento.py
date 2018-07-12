@@ -11,8 +11,8 @@ sys.path.pop(0)
 try:
     import terrainbento
 except ImportError:
-    print('Unable to import terrainbento. You may not have terrainbento installed.')
-    print('Here is your sys.path')
+    print("Unable to import terrainbento. You may not have terrainbento installed.")
+    print("Here is your sys.path")
     print(os.linesep.join(sys.path))
     raise
 
