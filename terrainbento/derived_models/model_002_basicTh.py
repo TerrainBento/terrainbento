@@ -35,7 +35,25 @@ class BasicTh(ErosionModel):
     symbols, names, and dimensions.
 
     Model **BasicTh** inherits from the terrainbento **ErosionModel** base
-    class.
+    class. Depending on the parameters provided, this model program can be used
+    to run the following terrainbento numerical model:
+
+    1) Model **BasicTh**:
+
+    +--------------------+-----------------------------------------+-----------------+
+    | Parameter Symbol   | Input File Parameter Name               | Value           |
+    +====================+=========================================+=================+
+    |:math:`m`           | ``m_sp``                                | 0.5             |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`n`           | ``n_sp``                                | 1               |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`K`           | ``water_erodability``                   | user specified  |
+    +--------------------+-----------------------------------------+-----------------
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`D`           | ``regolith_transport_parameter``        | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+
     """
 
     def __init__(
