@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_110_basicHySt.py: erosion model with stochastic
@@ -129,10 +130,7 @@ class BasicHySt(StochasticErosionModel):
         self.area = self.grid.at_node["drainage_area"]
 
         # Handle solver option
-        try:
-            solver = self.params["solver"]
-        except:
-            solver = "original"
+        solver = self.params.get("solver", "basic")
 
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
@@ -143,10 +141,7 @@ class BasicHySt(StochasticErosionModel):
             v_s=v_s,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            method=method,
-            discharge_method=discharge_method,
-            area_field=area_field,
-            discharge_field=discharge_field,
+            discharge_field='surface_water__discharge',
             solver=solver,
         )
 
@@ -172,7 +167,7 @@ class BasicHySt(StochasticErosionModel):
         """
         Advance model for one time-step of duration dt.
         """
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -193,7 +188,7 @@ class BasicHySt(StochasticErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main():
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

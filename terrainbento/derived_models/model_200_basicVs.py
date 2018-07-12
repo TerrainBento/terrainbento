@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_200_basicVs.py: erosion model using linear diffusion, basic stream
@@ -54,10 +55,10 @@ class BasicVs(ErosionModel):
             "recharge_rate"
         ]  # has units length per time
         soil_thickness = (self._length_factor) * self.params[
-            "initial_soil_thickness"
+            "soil__initial_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # check that a stream power and a shear stress parameter have not both been given
@@ -72,7 +73,7 @@ class BasicVs(ErosionModel):
             else:
                 self.K = (
                     self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Lengtg^(1/3) per Time
+                ) * K_ss  # K_ss has units Length^(1/3) per Time
         else:
             raise ValueError("A value for K_sp or K_ss  must be provided.")
 
@@ -102,7 +103,7 @@ class BasicVs(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def calc_effective_drainage_area(self):
+    def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area.
 
         Effective drainage area is defined as:
@@ -126,11 +127,11 @@ class BasicVs(ErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
-        self.calc_effective_drainage_area()
+        self._calc_effective_drainage_area()
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
@@ -150,7 +151,7 @@ class BasicVs(ErosionModel):
                 self.K
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt)
 
@@ -161,7 +162,7 @@ class BasicVs(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main():
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

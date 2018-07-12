@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_202_basicThVs.py: erosion model using linear diffusion, thresholded
@@ -31,7 +32,6 @@ class BasicThVs(ErosionModel):
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
         """Initialize the BasicThVs."""
-
         # Call ErosionModel's init
         super(BasicThVs, self).__init__(
             input_file=input_file,
@@ -39,6 +39,9 @@ class BasicThVs(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
+
+        if float(self.params["n_sp"]) != 1.0:
+            raise ValueError('Model BasicThVs only supports n = 1.')
 
         self.K_sp = self.get_parameter_from_exponent("water_erodability")
         regolith_transport_parameter = (
@@ -54,10 +57,10 @@ class BasicThVs(ErosionModel):
             "recharge_rate"
         ]  # has units length per time
         soil_thickness = (self._length_factor) * self.params[
-            "initial_soil_thickness"
+            "soil__initial_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # Add a field for effective drainage area
@@ -86,7 +89,7 @@ class BasicThVs(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def calc_effective_drainage_area(self):
+    def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area.
 
         Effective drainage area is defined as:
@@ -110,11 +113,11 @@ class BasicThVs(ErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Update effective runoff ratio
-        self.calc_effective_drainage_area()
+        self._calc_effective_drainage_area()
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
@@ -134,7 +137,7 @@ class BasicThVs(ErosionModel):
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(dt)
 
@@ -145,7 +148,7 @@ class BasicThVs(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main():
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 
