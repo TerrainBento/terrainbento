@@ -53,14 +53,24 @@ class BasicDd(ErosionModel):
     and, :math:`n` this model program can be used to run the following two
     terrainbento numerical models:
 
-    1) Model **BasicDd**: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodability`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``.
+    1) Model **BasicDd**:
 
-    2) Model **BasicDdSs**: In this model :math:`m` has a value of 1/3,
-    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodability~shear_stress``.
+    +--------------------+-------------------------------------------------+-----------------+
+    | Parameter Symbol   | Input File Parameter Name                       | Value           |
+    +====================+=================================================+=================+
+    |:math:`m`           | ``m_sp``                                        | 0.5             |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`n`           | ``n_sp``                                        | 1               |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`K`           | ``water_erodability``                           | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`D`           | ``regolith_transport_parameter``                | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+
     """
 
     def __init__(
