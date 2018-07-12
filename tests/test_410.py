@@ -27,7 +27,7 @@ def test_both_Ksp_or_Kss():
               'water_erodability': 0.001,
               'water_erodability~shear_stress': 0.001}
     pytest.raises(ValueError, BasicHySa, params=params)
-    
+
 def test_steady_Ksp_no_precip_changer():
     U = 0.0001
     K_rock_sp = 0.001
@@ -271,7 +271,7 @@ def test_stability_checker():
         model = BasicHySa(params=params)
         for i in range(800):
             model.run_one_step(dt)
-
+    os.remove("model_failed.txt")
 # =============================================================================
 # def test_diffusion_only():
 #     total_time = 500
@@ -292,7 +292,7 @@ def test_stability_checker():
 #     soil_transport_decay_depth = 0.1
 #     soil_production__maximum_rate = 0
 #     soil_production__decay_depth = 0.1
-# 
+#
 #     # construct dictionary. note that D is turned off here
 #     params = {'model_grid': 'RasterModelGrid',
 #               'dt': dt,
@@ -325,20 +325,20 @@ def test_stability_checker():
 #               'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
 #                                               'lowering_rate': -U}}
 #     nts = int(total_time/dt)
-# 
+#
 #     reference_node = 9
 #     # construct and run model
 #     model = BasicHySa(params=params)
 #     for i in range(nts):
 #         model.run_one_step(dt)
-# 
-# 
+#
+#
 #     predicted_z = (model.z[model.grid.core_nodes[reference_node]]-(U / (2. * D)) *
 #                ((model.grid.x_of_node - model.grid.x_of_node[model.grid.core_nodes[reference_node]])**2))
-# 
+#
 #     # assert actual and predicted elevations are the same.
 #     assert_array_almost_equal(predicted_z[model.grid.core_nodes],
 #                               model.z[model.grid.core_nodes],
 #                               decimal=2)
-#   
+#
 # =============================================================================
