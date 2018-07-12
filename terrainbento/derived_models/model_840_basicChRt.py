@@ -39,12 +39,12 @@ class BasicChRt(ErosionModel):
 
         w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
 
-        q_h = DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
+        q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`S_c$ is the critical slope parameter
+    regolith transport parameter. :math:`S_c` is the critical slope parameter
     and :math:`N` is the number of terms in the Taylor Series expansion.
     Presently :math:`N` is set at 7 and is not a user defined parameter. :math:`w`
     is a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
@@ -63,20 +63,33 @@ class BasicChRt(ErosionModel):
     class. Depending on the parameters provided, this model program can be used
     to run the following two terrainbento numerical models:
 
-    1) Model **BasicChRt**: Here :math:`m` has a value of 0.5 and
+    1) Model **BasicChRt**:
+
+    +------------------+----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name        | Value           |
+    +==================+==================================+=================+
+    |:math:`m`         | ``m_sp``                         | 0.5             |
+    +------------------+----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                         | 1               |
+    +------------------+----------------------------------+-----------------+
+    |:math:`K_{1}`     | ``water_erodability~upper``      | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`K_{2}`     | ``water_erodability~lower``      | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`W_{c}`     | ``contact_zone__width``          | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
+    +------------------+----------------------------------+-----------------+
+    |:math:`S_c`       | ``critical_slope``               | user specified  |
+    +------------------+----------------------------------+-----------------+
+
+    Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
     ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
     ``water_erodability~lower`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``.
+    ``regolith_transport_parameter``. :math:`S_c` is given by ``critical_slope``.
 
-    2) Model **BasicChRtSs**: In this model :math:`m` has a value of 1/3 and
-    :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper~shear_stress``, :math:`K_{2}` is given by the
-    parameter ``water_erodability~lower~shear_stress`` and :math:`D` is given by
-    the parameter ``regolith_transport_parameter``.
-
-    In both models, a value for :math:`Wc` is given by the parameter name
-    ``contact_zone__width`` and the spatially variable elevation of the contact
+    In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
     created using an input DEM, then the shape of the field contained in the
@@ -152,7 +165,7 @@ class BasicChRt(ErosionModel):
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
-        ...           'slope_crit': 0.1}
+        ...           'critical_slope': 0.1}
 
         Construct the model.
 
@@ -203,7 +216,7 @@ class BasicChRt(ErosionModel):
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            slope_crit=self.params["slope_crit"],
+            slope_crit=self.params["critical_slope"],
             nterms=7,
         )
 
@@ -264,22 +277,22 @@ class BasicChRt(ErosionModel):
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-        so, uses it to modify the two erodability by water values.
+           so, uses it to modify the two erodability by water values.
 
         4. Updates the spatially variable erodability value based on the
-        relative distance between the topographic surface and the lithology
-        contact.
+           relative distance between the topographic surface and the lithology
+           contact.
 
         5. Calculates detachment-limited erosion by water.
 
         6. Calculates topographic change by non-linear diffusion.
 
         7. Finalizes the step using the **ErosionModel** base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------

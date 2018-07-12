@@ -64,18 +64,31 @@ class BasicRtTh(ErosionModel):
 
     Model **BasicRtTh** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbento numerical model:
+    to run the following terrainbento numerical model:
 
-    1) Model **BasicRtTh**: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
-    ``water_erodability~lower`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``. :math:`\omega_{c1}` is given by the
-    parameter ``water_erosion_rule~upper~threshold___parameter`` and :math:`\omega_{c2}`
-    is given by ``water_erosion_rule~lower~threshold___parameter``.
+    1) Model **BasicRtTh**:
 
-    In all models, a value for :math:`Wc` is given by the parameter name
-    ``contact_zone__width`` and the spatially variable elevation of the contact
+    +--------------------+-----------------------------------------+-----------------+
+    | Parameter Symbol   | Input File Parameter Name               | Value           |
+    +====================+=========================================+=================+
+    |:math:`m`           | ``m_sp``                                | 0.5             |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`n`           | ``n_sp``                                | 1               |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`K_{1}`       | ``water_erodability~upper``             | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`K_{2}`       | ``water_erodability~lower``             | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`\omega_{c1}` | ``water_erosion_rule~upper__threshold`` | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`\omega_{c2}` | ``water_erosion_rule~lower__threshold`` | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`W_{c}`       | ``contact_zone__width``                 | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+    |:math:`D`           | ``regolith_transport_parameter``        | user specified  |
+    +--------------------+-----------------------------------------+-----------------+
+
+    In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
     created using an input DEM, then the shape of the field contained in the
@@ -147,8 +160,8 @@ class BasicRtTh(ErosionModel):
         ...           'regolith_transport_parameter': 0.001,
         ...           'water_erodability~lower': 0.001,
         ...           'water_erodability~upper': 0.01,
-        ...           'water_erosion_rule~upper~threshold___parameter': 0.1,
-        ...           'water_erosion_rule~lower~threshold___parameter': 0.2,
+        ...           'water_erosion_rule~upper__threshold': 0.1,
+        ...           'water_erosion_rule~lower__threshold': 0.2,
         ...           'contact_zone__width': 1.0,
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
@@ -180,10 +193,10 @@ class BasicRtTh(ErosionModel):
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
         self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
         rock_erosion__threshold = self.get_parameter_from_exponent(
-            "water_erosion_rule~lower~threshold___parameter"
+            "water_erosion_rule~lower__threshold"
         )
         till_erosion__threshold = self.get_parameter_from_exponent(
-            "water_erosion_rule~upper~threshold___parameter"
+            "water_erosion_rule~upper__threshold"
         )
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -277,22 +290,22 @@ class BasicRtTh(ErosionModel):
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-        so, uses it to modify the two erodability by water values.
+           so, uses it to modify the two erodability by water values.
 
-        4. Updates the spatially variable erodability value based on the
-        relative distance between the topographic surface and the lithology
-        contact.
+        4. Updates the spatially variable erodability and threshold values based
+           on the relative distance between the topographic surface and the lithology
+           contact.
 
         5. Calculates detachment-limited erosion by water.
 
         6. Calculates topographic change by linear diffusion.
 
         7. Finalizes the step using the **ErosionModel** base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------

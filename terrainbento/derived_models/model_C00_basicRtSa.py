@@ -26,19 +26,28 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicRtSa(ErosionModel):
-    """Model **BasicRt** program.
+    """Model **BasicRtSa** program.
 
-    Model **BasicRtTh** combines the **BasicRt** and **BasicTh** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer, and
-    permitting the use of an smooth erosion threshold for each lithology. Given
-    a spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model \
-    **BasicRtTh** evolves a topographic surface described by :math:`\eta` with
-    the following governing equations:
+    Model **BasicRtSa** combines the **BasicRt** and **BasicSa** models by
+    allowing for two lithologies, an "upper" layer and a "lower" layer and
+    explicitly resolving a soil layer. This soil layer is produced by weathering
+    that decays exponentially with soil thickness and hillslope transport is
+    soil-depth dependent. Given a spatially varying contact zone elevation,
+    :math:`\eta_C(x,y))`, a spatially varying soil thickness :math:`H` and a
+    spatially varying bedrock elevation :math:`\eta_b`, model **BasicRtSa**
+    evolves a topographic surface described by :math:`\eta` with the following
+    governing equations:
 
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\\nabla^2 \eta
+        \eta = \eta_b + H
+
+        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_*) - \delta (H) K A^{1/2} S - \\nabla q_h
+
+        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_*) - (1 - \delta (H) ) K A^{1/2} S
+
+        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \\nabla \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -50,8 +59,16 @@ class BasicRtSa(ErosionModel):
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    contact zone and the width of the contact zone.
+
+    The function :math:`\delta (H)` is used to indicate that water erosion will
+    act on soil where it exists, and on the underlying lithology where soil is
+    absent. To achieve this, :math:`\delta (H)` is defined to equal 1 when
+    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
+    underlying parent material is exposed).
+
+    Refer to the terrainbento manuscript Table XX (URL here) for parameter
+    symbols, names, and dimensions.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -60,24 +77,37 @@ class BasicRtSa(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRt** inherits from the terrainbento **ErosionModel** base
+    Model **BasicRtSa** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbento numerical models:
+    to run the following terrainbento numerical model:
 
-    1) Model **BasicRt**: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
-    ``water_erodability~lower`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``.
+    1) Model **BasicRtSa**:
 
-    2) Model **BasicRtSs**: In this model :math:`m` has a value of 1/3 and
-    :math:`n` has a value of 2/3. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper~shear_stress``, :math:`K_{2}` is given by the
-    parameter ``water_erodability~lower~shear_stress`` and :math:`D` is given by
-    the parameter ``regolith_transport_parameter``.
+    +------------------+-----------------------------------+-----------------+
+    | Parameter Symbol | Input File Parameter Name         | Value           |
+    +==================+===================================+=================+
+    |:math:`m`         | ``m_sp``                          | 0.5             |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`n`         | ``n_sp``                          | 1               |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`K_{1}`     | ``water_erodability~upper``       | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`K_{2}`     | ``water_erodability~lower``       | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`W_{c}`     | ``contact_zone__width``           | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`D`         | ``regolith_transport_parameter``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``       | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`P_{0}`     | ``soil_production__maximum_rate`` | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{s}`     | ``soil_production__decay_depth``  | user specified  |
+    +------------------+-----------------------------------+-----------------+
+    |:math:`H_{0}`     | ``soil_transport__decay_depth``   | user specified  |
+    +------------------+-----------------------------------+-----------------+
 
-    In both models, a value for :math:`Wc` is given by the parameter name
-    ``contact_zone__width`` and the spatially variable elevation of the contact
+    In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
     created using an input DEM, then the shape of the field contained in the
@@ -155,8 +185,8 @@ class BasicRtSa(ErosionModel):
         ...           'n_sp': 1.0,
         ...           'soil__initial_thickness': 2,
         ...           'soil_transport_decay_depth': 1.5,
-        ...           'max_soil_production_rate': 0.001,
-        ...           'soil_production_decay_depth': 0.7}
+        ...           "soil_production__maximum_rate": 0.001,
+        ...           "soil_production__decay_depth": 0.7}
 
         Construct the model.
 
@@ -216,10 +246,10 @@ class BasicRtSa(ErosionModel):
             "soil_transport_decay_depth"
         ]  # has units length
         max_soil_production_rate = (self._length_factor) * self.params[
-            "max_soil_production_rate"
+            "soil_production__maximum_rate"
         ]  # has units length per time
         soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production_decay_depth"
+            "soil_production__decay_depth"
         ]  # has units length
 
         soil_thickness[:] = initial_soil_thickness
@@ -286,29 +316,29 @@ class BasicRtSa(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model **BasicRt** for one time-step of duration dt.
+        """Advance model **BasicRtSa** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-        so, uses it to modify the two erodability by water values.
+           so, uses it to modify the two erodability by water values.
 
         4. Updates the spatially variable erodability value based on the
-        relative distance between the topographic surface and the lithology
-        contact.
+           relative distance between the topographic surface and the lithology
+           contact.
 
         5. Calculates detachment-limited erosion by water.
 
         6. Calculates topographic change by linear diffusion.
 
         7. Finalizes the step using the **ErosionModel** base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------

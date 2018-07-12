@@ -66,18 +66,31 @@ class BasicDdRt(ErosionModel):
 
     Model **BasicDdRt** inherits from the terrainbento **ErosionModel** base
     class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbento numerical model:
+    to run the following terrainbento numerical model:
 
-    1) Model **BasicDdRt**: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
-    ``water_erodability~lower`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``. :math:`\omega_{c}` is given by the
-    parameter ``water_erosion_rule~substrate~threshold___parameter`` and :math:`\omega_{b}`
-    is given by ``water_erosion_rule~substrate~threshold__depth_derivative_of_parameter``.
+    1) Model **BasicDdRt**:
 
-    In both models, a value for :math:`Wc` is given by the parameter name
-    ``contact_zone__width`` and the spatially variable elevation of the contact
+    +--------------------+-------------------------------------------------+-----------------+
+    | Parameter Symbol   | Input File Parameter Name                       | Value           |
+    +====================+=================================================+=================+
+    |:math:`m`           | ``m_sp``                                        | 0.5             |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`n`           | ``n_sp``                                        | 1               |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`K_{1}`       | ``water_erodability~upper``                     | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`K_{2}`       | ``water_erodability~lower``                     | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule~substrate__threshold``     | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`W_{c}`       | ``contact_zone__width``                         | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+    |:math:`D`           | ``regolith_transport_parameter``                | user specified  |
+    +--------------------+-------------------------------------------------+-----------------+
+
+    In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
     created using an input DEM, then the shape of the field contained in the
@@ -149,8 +162,8 @@ class BasicDdRt(ErosionModel):
         ...           'regolith_transport_parameter': 0.001,
         ...           'water_erodability~lower': 0.001,
         ...           'water_erodability~upper': 0.01,
-        ...           'water_erosion_rule~substrate~threshold___parameter': 0.2,
-        ...           'water_erosion_rule~substrate~threshold__depth_derivative_of_parameter': 0.001,
+        ...           "water_erosion_rule~substrate__threshold": 0.2,
+        ...           'water_erosion_rule__thresh_depth_derivative': 0.001,
         ...           'contact_zone__width': 1.0,
         ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
         ...           'm_sp': 0.5,
@@ -185,7 +198,7 @@ class BasicDdRt(ErosionModel):
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
-            "water_erosion_rule~substrate~threshold___parameter"
+            "water_erosion_rule~substrate__threshold"
         )  # has units length/time
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
@@ -210,7 +223,7 @@ class BasicDdRt(ErosionModel):
 
         # Get the parameter for rate of threshold increase with erosion depth
         self.thresh_change_per_depth = self.params[
-            "water_erosion_rule~substrate~threshold__depth_derivative_of_parameter"
+            "water_erosion_rule__thresh_depth_derivative"
         ]
 
         # Instantiate a LinearDiffuser component
@@ -290,25 +303,25 @@ class BasicDdRt(ErosionModel):
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-        so, uses it to modify the two erodability by water values.
+           so, uses it to modify the two erodability by water values.
 
         4. Updates the spatially variable erodability value based on the
-        relative distance between the topographic surface and the lithology
-        contact.
+           relative distance between the topographic surface and the lithology
+           contact.
 
         5. Updates the threshold value based on the cumulative amount of erosion
-        that has occured since model run onset.
+           that has occured since model run onset.
 
         6. Calculates detachment-limited erosion by water.
 
         7. Calculates topographic change by linear diffusion.
 
         8. Finalizes the step using the **ErosionModel** base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------
