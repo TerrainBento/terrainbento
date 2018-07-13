@@ -186,8 +186,8 @@ def test_with_precip_changer():
     }
 
     model = BasicVs(params=params)
-    assert model.eroder.K == K
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
+    assert model.eroder.K == K
     assert round(model.eroder.K, 5) == 0.10326
