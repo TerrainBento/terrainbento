@@ -30,7 +30,7 @@ class BasicCh(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + \\nabla^2 q_h
+        \\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \\nabla^2 q_h
 
         q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 

@@ -27,7 +27,7 @@ class BasicHy(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\\right)\\right) + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -69,6 +69,8 @@ class BasicHy(ErosionModel):
     Refer to the terrainbento manuscript Table XX (URL here) for full list of
     parameter symbols, names, and dimensions.
 
+
+    XXX todo add threshold.
     """
 
     def __init__(

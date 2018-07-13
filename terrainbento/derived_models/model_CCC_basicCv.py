@@ -28,7 +28,7 @@ class BasicCv(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + D\\nabla^2 \eta
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -36,8 +36,8 @@ class BasicCv(ErosionModel):
     parameters.
 
     This model also has a basic parameterization of climate change such that
-    :math:`K_{w}` varies through time. Between model run onset and a time at
-    which the climate becomes constant, the value of :math:`K_{w}` linearly
+    :math:`K` varies through time. Between model run onset and a time at
+    which the climate becomes constant, the value of :math:`K` linearly
     changes from :math:`fK` to :math:`K`, at which point it remains at :math:`K`
     for the remainder of the modeling time period.
 
