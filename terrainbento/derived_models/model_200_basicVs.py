@@ -191,7 +191,7 @@ class BasicVs(ErosionModel):
             use_Q=self.eff_area,
             K_sp=self.K,
             m_sp=self.m,
-            n_sp=n,
+            n_sp=self.n,
         )
 
         # Instantiate a LinearDiffuser component

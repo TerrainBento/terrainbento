@@ -142,6 +142,7 @@ class BasicChSa(ErosionModel):
         ...           'soil_transport_decay_depth': 0.2,
         ...           'soil_production__maximum_rate': 0.001,
         ...           'soil_production__decay_depth': 0.1,
+        ...           'soil__initial_thickness': 1.0,
         ...           'critical_slope': 0.2,
         ...           'water_erodability': 0.001,
         ...           'm_sp': 0.5,
