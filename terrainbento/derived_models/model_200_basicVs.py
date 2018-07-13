@@ -20,7 +20,85 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicVs(ErosionModel):
-    """
+    """**BasicVs** model program.
+
+    **BasicVs** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equations:
+
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = - K A_{eff}^{m}S^{n} + D\\nabla^2 \eta
+
+        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
+
+        \\alpha = \\frac{K_{sat}  H_{init}  dx }{R_m}
+
+
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`W_c` is the contact-zone width, :math:`K` is the erodability by water,
+    and :math:`D` is the regolith transport parameter. :math:`m` and :math:`n`
+    are the drainage area and slope exponent parameters. :math:`\\alpha` is the
+    saturation area scale used for transforming area into effective area. It is
+    given as a function of the saturated hydraulic conductivity :math:`K_{sat}`,
+    the soil thickness :math:`H_{init}`, the grid spacing :math:`dx`, and the
+    recharge rate, :math:`R_m`.
+
+    The **BasicVs** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Name                  |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability``            |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`K_{sat}`   | ``hydraulic_conductivity``       |
+    +------------------+----------------------------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``      |
+    +------------------+----------------------------------+
+    |:math:`R_m`       | ``recharge_rate``                |
+    +------------------+----------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
+    *Specifying the Lithology Contact*
+
+    In all two-lithology models the spatially variable elevation of the contact
+    elevation must be given as the file path to an ESRII ASCII format file using
+    the parameter ``lithology_contact_elevation__file_name``. If topography was
+    created using an input DEM, then the shape of the field contained in the
+    file must be the same as the input DEM. If synthetic topography is used then
+    the shape of the field must be ``number_of_node_rows-2`` by
+    ``number_of_node_columns-2``. This is because the read-in DEM will be padded
+    by a halo of size 1.
+
+    *Reference Frame Considerations*
+
+    Note that the developers had to make a decision about how to represent the
+    contact. We could represent the contact between two layers either as a depth
+    below present land surface, or as an altitude. Using a depth would allow for
+    vertical motion, because for a fixed surface, the depth remains constant
+    while the altitude changes. But the depth must be updated every time the
+    surface is eroded or aggrades. Using an altitude avoids having to update the
+    contact position every time the surface erodes or aggrades, but any tectonic
+    motion would need to be applied to the contact position as well. We chose to
+    use the altitude approach because this model was originally written for an
+    application with lots of erosion expected but no tectonics.
+
+    If implementing tectonics is desired, consider using either the
+    **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
+    modify both the ``topographic__elevation`` and the ``bedrock__elevation``
+    fields.
+
     """
 
     def __init__(
@@ -44,7 +122,7 @@ class BasicVs(ErosionModel):
 
         Returns
         -------
-        BasicRtVs : model object
+        BasicVs : model object
 
         Examples
         --------

@@ -117,7 +117,7 @@ class BasicDd(ErosionModel):
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'erosion__threshold': 0.01,
-        ...           'thresh_change_per_depth': 0.01}
+        ...           'water_erosion_rule__thresh_depth_derivative': 0.01}
 
         Construct the model.
 
@@ -175,7 +175,7 @@ class BasicDd(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["thresh_change_per_depth"]
+        self.thresh_change_per_depth = self.params["water_erosion_rule__thresh_depth_derivative"]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

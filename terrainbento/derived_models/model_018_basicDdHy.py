@@ -139,8 +139,8 @@ class BasicDdHy(ErosionModel):
         ...           'phi': 0,
         ...           'F_f': 0,
         ...           'solver': 'basic',
-        ...           'erosion__threshold': 0.01,
-        ...           'thresh_change_per_depth': 0.01}
+        ...           'water_erosion_rule__threshold': 0.01,
+        ...           "water_erosion_rule__thresh_depth_derivative": 0.01}
 
         Construct the model.
 
@@ -176,7 +176,7 @@ class BasicDdHy(ErosionModel):
         )
         v_s = self.get_parameter_from_exponent("v_sc")  # unitless
         self.sp_crit = self._length_factor * self.get_parameter_from_exponent(  # L/T
-            "erosion__threshold"
+            "water_erosion_rule__threshold"
         )
 
         # Create a field for the (initial) erosion threshold
@@ -201,7 +201,7 @@ class BasicDdHy(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["thresh_change_per_depth"]
+        self.thresh_change_per_depth = self.params["water_erosion_rule__thresh_depth_derivative"]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

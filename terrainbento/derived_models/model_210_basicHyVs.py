@@ -32,7 +32,66 @@ class BasicHyVs(ErosionModel):
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the BasicHyVs."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        BasicRtVs : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicVs**. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicVs
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability': 0.001,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'recharge_rate': 0.5,
+        ...           'soil__initial_thickness': 2.0,
+        ...           'hydraulic_conductivity': 0.1}
+
+        Construct the model.
+
+        >>> model = BasicVs(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
 
         # Call ErosionModel's init
         super(BasicHyVs, self).__init__(
@@ -98,16 +157,7 @@ class BasicHyVs(ErosionModel):
         )
 
     def _calc_effective_drainage_area(self):
-        """Calculate and store effective drainage area.
-
-        Effective drainage area is defined as:
-
-        $A_{eff} = A \exp ( \alpha S / A) = A R_r$
-
-        where $S$ is downslope-positive steepest gradient, $A$ is drainage
-        area, $R_r$ is the runoff ratio, and $\alpha$ is the saturation
-        parameter.
-        """
+        """Calculate and store effective drainage area."""
 
         area = self.grid.at_node["drainage_area"]
         slope = self.grid.at_node["topographic__steepest_slope"]
@@ -117,8 +167,31 @@ class BasicHyVs(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
+        """Advance model **BasicVs** for one time-step of duration dt.
+
+        The **run_one_step** method does the following:
+
+        1. Directs flow, accumulates drainage area, and calculates effective
+           drainage area.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+           not occur.
+
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+           so, uses it to modify the two erodability by water values.
+
+        4. Calculates detachment-limited erosion by water.
+
+        5. Calculates topographic change by linear diffusion.
+
+        6. Finalizes the step using the **ErosionModel** base class function
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
+
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
         """
 
         # Direct and accumulate flow

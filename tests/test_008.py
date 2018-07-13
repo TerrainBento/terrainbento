@@ -18,7 +18,7 @@ def test_bad_n_sp():
               'n_sp': 1.01,
               'regolith_transport_parameter': 0.001,
               'erosion__threshold': 0.001,
-              'thresh_change_per_depth': 0.001}
+              "water_erosion_rule__thresh_depth_derivative": 0.001}
 
     pytest.raises(ValueError, BasicDd, params=params)
 
@@ -46,7 +46,7 @@ def test_bad_n_sp():
 #               'm_sp': m,
 #               'n_sp': n,
 #               'erosion__threshold': threshold,
-#               'thresh_change_per_depth': thresh_change_per_depth,
+#               "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
 #               'random_seed': 3141,
 #               'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
 #               'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
@@ -89,7 +89,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change():
               'm_sp': m,
               'n_sp': n,
               'erosion__threshold': threshold,
-              'thresh_change_per_depth': thresh_change_per_depth,
+              "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
               'random_seed': 3141,
               'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
               'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
@@ -137,7 +137,7 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change():
               'm_sp': m,
               'n_sp': n,
               'erosion__threshold': threshold,
-              'thresh_change_per_depth': thresh_change_per_depth,
+              "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
               'random_seed': 3141,
               'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
               'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
