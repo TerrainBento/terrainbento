@@ -27,41 +27,34 @@ class BasicDd(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
-        \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + \\
-        D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + D\\nabla^2 \eta
 
-    where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    :math:`\omega_{ct}` is the critical stream power needed for erosion to
-    occur, which may change through time as it increases with cumulative
-    incision depth:
+    where :math:`A` is the local drainage area and :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    efficiency, and :math:`\omega_{ct}` is the critical stream power needed for
+    erosion to occur. :math:`\omega_{ct}` changes through time as it increases
+    with cumulative incision depth:
 
     .. math::
 
-        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
-        b D_I\left(x, y, t\\right), \omega_c \\right)
+        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\\right), \omega_c \\right)
 
     where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
 
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
-
-    Model **BasicDd** inherits from the terrainbento **ErosionModel** base
-    class and can be used to run the **BasicDd** numerical model. In addition to
-    the parameters required by the **ErosionModel** base class, models built
-    with this program require the following parameters.
-
-    1) Model **BasicDd**:
+    The **BasicDd** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +--------------------+-------------------------------------------------+
     | Parameter Symbol   | Input File Parameter Name                       |
-    +====================+=================================================+=================+
-    |:math:`m`           | ``m_sp``                                        | 0.5             |
+    +====================+=================================================+
+    |:math:`m`           | ``m_sp``                                        |
     +--------------------+-------------------------------------------------+
-    |:math:`n`           | ``n_sp``                                        | 1               |
+    |:math:`n`           | ``n_sp``                                        |
     +--------------------+-------------------------------------------------+
     |:math:`K`           | ``water_erodability``                           |
     +--------------------+-------------------------------------------------+
@@ -72,6 +65,8 @@ class BasicDd(ErosionModel):
     |:math:`D`           | ``regolith_transport_parameter``                |
     +--------------------+-------------------------------------------------+
 
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
     """
 
     def __init__(
@@ -148,7 +143,10 @@ class BasicDd(ErosionModel):
             raise ValueError("Model BasicDd only supports n equals 1.")
 
         # Get Parameters and convert units if necessary:
-        self.K = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (self._length_factor ** (1. - (2. * self.m)))
+
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -169,8 +167,8 @@ class BasicDd(ErosionModel):
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
             K_sp=self.K,
             threshold_sp=self.threshold,
         )

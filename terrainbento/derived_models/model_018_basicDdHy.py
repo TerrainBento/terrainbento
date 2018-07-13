@@ -163,7 +163,10 @@ class BasicDdHy(ErosionModel):
         )
 
         # Get Parameters and convert units if necessary:
-        self.K_sp = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (self._length_factor ** (1. - (2. * self.m)))
+
         regolith_transport_parameter = (
             self._length_factor ** 2
         ) * self.get_parameter_from_exponent(  # L2/T
@@ -184,12 +187,12 @@ class BasicDdHy(ErosionModel):
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
             self.grid,
-            K=self.K_sp,
+            K=self.K,
             F_f=self.params["F_f"],
             phi=self.params["phi"],
             v_s=v_s,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
             sp_crit="erosion__threshold",
             discharge_field='surface_water__discharge',
             solver=solver,

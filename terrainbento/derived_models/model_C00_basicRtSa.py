@@ -208,11 +208,13 @@ class BasicRtSa(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
         self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (self._length_factor ** (1. - (2. * self.m)))
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
@@ -228,8 +230,8 @@ class BasicRtSa(ErosionModel):
         self.eroder = FastscapeEroder(
             self.grid,
             K_sp=self.erody,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
         )
 
         # Create soil thickness (a.k.a. depth) field

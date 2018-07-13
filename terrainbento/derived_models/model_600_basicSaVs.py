@@ -47,18 +47,17 @@ class BasicSaVs(ErosionModel):
         )
 
         # Get Parameters and convert units if necessary:
-        self.K_sp = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (self._length_factor ** (1. - (2. * self.m)))
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-        try:
-            initial_soil_thickness = (self._length_factor) * self.params[
-                "soil__initial_thickness"
-            ]  # has units length
-        except KeyError:
-            initial_soil_thickness = 1.0  # default value
+        initial_soil_thickness = (self._length_factor) * self.params["soil__initial_thickness"]  # has units length
+
         soil_transport_decay_depth = (self._length_factor) * self.params[
             "soil_transport_decay_depth"
         ]  # has units length
@@ -77,25 +76,16 @@ class BasicSaVs(ErosionModel):
         ]  # has units length per time
 
         # Create soil thickness (a.k.a. depth) field
-        if "soil__depth" in self.grid.at_node:
-            soil_thickness = self.grid.at_node["soil__depth"]
-        else:
-            soil_thickness = self.grid.add_zeros("node", "soil__depth")
+        soil_thickness = self.grid.add_zeros("node", "soil__depth")
 
         # Create bedrock elevation field
-        if "bedrock__elevation" in self.grid.at_node:
-            bedrock_elev = self.grid.at_node["bedrock__elevation"]
-        else:
-            bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
 
         soil_thickness[:] = initial_soil_thickness
         bedrock_elev[:] = self.z - initial_soil_thickness
 
         # Add a field for effective drainage area
-        if "effective_drainage_area" in self.grid.at_node:
-            self.eff_area = self.grid.at_node["effective_drainage_area"]
-        else:
-            self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
+        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-length parameter
         self.sat_len = (K_hydraulic_conductivity * self.grid.dx) / (recharge_rate)
@@ -104,9 +94,9 @@ class BasicSaVs(ErosionModel):
         self.eroder = StreamPowerEroder(
             self.grid,
             use_Q=self.eff_area,
-            K_sp=self.K_sp,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
         )
 
         # Instantiate a DepthDependentDiffuser component

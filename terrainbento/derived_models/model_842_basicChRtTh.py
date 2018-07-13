@@ -190,12 +190,13 @@ class BasicChRtTh(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
         self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (self._length_factor ** (1. - (2. * self.m)))
         rock_erosion__threshold = self.get_parameter_from_exponent(
             "water_erosion_rule~lower__threshold"
         )
@@ -222,8 +223,8 @@ class BasicChRtTh(ErosionModel):
             self.grid,
             K_sp=self.erody,
             threshold_sp=self.threshold,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
         )
 
         # Instantiate a LinearDiffuser component

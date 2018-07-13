@@ -34,12 +34,9 @@ class BasicTh(ErosionModel):
     stream power needed for erosion to occur and :math:`D` is the regolith
     transport efficiency.
 
-    Model **BasicTh** inherits from the terrainbento **ErosionModel** base
-    class and can be used to run the **BasicTh** numerical model. In addition to
-    the parameters required by the **ErosionModel** base class, models built
-    with this program require the following parameters.
-
-    1) Model **BasicTh**:
+    The **BasicTh** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +--------------------+-----------------------------------------+
     | Parameter Symbol   | Input File Parameter Name               |
@@ -133,7 +130,9 @@ class BasicTh(ErosionModel):
             raise ValueError("Model BasicTh only supports n equals 1.")
 
         # Get Parameters and convert units if necessary:
-        self.K = self.get_parameter_from_exponent("water_erodability") * self._length_factor ** (1. - (2. * self.m))
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (self._length_factor ** (1. - (2. * self.m)))
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -151,8 +150,8 @@ class BasicTh(ErosionModel):
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
             K_sp=self.K,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
             threshold_sp=threshold,
         )
 

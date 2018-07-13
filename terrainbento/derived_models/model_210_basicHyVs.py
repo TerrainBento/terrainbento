@@ -45,7 +45,7 @@ class BasicHyVs(ErosionModel):
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
         self.K = (self.get_parameter_from_exponent("water_erodability") *
-                  self._length_factor ** (1. - (2. * self.m)))
+                  (self._length_factor ** (1. - (2. * self.m))))
 
         regolith_transport_parameter = (
             self._length_factor ** 2

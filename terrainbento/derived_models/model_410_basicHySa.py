@@ -29,7 +29,7 @@ class BasicHySa(ErosionModel):
     .. math::
 
         \\frac{\partial \eta}{\partial t} = -K_{r}A^{m}S^{n}\left(e^{-H/H_*}\\right) \\
-        -K_{w}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\
+        -K_{s}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\
         + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_h
 
     where :math:`K_r` and :math:`K_s` are rock and sediment erodibility
@@ -82,6 +82,9 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
+
+
+    TODO XXX add threshold, add Kbr, K_sed
 
     A value for the paramter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **Space** component or if an
@@ -162,7 +165,6 @@ class BasicHySa(ErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicHySa, self).__init__(
             input_file=input_file,
@@ -171,8 +173,10 @@ class BasicHySa(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        self.K_br = self.get_parameter_from_exponent("water_erodability~rock")
-        self.K_sed = self.get_parameter_from_exponent("water_erodability~sediment")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K_br = self.get_parameter_from_exponent("water_erodability~rock") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_sed = self.get_parameter_from_exponent("water_erodability~sediment") * (self._length_factor ** (1. - (2. * self.m)))
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -216,15 +220,11 @@ class BasicHySa(ErosionModel):
             phi=self.params["phi"],
             H_star=self.params["H_star"],
             v_s=v_sc,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
             discharge_field='surface_water__discharge',
             solver=solver
         )
-
-        # SPACE checks for and creates bedrock elevation and soil depth
-        # grid fields when instantiated, so no need to do that here in
-        # the model.
 
         # Get soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.at_node["soil__depth"]

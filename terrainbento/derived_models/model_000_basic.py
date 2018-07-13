@@ -34,7 +34,7 @@ class Basic(ErosionModel):
     transport efficiency.
 
     The **Basic** program inherits from the terrainbento **ErosionModel** base
-    class and in addition to the parameters required by the base class, models
+    class. In addition to the parameters required by the base class, models
     built with this program require the following parameters.
 
     +------------------+----------------------------------+
@@ -123,7 +123,9 @@ class Basic(ErosionModel):
         )
 
         # Get Parameters:
-        self.K = self.get_parameter_from_exponent("water_erodability") * self._length_factor ** (1. - (2. * self.m))
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (self._length_factor ** (1. - (2. * self.m)))
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -132,9 +134,7 @@ class Basic(ErosionModel):
         )  # has units length^2/time
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
-        )
+        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
