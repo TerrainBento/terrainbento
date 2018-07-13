@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicChRt** program.
+"""terrainbento **BasicChRt** model program.
 
 Erosion model program using non-linear diffusion, stream power with spatially
 varying erodability based on two bedrock units, and discharge proportional to
@@ -22,19 +22,19 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicChRt(ErosionModel):
-    """Model **BasicChRt** program.
+    """**BasicChRt** model program.
 
-    Model **BasicChRt** combines the **BasicRt** and **BasicCh** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer, and
-    non-linear hillslope sediment transport. Given a spatially varying contact
-    zone elevation, :math:`\eta_C(x,y))`, model **BasicChRt** evolves a
-    topographic surface described by :math:`\eta` with the following governing
-    equations:
+    **BasicChRt** is a model program that combines the **BasicRt** and
+    **BasicCh** programs by allowing for two lithologies, an "upper" layer and a
+    "lower" layer, and non-linear hillslope sediment transport. Given a
+    spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
+    **BasicChRt** evolves a topographic surface described by :math:`\eta` with
+    the following governing equations:
 
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S - \\nabla q_h
+        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n} - \\nabla q_h
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -43,6 +43,7 @@ class BasicChRt(ErosionModel):
         q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`S_c` is the critical slope parameter
@@ -60,36 +61,33 @@ class BasicChRt(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicChRt** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following terrainbento numerical model:
+    The **BasicChRt** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model **BasicChRt**:
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_{1}`     | ``water_erodability~upper``      |
+    +------------------+----------------------------------+
+    |:math:`K_{2}`     | ``water_erodability~lower``      |
+    +------------------+----------------------------------+
+    |:math:`W_{c}`     | ``contact_zone__width``          |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`S_c`       | ``critical_slope``               |
+    +------------------+----------------------------------+
 
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{1}`     | ``water_erodability~upper``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{2}`     | ``water_erodability~lower``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`W_{c}`     | ``contact_zone__width``          | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`S_c`       | ``critical_slope``               | user specified  |
-    +------------------+----------------------------------+-----------------+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
-    Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
-    ``water_erodability~lower`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``. :math:`S_c` is given by ``critical_slope``.
-
+    *Specifying the Lithology Contact*
+    
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -99,6 +97,8 @@ class BasicChRt(ErosionModel):
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
+    *Reference Frame Considerations*
+    
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -114,6 +114,7 @@ class BasicChRt(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
+
     """
 
     def __init__(
@@ -180,7 +181,6 @@ class BasicChRt(ErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicChRt, self).__init__(
             input_file=input_file,
@@ -188,12 +188,17 @@ class BasicChRt(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
         self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
@@ -207,10 +212,7 @@ class BasicChRt(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
-            K_sp=self.erody,
+            self.grid, m_sp=self.m, n_sp=self.n, K_sp=self.erody
         )
 
         # Instantiate a LinearDiffuser component

@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicDdRt** program.
+"""terrainbento **BasicDdRt** model program.
 
 Erosion model program using linear diffusion, stream power with stream
 power with a smoothed threshold that increases with incision depth and spatially
@@ -23,20 +23,20 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDdRt(ErosionModel):
-    """Model **BasicDdRt** program.
+    """**BasicDdRt** model program.
 
-    Model **BasicRtTh** combines the **BasicRt** and **BasicDd** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer, and
-    permitting the use of an smooth erosion threshold that increases with
-    erosion depth. Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
-    model **BasicDdRt** evolves a topographic surface described by :math:`\eta`
-    with the following governing equations:
+    **BasicRtTh** is a model program that combines the **BasicRt** and
+    **BasicDd** programs by allowing for two lithologies, an "upper" layer and a
+    "lower" layer, and permitting the use of an smooth erosion threshold that
+    increases with erosion depth. Given a spatially varying contact zone
+    elevation, :math:`\eta_C(x,y))`, model **BasicDdRt** evolves a topographic
+    surface described by :math:`\eta` with the following governing equations:
 
     .. math::
 
         \\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_{ct} (1 - e^{-\omega /\omega_{ct}}) \\right]  + D\\nabla^2 \eta,
 
-        \omega = K(\eta, \eta_C) A^{1/2} S
+        \omega = K(\eta, \eta_C) A^{m} S^{n}
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -46,6 +46,7 @@ class BasicDdRt(ErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, :math:`\omega_{c}` is the
     in initial erosion threshold (for both lithologies) and :math:`b` is the
@@ -55,8 +56,7 @@ class BasicDdRt(ErosionModel):
     the depth to the contact zone and the width of the contact zone.
     :math:`\omega` is the erosion rate that would be calculated without the use
     of a threshold and as the threshold increases the erosion rate smoothly
-    transitions between zero and :math:`\omega`. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    transitions between zero and :math:`\omega`.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -65,32 +65,35 @@ class BasicDdRt(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicDdRt** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following terrainbento numerical model:
+    The **BasicDdRt** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model **BasicDdRt**:
+    +--------------------+-------------------------------------------------+
+    | Parameter Symbol   | Input File Parameter Name                       |
+    +====================+=================================================+
+    |:math:`m`           | ``m_sp``                                        |
+    +--------------------+-------------------------------------------------+
+    |:math:`n`           | ``n_sp``                                        |
+    +--------------------+-------------------------------------------------+
+    |:math:`K_{1}`       | ``water_erodability~upper``                     |
+    +--------------------+-------------------------------------------------+
+    |:math:`K_{2}`       | ``water_erodability~lower``                     |
+    +--------------------+-------------------------------------------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               |
+    +--------------------+-------------------------------------------------+
+    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
+    +--------------------+-------------------------------------------------+
+    |:math:`W_{c}`       | ``contact_zone__width``                         |
+    +--------------------+-------------------------------------------------+
+    |:math:`D`           | ``regolith_transport_parameter``                |
+    +--------------------+-------------------------------------------------+
 
-    +--------------------+-------------------------------------------------+-----------------+
-    | Parameter Symbol   | Input File Parameter Name                       | Value           |
-    +====================+=================================================+=================+
-    |:math:`m`           | ``m_sp``                                        | 0.5             |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`n`           | ``n_sp``                                        | 1               |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`K_{1}`       | ``water_erodability~upper``                     | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`K_{2}`       | ``water_erodability~lower``                     | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`W_{c}`       | ``contact_zone__width``                         | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`D`           | ``regolith_transport_parameter``                | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
+    *Specifying the Lithology Contact*
+    
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -100,6 +103,8 @@ class BasicDdRt(ErosionModel):
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
+    *Reference Frame Considerations*
+    
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -115,6 +120,7 @@ class BasicDdRt(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
+
     """
 
     def __init__(
@@ -189,12 +195,19 @@ class BasicDdRt(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
         self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
@@ -210,15 +223,15 @@ class BasicDdRt(ErosionModel):
         self._setup_rock_and_till()
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros("node", "erosion__threshold")
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.threshold_value
 
         # Instantiate a StreamPowerSmoothThresholdEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
             K_sp=self.erody,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
             threshold_sp=self.threshold,
         )
 

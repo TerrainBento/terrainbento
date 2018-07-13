@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicHy** program.
+"""terrainbento **BasicHy** model program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment
 erosion and mass conservation, and discharge proportional to drainage area.
@@ -19,94 +19,58 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHy(ErosionModel):
-    """Model **BasicHy** program.
+    """**BasicHy** model program.
 
-    Model **BasicHy** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **BasicHy** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
+
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
-        \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\
-        \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\\right)\\right) + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`H` is soil depth, :math:`H_*` is the bedrock roughness length scale,
-    :math:`\omega_c` is the critical stream power needed for erosion to occur,
-    :math:`V` is effective sediment settling velocity, :math:`Q_s` is
-    volumetric sediment flux, :math:`Q` is volumetric water discharge, and
-    :math:`\phi` is sediment porosity. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and
-    dimensions.
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
+    stream power needed for erosion to occur, :math:`V` is effective sediment
+    settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`Q` is
+    volumetric water discharge, :math:`\phi` is sediment porosity, :math:`D` is
+    the regolith transport efficiency, :math:`H` is soil depth, and :math:`H_*`
+    is the bedrock roughness length scale.
 
-    Model **BasicHy** inherits from the terrainbento **ErosionModel** base
-    class. This model program can be used to run the following terrainbento
-    numerical models:
+    The **BasicHy** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model **BasicHy**:
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability``            |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`V`         | ``settling_velocity``            |
+    +------------------+----------------------------------+
+    |:math:`F_f`       | ``fraction_fines``               |
+    +------------------+----------------------------------+
+    |:math:`\phi`      | ``sediment_porosity``            |
+    +------------------+----------------------------------+
 
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K`         | ``water_erodability ``           | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`V`         | ``settling_velocity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`F_f`       | ``fraction_fines``               | 0               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`\phi`      | ``sediment_porosity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-
-    2) Model **BasicHySs**:
-
-    +------------------+------------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name          | Value           |
-    +==================+====================================+=================+
-    |:math:`m`         | ``m_sp``                           | 0.5             |
-    +------------------+------------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                           | 1               |
-    +------------------+------------------------------------+-----------------+
-    |:math:`K`         | ``water_erodability~shear_stress`` | user specified  |
-    +------------------+------------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter``   | user specified  |
-    +------------------+------------------------------------+-----------------+
-    |:math:`V`         | ``settling_velocity``            | user specified  |
-    +------------------+------------------------------------+-----------------+
-    |:math:`F_f`       | ``fraction_fines``                 | 0               |
-    +------------------+------------------------------------+-----------------+
-    |:math:`\phi`      | ``sediment_porosity``              | user specified  |
-    +------------------+------------------------------------+-----------------+
-
-    1) Model **BasicFiHy**:
-
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K`         | ``water_erodability ``           | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`V`         | ``settling_velocity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`F_f`       | ``fraction_fines``               | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`\phi`      | ``sediment_porosity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-
-    A value for the paramter ``solver`` can also be used to indicate if the
+    A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **ErosionDeposition**
-    component or if an adaptive internal timestep is used.
+    component or if an adaptive internal timestep is used. Refer to the
+    **ErosionDeposition** documentation for details.
 
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
+
+    XXX todo add threshold.
     """
 
     def __init__(
@@ -157,8 +121,8 @@ class BasicHy(ErosionModel):
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'v_sc': 0.01,
-        ...           'phi': 0,
-        ...           'F_f': 0,
+        ...           'sediment_porosity': 0,
+        ...           'fraction_fines': 0,
         ...           'solver': 'basic'}
 
         Construct the model.
@@ -183,28 +147,11 @@ class BasicHy(ErosionModel):
         )
 
         # Get Parameters and convert units if necessary:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
         )
-
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                "A parameter for both K_rock_sp and K_rock_ss has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                self.K = K_sp
-            else:
-                self.K = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Length^(1/3) per Time
-        else:
-            raise ValueError(
-                "A value for water_erodability~rock or water_erodability~rock~shear_stress  must be provided."
-            )
 
         # Unit conversion for linear_diffusivity, with units L^2/T
         regolith_transport_parameter = (
@@ -221,12 +168,12 @@ class BasicHy(ErosionModel):
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
-            phi=self.params["phi"],
-            F_f=self.params["F_f"],
+            phi=self.params["sediment_porosity"],
+            F_f=self.params["fraction_fines"],
             v_s=v_sc,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
-            discharge_field='surface_water__discharge',
+            m_sp=self.m,
+            n_sp=self.n,
+            discharge_field="surface_water__discharge",
             solver=solver,
         )
 

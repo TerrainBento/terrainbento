@@ -53,7 +53,8 @@ class BasicStVs(StochasticErosionModel):
             OutputWriters=OutputWriters,
         )
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("K_stochastic_sp")
+        K_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -71,19 +72,18 @@ class BasicStVs(StochasticErosionModel):
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if "surface_water__discharge" not in self.grid.at_node:
-            self.grid.add_zeros("node", "surface_water__discharge")
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Add a field for subsurface discharge
-        if "subsurface_water__discharge" not in self.grid.at_node:
-            self.grid.add_zeros("node", "subsurface_water__discharge")
-        self.qss = self.grid.at_node["subsurface_water__discharge"]
+        self.qss = self.grid.add_zeros("node", "subsurface_water__discharge")
 
         # Get the transmissivity parameter
         # transmissivity is hydraulic condiuctivity times soil thickness
         self.trans = K_hydraulic_conductivity * soil_thickness
-        assert self.trans > 0.0, "Transmissivity must be > 0"
+
+        if self.trans <= 0.0:
+            raise ValueError("BasicStVs: Transmissivity must be > 0")
+
         self.tlam = self.trans * self.grid._dx  # assumes raster
 
         # Run flow routing and lake filler

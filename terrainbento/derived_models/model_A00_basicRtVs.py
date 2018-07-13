@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicRtVs** program.
+"""terrainbento **BasicRtVs** model program.
 
 Erosion model program using linear diffusion, stream power with spatially
 varying erodability based on two bedrock units, and discharge proportional to
@@ -22,19 +22,20 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicRtVs(ErosionModel):
-    """Model **BasicRtVs** program.
+    """**BasicRtVs** model program.
 
-    Model **BasicRtVs** combines the **BasicRt** and **BasicVs** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer, and
-    using discharge proportional to effective drainage area based on variable
-    source area hydrology. Given a spatially varying contact zone elevation,
-    :math:`\eta_C(x,y))`, model **BasicRtVs** evolves a topographic surface
-    described by :math:`\eta` with the following governing equations:
+    **BasicRtVs** is a model program that combines the **BasicRt** and
+    **BasicVs** programs by allowing for two lithologies, an "upper" layer and a
+    "lower" layer, and using discharge proportional to effective drainage area
+    based on variable source area hydrology. Given a spatially varying contact
+    zone elevation, :math:`\eta_C(x,y))`, model **BasicRtVs** evolves a
+    topographic surface described by :math:`\eta` with the following governing
+    equations:
 
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{1/2}S + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{m}S^{n} + D\\nabla^2 \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -46,6 +47,7 @@ class BasicRtVs(ErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`\\alpha` is the saturation area scale
@@ -54,8 +56,6 @@ class BasicRtVs(ErosionModel):
     :math:`H_{init}`, the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
     :math:`w` is a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
     based on the depth to the contact zone and the width of the contact zone.
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -64,33 +64,36 @@ class BasicRtVs(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRtVs** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the provided provided, this model program can be used
-    to run the following terrainbento numerical model:
+    The **BasicRtVs** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model **BasicRtVs**:
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Name                  |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_{1}`     | ``water_erodability~upper``      |
+    +------------------+----------------------------------+
+    |:math:`K_{2}`     | ``water_erodability~lower``      |
+    +------------------+----------------------------------+
+    |:math:`W_{c}`     | ``contact_zone__width``          |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`K_{sat}`   | ``hydraulic_conductivity``       |
+    +------------------+----------------------------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``      |
+    +------------------+----------------------------------+
+    |:math:`R_m`       | ``recharge_rate``                |
+    +------------------+----------------------------------+
 
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Name                  | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{1}`     | ``water_erodability~upper``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{2}`     | ``water_erodability~lower``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`W_{c}`     | ``contact_zone__width``          | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{sat}`   | ``hydraulic_conductivity``       | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`R_m`       | ``recharge_rate``                | user specified  |
-    +------------------+----------------------------------+-----------------+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
+    *Specifying the Lithology Contact*
 
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
@@ -100,6 +103,8 @@ class BasicRtVs(ErosionModel):
     the shape of the field must be ``number_of_node_rows-2`` by
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
+
+    *Reference Frame Considerations*
 
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
@@ -116,6 +121,7 @@ class BasicRtVs(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
+
     """
 
     def __init__(
@@ -191,11 +197,20 @@ class BasicRtVs(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
+
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+
         self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
+
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
@@ -227,11 +242,7 @@ class BasicRtVs(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid,
-            K_sp=self.erody,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
-            use_Q=self.eff_area,
+            self.grid, K_sp=self.erody, m_sp=self.m, n_sp=self.n, use_Q=self.eff_area
         )
 
         # Instantiate a LinearDiffuser component
