@@ -180,7 +180,7 @@ class BasicDdHy(ErosionModel):
         )
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros("node", "erosion__threshold")
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.sp_crit  # starting value
 
         # Handle solver option
@@ -195,7 +195,7 @@ class BasicDdHy(ErosionModel):
             v_s=v_s,
             m_sp=self.m,
             n_sp=self.n,
-            sp_crit="erosion__threshold",
+            sp_crit="water_erosion_rule__threshold",
             discharge_field="surface_water__discharge",
             solver=solver,
         )

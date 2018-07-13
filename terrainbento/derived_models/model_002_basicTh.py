@@ -104,7 +104,7 @@ class BasicTh(ErosionModel):
         ...           'water_erodability': 0.001,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
-        ...           'erosion__threshold': 0.01}
+        ...           "water_erosion_rule__threshold": 0.01}
 
         Construct the model.
 
@@ -145,7 +145,7 @@ class BasicTh(ErosionModel):
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
         threshold = self._length_factor * self.get_parameter_from_exponent(
-            "erosion__threshold"
+            "water_erosion_rule__threshold"
         )  # has units length/time
 
         # Instantiate a FastscapeEroder component

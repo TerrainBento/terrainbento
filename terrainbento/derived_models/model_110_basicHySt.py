@@ -58,7 +58,7 @@ class BasicHySt(StochasticErosionModel):
     >>> my_pars['K_stochastic_sp'] = 1.0
     >>> my_pars['m_sp'] = 0.5
     >>> my_pars['n_sp'] = 1.0
-    >>> my_pars['erosion__threshold'] = 1.0
+    >>> my_pars["water_erosion_rule__threshold"] = 1.0
     >>> my_pars['regolith_transport_parameter'] = 0.01
     >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
     >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008

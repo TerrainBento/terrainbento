@@ -262,7 +262,7 @@ class BasicChRtTh(ErosionModel):
         self.erody = self.grid.add_zeros("node", "substrate__erodability")
 
         # Create field for threshold values
-        self.threshold = self.grid.add_zeros("node", "erosion__threshold")
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)

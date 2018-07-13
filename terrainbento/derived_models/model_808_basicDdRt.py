@@ -223,7 +223,7 @@ class BasicDdRt(ErosionModel):
         self._setup_rock_and_till()
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros("node", "erosion__threshold")
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.threshold_value
 
         # Instantiate a StreamPowerSmoothThresholdEroder component
