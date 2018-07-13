@@ -1,9 +1,9 @@
 # coding: utf8
 #! /usr/env/python
-""" terrainbento Model **BasicCh** program.
+""" terrainbento **BasicCh** model program.
 
-Erosion model program using cubic diffusion, basic stream
-power, and discharge proportional to drainage area.
+Erosion model program using cubic diffusion, basic stream power, and discharge
+proportional to drainage area.
 
 
 Landlab components used:
@@ -22,28 +22,29 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicCh(ErosionModel):
-    """
+    """**BasicCh** model program.
 
-    Model **BasicCh** is a model program that evolves a topographic surface
+    **BasicCh** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equations:
 
 
     .. math::
 
         \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + \\nabla^2 q_h
+
         q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
 
-    where :math:`S_c` is the critical slope, :math:`A` is the local drainage
-    area and :math:`S` is the local slope. :math:`N` is the number of terms in
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`D` is the regolith
+    transport efficiency, and :math:`S_c` is the critical slope. :math:`q_s`
+    represents the hillslope sediment flux. :math:`N` is the number of terms in
     the Taylor Expansion and is set at 11.
 
-    Model **BasicCh** inherits from the terrainbento **ErosionModel** base
-    class and can be used to run the **BasicCh** numerical model. In addition
-    to the parameters required by the **ErosionModel** base class, models built
-    with this program require the following parameters.
-
-    1) Model **BasicCh**:
+    The **BasicCh** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |

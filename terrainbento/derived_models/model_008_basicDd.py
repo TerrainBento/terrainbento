@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicDd** program.
+"""terrainbento **BasicDd** model program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
 threshold that varies with incision depth, and discharge proportional to
@@ -20,10 +20,10 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDd(ErosionModel):
-    """Model **BasicDd** program.
+    """**BasicDd** model program.
 
-    Model **BasicDd** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **BasicDd** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
     .. math::
 

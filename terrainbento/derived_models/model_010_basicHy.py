@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicHy** program.
+"""terrainbento **BasicHy** model program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment
 erosion and mass conservation, and discharge proportional to drainage area.
@@ -19,10 +19,10 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHy(ErosionModel):
-    """Model **BasicHy** program.
+    """**BasicHy** model program.
 
-    Model **BasicHy** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **BasicHy** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
 
     .. math::
@@ -31,19 +31,17 @@ class BasicHy(ErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`H` is soil depth, :math:`H_*` is the bedrock roughness length scale,
-    :math:`\omega_c` is the critical stream power needed for erosion to occur,
-    :math:`V` is effective sediment settling velocity, :math:`Q_s` is
-    volumetric sediment flux, :math:`Q` is volumetric water discharge, and
-    :math:`\phi` is sediment porosity.
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
+    stream power needed for erosion to occur, :math:`V` is effective sediment
+    settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`Q` is
+    volumetric water discharge, :math:`\phi` is sediment porosity, :math:`D` is
+    the regolith transport efficiency, :math:`H` is soil depth, and :math:`H_*`
+    is the bedrock roughness length scale.
 
-    Model **BasicHy** inherits from the terrainbento **ErosionModel** base
-    class. This model program can be used to run the following terrainbento
-    numerical models: **BasicHy**, **BasicHySs**, **BasicFi**. In addition to
-    the parameters required by the **ErosionModel** base class, models built
-    with this program require the following parameters.
-
-    1) Model **BasicHy**:
+    The **BasicHy** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |

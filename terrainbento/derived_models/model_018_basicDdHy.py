@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicDdHy** program.
+"""terrainbento **BasicDdHy** model program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment
 erosion and mass conservation with a smoothed threshold that varies with
@@ -20,41 +20,41 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDdHy(ErosionModel):
-    """Model **BasicDdHy** program.
+    """**BasicDdHy** model program.
 
-    Model **BasicDdHy** is a model program that evolves a topographic surface
+    **BasicDdHy** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
+
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
-        \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + \\
-        \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length scale,
-    :math:`V` is effective sediment settling velocity, :math:`Q_s` is
-    volumetric sediment flux, :math:`Q` is volumetric water discharge, and
-    :math:`\phi` is sediment porosity. :math:`\omega_{ct}` is the critical
-    stream power needed for erosion to occur, which may change through time as
-    it increases with cumulative incision depth:
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`\omega_{ct}` is the critical
+    stream power needed for erosion to occur, :math:`V` is effective sediment
+    settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`Q` is
+    volumetric water discharge, :math:`\phi` is sediment porosity, :math:`D` is
+    the regolith transport efficiency, :math:`H` is soil depth, and :math:`H_*`
+    is the bedrock roughness length scale,
+
+    :math:`\omega_{ct}` may change through time as it increases with cumulative
+    incision depth:
 
     .. math::
 
-        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
-        b D_I\left(x, y, t\\right), \omega_c \\right)
+        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + b D_I\left(x, y, t\\right), \omega_c \\right)
 
     where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
 
-    Model **BasicDdHy** inherits from the terrainbento **ErosionModel** base
-    class and can be used to run the **BasicDdHy** numerical model. In addition
-    to the parameters required by the **ErosionModel** base class, models built
-    with this program require the following parameters.
-
-    1) Model **BasicHyDd**:
+    The **BasicDdHy** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +--------------------+-------------------------------------------------+
     | Parameter Symbol   | Input File Parameter Name                       |
