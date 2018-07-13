@@ -56,7 +56,7 @@ class BasicDdSt(StochasticErosionModel):
     >>> my_pars['run_duration'] = 1.0
     >>> my_pars['output_interval'] = 2.0
     >>> my_pars['infiltration_capacity'] = 1.0
-    >>> my_pars['K_stochastic_sp'] = 1.0
+    >>> my_pars["water_erodability~stochastic"] = 1.0
     >>> my_pars['m_sp'] = 0.5
     >>> my_pars['n_sp'] = 1.0
     >>> my_pars["water_erosion_rule__threshold"] = 1.0
@@ -85,7 +85,7 @@ class BasicDdSt(StochasticErosionModel):
         )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("K_stochastic_sp")
+        K_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -105,8 +105,6 @@ class BasicDdSt(StochasticErosionModel):
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if "surface_water__discharge" not in self.grid.at_node:
-            self.grid.add_zeros("node", "surface_water__discharge")
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
