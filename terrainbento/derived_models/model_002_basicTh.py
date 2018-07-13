@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicTh** program.
+"""terrainbento **BasicTh** model program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
 threshold, and discharge proportional to drainage area.
@@ -19,41 +19,41 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicTh(ErosionModel):
-    """Model **BasicTh** program.
+    """**BasicTh** model program.
 
-    Model **BasicTh** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **BasicTh** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
-        \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\
-        D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(K A^{m}S^{n} - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\\right)\\right) + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    and :math:`\omega_c` is the critical stream power needed for erosion to occur.
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
+    stream power needed for erosion to occur and :math:`D` is the regolith
+    transport efficiency.
 
-    Model **BasicTh** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following terrainbento numerical model:
+    The **BasicTh** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model **BasicTh**:
+    +--------------------+-----------------------------------------+
+    | Parameter Symbol   | Input File Parameter Name               |
+    +====================+=========================================+
+    |:math:`m`           | ``m_sp``                                |
+    +--------------------+-----------------------------------------+
+    |:math:`n`           | ``n_sp``                                |
+    +--------------------+-----------------------------------------+
+    |:math:`K`           | ``water_erodability``                   |
+    +--------------------+-----------------------------------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       |
+    +--------------------+-----------------------------------------+
+    |:math:`D`           | ``regolith_transport_parameter``        |
+    +--------------------+-----------------------------------------+
 
-    +--------------------+-----------------------------------------+-----------------+
-    | Parameter Symbol   | Input File Parameter Name               | Value           |
-    +====================+=========================================+=================+
-    |:math:`m`           | ``m_sp``                                | 0.5             |
-    +--------------------+-----------------------------------------+-----------------+
-    |:math:`n`           | ``n_sp``                                | 1               |
-    +--------------------+-----------------------------------------+-----------------+
-    |:math:`K`           | ``water_erodability``                   | user specified  |
-    +--------------------+-----------------------------------------+-----------------
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       | user specified  |
-    +--------------------+-----------------------------------------+-----------------+
-    |:math:`D`           | ``regolith_transport_parameter``        | user specified  |
-    +--------------------+-----------------------------------------+-----------------+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 
@@ -104,7 +104,7 @@ class BasicTh(ErosionModel):
         ...           'water_erodability': 0.001,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
-        ...           'erosion__threshold': 0.01}
+        ...           "water_erosion_rule__threshold": 0.01}
 
         Construct the model.
 
@@ -130,7 +130,11 @@ class BasicTh(ErosionModel):
             raise ValueError("Model BasicTh only supports n equals 1.")
 
         # Get Parameters and convert units if necessary:
-        self.K = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -141,16 +145,12 @@ class BasicTh(ErosionModel):
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
         threshold = self._length_factor * self.get_parameter_from_exponent(
-            "erosion__threshold"
+            "water_erosion_rule__threshold"
         )  # has units length/time
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
-            K_sp=self.K,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
-            threshold_sp=threshold,
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n, threshold_sp=threshold
         )
 
         # Instantiate a LinearDiffuser component

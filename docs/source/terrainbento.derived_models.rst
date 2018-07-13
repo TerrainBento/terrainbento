@@ -39,7 +39,6 @@ Two Difference Models
 
 .. toctree::
 
-    terrainbento.derived_models.model_012_basicHyTh
     terrainbento.derived_models.model_018_basicDdHy
     terrainbento.derived_models.model_102_basicStTh
     terrainbento.derived_models.model_108_basicDdSt

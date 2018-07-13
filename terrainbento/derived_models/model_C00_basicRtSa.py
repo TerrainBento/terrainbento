@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicRt** program.
+"""terrainbento **BasicRt** model program.
 
 Erosion model program using depth-dependent linear diffusion, soil production
 by exponential weathering, stream power with spatially varying erodability based
@@ -27,12 +27,12 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicRtSa(ErosionModel):
-    """Model **BasicRtSa** program.
+    """**BasicRtSa** model program.
 
-    Model **BasicRtSa** combines the **BasicRt** and **BasicSa** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer and
-    explicitly resolving a soil layer. This soil layer is produced by weathering
-    that decays exponentially with soil thickness and hillslope transport is
+    **BasicRtSa** combines the **BasicRt** and **BasicSa** programs by allowing
+    for two lithologies, an "upper" layer and a "lower" layer and explicitly
+    resolving a soil layer. This soil layer is produced by weathering that
+    decays exponentially with soil thickness and hillslope transport is
     soil-depth dependent. Given a spatially varying contact zone elevation,
     :math:`\eta_C(x,y))`, a spatially varying soil thickness :math:`H` and a
     spatially varying bedrock elevation :math:`\eta_b`, model **BasicRtSa**
@@ -44,9 +44,9 @@ class BasicRtSa(ErosionModel):
 
         \eta = \eta_b + H
 
-        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{1/2} S - \\nabla q_h
+        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{m} S^{n} - \\nabla q_h
 
-        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{1/2} S
+        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{m} S^{n}
 
         q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \\nabla \eta
 
@@ -56,6 +56,7 @@ class BasicRtSa(ErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
@@ -78,36 +79,39 @@ class BasicRtSa(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRtSa** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following terrainbento numerical model:
+    The **BasicRtSa** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model **BasicRtSa**:
+    +------------------+-----------------------------------+
+    | Parameter Symbol | Input File Parameter Name         |
+    +==================+===================================+
+    |:math:`m`         | ``m_sp``                          |
+    +------------------+-----------------------------------+
+    |:math:`n`         | ``n_sp``                          |
+    +------------------+-----------------------------------+
+    |:math:`K_{1}`     | ``water_erodability~upper``       |
+    +------------------+-----------------------------------+
+    |:math:`K_{2}`     | ``water_erodability~lower``       |
+    +------------------+-----------------------------------+
+    |:math:`W_{c}`     | ``contact_zone__width``           |
+    +------------------+-----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter``  |
+    +------------------+-----------------------------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``       |
+    +------------------+-----------------------------------+
+    |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
+    +------------------+-----------------------------------+
+    |:math:`H_{s}`     | ``soil_production__decay_depth``  |
+    +------------------+-----------------------------------+
+    |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
+    +------------------+-----------------------------------+
 
-    +------------------+-----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name         | Value           |
-    +==================+===================================+=================+
-    |:math:`m`         | ``m_sp``                          | 0.5             |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                          | 1               |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`K_{1}`     | ``water_erodability~upper``       | user specified  |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`K_{2}`     | ``water_erodability~lower``       | user specified  |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`W_{c}`     | ``contact_zone__width``           | user specified  |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter``  | user specified  |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``       | user specified  |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`P_{0}`     | ``soil_production__maximum_rate`` | user specified  |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`H_{s}`     | ``soil_production__decay_depth``  | user specified  |
-    +------------------+-----------------------------------+-----------------+
-    |:math:`H_{0}`     | ``soil_transport__decay_depth``   | user specified  |
-    +------------------+-----------------------------------+-----------------+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
+    *Specifying the Lithology Contact*
+    
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -117,6 +121,8 @@ class BasicRtSa(ErosionModel):
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
+    *Reference Frame Considerations*
+    
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -132,6 +138,7 @@ class BasicRtSa(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
+
     """
 
     def __init__(
@@ -208,11 +215,17 @@ class BasicRtSa(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
         self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
@@ -226,10 +239,7 @@ class BasicRtSa(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
-            K_sp=self.erody,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            self.grid, K_sp=self.erody, m_sp=self.m, n_sp=self.n
         )
 
         # Create soil thickness (a.k.a. depth) field

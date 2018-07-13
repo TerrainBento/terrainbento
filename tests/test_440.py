@@ -39,7 +39,7 @@ def test_diffusion_only():
                 'soil_transport_decay_depth': soil_transport_decay_depth,
                 'soil_production__maximum_rate': max_soil_production_rate,
                 'soil_production__decay_depth': soil_production_decay_depth,
-                'initial_soil_thickness': initial_soil_thickness,
+                'soil__initial_thickness': initial_soil_thickness,
                 'critical_slope': S_c,
                 'water_erodability': K,
                 'm_sp': m,
@@ -78,51 +78,6 @@ def test_diffusion_only():
     assert_array_almost_equal(actual_slope, predicted_slope, decimal = 3)
 
 
-def test_no_initial_soil():
-    U = 0.001
-    K = 0.0
-    m = 0.5
-    n = 1.0
-    dt = 1
-    dx = 10.0
-    number_of_node_columns = 21
-    max_soil_production_rate = 0.002
-    soil_production_decay_depth = 0.2
-    regolith_transport_parameter = 1.0
-    soil_transport_decay_depth = 0.5
-    initial_soil_thickness = 0.0
-    S_c = 0.2
-    runtime = 50000
-
-    #Construct dictionary. Note that stream power is turned off
-    params = {'model_grid': 'RasterModelGrid',
-                'dt': dt,
-                'output_interval': 2.,
-                'run_duration': 200.,
-                'number_of_node_rows' : 3,
-                'number_of_node_columns' : 21,
-                'node_spacing' : dx,
-                'north_boundary_closed': True,
-                'south_boundary_closed': True,
-                'regolith_transport_parameter': regolith_transport_parameter,
-                'soil_transport_decay_depth': soil_transport_decay_depth,
-                'soil_production__maximum_rate': max_soil_production_rate,
-                'soil_production__decay_depth': soil_production_decay_depth,
-                'critical_slope': S_c,
-                'water_erodability': K,
-                'm_sp': m,
-                'n_sp': n,
-          	    'depression_finder': 'DepressionFinderAndRouter',
-          	    'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-                'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-                                                'lowering_rate': -U}}
-
-
-    #Construct and run model
-    model = BasicChSa(params=params)
-
-
-
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
     U = 0.001
     K = 0.01
@@ -150,7 +105,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
                 'soil_transport_decay_depth': soil_transport_decay_depth,
                 'soil_production__maximum_rate': max_soil_production_rate,
                 'soil_production__decay_depth': soil_production_decay_depth,
-                'initial_soil_thickness': 0.0,
+                'soil__initial_thickness': 0.0,
                 'critical_slope': S_c,
                 'water_erodability': K,
                 'm_sp': m,
@@ -203,7 +158,7 @@ def test_steady_Ksp_no_precip_changer():
                 'soil_transport_decay_depth': soil_transport_decay_depth,
                 'soil_production__maximum_rate': max_soil_production_rate,
                 'soil_production__decay_depth': soil_production_decay_depth,
-                'initial_soil_thickness': 0.0,
+                'soil__initial_thickness': 0.0,
                 'critical_slope': S_c,
                 'water_erodability': K,
                 'm_sp': m,
@@ -254,7 +209,7 @@ def test_with_precip_changer():
               'soil_transport_decay_depth': soil_transport_decay_depth,
               'soil_production__maximum_rate': max_soil_production_rate,
               'soil_production__decay_depth': soil_production_decay_depth,
-              'initial_soil_thickness': 0.0,
+              'soil__initial_thickness': 0.0,
               'critical_slope': S_c,
               'critical_slope': 0.2,
               'water_erodability': K,

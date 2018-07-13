@@ -1,18 +1,16 @@
 # coding: utf8
 #! /usr/env/python
-"""
-model_208_basicDdVs.py: erosion model using linear diffusion,
-thresholded stream power, and discharge proportional to effective drainage
-area. The threshold varies in space and time, increasing linearly with
-cumulative incision depth below initial topographic surface.
+"""terrainbento model **BasicDdVs** program.
 
-Model 208 BasicDdVs
+Erosion model program using linear diffusion, stream power with a smoothed
+threshold that varies with incision depth, and discharge proportional to
+effective drainage area.
 
-"vsa" stands for "variable source area".
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerEroder, LinearDiffuser
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import sys
@@ -23,19 +21,138 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDdVs(ErosionModel):
-    """
-    A BasicDdVs computes erosion using linear diffusion,
-    "smoothly thresholded" stream power in which the threshold increases with
-    cumulative erosion depth, and Q ~ A exp( -b S / A).
+    """**BasicDdVs** model program.
 
-    "VSA" stands for "variable source area".
+    **BasicDdVs** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equations:
+
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_{ct}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{ct}}\\right)\\right) + D\\nabla^2 \eta
+
+        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
+
+        \\alpha = \\frac{K_{sat}  H_{init}  dx}{R_m}
+
+
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    parameter, and :math:`\omega_{ct}` is the critical stream power needed for
+    erosion to occur. :math:`\omega_{ct}` changes through time as it increases
+    with cumulative incision depth:
+
+    .. math::
+
+        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\\right), \omega_c \\right)
+
+    where :math:`\omega_c` is the threshold when no incision has taken place,
+    :math:`b` is the rate at which the threshold increases with incision depth,
+    and :math:`D_I` is the cumulative incision depth at location
+    :math:`\left(x,y\\right)` and time :math:`t`.
+
+    :math:`\\alpha` is the saturation area scale used for transforming area into
+    effective area. It is given as a function of the saturated hydraulic
+    conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
+    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
+
+    The **BasicDdVs** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +--------------------+-------------------------------------------------+
+    | Parameter Symbol   | Input File Name                                 |
+    +====================+=================================================+
+    |:math:`m`           | ``m_sp``                                        |
+    +--------------------+-------------------------------------------------+
+    |:math:`n`           | ``n_sp``                                        |
+    +--------------------+-------------------------------------------------+
+    |:math:`K`           | ``water_erodability``                           |
+    +--------------------+-------------------------------------------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               |
+    +--------------------+-------------------------------------------------+
+    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
+    +--------------------+-------------------------------------------------+
+    |:math:`D`           | ``regolith_transport_parameter``                |
+    +--------------------+-------------------------------------------------+
+    |:math:`K_{sat}`     | ``hydraulic_conductivity``                      |
+    +--------------------+-------------------------------------------------+
+    |:math:`H_{init}`    | ``soil__initial_thickness``                     |
+    +--------------------+-------------------------------------------------+
+    |:math:`R_m`         | ``recharge_rate``                               |
+    +--------------------+-------------------------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
     """
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the VSADepthDepThresholdModel."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
 
+        Returns
+        -------
+        BasicRtDdVs : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicVs**. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicDdVs
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability': 0.001,
+        ...           'water_erosion_rule__threshold': 0.5,
+        ...           'water_erosion_rule__thresh_depth_derivative': 0.001,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'recharge_rate': 0.5,
+        ...           'soil__initial_thickness': 2.0,
+        ...           'hydraulic_conductivity': 0.1}
+
+        Construct the model.
+
+        >>> model = BasicDdVs(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
         # Call ErosionModel's init
         super(BasicDdVs, self).__init__(
             input_file=input_file,
@@ -45,9 +162,14 @@ class BasicDdVs(ErosionModel):
         )
 
         if float(self.params["n_sp"]) != 1.0:
-            raise ValueError('Model BasicDdVs only supports n = 1.')
+            raise ValueError("Model BasicDdVs only supports n = 1.")
 
-        self.K_sp = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -65,14 +187,11 @@ class BasicDdVs(ErosionModel):
         ]  # has units length per time
 
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
-            "erosion__threshold"
+            "water_erosion_rule__threshold"
         )  # has units length/time
 
         # Add a field for effective drainage area
-        if "effective_drainage_area" in self.grid.at_node:
-            self.eff_area = self.grid.at_node["effective_drainage_area"]
-        else:
-            self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
+        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
         self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (
@@ -80,21 +199,21 @@ class BasicDdVs(ErosionModel):
         )
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros("node", "erosion__threshold")
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.threshold_value
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
             use_Q=self.eff_area,
-            K_sp=self.K_sp,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
             threshold_sp=self.threshold,
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["thresh_change_per_depth"]
+        self.thresh_change_per_depth = self.params["water_erosion_rule__thresh_depth_derivative"]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
@@ -102,16 +221,7 @@ class BasicDdVs(ErosionModel):
         )
 
     def _calc_effective_drainage_area(self):
-        """Calculate and store effective drainage area.
-
-        Effective drainage area is defined as:
-
-        $A_{eff} = A \exp ( \alpha S / A) = A R_r$
-
-        where $S$ is downslope-positive steepest gradient, $A$ is drainage
-        area, $R_r$ is the runoff ratio, and $\alpha$ is the saturation
-        parameter.
-        """
+        """Calculate and store effective drainage area."""
 
         area = self.grid.at_node["drainage_area"]
         slope = self.grid.at_node["topographic__steepest_slope"]
@@ -121,10 +231,32 @@ class BasicDdVs(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
-        """
+        """Advance model **BasicVs** for one time-step of duration dt.
 
+        The **run_one_step** method does the following:
+
+        1. Directs flow, accumulates drainage area, and calculates effective
+           drainage area.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+           not occur.
+
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+           so, uses it to modify the two erodability by water values.
+
+        4. Calculates detachment-limited erosion by water.
+
+        5. Calculates topographic change by linear diffusion.
+
+        6. Finalizes the step using the **ErosionModel** base class function
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
+
+        Parameters
+        ----------
+        dt : float
+            Increment of time for which the model is run.
+        """
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
