@@ -24,8 +24,8 @@ from terrainbento.base_class import ErosionModel
 class BasicCh(ErosionModel):
     """**BasicCh** model program.
 
-    **BasicCh** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equations:
+    **BasicCh** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equations:
 
 
     .. math::
