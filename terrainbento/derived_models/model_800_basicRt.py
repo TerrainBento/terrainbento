@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicRt** program.
+"""terrainbento **BasicRt** model program.
 
 Erosion model program using linear diffusion, stream power with spatially
 varying erodability based on two bedrock units, and discharge proportional to
@@ -24,13 +24,13 @@ import os
 
 
 class BasicRt(ErosionModel):
-    """Model **BasicRt** program.
+    """**BasicRt** model program.
 
-    Model **BasicRt** improves upon the **Basic** model by allowing for two
-    lithologies, an "upper" layer and a "lower" layer. Given a spatially
-    varying contact zone elevation, :math:`\eta_C(x,y))`, model **BasicRt**
-    evolves a topographic surface described by :math:`\eta` with the following
-    governing equations:
+    **BasicRt** is a model program that improves upon the **Basic** program by
+    allowing for two lithologies, an "upper" layer and a "lower" layer. Given a
+    spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
+    **BasicRt** evolves a topographic surface described by :math:`\eta` with the
+    following governing equations:
 
 
     .. math::
@@ -57,9 +57,9 @@ class BasicRt(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRt** inherits from the terrainbento **ErosionModel** base
-    class and, in addition to those required by the base class, requires the
-    following parameter values.
+    The **BasicRt** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |

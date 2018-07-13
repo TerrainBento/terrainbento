@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicRt** program.
+"""terrainbento **BasicRt** model program.
 
 Erosion model program using depth-dependent linear diffusion, soil production
 by exponential weathering, stream power with spatially varying erodability based
@@ -27,12 +27,12 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicRtSa(ErosionModel):
-    """Model **BasicRtSa** program.
+    """**BasicRtSa** model program.
 
-    Model **BasicRtSa** combines the **BasicRt** and **BasicSa** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer and
-    explicitly resolving a soil layer. This soil layer is produced by weathering
-    that decays exponentially with soil thickness and hillslope transport is
+    **BasicRtSa** combines the **BasicRt** and **BasicSa** programs by allowing
+    for two lithologies, an "upper" layer and a "lower" layer and explicitly
+    resolving a soil layer. This soil layer is produced by weathering that
+    decays exponentially with soil thickness and hillslope transport is
     soil-depth dependent. Given a spatially varying contact zone elevation,
     :math:`\eta_C(x,y))`, a spatially varying soil thickness :math:`H` and a
     spatially varying bedrock elevation :math:`\eta_b`, model **BasicRtSa**
@@ -78,11 +78,9 @@ class BasicRtSa(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRtSa** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following terrainbento numerical model:
-
-    1) Model **BasicRtSa**:
+    The **BasicRtSa** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +------------------+-----------------------------------+
     | Parameter Symbol | Input File Parameter Name         |

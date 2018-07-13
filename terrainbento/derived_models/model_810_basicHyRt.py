@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicHyRt** program.
+"""terrainbento **BasicHyRt** model program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment
 erosion and mass conservation with spatially varying erodability based on two
@@ -22,14 +22,14 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHyRt(ErosionModel):
-    """Model **BasicHyRt** program.
+    """**BasicHyRt** model program.
 
-    Model **BasicHyRt** combines the **BasicRt** and **BasicHy** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer,
-    stream-power-driven sediment erosion and mass conservation. Given a
-    spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
-    **BasicHyRt** evolves a topographic surface described by :math:`\eta` with
-    the following governing equations:
+    **BasicHyRt** is a model program that combines the **BasicRt** and
+    **BasicHy** programs by allowing for two lithologies, an "upper" layer and a
+    "lower" layer, stream-power-driven sediment erosion and mass conservation.
+    Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
+    model **BasicHyRt** evolves a topographic surface described by :math:`\eta`
+    with the following governing equations:
 
 
     .. math::
@@ -60,12 +60,9 @@ class BasicHyRt(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicHyRt** inherits from the terrainbento **ErosionModel** base
-    class and can be used to run the **BasicHyRt** numerical model. In addition
-    to the parameters required by the **ErosionModel** base class, models built
-    with this program require the following parameters.
-
-    1) Model **BasicHyRt**:
+    The **BasicHyRt** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |

@@ -39,8 +39,8 @@ class BasicCh(ErosionModel):
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`K` is the erodability by water, :math:`D` is the regolith
     transport efficiency, and :math:`S_c` is the critical slope. :math:`q_s`
-    represents the hillslope sediment flux. :math:`N` is the number of terms in
-    the Taylor Expansion and is set at 11.
+    represents the hillslope sediment flux per unit width. :math:`N` is the
+    number of terms in the Taylor Expansion and is set at 11.
 
     The **BasicCh** program inherits from the terrainbento **ErosionModel** base
     class. In addition to the parameters required by the base class, models

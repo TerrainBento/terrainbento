@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicRtTh** program.
+"""terrainbento **BasicRtTh** model program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
 threshold and spatially varying erodability based on two bedrock units, and
@@ -22,14 +22,14 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicRtTh(ErosionModel):
-    """Model **BasicRtTh** program.
+    """**BasicRtTh** model program.
 
-    Model **BasicRtTh** combines the **BasicRt** and **BasicTh** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer, and
-    permitting the use of an smooth erosion threshold for each lithology. Given
-    a spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
-    **BasicRtTh** evolves a topographic surface described by :math:`\eta` with
-    the following governing equations:
+    **BasicRtTh** is a model program that combines the **BasicRt** and
+    **BasicTh** programs by allowing for two lithologies, an "upper" layer and a
+    "lower" layer, and permitting the use of an smooth erosion threshold for
+    each lithology. Given a spatially varying contact zone elevation,
+    :math:`\eta_C(x,y))`, model **BasicRtTh** evolves a topographic surface
+    described by :math:`\eta` with the following governing equations:
 
     .. math::
 
@@ -62,11 +62,9 @@ class BasicRtTh(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicRtTh** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following terrainbento numerical model:
-
-    1) Model **BasicRtTh**:
+    The **BasicRtTh** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +--------------------+-----------------------------------------+
     | Parameter Symbol   | Input File Parameter Name               |

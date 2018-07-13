@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento Model **BasicChSa** program.
+"""terrainbento **BasicChSa** model program.
 
 Erosion model program using depth-dependent cubic diffusion
 with a soil layer, basic stream power, and discharge proportional to drainage
@@ -27,32 +27,36 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicChSa(ErosionModel):
-    """
-    Model **BasicSa** explicitly resolves a soil layer. This soil layer is
-    produced by weathering that decays exponentially with soil thickness and
-    hillslope transport is soil-depth dependent. Given a spatially varying soil
-    thickness :math:`H` and a spatially varying bedrock elevation :math:`\eta_b`,
-    model **BasicSa** evolves a topographic surface described by :math:`\eta`
-    with the following governing equations:
+    """ **BasicChSa** model program.
+
+
+    **BasicSa** is a model program that explicitly resolves a soil layer. This
+    soil layer is produced by weathering that decays exponentially with soil
+    thickness and hillslope transport is soil-depth dependent. Given a spatially
+    varying soil thickness :math:`H` and a spatially varying bedrock elevation
+    :math:`\eta_b`, model **BasicSa** evolves a topographic surface described by
+    :math:`\eta` with the following governing equations:
 
     .. math::
 
         \eta = \eta_b + H
 
-        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{1/2} S -\\nabla q_h
+        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{m} S^{n} -\\nabla q_h
 
-        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{1/2} S
+        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{m} S^{n}
 
         q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`K` is the erodability by water, :math:`D` is the regolith transport
     parameter, :math:`H_s` is the sediment production decay depth, :math:`H_s`
     is the sediment production decay depth, :math:`P_0` is the maximum sediment
     production rate, and :math:`H_0` is the sediment transport decay depth.
-    :math:`S_c` is the critical slope parameter and :math:`N` is the number of
-    terms in the Taylor Series expansion. Presently :math:`N` is set at 11 and
-    is not a user defined parameter.
+    :math:`q_s` represents the hillslope sediment flux per unit width. :math:`S_c`
+    is the critical slope parameter and :math:`N` is the number of terms in the
+    Taylor Series expansion. Presently :math:`N` is set at 11 and is not a user
+    defined parameter.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is
@@ -60,12 +64,9 @@ class BasicChSa(ErosionModel):
     :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
     underlying parent material is exposed).
 
-    Model **BasicChSa** inherits from the terrainbento **ErosionModel** base
-    class and can be used to run the **BasicChSa** numerical model. In addition
-    to the parameters required by the **ErosionModel** base class, models built
-    with this program require the following parameters.
-
-    1) Model **BasicChSa**:
+    The **BasicChSa** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +------------------+-----------------------------------+
     | Parameter Symbol | Input File Parameter Name         |

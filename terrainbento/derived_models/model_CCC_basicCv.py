@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento Model **BasicCv** program.
+"""terrainbento **BasicCv** model program.
 
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area with climate change.
@@ -20,10 +20,10 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicCv(ErosionModel):
-    """Model **BasicCv** program.
+    """**BasicCv** model program.
 
-    Model **BasicCv** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **BasicCv** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
 
     .. math::
@@ -38,13 +38,10 @@ class BasicCv(ErosionModel):
     changes from :math:`fK` to :math:`K`, at which point it remains at :math:`K`
     for the remainder of the modeling time period.
 
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
 
-    Model ``Basic`` inherits from the terrainbento **ErosionModel** base
-    class and can be used to construct the following models.
-
-    1) Model **BasicCv**:
+    The **BasicCv** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |
@@ -61,6 +58,9 @@ class BasicCv(ErosionModel):
     +------------------+----------------------------------+
     |:math:`T_s`       | ``climate_constant_date``        |
     +------------------+----------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 

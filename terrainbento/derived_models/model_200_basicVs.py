@@ -20,71 +20,7 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicVs(ErosionModel):
-    """Model **BasicRtVs** program.
-
-    Model **BasicRtVs** combines the **BasicRt** and **BasicVs** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer, and
-    using discharge proportional to effective drainage area based on variable
-    source area hydrology. Given a spatially varying contact zone elevation,
-    :math:`\eta_C(x,y))`, model **BasicRtVs** evolves a topographic surface
-    described by :math:`\eta` with the following governing equations:
-
-
-    .. math::
-
-        \\frac{\partial \eta}{\partial t} = - K A_{eff}^{m}S^{n} + D\\nabla^2 \eta
-
-        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
-
-        \\alpha = \\frac{K_{sat}  H_{init}  dx }{R_m}
-
-
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`m` and :math:`n` are the drainage area
-    and slope exponent parameters. :math:`\\alpha` is the saturation area scale
-    used for transforming area into effective area and it is given as a function
-    of the saturated hydraulic conductivity :math:`K_{sat}`, the soil thickness
-    :math:`H_{init}`, the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
-    :math:`w` is a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
-    based on the depth to the contact zone and the width of the contact zone.
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
-
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
-    erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
-
-    Model **BasicVs** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the provided provided, this model program can be used
-    to run the following terrainbento numerical model:
-
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Name                  |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K`         | ``water_erodability ``           |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`K_{sat}`   | ``hydraulic_conductivity``       |
-    +------------------+----------------------------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``      |
-    +------------------+----------------------------------+
-    |:math:`R_m`       | ``recharge_rate``                |
-    +------------------+----------------------------------+
-
-    Refer to the terrainbento manuscript Table XX (URL here) for full list of
-    parameter symbols, names, and dimensions.
-
+    """
     """
 
     def __init__(

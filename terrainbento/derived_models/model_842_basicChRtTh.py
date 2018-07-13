@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicChRtTh** program.
+"""terrainbento **BasicChRtTh** model program.
 
 Erosion model program using non-linear diffusion, stream power with stream power
 with a smoothed threshold and spatially varying erodability based on two bedrock
@@ -22,14 +22,14 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicChRtTh(ErosionModel):
-    """Model **BasicChRtTh** program.
+    """**BasicChRtTh** model program.
 
-    Model **BasicChRtTh** combines the **BasicCh**, **BasicTh** and **BasicRt**
-    models by allowing for two lithologies, an "upper" layer and a "lower" layer,
-    permitting the use of an smooth erosion threshold for each lithology, and
-    using non-linear hillslope transport. Given a spatially varying contact zone
-    elevation, :math:`\eta_C(x,y))`, model **BasicChRtTh** evolves a topographic
-    surface described by :math:`\eta` with the following governing equations:
+    **BasicChRtTh** combines the **BasicCh**, **BasicTh** and **BasicRt**
+    programs by allowing for two lithologies, an "upper" layer and a "lower"
+    layer, permitting the use of an smooth erosion threshold for each lithology,
+    and using non-linear hillslope transport. Given a spatially varying contact
+    zone elevation, :math:`\eta_C(x,y))`, model **BasicChRtTh** evolves a
+    topographic surface described by :math:`\eta` with the following governing equations:
 
 
     .. math::
@@ -62,9 +62,9 @@ class BasicChRtTh(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicChRtTh** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following terrainbento numerical model:
+    The **BasicChRtTh** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     1) Model **BasicChRtTh**:
 

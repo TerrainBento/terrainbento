@@ -26,23 +26,29 @@ class BasicHySa(ErosionModel):
     Model **BasicHySa** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
 
+
     .. math::
 
         \\frac{\partial \eta}{\partial t} = -K_{r}A^{m}S^{n}\left(e^{-H/H_*}\\right) \\
         -K_{s}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\
         + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_h
 
+
     where :math:`K_r` and :math:`K_s` are rock and sediment erodibility
     respectively, :math:`A` is the local drainage area, :math:`S` is the local
-    slope, :math:`H` is soil depth, :math:`H_*` is the bedrock roughnes length
-    scale, :math:`\omega_c` is the critical stream power needed for erosion to
-    occur, :math:`V` is effective sediment settling velocity, :math:`Q_s` is
-    volumetric fluvial sediment flux, :math:`Q` is volumetric water discharge,
-    and :math:`\phi` is sediment porosity. Hillslope sediment flux per unit
-    width :math:`q_h` is given by:
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`H` is soil depth, :math:`H_*` is the bedrock roughness
+    length scale, :math:`\omega_c` is the critical stream power needed for
+    erosion to occur, :math:`V` is effective sediment settling velocity,
+    :math:`Q_s` is volumetric fluvial sediment flux, :math:`Q` is volumetric
+    water discharge, and :math:`\phi` is sediment porosity. Hillslope sediment
+    flux per unit width :math:`q_h` is given by:
+
 
     .. math::
+
         q_h=-DS\left(1-e^{-H/H_0}\\right)
+
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.
@@ -50,12 +56,9 @@ class BasicHySa(ErosionModel):
     Refer to the terrainbento manuscript Table XX (URL here) for parameter
     symbols, names, and dimensions.
 
-    Model **BasicHySa** inherits from the terrainbento **ErosionModel** base
-    class and can be used to run the **BasicSa** numerical model. In addition
-    to the parameters required by the **ErosionModel** base class, models built
-    with this program require the following parameters.
-
-    1. **BasicHySa**:
+    The **BasicHySa** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
     +------------------+-----------------------------------+
     | Parameter Symbol | Input File Parameter Name         |
@@ -82,7 +85,6 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
-
 
     TODO XXX add threshold, add Kbr, K_sed
 
