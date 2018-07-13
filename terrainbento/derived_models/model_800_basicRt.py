@@ -17,13 +17,10 @@ import sys
 import numpy as np
 
 from landlab.components import FastscapeEroder, LinearDiffuser
-from landlab.io import read_esri_ascii
-from terrainbento.base_class import ErosionModel
-
-import os
+from terrainbento.base_class import TwoLithologyErosionModel
 
 
-class BasicRt(ErosionModel):
+class BasicRt(TwoLithologyErosionModel):
     """**BasicRt** model program.
 
     **BasicRt** is a model program that improves upon the **Basic** program by
@@ -57,9 +54,10 @@ class BasicRt(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    The **BasicRt** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
+    The **BasicRt** program inherits from the terrainbento
+    **TwoLithologyErosionModel** base class. In addition to the parameters
+    required by the base class, models built with this program require the
+    following parameters.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |
@@ -183,13 +181,6 @@ class BasicRt(ErosionModel):
         )
 
         # Get Parameters and convert units if necessary:
-        self.contact_width = (self._length_factor) * self.params[
-            "contact_zone__width"
-        ]  # has units length
-
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-
         self.K_rock = self.get_parameter_from_exponent("water_erodability~lower") * (
             self._length_factor ** (1. - (2. * self.m))
         )
@@ -223,15 +214,8 @@ class BasicRt(ErosionModel):
 
     def _setup_rock_and_till(self):
         """Set up fields to handle for two layers with different erodability."""
-        file_name = self.params["lithology_contact_elevation__file_name"]
-
-        # Read input data on rock-till contact elevation
-        read_esri_ascii(
-            file_name, grid=self.grid, halo=1, name="rock_till_contact__elevation"
-        )
-
         # Get a reference to the rock-till field
-        self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
+        self._setup_contact_elevation()
 
         # Create field for erodability
         self.erody = self.grid.add_zeros("node", "substrate__erodability")

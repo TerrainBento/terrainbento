@@ -17,11 +17,10 @@ import sys
 import numpy as np
 
 from landlab.components import StreamPowerEroder, LinearDiffuser
-from landlab.io import read_esri_ascii
-from terrainbento.base_class import ErosionModel
+from terrainbento.base_class import TwoLithologyErosionModel
 
 
-class BasicRtVs(ErosionModel):
+class BasicRtVs(TwoLithologyErosionModel):
     """**BasicRtVs** model program.
 
     **BasicRtVs** is a model program that combines the **BasicRt** and
@@ -64,9 +63,10 @@ class BasicRtVs(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    The **BasicRtVs** program inherits from the terrainbento **ErosionModel**
-    base class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
+    The **BasicRtVs** program inherits from the terrainbento
+    **TwoLithologyErosionModel** base class. In addition to the parameters
+    required by the base class, models built with this program require the
+    following parameters.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Name                  |
@@ -270,11 +270,8 @@ class BasicRtVs(ErosionModel):
 
     def _setup_rock_and_till(self):
         """Set up fields to handle for two layers with different erodability."""
-        file_name = self.params["lithology_contact_elevation__file_name"]
-        # Read input data on rock-till contact elevation
-        read_esri_ascii(
-            file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
-        )
+        # Get a reference to the rock-till field\
+        self._setup_contact_elevation()
 
         # Get a reference to the rock-till field
         self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]

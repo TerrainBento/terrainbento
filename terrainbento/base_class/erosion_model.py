@@ -38,6 +38,10 @@ If neither of the two following parameters is specified, a synthetic
 a synthetic ``RasterModelGrid`` are not provided, default values will be used
 for grid size, initial topography, and boundary conditions.
 
+If a user desires providing elevations from a numpy arrary, then they can
+instantiate a synthetic grid and set the value of ``model.z`` to the values of
+the numpy array.
+
 DEM_filename : str, optional
     File path to either an ESRII ASCII or netCDF file. Either  ``'DEM_filename'``
     or ``'model_grid'`` must be specified.

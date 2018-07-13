@@ -17,11 +17,10 @@ import sys
 import numpy as np
 
 from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
-from landlab.io import read_esri_ascii
-from terrainbento.base_class import ErosionModel
+from terrainbento.base_class import TwoLithologyErosionModel
 
 
-class BasicRtTh(ErosionModel):
+class BasicRtTh(TwoLithologyErosionModel):
     """**BasicRtTh** model program.
 
     **BasicRtTh** is a model program that combines the **BasicRt** and
@@ -63,9 +62,10 @@ class BasicRtTh(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    The **BasicRtTh** program inherits from the terrainbento **ErosionModel**
-    base class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
+    The **BasicRtTh** program inherits from the terrainbento
+    **TwoLithologyErosionModel** base class. In addition to the parameters
+    required by the base class, models built with this program require the
+    following parameters.
 
     +--------------------+-----------------------------------------+
     | Parameter Symbol   | Input File Parameter Name               |
@@ -91,7 +91,7 @@ class BasicRtTh(ErosionModel):
     parameter symbols, names, and dimensions.
 
     *Specifying the Lithology Contact*
-    
+
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -102,7 +102,7 @@ class BasicRtTh(ErosionModel):
     by a halo of size 1.
 
     *Reference Frame Considerations*
-    
+
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -243,15 +243,8 @@ class BasicRtTh(ErosionModel):
 
     def _setup_rock_and_till(self):
         """Set up fields to handle for two layers with different erodability."""
-        file_name = self.params["lithology_contact_elevation__file_name"]
-
-        # Read input data on rock-till contact elevation
-        read_esri_ascii(
-            file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
-        )
-
-        # Get a reference to the rock-till field
-        self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
+        # Get a reference to the rock-till field\
+        self._setup_contact_elevation()
 
         # Create field for erodability
         self.erody = self.grid.add_zeros("node", "substrate__erodability")
