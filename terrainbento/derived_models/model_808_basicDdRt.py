@@ -36,7 +36,7 @@ class BasicDdRt(ErosionModel):
 
         \\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_{ct} (1 - e^{-\omega /\omega_{ct}}) \\right]  + D\\nabla^2 \eta,
 
-        \omega = K(\eta, \eta_C) A^{1/2} S
+        \omega = K(\eta, \eta_C) A^{m} S^{n}
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -46,6 +46,7 @@ class BasicDdRt(ErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, :math:`\omega_{c}` is the
     in initial erosion threshold (for both lithologies) and :math:`b` is the

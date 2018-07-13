@@ -36,7 +36,7 @@ class BasicChRtTh(ErosionModel):
 
         \\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_c (1 - e^{-\omega /\omega_c}) \\right]  - \\nabla q_h
 
-        \omega = K(\eta, \eta_C) A^{1/2} S
+        \omega = K(\eta, \eta_C) A^{m} S^{n}
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2,
 
@@ -48,6 +48,7 @@ class BasicChRtTh(ErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
