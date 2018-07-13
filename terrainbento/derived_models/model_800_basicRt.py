@@ -190,16 +190,19 @@ class BasicRt(ErosionModel):
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
 
-        self.K_rock = self.get_parameter_from_exponent("water_erodability~lower") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_rock = self.get_parameter_from_exponent("water_erodability~lower") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
-        self.K_till = self.get_parameter_from_exponent("water_erodability~upper") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_till = self.get_parameter_from_exponent("water_erodability~upper") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock
@@ -210,10 +213,7 @@ class BasicRt(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
-            K_sp=self.erody,
-            m_sp=self.m,
-            n_sp=self.n,
+            self.grid, K_sp=self.erody, m_sp=self.m, n_sp=self.n
         )
 
         # Instantiate a LinearDiffuser component

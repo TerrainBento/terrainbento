@@ -180,8 +180,12 @@ class BasicHySa(ErosionModel):
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K_br = self.get_parameter_from_exponent("water_erodability~rock") * (self._length_factor ** (1. - (2. * self.m)))
-        self.K_sed = self.get_parameter_from_exponent("water_erodability~sediment") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_br = self.get_parameter_from_exponent("water_erodability~rock") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+        self.K_sed = self.get_parameter_from_exponent("water_erodability~sediment") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -198,8 +202,8 @@ class BasicHySa(ErosionModel):
         )  # has units length^2/time
 
         initial_soil_thickness = (self._length_factor) * self.params[
-                "soil__initial_thickness"
-            ]  # has units length
+            "soil__initial_thickness"
+        ]  # has units length
 
         soil_transport_decay_depth = (self._length_factor) * self.params[
             "soil_transport_decay_depth"
@@ -227,8 +231,8 @@ class BasicHySa(ErosionModel):
             v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,
-            discharge_field='surface_water__discharge',
-            solver=solver
+            discharge_field="surface_water__discharge",
+            solver=solver,
         )
 
         # Get soil thickness (a.k.a. depth) field

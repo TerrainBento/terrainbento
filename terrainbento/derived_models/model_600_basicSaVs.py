@@ -49,14 +49,18 @@ class BasicSaVs(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-        initial_soil_thickness = (self._length_factor) * self.params["soil__initial_thickness"]  # has units length
+        initial_soil_thickness = (self._length_factor) * self.params[
+            "soil__initial_thickness"
+        ]  # has units length
 
         soil_transport_decay_depth = (self._length_factor) * self.params[
             "soil_transport_decay_depth"
@@ -92,11 +96,7 @@ class BasicSaVs(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid,
-            use_Q=self.eff_area,
-            K_sp=self.K,
-            m_sp=self.m,
-            n_sp=self.n,
+            self.grid, use_Q=self.eff_area, K_sp=self.K, m_sp=self.m, n_sp=self.n
         )
 
         # Instantiate a DepthDependentDiffuser component

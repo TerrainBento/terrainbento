@@ -132,7 +132,9 @@ class BasicTh(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -148,11 +150,7 @@ class BasicTh(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
-            K_sp=self.K,
-            m_sp=self.m,
-            n_sp=self.n,
-            threshold_sp=threshold,
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n, threshold_sp=threshold
         )
 
         # Instantiate a LinearDiffuser component

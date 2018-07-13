@@ -200,9 +200,13 @@ class BasicDdRt(ErosionModel):
         self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.

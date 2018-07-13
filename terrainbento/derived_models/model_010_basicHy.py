@@ -147,7 +147,9 @@ class BasicHy(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         # Unit conversion for linear_diffusivity, with units L^2/T
         regolith_transport_parameter = (
@@ -169,7 +171,7 @@ class BasicHy(ErosionModel):
             v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,
-            discharge_field='surface_water__discharge',
+            discharge_field="surface_water__discharge",
             solver=solver,
         )
 

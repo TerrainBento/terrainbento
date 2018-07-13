@@ -97,8 +97,9 @@ class BasicVs(ErosionModel):
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = (self.get_parameter_from_exponent("water_erodability") *
-                  (self._length_factor ** (1. - (2. * self.m))))
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -126,11 +127,7 @@ class BasicVs(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid,
-            use_Q=self.eff_area,
-            K_sp=self.K,
-            m_sp=self.m,
-            n_sp=self.n,
+            self.grid, use_Q=self.eff_area, K_sp=self.K, m_sp=self.m, n_sp=self.n
         )
 
         # Instantiate a LinearDiffuser component

@@ -206,8 +206,12 @@ class BasicRtVs(ErosionModel):
             "contact_zone__width"
         ]  # has units length
 
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (self._length_factor ** (1. - (2. * self.m)))
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
@@ -239,11 +243,7 @@ class BasicRtVs(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid,
-            K_sp=self.erody,
-            m_sp=self.m,
-            n_sp=self.n,
-            use_Q=self.eff_area,
+            self.grid, K_sp=self.erody, m_sp=self.m, n_sp=self.n, use_Q=self.eff_area
         )
 
         # Instantiate a LinearDiffuser component
