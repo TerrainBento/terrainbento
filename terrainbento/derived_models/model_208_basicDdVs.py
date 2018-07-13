@@ -21,12 +21,69 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDdVs(ErosionModel):
-    """
-    A BasicDdVs computes erosion using linear diffusion,
-    "smoothly thresholded" stream power in which the threshold increases with
-    cumulative erosion depth, and Q ~ A exp( -b S / A).
+    """**BasicDdVs** model program.
 
-    "VSA" stands for "variable source area".
+    **BasicDdVs** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equations:
+
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_{ct}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{ct}}\\right)\\right) + D\\nabla^2 \eta
+
+        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
+
+        \\alpha = \\frac{K_{sat}  H_{init}  dx}{R_m}
+
+
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    parameter, and :math:`\omega_{ct}` is the critical stream power needed for
+    erosion to occur. :math:`\omega_{ct}` changes through time as it increases
+    with cumulative incision depth:
+
+    .. math::
+
+        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\\right), \omega_c \\right)
+
+    where :math:`\omega_c` is the threshold when no incision has taken place,
+    :math:`b` is the rate at which the threshold increases with incision depth,
+    and :math:`D_I` is the cumulative incision depth at location
+    :math:`\left(x,y\\right)` and time :math:`t`.
+
+    :math:`\\alpha` is the saturation area scale used for transforming area into
+    effective area. It is given as a function of the saturated hydraulic
+    conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
+    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
+
+    The **BasicDdVs** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +--------------------+-----------------------------------------+
+    | Parameter Symbol   | Input File Name                         |
+    +====================+=========================================+
+    |:math:`m`           | ``m_sp``                                |
+    +--------------------+-----------------------------------------+
+    |:math:`n`           | ``n_sp``                                |
+    +--------------------+-----------------------------------------+
+    |:math:`K`           | ``water_erodability``                   |
+    +--------------------+-----------------------------------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       |
+    +--------------------+-----------------------------------------+
+    |:math:`D`           | ``regolith_transport_parameter``        |
+    +--------------------+-----------------------------------------+
+    |:math:`K_{sat}`     | ``hydraulic_conductivity``              |
+    +--------------------+-----------------------------------------+
+    |:math:`H_{init}`    | ``soil__initial_thickness``             |
+    +--------------------+-----------------------------------------+
+    |:math:`R_m`         | ``recharge_rate``                       |
+    +--------------------+-----------------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
     """
 
     def __init__(
@@ -50,7 +107,7 @@ class BasicDdVs(ErosionModel):
 
         Returns
         -------
-        BasicRtVs : model object
+        BasicRtDdVs : model object
 
         Examples
         --------
@@ -61,7 +118,7 @@ class BasicDdVs(ErosionModel):
 
         To begin, import the model class.
 
-        >>> from terrainbento import BasicVs
+        >>> from terrainbento import BasicDdVs
 
         Set up a parameters variable.
 
@@ -84,7 +141,7 @@ class BasicDdVs(ErosionModel):
 
         Construct the model.
 
-        >>> model = BasicVs(params=params)
+        >>> model = BasicDdVs(params=params)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.

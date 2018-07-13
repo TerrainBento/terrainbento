@@ -41,8 +41,8 @@ class BasicVs(ErosionModel):
     transport parameter.
 
     :math:`\\alpha` is the saturation area scale used for transforming area into
-    effective area. It is given as a function of the saturated hydraulic
-    conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
+    effective area :math:`A_{eff}`. It is given as a function of the saturated
+    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
     the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
     The **BasicVs** program inherits from the terrainbento **ErosionModel** base

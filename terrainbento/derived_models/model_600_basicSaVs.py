@@ -26,13 +26,73 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicSaVs(ErosionModel):
-    """
-    A BasicSaVs computes erosion using depth-dependent linear diffusion, basic
-    stream power, and Q ~ A exp( -c H S / A); H = soil thickness.
+    """**BasicVs** model program.
 
-    This "c" parameter has dimensions of length, and is defined as
-    c = K dx / R, where K is saturated hydraulic conductivity, dx is grid
-    spacing, and R is recharge.
+    **BasicVs** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equations:
+
+
+    .. math::
+
+        \eta = \eta_b + H
+
+        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A_{eff}^{M} S^{N} -\\nabla q_h
+
+        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
+
+        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \\nabla \eta
+
+        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
+
+        \\alpha = \\frac{K_{sat}  H_{init}  dx}{R_m}
+
+
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    parameter :math:`H_s` is the sediment production decay depth, :math:`H_s`
+    is the sediment production decay depth, :math:`P_0` is the maximum sediment
+    production rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_s`
+    represents the hillslope sediment flux per unit width.
+
+    :math:`\\alpha` is the saturation area scale used for transforming area into
+    effective area :math:`A_{eff}`. It is given as a function of the saturated
+    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
+    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
+
+    The **BasicVs** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +------------------+-----------------------------------+
+    | Parameter Symbol | Input File Name                   |
+    +==================+===================================+
+    |:math:`m`         | ``m_sp``                          |
+    +------------------+-----------------------------------+
+    |:math:`n`         | ``n_sp``                          |
+    +------------------+-----------------------------------+
+    |:math:`K`         | ``water_erodability``             |
+    +------------------+-----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter``  |
+    +------------------+-----------------------------------+
+    |:math:`K_{sat}`   | ``hydraulic_conductivity``        |
+    +------------------+-----------------------------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``       |
+    +------------------+-----------------------------------+
+    |:math:`R_m`       | ``recharge_rate``                 |
+    +------------------+-----------------------------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``       |
+    +------------------+-----------------------------------+
+    |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
+    +------------------+-----------------------------------+
+    |:math:`H_{s}`     | ``soil_production__decay_depth``  |
+    +------------------+-----------------------------------+
+    |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
+    +------------------+-----------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
     """
 
     def __init__(

@@ -21,11 +21,66 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHyVs(ErosionModel):
-    """
-    A BasicHyVs computes erosion using linear diffusion,
-    hybrid alluvium fluvial erosion, and Q ~ A exp( -b S / A).
+    """**BasicVs** model program.
 
-    "VSA" stands for "variable source area".
+    **BasicVs** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equations:
+
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_c\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_c}\\right)\\right) + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+
+        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
+
+        \\alpha = \\frac{K_{sat}  H_{init}  dx}{R_m}
+
+
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
+    stream power needed for erosion to occur, :math:`V` is effective sediment
+    settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`Q` is
+    volumetric water discharge, :math:`\phi` is sediment porosity, :math:`D` is
+    the regolith transport efficiency, :math:`H` is soil depth, and :math:`H_*`
+    is the bedrock roughness length scale.
+
+    :math:`\\alpha` is the saturation area scale used for transforming area into
+    effective area :math:`A_{eff}`. It is given as a function of the saturated
+    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
+    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
+
+    The **BasicVs** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Name                  |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability``            |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`K_{sat}`   | ``hydraulic_conductivity``       |
+    +------------------+----------------------------------+
+    |:math:`H_{init}`  | ``soil__initial_thickness``      |
+    +------------------+----------------------------------+
+    |:math:`R_m`       | ``recharge_rate``                |
+    +------------------+----------------------------------+
+    |:math:`V`         | ``settling_velocity``            |
+    +------------------+----------------------------------+
+    |:math:`F_f`       | ``fraction_fines``               |
+    +------------------+----------------------------------+
+    |:math:`\phi`      | ``sediment_porosity``            |
+    +------------------+----------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
     """
 
     def __init__(

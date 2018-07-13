@@ -20,72 +20,125 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicThVs(ErosionModel):
-    """
-    Parameters
-    ----------
-    input_file : str
-        Path to model input file. See wiki for discussion of input file
-        formatting. One of input_file or params is required.
-    params : dict
-        Dictionary containing the input file. One of input_file or params is
-        required.
-    BoundaryHandlers : class or list of classes, optional
-        Classes used to handle boundary conditions. Alternatively can be
-        passed by input file as string. Valid options described above.
-    OutputWriters : class, function, or list of classes and/or functions, optional
-        Classes or functions used to write incremental output (e.g. make a
-        diagnostic plot).
+    """**BasicThVs** model program.
 
-    Returns
-    -------
-    BasicThVs : model object
+    **BasicThVs** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equations:
 
-    Examples
-    --------
-    This is a minimal example to demonstrate how to construct an instance
-    of model **BasicThVs**. Note that a YAML input file can be used instead of
-    a parameter dictionary. For more detailed examples, including steady-
-    state test examples, see the terrainbento tutorials.
 
-    To begin, import the model class.
+    .. math::
 
-    >>> from terrainbento import BasicThVs
+        \\frac{\partial \eta}{\partial t} = -\left(K A_{eff}^{m}S^{n} - \omega_c\left(1-e^{-K_A_{eff}^{m}S^{n}/\omega_c}\\right)\\right) + D\\nabla^2 \eta
 
-    Set up a parameters variable.
+        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
 
-    >>> params = {'model_grid': 'RasterModelGrid',
-    ...           'dt': 1,
-    ...           'output_interval': 2.,
-    ...           'run_duration': 200.,
-    ...           'number_of_node_rows' : 6,
-    ...           'number_of_node_columns' : 9,
-    ...           'node_spacing' : 10.0,
-    ...           'regolith_transport_parameter': 0.001,
-    ...           'water_erodability': 0.001,
-    ...           'water_erosion_rule__threshold': 0.5,
-    ...           'm_sp': 0.5,
-    ...           'n_sp': 1.0,
-    ...           'recharge_rate': 0.5,
-    ...           'soil__initial_thickness': 2.0,
-    ...           'hydraulic_conductivity': 0.1}
+        \\alpha = \\frac{K_{sat}  H_{init}  dx}{R_m}
 
-    Construct the model.
 
-    >>> model = BasicThVs(params=params)
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
+    stream power needed for erosion to occur, and :math:`D` is the regolith
+    transport parameter.
 
-    Running the model with ``model.run()`` would create output, so here we
-    will just run it one step.
+    :math:`\\alpha` is the saturation area scale used for transforming area into
+    effective area :math:`A_{eff}`. It is given as a function of the saturated
+    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
+    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
-    >>> model.run_one_step(1.)
-    >>> model.model_time
-    1.0
+    The **BasicThVs** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +--------------------+-----------------------------------------+
+    | Parameter Symbol   | Input File Name                         |
+    +====================+=========================================+
+    |:math:`m`           | ``m_sp``                                |
+    +--------------------+-----------------------------------------+
+    |:math:`n`           | ``n_sp``                                |
+    +--------------------+-----------------------------------------+
+    |:math:`K`           | ``water_erodability``                   |
+    +--------------------+-----------------------------------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       |
+    +--------------------+-----------------------------------------+
+    |:math:`D`           | ``regolith_transport_parameter``        |
+    +--------------------+-----------------------------------------+
+    |:math:`K_{sat}`     | ``hydraulic_conductivity``              |
+    +--------------------+-----------------------------------------+
+    |:math:`H_{init}`    | ``soil__initial_thickness``             |
+    +--------------------+-----------------------------------------+
+    |:math:`R_m`         | ``recharge_rate``                       |
+    +--------------------+-----------------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """Initialize the BasicThVs."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        BasicThVs : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicThVs**. Note that a YAML input file can be used instead of
+        a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicThVs
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability': 0.001,
+        ...           'water_erosion_rule__threshold': 0.5,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'recharge_rate': 0.5,
+        ...           'soil__initial_thickness': 2.0,
+        ...           'hydraulic_conductivity': 0.1}
+
+        Construct the model.
+
+        >>> model = BasicThVs(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
         # Call ErosionModel's init
         super(BasicThVs, self).__init__(
             input_file=input_file,
@@ -156,7 +209,7 @@ class BasicThVs(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model **BasicVs** for one time-step of duration dt.
+        """Advance model **BasicThVs** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
