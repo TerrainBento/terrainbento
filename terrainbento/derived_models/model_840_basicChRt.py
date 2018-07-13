@@ -84,12 +84,11 @@ class BasicChRt(ErosionModel):
     |:math:`S_c`       | ``critical_slope``               |
     +------------------+----------------------------------+
 
-    Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{1}` is given by the parameter
-    ``water_erodability~upper``, :math:`K_{2}` is given by the parameter
-    ``water_erodability~lower`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``. :math:`S_c` is given by ``critical_slope``.
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
+    Specifying the Lithology Contact
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -99,6 +98,8 @@ class BasicChRt(ErosionModel):
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
+    Reference Frame Considerations
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -114,6 +115,7 @@ class BasicChRt(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
+
     """
 
     def __init__(

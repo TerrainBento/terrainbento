@@ -48,8 +48,7 @@ class BasicRt(ErosionModel):
     regolith transport parameter. :math:`m` and :math:`n` are the drainage area
     and slope exponent parameters. :math:`w` is a weight used to calculate the
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    contact zone and the width of the contact zone.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -61,7 +60,6 @@ class BasicRt(ErosionModel):
     Model **BasicRt** inherits from the terrainbento **ErosionModel** base
     class and, in addition to those required by the base class, requires the
     following parameter values.
-
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |
@@ -79,7 +77,11 @@ class BasicRt(ErosionModel):
     |:math:`D`         | ``regolith_transport_parameter`` |
     +------------------+----------------------------------+
 
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
+    Specifying the Lithology Contact
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -89,6 +91,8 @@ class BasicRt(ErosionModel):
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
+    Reference Frame Considerations
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -104,6 +108,7 @@ class BasicRt(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
+
     """
 
     def __init__(

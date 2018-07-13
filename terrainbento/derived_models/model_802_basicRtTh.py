@@ -53,8 +53,7 @@ class BasicRtTh(ErosionModel):
     based on the depth to the contact zone and the width of the contact zone.
     :math:`\omega` is the erosion rate that would be calculated without the use
     of a threshold and as the threshold increases the erosion rate smoothly
-    transitions between zero and :math:`\omega`. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    transitions between zero and :math:`\omega`.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -89,6 +88,11 @@ class BasicRtTh(ErosionModel):
     |:math:`D`           | ``regolith_transport_parameter``        |
     +--------------------+-----------------------------------------+
 
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
+    Specifying the Lithology Contact
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -98,6 +102,8 @@ class BasicRtTh(ErosionModel):
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
+    Reference Frame Considerations
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -113,6 +119,7 @@ class BasicRtTh(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
+
     """
 
     def __init__(

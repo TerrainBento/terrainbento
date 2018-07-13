@@ -93,6 +93,11 @@ class BasicRtVs(ErosionModel):
     |:math:`R_m`       | ``recharge_rate``                |
     +------------------+----------------------------------+
 
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
+    Specifying the Lithology Contact
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -102,6 +107,8 @@ class BasicRtVs(ErosionModel):
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
+    Reference Frame Considerations
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -117,6 +124,7 @@ class BasicRtVs(ErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
+
     """
 
     def __init__(

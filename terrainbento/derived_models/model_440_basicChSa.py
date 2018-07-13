@@ -60,9 +60,6 @@ class BasicChSa(ErosionModel):
     :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
     underlying parent material is exposed).
 
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
-
     Model **BasicChSa** inherits from the terrainbento **ErosionModel** base
     class and can be used to run the **BasicChSa** numerical model. In addition
     to the parameters required by the **ErosionModel** base class, models built
@@ -91,6 +88,9 @@ class BasicChSa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`S_c`       | ``critical_slope``                |
     +------------------+-----------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 

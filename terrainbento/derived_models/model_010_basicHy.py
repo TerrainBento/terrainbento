@@ -35,9 +35,7 @@ class BasicHy(ErosionModel):
     :math:`\omega_c` is the critical stream power needed for erosion to occur,
     :math:`V` is effective sediment settling velocity, :math:`Q_s` is
     volumetric sediment flux, :math:`Q` is volumetric water discharge, and
-    :math:`\phi` is sediment porosity. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and
-    dimensions.
+    :math:`\phi` is sediment porosity.
 
     Model **BasicHy** inherits from the terrainbento **ErosionModel** base
     class. This model program can be used to run the following terrainbento
@@ -69,6 +67,9 @@ class BasicHy(ErosionModel):
     default internal timestepping is used for the **ErosionDeposition**
     component or if an adaptive internal timestep is used. Refer to the
     **ErosionDeposition** documentation for details.
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 

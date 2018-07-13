@@ -58,8 +58,6 @@ class BasicSa(ErosionModel):
     :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
     underlying parent material is exposed).
 
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
 
     Model **BasicSa** inherits from the terrainbento **ErosionModel** base
     class and can be used to run the **BasicSa** numerical model. In addition
@@ -87,6 +85,9 @@ class BasicSa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 

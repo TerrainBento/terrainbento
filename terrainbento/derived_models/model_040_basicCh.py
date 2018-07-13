@@ -36,8 +36,7 @@ class BasicCh(ErosionModel):
 
     where :math:`S_c` is the critical slope, :math:`A` is the local drainage
     area and :math:`S` is the local slope. :math:`N` is the number of terms in
-    the Taylor Expansion and is set at 11. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    the Taylor Expansion and is set at 11.
 
     Model **BasicCh** inherits from the terrainbento **ErosionModel** base
     class and can be used to run the **BasicCh** numerical model. In addition
@@ -59,6 +58,9 @@ class BasicCh(ErosionModel):
     +------------------+----------------------------------+
     |:math:`S_c`       | ``critical_slope``               |
     +------------------+----------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 
