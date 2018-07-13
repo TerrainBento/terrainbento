@@ -29,9 +29,10 @@ class BasicTh(ErosionModel):
         \\frac{\partial \eta}{\partial t} = -\left(K A^{m}S^{n} - \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    and :math:`\omega_c` is the critical stream power needed for erosion to occur.
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
+    stream power needed for erosion to occur and :math:`D` is the regolith
+    transport efficiency.
 
     Model **BasicTh** inherits from the terrainbento **ErosionModel** base
     class and can be used to run the **BasicTh** numerical model. In addition to
@@ -40,19 +41,22 @@ class BasicTh(ErosionModel):
 
     1) Model **BasicTh**:
 
-    +--------------------+-----------------------------------------+-----------------+
-    | Parameter Symbol   | Input File Parameter Name               | Value           |
-    +====================+=========================================+=================+
-    |:math:`m`           | ``m_sp``                                | 0.5             |
-    +--------------------+-----------------------------------------+-----------------+
-    |:math:`n`           | ``n_sp``                                | 1               |
-    +--------------------+-----------------------------------------+-----------------+
-    |:math:`K`           | ``water_erodability``                   | user specified  |
-    +--------------------+-----------------------------------------+-----------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       | user specified  |
-    +--------------------+-----------------------------------------+-----------------+
-    |:math:`D`           | ``regolith_transport_parameter``        | user specified  |
-    +--------------------+-----------------------------------------+-----------------+
+    +--------------------+-----------------------------------------+
+    | Parameter Symbol   | Input File Parameter Name               |
+    +====================+=========================================+
+    |:math:`m`           | ``m_sp``                                |
+    +--------------------+-----------------------------------------+
+    |:math:`n`           | ``n_sp``                                |
+    +--------------------+-----------------------------------------+
+    |:math:`K`           | ``water_erodability``                   |
+    +--------------------+-----------------------------------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       |
+    +--------------------+-----------------------------------------+
+    |:math:`D`           | ``regolith_transport_parameter``        |
+    +--------------------+-----------------------------------------+
+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 

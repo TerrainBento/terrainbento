@@ -187,14 +187,9 @@ class BasicRt(ErosionModel):
         self.K = (self.get_parameter_from_exponent("water_erodability") *
                   self._length_factor ** (1. - (2. * self.m)))
 
-
         K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * self._length_factor ** (1. - (2. * self.m))
 
         K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * self._length_factor ** (1. - (2. * self.m))
-
-        K_till_ss = self.get_parameter_from_exponent(
-            "water_erodability~upper~shear_stress", raise_error=False
-        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.

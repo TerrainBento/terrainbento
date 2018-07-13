@@ -47,63 +47,23 @@ class BasicHy(ErosionModel):
 
     1) Model **BasicHy**:
 
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K`         | ``water_erodability ``           | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`V`         | ``settling_velocity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`F_f`       | ``fraction_fines``               | 0               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`\phi`      | ``sediment_porosity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-
-    2) Model **BasicHySs**:
-
-    +------------------+------------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name          | Value           |
-    +==================+====================================+=================+
-    |:math:`m`         | ``m_sp``                           | 0.5             |
-    +------------------+------------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                           | 1               |
-    +------------------+------------------------------------+-----------------+
-    |:math:`K`         | ``water_erodability~shear_stress`` | user specified  |
-    +------------------+------------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter``   | user specified  |
-    +------------------+------------------------------------+-----------------+
-    |:math:`V`         | ``settling_velocity``              | user specified  |
-    +------------------+------------------------------------+-----------------+
-    |:math:`F_f`       | ``fraction_fines``                 | 0               |
-    +------------------+------------------------------------+-----------------+
-    |:math:`\phi`      | ``sediment_porosity``              | user specified  |
-    +------------------+------------------------------------+-----------------+
-
-    1) Model **BasicFiHy**:
-
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K`         | ``water_erodability ``           | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`V`         | ``settling_velocity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`F_f`       | ``fraction_fines``               | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`\phi`      | ``sediment_porosity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability ``           |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`V`         | ``settling_velocity``            |
+    +------------------+----------------------------------+
+    |:math:`F_f`       | ``fraction_fines``               |
+    +------------------+----------------------------------+
+    |:math:`\phi`      | ``sediment_porosity``            |
+    +------------------+----------------------------------+
 
     A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **ErosionDeposition**
@@ -186,28 +146,7 @@ class BasicHy(ErosionModel):
         )
 
         # Get Parameters and convert units if necessary:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
-        )
-
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                "A parameter for both K_rock_sp and K_rock_ss has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                self.K = K_sp
-            else:
-                self.K = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Length^(1/3) per Time
-        else:
-            raise ValueError(
-                "A value for water_erodability~rock or water_erodability~rock~shear_stress  must be provided."
-            )
+        self.K = self.get_parameter_from_exponent("water_erodability") * self._length_factor ** (1. - (2. * self.m))
 
         # Unit conversion for linear_diffusivity, with units L^2/T
         regolith_transport_parameter = (
