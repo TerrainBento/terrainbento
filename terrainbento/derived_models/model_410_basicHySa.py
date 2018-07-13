@@ -67,7 +67,9 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`n`         | ``n_sp``                          |
     +------------------+-----------------------------------+
-    |:math:`K`         | ``water_erodability``             |
+    |:math:`K_r`       | ``water_erodability~rock``        |
+    +------------------+-----------------------------------+
+    |:math:`K_s`       | ``water_erodability~sediment``    |
     +------------------+-----------------------------------+
     |:math:`D`         | ``regolith_transport_parameter``  |
     +------------------+-----------------------------------+
@@ -86,7 +88,7 @@ class BasicHySa(ErosionModel):
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
 
-    TODO XXX add threshold, add Kbr, K_sed
+    TODO XXX add threshold
 
     A value for the paramter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **Space** component or if an
