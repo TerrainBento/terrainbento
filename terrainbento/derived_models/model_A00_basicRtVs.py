@@ -198,22 +198,12 @@ class BasicRtVs(TwoLithologyErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-
-        self.contact_width = (self._length_factor) * self.params[
-            "contact_zone__width"
-        ]  # has units length
-
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
             self._length_factor ** (1. - (2. * self.m))
         )
         self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
             self._length_factor ** (1. - (2. * self.m))
         )
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
         recharge_rate = (self._length_factor) * self.params[
             "recharge_rate"
@@ -247,7 +237,7 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self.grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def _calc_effective_drainage_area(self):

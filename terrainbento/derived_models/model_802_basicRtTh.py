@@ -193,12 +193,7 @@ class BasicRtTh(TwoLithologyErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
 
-        self.contact_width = (self._length_factor) * self.params[
-            "contact_zone__width"
-        ]  # has units length
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
             self._length_factor ** (1. - (2. * self.m))
         )
@@ -212,9 +207,6 @@ class BasicRtTh(TwoLithologyErosionModel):
         till_erosion__threshold = self.get_parameter_from_exponent(
             "water_erosion_rule~upper__threshold"
         )
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock_sp
@@ -238,7 +230,7 @@ class BasicRtTh(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self.grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def _setup_rock_and_till(self):

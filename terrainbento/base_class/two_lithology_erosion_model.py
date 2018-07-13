@@ -28,6 +28,9 @@ class TwoLithologyErosionModel(ErosionModel):
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
+        self.regolith_transport_parameter = (
+            self._length_factor ** 2.
+        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
     def _setup_contact_elevation(self):
         """ """

@@ -215,20 +215,12 @@ class BasicRtSa(TwoLithologyErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-        self.contact_width = (self._length_factor) * self.params[
-            "contact_zone__width"
-        ]  # has units length
         self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
             self._length_factor ** (1. - (2. * self.m))
         )
         self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
             self._length_factor ** (1. - (2. * self.m))
         )
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock_sp
@@ -269,7 +261,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(
             self.grid,
-            linear_diffusivity=regolith_transport_parameter,
+            linear_diffusivity=self.regolith_transport_parameter,
             soil_transport_decay_depth=soil_transport_decay_depth,
         )
 

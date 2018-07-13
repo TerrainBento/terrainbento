@@ -179,7 +179,6 @@ class BasicRt(TwoLithologyErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-
         # Get Parameters and convert units if necessary:
         self.K_rock = self.get_parameter_from_exponent("water_erodability~lower") * (
             self._length_factor ** (1. - (2. * self.m))
@@ -188,12 +187,6 @@ class BasicRt(TwoLithologyErosionModel):
         self.K_till = self.get_parameter_from_exponent("water_erodability~upper") * (
             self._length_factor ** (1. - (2. * self.m))
         )
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock
@@ -209,7 +202,7 @@ class BasicRt(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self.grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def _setup_rock_and_till(self):
