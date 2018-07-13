@@ -11,7 +11,6 @@ from .model_400_basicSa import BasicSa
 from .model_800_basicRt import BasicRt
 from .model_CCC_basicCv import BasicCv
 
-from .model_012_basicHyTh import BasicHyTh
 from .model_018_basicDdHy import BasicDdHy
 from .model_102_basicStTh import BasicStTh
 from .model_108_basicDdSt import BasicDdSt

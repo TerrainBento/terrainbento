@@ -481,7 +481,7 @@ class ErosionModel(object):
 
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 
-            # if unique paramters for the boundary condition handler have
+            # if unique parameters for the boundary condition handler have
             # been passed, use them.
             if name in self.params:
                 handler_params = self.params[name]

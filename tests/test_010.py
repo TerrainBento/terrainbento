@@ -8,31 +8,6 @@ from landlab import HexModelGrid
 from terrainbento import BasicHy
 
 
-def test_no_Ksp_or_Kss():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "regolith_transport_parameter": 0.001,
-    }
-
-    pytest.raises(ValueError, BasicHy, params=params)
-
-
-def test_both_Ksp_or_Kss():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "regolith_transport_parameter": 0.001,
-        "water_erodability": 0.001,
-        "water_erodability~shear_stress": 0.001,
-    }
-    pytest.raises(ValueError, BasicHy, params=params)
-
-
 def test_steady_Kss_no_precip_changer():
     U = 0.0001
     K = 0.003
@@ -54,10 +29,10 @@ def test_steady_Kss_no_precip_changer():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
-        "water_erodability~shear_stress": K,
+        "water_erodability": K,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "solver": "basic",
         "m_sp": m,
         "n_sp": n,
@@ -113,8 +88,8 @@ def test_steady_Ksp_no_precip_changer():
         "m_sp": m,
         "n_sp": n,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "solver": "basic",
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
@@ -168,8 +143,8 @@ def test_steady_Ksp_no_precip_changer_no_solver_given():
         "m_sp": m,
         "n_sp": n,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
@@ -222,8 +197,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "m_sp": m,
         "n_sp": n,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "solver": "basic",
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
@@ -273,8 +248,8 @@ def test_with_precip_changer():
         "m_sp": 0.5,
         "n_sp": 1.0,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "solver": "basic",
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
@@ -322,8 +297,8 @@ def test_diffusion_only():
         "m_sp": m,
         "n_sp": n,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "solver": "basic",
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",

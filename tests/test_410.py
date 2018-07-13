@@ -8,30 +8,6 @@ from landlab import HexModelGrid
 from terrainbento import BasicHySa
 
 
-def test_no_Ksp_or_Kss():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "regolith_transport_parameter": 0.001,
-    }
-
-    pytest.raises(ValueError, BasicHySa, params=params)
-
-
-def test_both_Ksp_or_Kss():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "regolith_transport_parameter": 0.001,
-        "water_erodability": 0.001,
-        "water_erodability~shear_stress": 0.001,
-    }
-    pytest.raises(ValueError, BasicHySa, params=params)
-
 def test_steady_Ksp_no_precip_changer():
     U = 0.0001
     K_rock_sp = 0.001
@@ -68,8 +44,8 @@ def test_steady_Ksp_no_precip_changer():
         "m_sp": m,
         "n_sp": n,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "H_star": H_star,
         "solver": "basic",
         "soil__initial_thickness": initial_soil_thickness,
@@ -139,8 +115,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "m_sp": m,
         "n_sp": n,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "H_star": H_star,
         "solver": "basic",
         "soil__initial_thickness": initial_soil_thickness,
@@ -209,8 +185,8 @@ def test_with_precip_changer():
         "m_sp": m,
         "n_sp": n,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "H_star": H_star,
         "solver": "basic",
         "soil__initial_thickness": initial_soil_thickness,
@@ -272,8 +248,8 @@ def test_stability_checker():
         "m_sp": m,
         "n_sp": n,
         "v_sc": v_sc,
-        "phi": phi,
-        "F_f": F_f,
+        "sediment_porosity": phi,
+        "fraction_fines": F_f,
         "H_star": H_star,
         "solver": "basic",
         "soil__initial_thickness": initial_soil_thickness,
@@ -332,8 +308,8 @@ def test_stability_checker():
 #               'm_sp': m,
 #               'n_sp': n,
 #               'v_sc': v_sc,
-#               'phi': phi,
-#               'F_f':F_f,
+#               'sediment_porosity': phi,
+#               'fraction_fines':F_f,
 #               'H_star': H_star,
 #               'solver': 'basic',
 #               "soil__initial_thickness": initial_soil_thickness,

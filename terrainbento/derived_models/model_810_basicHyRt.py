@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicHyRt** program.
+"""terrainbento **BasicHyRt** model program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment
 erosion and mass conservation with spatially varying erodability based on two
@@ -22,21 +22,21 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHyRt(ErosionModel):
-    """Model **BasicHyRt** program.
+    """**BasicHyRt** model program.
 
-    Model **BasicHyRt** combines the **BasicRt** and **BasicHy** models by
-    allowing for two lithologies, an "upper" layer and a "lower" layer,
-    stream-power-driven sediment erosion and mass conservation. Given a
-    spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
-    **BasicHyRt** evolves a topographic surface described by :math:`\eta` with
-    the following governing equations:
+    **BasicHyRt** is a model program that combines the **BasicRt** and
+    **BasicHy** programs by allowing for two lithologies, an "upper" layer and a
+    "lower" layer, stream-power-driven sediment erosion and mass conservation.
+    Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
+    model **BasicHyRt** evolves a topographic surface described by :math:`\eta`
+    with the following governing equations:
 
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = \\frac{V Q_s}{A} - K A^{1/2}S + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = \\frac{V Q_s}{A} - K A^{m}S^{n} + D\\nabla^2 \eta
 
-        Q_s = \int_0^A \left(KA^{1/2}S - \\frac{V Q_s}{A} \\right) dA
+        Q_s = \int_0^A \left(KA^{m}S^{n} - \\frac{V Q_s}{A} \\right) dA
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -44,14 +44,14 @@ class BasicHyRt(ErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`Q_s` is the volumetric sediment
     discharge and :math:`V` is the effective settling velocity of the sediment
     :math:`w` is a weight used to calculate the effective erodability
     :math:`K(\eta, \eta_C)` based on the depth to the contact zone and the width
-    of the contact zone. Refer to the terrainbento manuscript Table XX
-    (URL here) for parameter symbols, names, and dimensions.
+    of the contact zone.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -60,37 +60,42 @@ class BasicHyRt(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    Model **BasicHyRt** inherits from the terrainbento **ErosionModel** base
-    class. This model program can be used to run the following terrainbento numerical model:
+    The **BasicHyRt** program inherits from the terrainbento **ErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model **BasicHyRt**:
-
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{1}`     | ``water_erodability~upper``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{2}`     | ``water_erodability~lower``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`W_{c}`     | ``contact_zone__width``          | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`V`         | ``settling_velocity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`F_f`       | ``fraction_fines``               | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`\phi`      | ``sediment_porosity``            | user specified  |
-    +------------------+----------------------------------+-----------------+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_{1}`     | ``water_erodability~upper``      |
+    +------------------+----------------------------------+
+    |:math:`K_{2}`     | ``water_erodability~lower``      |
+    +------------------+----------------------------------+
+    |:math:`W_{c}`     | ``contact_zone__width``          |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`V`         | ``settling_velocity``            |
+    +------------------+----------------------------------+
+    |:math:`F_f`       | ``fraction_fines``               |
+    +------------------+----------------------------------+
+    |:math:`\phi`      | ``sediment_porosity``            |
+    +------------------+----------------------------------+
 
     A value for the paramter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **ErosionDeposition**
-    component or if an adaptive internal timestep is used.
+    component or if an adaptive internal timestep is used. Refer to the
+    **ErosionDeposition** documentation for details.
 
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
+
+    *Specifying the Lithology Contact*
+    
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -100,6 +105,8 @@ class BasicHyRt(ErosionModel):
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
 
+    *Reference Frame Considerations*
+    
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -117,7 +124,6 @@ class BasicHyRt(ErosionModel):
     fields.
 
     """
-
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
@@ -170,8 +176,8 @@ class BasicHyRt(ErosionModel):
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'settling_velocity': 0.1,
-        ...           'F_f': 0.2,
-        ...           'phi': 0.3}
+        ...           'fraction_fines': 0.2,
+        ...           'sediment_porosity': 0.3}
 
         Construct the model.
 
@@ -192,12 +198,18 @@ class BasicHyRt(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
         self.contact_width = (
             self._length_factor * self.params["contact_zone__width"]
         )  # L
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2
@@ -225,12 +237,12 @@ class BasicHyRt(ErosionModel):
         self.eroder = ErosionDeposition(
             self.grid,
             K="K_br",
-            F_f=self.params["F_f"],
-            phi=self.params["phi"],
+            F_f=self.params["fraction_fines"],
+            phi=self.params["sediment_porosity"],
             v_s=settling_velocity,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
-            discharge_field='surface_water__discharge',
+            m_sp=self.m,
+            n_sp=self.n,
+            discharge_field="surface_water__discharge",
             solver=solver,
         )
 
