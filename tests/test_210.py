@@ -8,7 +8,7 @@ import pytest
 from landlab import HexModelGrid
 from terrainbento import BasicHyVs
 
-def test_steady_Ksp_no_precip_changer():
+def test_steady_Kss_no_precip_changer():
     U = 0.0001
     K = 0.003
     m = 1. / 3.
