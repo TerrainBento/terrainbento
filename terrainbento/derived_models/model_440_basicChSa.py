@@ -138,7 +138,7 @@ class BasicChSa(ErosionModel):
         ...           'number_of_node_columns' : 9,
         ...           'node_spacing' : 10.0,
         ...           'regolith_transport_parameter': 0.001,
-        ...           'initial_soil_thickness': 0.0,
+        ...           'soil__initial_thickness': 0.0,
         ...           'soil_transport_decay_depth': 0.2,
         ...           'soil_production__maximum_rate': 0.001,
         ...           'soil_production__decay_depth': 0.1,

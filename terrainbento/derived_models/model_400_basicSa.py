@@ -134,7 +134,7 @@ class BasicSa(ErosionModel):
         ...           'number_of_node_columns' : 9,
         ...           'node_spacing' : 10.0,
         ...           'regolith_transport_parameter': 0.001,
-        ...           'initial_soil_thickness': 0.0,
+        ...           'soil__initial_thickness': 0.0,
         ...           'soil_transport_decay_depth': 0.2,
         ...           'soil_production__maximum_rate': 0.001,
         ...           'soil_production__decay_depth': 0.1,
@@ -173,12 +173,7 @@ class BasicSa(ErosionModel):
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-        try:
-            initial_soil_thickness = (self._length_factor) * self.params[
-                "soil__initial_thickness"
-            ]  # has units length
-        except KeyError:
-            initial_soil_thickness = 1.0  # default value
+        initial_soil_thickness = (self._length_factor) * self.params["soil__initial_thickness"]  # has units length
         soil_transport_decay_depth = (self._length_factor) * self.params[
             "soil_transport_decay_depth"
         ]  # has units length
