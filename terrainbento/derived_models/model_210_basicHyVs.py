@@ -1,17 +1,16 @@
 # coding: utf8
 #! /usr/env/python
-"""
-model_210_basicHyVs.py: erosion model using linear diffusion,
-hybrid alluvium, and discharge proportional to effective drainage
+"""terrainbento model **BasicThVs** program.
+
+Erosion model program using linear diffusion, stream-power-driven sediment
+erosion and mass conservation, and discharge proportional to effective drainage
 area.
 
-Model 210 BasicHyVs
-
-"vsa" stands for "variable source area".
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerEroder, LinearDiffuser
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.erosion_deposition.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import sys
@@ -50,18 +49,18 @@ class BasicHyVs(ErosionModel):
 
         Returns
         -------
-        BasicRtVs : model object
+        BasicHyVs : model object
 
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicVs**. Note that a YAML input file can be used instead of
+        of model **BasicHy**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
         state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
-        >>> from terrainbento import BasicVs
+        >>> from terrainbento import BasicHyVs
 
         Set up a parameters variable.
 
@@ -78,11 +77,15 @@ class BasicHyVs(ErosionModel):
         ...           'n_sp': 1.0,
         ...           'recharge_rate': 0.5,
         ...           'soil__initial_thickness': 2.0,
-        ...           'hydraulic_conductivity': 0.1}
+        ...           'hydraulic_conductivity': 0.1,
+        ...           'v_sc': 0.01,
+        ...           'phi': 0,
+        ...           'F_f': 0,
+        ...           'solver': 'basic'}
 
         Construct the model.
 
-        >>> model = BasicVs(params=params)
+        >>> model = BasicHyVs(params=params)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.

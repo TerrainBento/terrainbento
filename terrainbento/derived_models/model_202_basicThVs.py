@@ -1,16 +1,15 @@
 # coding: utf8
 #! /usr/env/python
-"""
-model_202_basicThVs.py: erosion model using linear diffusion, thresholded
-stream power, and discharge proportional to effective drainage area.
+"""terrainbento model **BasicThVs** program.
 
-Model 202 BasicThVs
+Erosion model program using linear diffusion, stream power with a smoothed
+threshold, and discharge proportional to effective drainage area.
 
-"vsa" stands for "variable source area".
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerEroder, LinearDiffuser
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import sys

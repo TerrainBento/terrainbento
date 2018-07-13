@@ -2,8 +2,8 @@
 #! /usr/env/python
 """terrainbento **BasicSa** model program.
 
-Erosion model using depth-dependent linear
-diffusion with a soil layer, basic stream power, and discharge proportional to drainage area.
+Erosion model using depth-dependent linear diffusion with a soil layer, basic
+stream power, and discharge proportional to drainage area.
 
 
 Landlab components used:

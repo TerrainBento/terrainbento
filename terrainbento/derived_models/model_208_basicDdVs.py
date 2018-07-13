@@ -1,18 +1,16 @@
 # coding: utf8
 #! /usr/env/python
-"""
-model_208_basicDdVs.py: erosion model using linear diffusion,
-thresholded stream power, and discharge proportional to effective drainage
-area. The threshold varies in space and time, increasing linearly with
-cumulative incision depth below initial topographic surface.
+"""terrainbento model **BasicDdVs** program.
 
-Model 208 BasicDdVs
+Erosion model program using linear diffusion, stream power with a smoothed
+threshold that varies with incision depth, and discharge proportional to
+effective drainage area.
 
-"vsa" stands for "variable source area".
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerEroder, LinearDiffuser
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
 import sys

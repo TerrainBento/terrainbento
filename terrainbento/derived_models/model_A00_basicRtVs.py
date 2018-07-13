@@ -50,8 +50,7 @@ class BasicRtVs(ErosionModel):
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`m` and :math:`n` are the drainage area
-    and slope exponent parameters. :math:`\\alpha` is the saturation area scale
+    regolith transport parameter. :math:`\\alpha` is the saturation area scale
     used for transforming area into effective area and it is given as a function
     of the saturated hydraulic conductivity :math:`K_{sat}`, the soil thickness
     :math:`H_{init}`, the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
@@ -95,7 +94,7 @@ class BasicRtVs(ErosionModel):
     parameter symbols, names, and dimensions.
 
     *Specifying the Lithology Contact*
-    
+
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -106,7 +105,7 @@ class BasicRtVs(ErosionModel):
     by a halo of size 1.
 
     *Reference Frame Considerations*
-    
+
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for

@@ -1,14 +1,16 @@
 # coding: utf8
 #! /usr/env/python
-"""
-model_600_basicVsSa.py: erosion model using depth-dependent linear diffusion,
-basic stream power, and discharge proportional to effective drainage area, with
-a transmissivity parameter that depends on space-time varying soil thickness.
+"""terrainbento model **BasicSaVs** program.
 
-Model 600 BasicVsSa
+Erosion model using depth-dependent linear diffusion with a soil layer, basic
+stream power, and discharge proportional to effective drainage area.
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-                         StreamPowerEroder, DepthDependentDiffuser
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `DepthDependentDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_diffusion/hillslope_depth_dependent_linear_flux.html#DepthDependentDiffuser>`_
+    5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
 
 """
 
@@ -54,18 +56,18 @@ class BasicSaVs(ErosionModel):
 
         Returns
         -------
-        BasicRtVs : model object
+        BasicSaVs : model object
 
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicVs**. Note that a YAML input file can be used instead of
+        of model **BasicSaVs**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
         state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
-        >>> from terrainbento import BasicVs
+        >>> from terrainbento import BasicSaVs
 
         Set up a parameters variable.
 
@@ -77,6 +79,10 @@ class BasicSaVs(ErosionModel):
         ...           'number_of_node_columns' : 9,
         ...           'node_spacing' : 10.0,
         ...           'regolith_transport_parameter': 0.001,
+        ...           'soil__initial_thickness': 0.0,
+        ...           'soil_transport_decay_depth': 0.2,
+        ...           'soil_production__maximum_rate': 0.001,
+        ...           'soil_production__decay_depth': 0.1,
         ...           'water_erodability': 0.001,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
@@ -86,7 +92,7 @@ class BasicSaVs(ErosionModel):
 
         Construct the model.
 
-        >>> model = BasicVs(params=params)
+        >>> model = BasicSaVs(params=params)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -97,7 +103,7 @@ class BasicSaVs(ErosionModel):
 
         """
         # Call ErosionModel's init
-        super(BasicVsSa, self).__init__(
+        super(BasicSaVs, self).__init__(
             input_file=input_file,
             params=params,
             BoundaryHandlers=BoundaryHandlers,
