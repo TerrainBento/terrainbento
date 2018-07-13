@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""``terrainbento`` Model **BasicCv** program.
+"""terrainbento **BasicCv** model program.
 
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area with climate change.
@@ -20,47 +20,49 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicCv(ErosionModel):
-    """Model **BasicCv** program.
+    """**BasicCv** model program.
 
-    Model **BasicCv** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **BasicCv** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + D\\nabla^2 \eta
 
 
-    where :math:`A` is the local drainage area and :math:`S` is the local slope.
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    and :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters.
+
     This model also has a basic parameterization of climate change such that
-    :math:`K_{w}` varies through time. Between model run onset and a time at
-    which the climate becomes constant, the value of :math:`K_{w}` linearly
+    :math:`K` varies through time. Between model run onset and a time at
+    which the climate becomes constant, the value of :math:`K` linearly
     changes from :math:`fK` to :math:`K`, at which point it remains at :math:`K`
     for the remainder of the modeling time period.
 
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
+    The **BasicCv** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    Model ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class and can be used to construct the following models.
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability``            |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`f`         | ``climate_factor``               |
+    +------------------+----------------------------------+
+    |:math:`T_s`       | ``climate_constant_date``        |
+    +------------------+----------------------------------+
 
-    1) Model **BasicCv**:
-
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K`         | ``water_erodability``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`f`         | ``climate_factor``               | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`T_s`       | ``climate_constant_date``        | user specified  |
-    +------------------+----------------------------------+-----------------+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 
@@ -92,7 +94,7 @@ class BasicCv(ErosionModel):
         This is a minimal example to demonstrate how to construct an instance
         of model ``Basic``. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -133,8 +135,11 @@ class BasicCv(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-
-        K_sp = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        K_sp = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
@@ -147,9 +152,7 @@ class BasicCv(ErosionModel):
         self.K_through_time = interp1d(time, K)
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(
-            self.grid, K_sp=K[0], m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
-        )
+        self.eroder = FastscapeEroder(self.grid, K_sp=K[0], m_sp=self.m, n_sp=self.n)
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
@@ -172,7 +175,7 @@ class BasicCv(ErosionModel):
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
+        6. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
            by ``dt`` and increments model time by ``dt``.
 

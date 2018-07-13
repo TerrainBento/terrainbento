@@ -55,10 +55,10 @@ class BasicStTh(StochasticErosionModel):
     >>> my_pars['run_duration'] = 1.0
     >>> my_pars['output_interval'] = 2.0
     >>> my_pars['infiltration_capacity'] = 1.0
-    >>> my_pars['K_stochastic_sp'] = 1.0
+    >>> my_pars["water_erodability~stochastic"] = 1.0
     >>> my_pars['m_sp'] = 0.5
     >>> my_pars['n_sp'] = 1.0
-    >>> my_pars['erosion__threshold'] = 1.0
+    >>> my_pars["water_erosion_rule__threshold"] = 1.0
     >>> my_pars['regolith_transport_parameter'] = 0.01
     >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
     >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
@@ -82,7 +82,7 @@ class BasicStTh(StochasticErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        K_stoch_sp = self.get_parameter_from_exponent("K_stochastic_sp")
+        K_stoch_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -92,15 +92,13 @@ class BasicStTh(StochasticErosionModel):
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
         threshold = self._length_factor * self.get_parameter_from_exponent(
-            "erosion__threshold"
+            "water_erosion_rule__threshold"
         )  # has units length/time
 
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if "surface_water__discharge" not in self.grid.at_node:
-            self.grid.add_zeros("node", "surface_water__discharge")
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter

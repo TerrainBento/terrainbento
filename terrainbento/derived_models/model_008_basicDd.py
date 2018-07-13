@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicDd** program.
+"""terrainbento **BasicDd** model program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
 threshold that varies with incision depth, and discharge proportional to
@@ -20,58 +20,53 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicDd(ErosionModel):
-    """Model **BasicDd** program.
+    """**BasicDd** model program.
 
-    Model **BasicDd** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
-
-    .. math::
-
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
-        \omega_{ct}\left(1-e^{-K_{w}A^{m}S^{n}/\omega_{ct}}\\right)\\right) + \\
-        D\\nabla^2 \eta
-
-    where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    :math:`\omega_{ct}` is the critical stream power needed for erosion to
-    occur, which may change through time as it increases with cumulative
-    incision depth:
+    **BasicDd** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
     .. math::
 
-        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
-        b D_I\left(x, y, t\\right), \omega_c \\right)
+        \\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\\right)\\right) + D\\nabla^2 \eta
+
+    where :math:`A` is the local drainage area and :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    efficiency, and :math:`\omega_{ct}` is the critical stream power needed for
+    erosion to occur. :math:`\omega_{ct}` changes through time as it increases
+    with cumulative incision depth:
+
+    .. math::
+
+        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\\right), \omega_c \\right)
 
     where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
 
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
+    The **BasicDd** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    Model **BasicDd** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
-    and, :math:`n` this model program can be used to run the following two
-    terrainbento numerical models:
+    +--------------------+-------------------------------------------------+
+    | Parameter Symbol   | Input File Parameter Name                       |
+    +====================+=================================================+
+    |:math:`m`           | ``m_sp``                                        |
+    +--------------------+-------------------------------------------------+
+    |:math:`n`           | ``n_sp``                                        |
+    +--------------------+-------------------------------------------------+
+    |:math:`K`           | ``water_erodability``                           |
+    +--------------------+-------------------------------------------------+
+    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               |
+    +--------------------+-------------------------------------------------+
+    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
+    +--------------------+-------------------------------------------------+
+    |:math:`D`           | ``regolith_transport_parameter``                |
+    +--------------------+-------------------------------------------------+
 
-    1) Model **BasicDd**:
-
-    +--------------------+-------------------------------------------------+-----------------+
-    | Parameter Symbol   | Input File Parameter Name                       | Value           |
-    +====================+=================================================+=================+
-    |:math:`m`           | ``m_sp``                                        | 0.5             |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`n`           | ``n_sp``                                        | 1               |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`K`           | ``water_erodability``                           | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-    |:math:`D`           | ``regolith_transport_parameter``                | user specified  |
-    +--------------------+-------------------------------------------------+-----------------+
-
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
     """
 
     def __init__(
@@ -121,8 +116,8 @@ class BasicDd(ErosionModel):
         ...           'water_erodability': 0.001,
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
-        ...           'erosion__threshold': 0.01,
-        ...           'thresh_change_per_depth': 0.01}
+        ...           "water_erosion_rule__threshold": 0.01,
+        ...           'water_erosion_rule__thresh_depth_derivative': 0.01}
 
         Construct the model.
 
@@ -148,7 +143,11 @@ class BasicDd(ErosionModel):
             raise ValueError("Model BasicDd only supports n equals 1.")
 
         # Get Parameters and convert units if necessary:
-        self.K = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -159,24 +158,24 @@ class BasicDd(ErosionModel):
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
-            "erosion__threshold"
+            "water_erosion_rule__threshold"
         )  # has units length/time
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros("node", "erosion__threshold")
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.threshold_value
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
             K_sp=self.K,
             threshold_sp=self.threshold,
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["thresh_change_per_depth"]
+        self.thresh_change_per_depth = self.params["water_erosion_rule__thresh_depth_derivative"]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

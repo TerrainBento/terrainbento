@@ -26,7 +26,6 @@ from .derived_models import BasicVs
 from .derived_models import BasicSa
 from .derived_models import BasicRt
 from .derived_models import BasicCv
-from .derived_models import BasicHyTh
 from .derived_models import BasicDdHy
 from .derived_models import BasicStTh
 from .derived_models import BasicDdSt
