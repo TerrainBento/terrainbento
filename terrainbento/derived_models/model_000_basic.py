@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **Basic** program.
+"""terrainbento **Basic** model program.
 
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area.
@@ -19,68 +19,38 @@ from terrainbento.base_class import ErosionModel
 
 
 class Basic(ErosionModel):
-    """Model **Basic** program.
+    """**Basic** model program.
 
-    Model **Basic** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **Basic** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -K A^{m}S^{n} + D\\nabla^2 \eta
 
-    where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, and :math:`D` is the regolith
+    transport efficiency.
 
-    Model **Basic** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
-    and, :math:`n` this model program can be used to run the following three
-    terrainbento numerical models: **Basic**, **BasicVm**, and **BasicSs**.
+    The **Basic** program inherits from the terrainbento **ErosionModel** base
+    class and in addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    In addition to the parameters required by the **ErosionModel** base class,
-    models build with this program require the following parameters.
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability``            |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
 
-    1) Model **Basic**:
-
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K`         | ``water_erodability``            | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
-
-    2) Model **BasicSs**:
-
-    +------------------+------------------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name                | Value           |
-    +==================+==========================================+=================+
-    |:math:`m`         | ``m_sp``                                 | 1/3             |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                                 | 2/3             |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`K_{ss}`    | ``water_erodability~shear_stress``       | user specified  |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter``         | user specified  |
-    +------------------+------------------------------------------+-----------------+
-
-    3) Model **BasicVm**:
-
-    +------------------+------------------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name                | Value           |
-    +==================+==========================================+=================+
-    |:math:`m`         | ``m_sp``                                 | user specified  |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                                 | 1               |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`K_{ss}`    | ``water_erodability~shear_stress``       | user specified  |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter``         | user specified  |
-    +------------------+------------------------------------------+-----------------+
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     """
 
@@ -153,40 +123,13 @@ class Basic(ErosionModel):
         )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
-        )
+        self.K = self.get_parameter_from_exponent("water_erodability") * self._length_factor ** (1. - (2. * self.m))
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                (
-                    "Model 000: A parameter for both "
-                    "water_erodability and "
-                    "water_erodability~shear_stress has been provided. "
-                    " Only one of these may be provided."
-                )
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                self.K = K_sp
-            else:
-                self.K = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Length^(1/3) per Time
-        else:
-            raise ValueError(
-                (
-                    "water_erodability or "
-                    "water_erodability~shear_stress must be provided."
-                )
-            )
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(

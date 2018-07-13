@@ -34,7 +34,7 @@ class BasicRtVs(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{1/2}S + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{m}S^{n} + D\\nabla^2 \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -48,7 +48,8 @@ class BasicRtVs(ErosionModel):
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`\\alpha` is the saturation area scale
+    regolith transport parameter. :math:`m` and :math:`n` are the drainage area
+    and slope exponent parameters. :math:`\\alpha` is the saturation area scale
     used for transforming area into effective area and it is given as a function
     of the saturated hydraulic conductivity :math:`K_{sat}`, the soil thickness
     :math:`H_{init}`, the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
@@ -73,9 +74,9 @@ class BasicRtVs(ErosionModel):
     +------------------+----------------------------------+-----------------+
     | Parameter Symbol | Input File Name                  | Value           |
     +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
+    |:math:`m`         | ``m_sp``                         | user specified  |
     +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
+    |:math:`n`         | ``n_sp``                         | user specified  |
     +------------------+----------------------------------+-----------------+
     |:math:`K_{1}`     | ``water_erodability~upper``      | user specified  |
     +------------------+----------------------------------+-----------------+
@@ -191,11 +192,16 @@ class BasicRtVs(ErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
+
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+
         self.contact_width = (self._length_factor) * self.params[
             "contact_zone__width"
         ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower")
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper")
+
+        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * self._length_factor ** (1. - (2. * self.m))
+        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * self._length_factor ** (1. - (2. * self.m))
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")

@@ -47,7 +47,11 @@ class BasicDdVs(ErosionModel):
         if float(self.params["n_sp"]) != 1.0:
             raise ValueError('Model BasicDdVs only supports n = 1.')
 
-        self.K_sp = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = (self.get_parameter_from_exponent("water_erodability") *
+                  self._length_factor ** (1. - (2. * self.m)))
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -69,10 +73,7 @@ class BasicDdVs(ErosionModel):
         )  # has units length/time
 
         # Add a field for effective drainage area
-        if "effective_drainage_area" in self.grid.at_node:
-            self.eff_area = self.grid.at_node["effective_drainage_area"]
-        else:
-            self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
+        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
         self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (
@@ -87,9 +88,9 @@ class BasicDdVs(ErosionModel):
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
             use_Q=self.eff_area,
-            K_sp=self.K_sp,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
             threshold_sp=self.threshold,
         )
 

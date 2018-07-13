@@ -35,7 +35,7 @@ class BasicRt(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{1/2}S + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n} + D\\nabla^2 \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -45,7 +45,8 @@ class BasicRt(ErosionModel):
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`w` is a weight used to calculate the
+    regolith transport parameter. :math:`m` and :math:`n` are the drainage area
+    and slope exponent parameters. :math:`w` is a weight used to calculate the
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
     contact zone and the width of the contact zone. Refer to the terrainbento
     manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
@@ -58,45 +59,26 @@ class BasicRt(ErosionModel):
     transition, use a small value for the contact zone width.
 
     Model **BasicRt** inherits from the terrainbento **ErosionModel** base
-    class. Depending on the parameters provided, this model program can be used
-    to run the following two terrainbento numerical models: **BasicRt**,
-    **BasicSs**.
+    class and, in addition to those required by the base class, requires the
+    following parameter values.
 
-    1) Model **BasicRt**:
 
-    +------------------+----------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name        | Value           |
-    +==================+==================================+=================+
-    |:math:`m`         | ``m_sp``                         | 0.5             |
-    +------------------+----------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                         | 1               |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{1}`     | ``water_erodability~upper``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`K_{2}`     | ``water_erodability~lower``      | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`W_{c}`     | ``contact_zone__width``          | user specified  |
-    +------------------+----------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter`` | user specified  |
-    +------------------+----------------------------------+-----------------+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_{1}`     | ``water_erodability~upper``      |
+    +------------------+----------------------------------+
+    |:math:`K_{2}`     | ``water_erodability~lower``      |
+    +------------------+----------------------------------+
+    |:math:`W_{c}`     | ``contact_zone__width``          |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
 
-    2) Model **BasicRtSs**:
-
-    +------------------+------------------------------------------+-----------------+
-    | Parameter Symbol | Input File Parameter Name                | Value           |
-    +==================+==========================================+=================+
-    |:math:`m`         | ``m_sp``                                 | 1/3             |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`n`         | ``n_sp``                                 | 2/3             |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`K_{1}`     | ``water_erodability~upper~shear_stress`` | user specified  |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`K_{2}`     | ``water_erodability~lower~shear_stress`` | user specified  |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`W_{c}`     | ``contact_zone__width``                  | user specified  |
-    +------------------+------------------------------------------+-----------------+
-    |:math:`D`         | ``regolith_transport_parameter``         | user specified  |
-    +------------------+------------------------------------------+-----------------+
 
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
@@ -200,17 +182,15 @@ class BasicRt(ErosionModel):
             "contact_zone__width"
         ]  # has units length
 
-        K_rock_sp = self.get_parameter_from_exponent(
-            "water_erodability~lower", raise_error=False
-        )
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = (self.get_parameter_from_exponent("water_erodability") *
+                  self._length_factor ** (1. - (2. * self.m)))
 
-        K_rock_ss = self.get_parameter_from_exponent(
-            "water_erodability~lower~shear_stress", raise_error=False
-        )
 
-        K_till_sp = self.get_parameter_from_exponent(
-            "water_erodability~upper", raise_error=False
-        )
+        K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * self._length_factor ** (1. - (2. * self.m))
+
+        K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * self._length_factor ** (1. - (2. * self.m))
 
         K_till_ss = self.get_parameter_from_exponent(
             "water_erodability~upper~shear_stress", raise_error=False
@@ -222,42 +202,6 @@ class BasicRt(ErosionModel):
             "regolith_transport_parameter"
         )  # has units length^2/time
 
-        # check that a stream power and a shear stress parameter have not both been given
-        # first for rock Ks
-        if K_rock_sp != None and K_rock_ss != None:
-            raise ValueError(
-                "A parameter for both  water_erodability~lower and water_erodability~lower~shear_stress has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_rock_sp != None or K_rock_ss != None:
-            if K_rock_sp != None:
-                self.K_rock = K_rock_sp
-            else:
-                self.K_rock = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_rock_ss  # K_ss has units Length^(1/3) per Time
-        else:
-            raise ValueError(
-                "A value for water_erodability~lower or water_erodability~lower~shear_stress  must be provided."
-            )
-
-        # Then for Till Ks
-        if K_till_sp != None and K_till_ss != None:
-            raise ValueError(
-                "A parameter for both water_erodability~upper and water_erodability~upper~shear_stress has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_till_sp != None or K_till_ss != None:
-            if K_till_sp != None:
-                self.K_till = K_till_sp
-            else:
-                self.K_till = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_till_ss  # K_ss has units Length^(1/3) per Time
-        else:
-            raise ValueError(
-                "A value for water_erodability~upper or water_erodability~upper~shear_stress  must be provided."
-            )
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock
@@ -270,8 +214,8 @@ class BasicRt(ErosionModel):
         self.eroder = FastscapeEroder(
             self.grid,
             K_sp=self.erody,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
         )
 
         # Instantiate a LinearDiffuser component

@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""terrainbento model **BasicTh** program.
+"""terrainbento **BasicTh** model program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
 threshold, and discharge proportional to drainage area.
@@ -19,16 +19,14 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicTh(ErosionModel):
-    """Model **BasicTh** program.
+    """**BasicTh** model program.
 
-    Model **BasicTh** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **BasicTh** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K_{w}A^{m}S^{n} - \\
-        \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + \\
-        D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(K A^{m}S^{n} - \omega_c\left(1-e^{-K_{w}A^{m}S^{n}/\omega_c}\\right)\\right) + D\\nabla^2 \eta
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     and :math:`\omega_c` is the critical stream power needed for erosion to occur.
@@ -131,7 +129,7 @@ class BasicTh(ErosionModel):
             raise ValueError("Model BasicTh only supports n equals 1.")
 
         # Get Parameters and convert units if necessary:
-        self.K = self.get_parameter_from_exponent("water_erodability")
+        self.K = self.get_parameter_from_exponent("water_erodability") * self._length_factor ** (1. - (2. * self.m))
 
         regolith_transport_parameter = (
             self._length_factor ** 2.

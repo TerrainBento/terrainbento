@@ -54,6 +54,7 @@ class BasicStVs(StochasticErosionModel):
         )
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent("K_stochastic_sp")
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(

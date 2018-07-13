@@ -42,16 +42,23 @@ class BasicHyVs(ErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        self.K_sp = self.get_parameter_from_exponent("water_erodability")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = (self.get_parameter_from_exponent("water_erodability") *
+                  self._length_factor ** (1. - (2. * self.m)))
+
         regolith_transport_parameter = (
             self._length_factor ** 2
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-        recharge_rate = self._length_factor * self.params["recharge_rate"]  # L/T
+
+        recharge_rate = self._length_factor * self.params["recharge_rate"]
+
         soil_thickness = (
             self._length_factor * self.params["soil__initial_thickness"]
         )  # L
+
         K_hydraulic_conductivity = (
             self._length_factor * self.params["hydraulic_conductivity"]
         )  # has units length per time
@@ -61,10 +68,7 @@ class BasicHyVs(ErosionModel):
         )  # normalized settling velocity. Unitless.
 
         # Add a field for effective drainage area
-        if "effective_drainage_area" in self.grid.at_node:
-            self.eff_area = self.grid.at_node["effective_drainage_area"]
-        else:
-            self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
+        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
         self.sat_param = (
@@ -77,12 +81,12 @@ class BasicHyVs(ErosionModel):
         # Instantiate a SPACE component
         self.eroder = ErosionDeposition(
             self.grid,
-            K=self.K_sp,
+            K=self.K,
             F_f=self.params["F_f"],
             phi=self.params["phi"],
             v_s=v_sc,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
             discharge_field='surface_water__discharge',
             solver=solver,
         )
