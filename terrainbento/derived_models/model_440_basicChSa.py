@@ -265,7 +265,7 @@ class BasicChSa(ErosionModel):
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handler:
             self.eroder.K = (
-                self.K_sp
+                self.K
                 * self.boundary_handler[
                     "PrecipChanger"
                 ].get_erodability_adjustment_factor()
