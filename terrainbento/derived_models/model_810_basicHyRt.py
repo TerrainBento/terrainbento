@@ -176,8 +176,8 @@ class BasicHyRt(ErosionModel):
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'settling_velocity': 0.1,
-        ...           'F_f': 0.2,
-        ...           'phi': 0.3}
+        ...           'fraction_fines': 0.2,
+        ...           'sediment_porosity': 0.3}
 
         Construct the model.
 
@@ -237,8 +237,8 @@ class BasicHyRt(ErosionModel):
         self.eroder = ErosionDeposition(
             self.grid,
             K="K_br",
-            F_f=self.params["F_f"],
-            phi=self.params["phi"],
+            F_f=self.params["fraction_fines"],
+            phi=self.params["sediment_porosity"],
             v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,

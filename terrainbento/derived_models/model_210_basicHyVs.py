@@ -134,8 +134,8 @@ class BasicHyVs(ErosionModel):
         ...           'soil__initial_thickness': 2.0,
         ...           'hydraulic_conductivity': 0.1,
         ...           'v_sc': 0.01,
-        ...           'phi': 0,
-        ...           'F_f': 0,
+        ...           'sediment_porosity': 0,
+        ...           'fraction_fines': 0,
         ...           'solver': 'basic'}
 
         Construct the model.
@@ -200,8 +200,8 @@ class BasicHyVs(ErosionModel):
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
-            F_f=self.params["F_f"],
-            phi=self.params["phi"],
+            F_f=self.params["fraction_fines"],
+            phi=self.params["sediment_porosity"],
             v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,

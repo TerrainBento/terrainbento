@@ -121,8 +121,8 @@ class BasicHy(ErosionModel):
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'v_sc': 0.01,
-        ...           'phi': 0,
-        ...           'F_f': 0,
+        ...           'sediment_porosity': 0,
+        ...           'fraction_fines': 0,
         ...           'solver': 'basic'}
 
         Construct the model.
@@ -168,8 +168,8 @@ class BasicHy(ErosionModel):
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
-            phi=self.params["phi"],
-            F_f=self.params["F_f"],
+            phi=self.params["sediment_porosity"],
+            F_f=self.params["fraction_fines"],
             v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,

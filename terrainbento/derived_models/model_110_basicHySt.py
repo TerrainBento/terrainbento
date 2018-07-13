@@ -67,8 +67,8 @@ class BasicHySt(StochasticErosionModel):
     >>> my_pars['daily_rainfall__precipitation_shape_factor'] = 0.65
     >>> my_pars['number_of_sub_time_steps'] = 10
     >>> my_pars['v_s'] = 0.01
-    >>> my_pars['F_f'] = 0.1
-    >>> my_pars['phi'] = 0.3
+    >>> my_pars['fraction_fines'] = 0.1
+    >>> my_pars['sediment_porosity'] = 0.3
     >>> my_pars['solver'] = 'adaptive'
     >>> srt = BasicHySt(params=my_pars)
     """
@@ -136,8 +136,8 @@ class BasicHySt(StochasticErosionModel):
         self.eroder = ErosionDeposition(
             self.grid,
             K=K,
-            F_f=self.params["F_f"],
-            phi=self.params["phi"],
+            F_f=self.params["fraction_fines"],
+            phi=self.params["sediment_porosity"],
             v_s=v_s,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
