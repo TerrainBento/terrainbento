@@ -1,6 +1,7 @@
+# coding: utf8
 #! /usr/env/python
 """
-``CaptureNodeBaselevelHandler`` implements "external" stream capture.
+**CaptureNodeBaselevelHandler** implements "external" stream capture.
 """
 
 from landlab import FIXED_VALUE_BOUNDARY
@@ -9,11 +10,11 @@ from landlab import FIXED_VALUE_BOUNDARY
 class CaptureNodeBaselevelHandler(object):
     """Turn a closed boundary node into an open, lowering, boundary node.
 
-    A ``CaptureNodeBaselevelHandler`` turns a given node into an open boundary
+    A **CaptureNodeBaselevelHandler** turns a given node into an open boundary
     and lowers its elevation over time. This is meant as a simple approach to
     model stream capture external to the modeled basin.
 
-    Note that ``CaptureNodeBaselevelHandler`` increments time at the end of the
+    Note that **CaptureNodeBaselevelHandler** increments time at the end of the
     **run_one_step** method.
     """
 
@@ -68,7 +69,7 @@ class CaptureNodeBaselevelHandler(object):
          [ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]]
 
-        Now import the ``CaptureNodeBaselevelHandler`` and instantiate.
+        Now import the **CaptureNodeBaselevelHandler** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
         ...                                         CaptureNodeBaselevelHandler)
@@ -141,16 +142,16 @@ class CaptureNodeBaselevelHandler(object):
 
     def run_one_step(self, dt):
         """
-        Run ``CaptureNodeBaselevelHandler`` to update captured node elevation.
+        Run **CaptureNodeBaselevelHandler** to update captured node elevation.
 
         The **run_one_step** method provides a consistent interface to update
-        the ``terrainbento`` boundary condition handlers.
+        the terrainbento boundary condition handlers.
 
-        In the **run_one_step** routine, the ``CaptureNodeBaselevelHandler``
+        In the **run_one_step** routine, the **CaptureNodeBaselevelHandler**
         will determine if capture is occuring and change the elevation of the
         captured node based on the amount specified in instantiation.
 
-        Note that ``CaptureNodeBaselevelHandler`` increments time at the end of
+        Note that **CaptureNodeBaselevelHandler** increments time at the end of
         the **run_one_step** method.
 
         Parameters

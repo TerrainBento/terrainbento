@@ -1,8 +1,9 @@
+# coding: utf8
 #! /usr/env/python
-"""Base class for common functions of all ``terrainbento`` erosion models.
+"""Base class for common functions of all terrainbentoerosion models.
 
-The ``ErosionModel`` is a base class that contains all of the functionality
-shared by the ``terrainbento`` models.
+The **ErosionModel** is a base class that contains all of the functionality
+shared by the terrainbento models.
 
 
 Input File or Dictionary Parameters
@@ -120,17 +121,17 @@ add_noise_to_all_nodes : bool, optional
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``terrainbento`` provides the ability for an arbitrary number of boundary
+terrainbentoprovides the ability for an arbitrary number of boundary
 condition handler classes to operate on the model grid each time step in order
 to handle time-variable boundary conditions such as: changing a watershed outlet
 elevation, modifying precipitation parameters through time, or simulating
 external drainage capture.
 
-Boundary condition handlers are styled after Landlab components. ``terrainbento``
+Boundary condition handlers are styled after Landlab components. terrainbento
 presently has four built-in boundary condition handlers, and supports the use
 of the Landlab NormalFault component as a fifth. Over time the developers
 anticipate extending the boundary handler library to include other Landlab
-components and other options within ``terrainbento``. If these present
+components and other options within terrainbento. If these present
 capabilities do not fit your needs, we recommend that you make an issue
 describing the functionality you would like to use in your work.
 
@@ -158,7 +159,7 @@ feet_to_meters : boolean, optional
 
 Parameters that control surface hydrology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``terrainbento`` uses the Landlab FlowAccumulator component to manage surface
+terrainbentouses the Landlab FlowAccumulator component to manage surface
 hydrology. These parameters control options associated with this component.
 
 flow_director : str, optional
@@ -223,10 +224,10 @@ _HANDLER_METHODS = {
 
 class ErosionModel(object):
 
-    """Base class providing common functionality for ``terrainbento`` models.
+    """Base class providing common functionality for terrainbento models.
 
-    An ``ErosionModel`` is the skeleton for the models of terrain evolution in
-    ``terrainbento``. It can be initialized with an input DEM, or parameters
+    An **ErosionModel** is the skeleton for the models of terrain evolution in
+    terrainbento. It can be initialized with an input DEM, or parameters
     used for creation of a new ``RasterModelGrid`` or ``HexModelGrid``.
 
     This is a base class that does not implement any processes, but rather
@@ -263,7 +264,7 @@ class ErosionModel(object):
 
         Examples
         --------
-        We recommend that you look at the ``terrainbento`` tutorials for
+        We recommend that you look at the terrainbento tutorials for
         examples of usage.
         """
         #######################################################################
@@ -442,14 +443,14 @@ class ErosionModel(object):
         return self._model_time
 
     def setup_boundary_handler(self, handler):
-        """ Setup BoundaryHandlers for use by a ``terrainbento`` model.
+        """ Setup BoundaryHandlers for use by a terrainbento model.
 
         A boundary condition handler is a class with a run_one_step method that
         takes the parameter ``dt``. Permitted boundary condition handlers
         include the Landlab Component ``NormalFault`` as well as the following
-        options from ``terrainbento``: ``PrecipChanger``,
-        ``CaptureNodeBaselevelHandler``, ``NotCoreNodeBaselevelHandler``,
-        ``SingleNodeBaselevelHandler``.
+        options from terrainbento: **PrecipChanger**,
+        **CaptureNodeBaselevelHandler**, **NotCoreNodeBaselevelHandler**,
+        **SingleNodeBaselevelHandler**.
 
         Parameters
         ----------
@@ -480,7 +481,7 @@ class ErosionModel(object):
 
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 
-            # if unique paramters for the boundary condition handler have
+            # if unique parameters for the boundary condition handler have
             # been passed, use them.
             if name in self.params:
                 handler_params = self.params[name]
@@ -504,13 +505,13 @@ class ErosionModel(object):
             )
 
     def setup_output_writer(self, writer):
-        """Setup OutputWriter for use by a ``terrainbento`` model.
+        """Setup OutputWriter for use by a terrainbento model.
 
         An OutputWriter can be either a function or a class designed to create
         output, calculate a loss function, or do some other task that is not
-        inherent to running a ``terrainbento`` model but is desired by the
-         user. An example might be making a plot of topography while the model
-        is running. ``terrainbento`` saves output to NetCDF format at each
+        inherent to running a terrainbento model but is desired by the
+        user. An example might be making a plot of topography while the model
+        is running. terrainbentosaves output to NetCDF format at each
         interval defined by the parameter ``'output_interval'``.
 
         If a class, an OutputWriter will be instantiated with only one passed
@@ -784,7 +785,7 @@ class ErosionModel(object):
 
         Examples
         --------
-        We recommend that you look at the ``terrainbento`` tutorials for
+        We recommend that you look at the terrainbento tutorials for
         examples of usage.
         """
         try:
@@ -992,7 +993,7 @@ class ErosionModel(object):
                 self.boundary_handler[handler_name].run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     try:
         infile = sys.argv[1]

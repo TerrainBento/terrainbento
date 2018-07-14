@@ -1,6 +1,6 @@
-"""A template for making a derived ``terrainbento`` model.
+"""A template for making a derived terrainbento model.
 
-This template shows all of the required parts of a new ``terrainbento`` model,
+This template shows all of the required parts of a new terrainbento model,
 designed and created by **you**
 """
 
@@ -15,7 +15,7 @@ from terrainbento.base_class import ErosionModel
 
 class ModelTemplate(ErosionModel):  # The model must inherit from either
     # ErosionModel or StochasticErosionModel
-    """ModelTemplate is a template for making your own ``terrainbento`` models.
+    """ModelTemplate is a template for making your own terrainbento models.
 
     This is where you will put introductory information about the model.
     """
@@ -108,7 +108,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
 
 # this portion makes it possible to run the model from the command line.
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 ``terrainbento`` Model ``BasicSt`` program.
@@ -164,42 +165,23 @@ class BasicSt(StochasticErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent(
-            "water_erodability~stochastic", raise_error=False
-        )
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~stochastic~shear_stress", raise_error=False
-        )
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+            self._length_factor ** ((3. * self.m) - 1)
+        ) # K stochastic has units of [=] T^{m-1}/L^{3m-1}
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                "A parameter for both K_sp and K_ss has been"
-                "provided. Only one of these may be provided"
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                K = K_sp
-            else:
-                K = (
-                    self._length_factor ** (1. / 2.)
-                ) * K_ss  # K_stochastic has units Lengtg^(1/2) per Time^(1/2_
-        else:
-            raise ValueError("A value for K_sp or K_ss  must be provided.")
-
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if "surface_water__discharge" not in self.grid.at_node:
-            self.grid.add_zeros("node", "surface_water__discharge")
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
@@ -262,7 +244,7 @@ class BasicSt(StochasticErosionModel):
             Increment of time for which the model is run.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -283,8 +265,13 @@ class BasicSt(StochasticErosionModel):
         self.finalize__run_one_step(dt)
 
 
+<<<<<<< HEAD
 def main(): #pragma: no cover
     """Execute model."""
+=======
+def main():  # pragma: no cover
+    """Executes model."""
+>>>>>>> master
     import sys
 
     try:

@@ -1,3 +1,4 @@
+# coding: utf8
 #! /usr/env/python
 """
 model_300_basicStVs.py: models discharge and erosion across a topographic
@@ -52,7 +53,8 @@ class BasicStVs(StochasticErosionModel):
             OutputWriters=OutputWriters,
         )
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("K_stochastic_sp")
+        K_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -60,29 +62,28 @@ class BasicStVs(StochasticErosionModel):
         )  # has units length^2/time
 
         soil_thickness = (self._length_factor) * self.params[
-            "initial_soil_thickness"
+            "soil__initial_thickness"
         ]  # has units length
         K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "K_hydraulic_conductivity"
+            "hydraulic_conductivity"
         ]  # has units length per time
 
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for discharge
-        if "surface_water__discharge" not in self.grid.at_node:
-            self.grid.add_zeros("node", "surface_water__discharge")
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Add a field for subsurface discharge
-        if "subsurface_water__discharge" not in self.grid.at_node:
-            self.grid.add_zeros("node", "subsurface_water__discharge")
-        self.qss = self.grid.at_node["subsurface_water__discharge"]
+        self.qss = self.grid.add_zeros("node", "subsurface_water__discharge")
 
         # Get the transmissivity parameter
         # transmissivity is hydraulic condiuctivity times soil thickness
         self.trans = K_hydraulic_conductivity * soil_thickness
-        assert self.trans > 0.0, "Transmissivity must be > 0"
+
+        if self.trans <= 0.0:
+            raise ValueError("BasicStVs: Transmissivity must be > 0")
+
         self.tlam = self.trans * self.grid._dx  # assumes raster
 
         # Run flow routing and lake filler
@@ -133,7 +134,7 @@ class BasicStVs(StochasticErosionModel):
         Advance model for one time-step of duration dt.
         """
 
-        # Route flow
+        # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
         # Get IDs of flooded nodes, if any
@@ -154,7 +155,7 @@ class BasicStVs(StochasticErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Executes model."""
     import sys
 

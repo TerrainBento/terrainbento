@@ -1,5 +1,6 @@
+# coding: utf8
 #! /usr/env/python
-"""``terrainbento`` Model ``Basic`` program.
+"""terrainbento **Basic** model program.
 
 Erosion model program using linear diffusion, stream power, and discharge
 proportional to drainage area.
@@ -18,35 +19,39 @@ from terrainbento.base_class import ErosionModel
 
 
 class Basic(ErosionModel):
-    """Model ``Basic`` program.
+    """**Basic** model program.
 
-    Model ``Basic`` is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
+    **Basic** is a model program that evolves a topographic surface described
+    by :math:`\eta` with the following governing equation:
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{w}A^{m}S^{n} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -K A^{m}S^{n} + D\\nabla^2 \eta
 
-    where :math:`A` is the local drainage area and :math:`S` is the local slope.
-    Refer to the ``terrainbento`` manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
+    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
+    :math:`K` is the erodability by water, and :math:`D` is the regolith
+    transport efficiency.
 
-    Model ``Basic`` inherits from the ``terrainbento`` ``ErosionModel`` base
-    class. Depending on the values of :math:`K_{w}`, :math:`D`, :math:`m`
-    and, :math:`n` this model program can be used to run the following three
-    ``terrainbento`` numerical models:
+    The **Basic** program inherits from the terrainbento **ErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model ``Basic``: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodibility`` and :math:`D` is given by the parameter
-    ``regolith_transport_parameter``.
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability``            |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
 
-    2) Model ``BasicVm``: This model is identical to Model Basic except
-    that the area exponent :math:`m` is a free parameter.
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
-    3) Model ``BasicSs``: In this model :math:`m` has a value of 1/3,
-    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodibility~shear_stress``.
     """
 
     def __init__(
@@ -75,9 +80,9 @@ class Basic(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``Basic``. Note that a YAML input file can be used instead of
+        of model **Basic**. Note that a YAML input file can be used instead of
         a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the ``terrainbento`` tutorials.
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -118,45 +123,20 @@ class Basic(ErosionModel):
         )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("water_erodability", raise_error=False)
-        K_ss = self.get_parameter_from_exponent(
-            "water_erodability~shear_stress", raise_error=False
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability") * (
+            self._length_factor ** (1. - (2. * self.m))
         )
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
-        # check that a stream power and a shear stress parameter have not both been given
-        if K_sp != None and K_ss != None:
-            raise ValueError(
-                (
-                    "Model 000: A parameter for both "
-                    "water_erodability and "
-                    "water_erodability~shear_stress has been provided. "
-                    " Only one of these may be provided."
-                )
-            )
-        elif K_sp != None or K_ss != None:
-            if K_sp != None:
-                self.K = K_sp
-            else:
-                self.K = (
-                    self._length_factor ** (1. / 3.)
-                ) * K_ss  # K_ss has units Length^(1/3) per Time
-        else:
-            raise ValueError(
-                (
-                    "water_erodability or "
-                    "water_erodability~shear_stress must be provided."
-                )
-            )
-
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
-        )
+        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
@@ -164,25 +144,25 @@ class Basic(ErosionModel):
         )
 
     def run_one_step(self, dt):
-        """Advance model ``Basic`` for one time-step of duration dt.
+        """Advance model **Basic** for one time-step of duration dt.
 
         The **run_one_step** method does the following:
 
         1. Directs flow and accumulates drainage area.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
-        so, uses it to modify the erodability by water.
+        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+           so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited erosion by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the ``ErosionModel`` base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+        6. Finalizes the step using the **ErosionModel** base class function
+           **finalize__run_one_step**. This function updates all BoundaryHandlers
+           by ``dt`` and increments model time by ``dt``.
 
         Parameters
         ----------
@@ -206,7 +186,7 @@ class Basic(ErosionModel):
                 self.K
                 * self.boundary_handler[
                     "PrecipChanger"
-                ].get_erodibility_adjustment_factor()
+                ].get_erodability_adjustment_factor()
             )
 
         # Do some water erosion (but not on the flooded nodes)
@@ -219,7 +199,7 @@ class Basic(ErosionModel):
         self.finalize__run_one_step(dt)
 
 
-def main(): #pragma: no cover
+def main():  # pragma: no cover
     """Execute model."""
     import sys
 

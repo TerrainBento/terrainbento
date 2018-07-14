@@ -1,7 +1,7 @@
 TerrainBento Boundary Condition Handlers
 ========================================
 
-Presently ``TerrainBento`` has four built-in boundary condition handlers. In
+Presently terrainbento has four built-in boundary condition handlers. In
 addition, Landlab components can be used as boundary condition handlers.
 
 
