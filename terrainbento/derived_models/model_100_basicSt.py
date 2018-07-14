@@ -44,22 +44,21 @@ class BasicSt(StochasticErosionModel):
 
     1) Model ``BasicSt``: Here :math:`m` has a value of 0.5 and
     :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodibility``.
+    ``water_erodibility~stochastic``.
 
     2) Model ``BasicSsSt``: In this model :math:`m` has a value of 1/3,
     :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodibility~shear_stress``.
+    parameter ``water_erodibility~stochastic~shear_stress``.
 
     Model BasicSt models discharge and erosion across a topographic
     surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
     flow routing, and (3) Hortonian infiltration model. Includes stream-power
     erosion plus linear diffusion.
-    
-    The hydrology uses calculation of drainage area using the standard "D8"
-    approach (assuming the input grid is a raster; "DN" if not), then modifies it
-    by running a lake-filling component. It then performs one of two options,
-    depending on the user's choice of "opt_stochastic_duration" (True or False).
-    
+
+    The hydrology uses calculation of drainage area using the user-specified
+    routing method. It then performs one of two options, depending on the
+    user's choice of ``opt_stochastic_duration`` (True or False).
+
     If the user requests stochastic duration, the model iterates through a sequence
     of storm and interstorm periods. Storm depth is drawn at random from a gamma
     distribution, and storm duration from an exponential distribution; storm
@@ -168,7 +167,8 @@ class BasicSt(StochasticErosionModel):
 
         # Get Parameters:
         K_sp = self.get_parameter_from_exponent(
-            "water_erodability~stochastic", raise_error=False)
+            "water_erodability~stochastic", raise_error=False
+        )
         K_ss = self.get_parameter_from_exponent(
             "water_erodability~stochastic~shear_stress", raise_error=False
         )
