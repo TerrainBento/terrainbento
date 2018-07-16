@@ -1,8 +1,8 @@
 env:
   matrix:
-  - TRAVIS_PYTHON_VERSION="2.7" BUILD_DOCS=0 COVERALLS=1
-  - TRAVIS_PYTHON_VERSION="3.5" BUILD_DOCS=0 COVERALLS=0
-  - TRAVIS_PYTHON_VERSION="3.6" BUILD_DOCS=0 COVERALLS=1
+  - TRAVIS_PYTHON_VERSION="2.7" BUILD_DOCS=0
+  - TRAVIS_PYTHON_VERSION="3.5" BUILD_DOCS=0
+  - TRAVIS_PYTHON_VERSION="3.6" BUILD_DOCS=0
   global:
   - CONDA_PREFIX=$HOME/miniconda
   - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
@@ -42,24 +42,20 @@ install:
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n _testing python=$TRAVIS_PYTHON_VERSION
 - source activate _testing
-- conda install -q conda-build=3.0 anaconda-client coverage sphinx
-- conda install -q numpy=1.11
+- conda install -q conda-build=3.0 anaconda-client coverage sphinx pytest pytest-cov
 - conda info -a && conda list
 
 script:
 - conda config --add channels landlab
-- conda build -q .conda-recipe --old-build-string
-- conda install -q terrainbento --use-local -c $(dirname $(conda build --output ./.conda-recipe/ --old-build-string))
-- pytest
+- conda install --file=requirements.txt
+- python setup.py develop
+- pytest --cov --cov-report=xml:$(pwd)/coverage.xml
 - |
  if [[ "$BUILD_DOCS" == "1" && "$TRAVIS_OS_NAME" == "linux" ]]; then
    (cd docs && make html)
  fi
 - |
- if [[ "$COVERALLS" == "1" ]]; then
-   pip install pytest-cov
-   pip install coveralls
-   py.test terrainbento --doctest-modules --cov=terrainbento tests/ --cov-report term-missing
+ if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" && "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_EVENT_TYPE" == "push" ]]; then
    coveralls
  fi
 virtualenv:
