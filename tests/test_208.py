@@ -58,7 +58,7 @@ def test_Aeff():
 
     # assert correct s a relationship (slightly circular)
     predicted_slopes = (U / (K * (A_eff_predicted ** m))) ** (1. / n)
-    assert_array_equal(actual_slopes[model.grid.core_nodes], predicted_slopes[model.grid.core_nodes])
+    assert_array_almost_equal(actual_slopes[model.grid.core_nodes], predicted_slopes[model.grid.core_nodes])
 
     # assert all slopes above non effective
     predicted_slopes_normal = (U / (K * (actual_areas ** m))) ** (1. / n)
