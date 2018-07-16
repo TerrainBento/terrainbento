@@ -8,7 +8,7 @@ import pytest
 from landlab import HexModelGrid
 from terrainbento import BasicThVs
 
-def test_Aeff
+def test_Aeff():
     U = 0.0001
     K = 0.001
     m = 1. / 3.

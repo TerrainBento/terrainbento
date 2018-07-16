@@ -10,7 +10,7 @@ from terrainbento import BasicVs
 import numpy as np
 
 
-def test_Aeff
+def test_Aeff():
     U = 0.0001
     K = 0.001
     m = 1. / 3.
