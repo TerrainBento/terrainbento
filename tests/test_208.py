@@ -12,12 +12,13 @@ def test_Aeff():
     U = 0.0001
     K = 0.001
     m = 1. / 3.
-    n = 2. / 3.
+    n = 1.
     dt = 1000
     hydraulic_conductivity = 0.1
     soil__initial_thickness = 0.1
     recharge_rate = 0.5
     node_spacing = 100.0
+    b = 0.0
 
     # construct dictionary. note that D is turned off here
     params = {
@@ -31,6 +32,8 @@ def test_Aeff():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
+        "water_erosion_rule__threshold": 0.5,
+        "water_erosion_rule__thresh_depth_derivative": b,
         "water_erodability": K,
         "m_sp": m,
         "n_sp": n,
@@ -54,7 +57,7 @@ def test_Aeff():
     A_eff_predicted = actual_areas*np.exp(-(-alpha*actual_slopes)/actual_areas)
 
     # assert aeff internally calculated correclty
-    assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes],decimal = 3)
+    assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes],decimal = 2)
 
     # assert correct s a relationship (slightly circular)
     predicted_slopes = (U / (K * (A_eff_predicted ** m))) ** (1. / n)
