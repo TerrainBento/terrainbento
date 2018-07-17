@@ -63,9 +63,9 @@ def test_Aeff():
     predicted_slopes_normal_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (1. / n)
 
     assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] < predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]) == True
-    assert np.all(predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]] > predicted_slopes_upper[model.grid.core_nodes[1:-1]]) == True
+    assert np.all(predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]] > predicted_slopes_normal_upper[model.grid.core_nodes[1:-1]]) == True
     assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] > predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]]) == True
-    assert np.all(predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]] > predicted_slopes_lower[model.grid.core_nodes[1:-1]]) == True
+    assert np.all(predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]] > predicted_slopes_normal_lower[model.grid.core_nodes[1:-1]]) == True
 
 
 
