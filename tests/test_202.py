@@ -17,6 +17,7 @@ def test_Aeff():
     threshold = 0.01
     hydraulic_conductivity = 0.1
     soil__initial_thickness = 0.1
+    node_spacing = 100.0
     recharge_rate = 0.5
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
