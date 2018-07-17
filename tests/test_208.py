@@ -11,40 +11,34 @@ from terrainbento import BasicDdVs
 def test_Aeff():
     U = 0.0001
     K = 0.001
-    m = 1. / 3.
+    m = 0.5
     n = 1.0
     dt = 1000
-    hydraulic_conductivity = 0.1
-    soil__initial_thickness = 0.1
-    recharge_rate = 0.5
-    node_spacing = 100.0
+    threshold = 0.01
     b = 0.0
-    threshold = 0.5
-
     # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erosion_rule__threshold": 0.5,
-        "water_erosion_rule__thresh_depth_derivative": b,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "hydraulic_conductivity": hydraulic_conductivity,
-        "soil__initial_thickness": soil__initial_thickness,
-        "recharge_rate": recharge_rate,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
-    }
+    params = {'model_grid': 'RasterModelGrid',
+              'dt': 1,
+              'output_interval': 2.,
+              'run_duration': 200.,
+              'number_of_node_rows' : 3,
+              'number_of_node_columns' : 20,
+              'node_spacing' : 100.0,
+              'north_boundary_closed': True,
+              'south_boundary_closed': True,
+              'regolith_transport_parameter': 0.,
+              'water_erodability': K,
+              'hydraulic_conductivity': 0.1,
+              'soil__initial_thickness': 0.1,
+              'water_erosion_rule__thresh_depth_derivative': b,
+              'recharge_rate': 0.5,
+              'm_sp': m,
+              'n_sp': n,
+              "water_erosion_rule__threshold": threshold,
+              'random_seed': 3141,
+              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
+              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
+                                              'lowering_rate': -U}}
 
     model = BasicDdVs(params=params)
     for i in range(200):
@@ -57,19 +51,25 @@ def test_Aeff():
     alpha = hydraulic_conductivity * soil__initial_thickness*node_spacing/recharge_rate
     A_eff_predicted = actual_areas*np.exp(-(-alpha*actual_slopes)/actual_areas)
 
-    # assert aeff internally calculated correctly
+    # assert aeff internally calculated correclty
     #assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes],decimal = 2)
 
-    predicted_slopes_upper = ((U + threshold) / (K * (A_eff_predicted ** m))) ** (1. / n)
-    predicted_slopes_lower = ((U + 0.0) / (K * (A_eff_predicted ** m))) ** (1. / n)
+    #somewhat circular test to make sure slopes are below predicted upper bound
+    predicted_slopes_eff_upper = ((U + threshold) / (K * (model.eff_area ** m))) ** (1. / n)
+    predicted_slopes_eff_lower = ((U + 0.0) / (K * (model.eff_area ** m))) ** (1. / n)
 
-    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] > predicted_slopes_lower[model.grid.core_nodes[1:-1]]) == True
-    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] < predicted_slopes_upper[model.grid.core_nodes[1:-1]]) == True
+    #somewhat circular test to make sure VSA slopes are higher than expected "normal" slopes
+    predicted_slopes_normal_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (1. / n)
+    predicted_slopes_normal_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 
 
-    # assert all slopes above non effective
-    # predicted_slopes_normal = (U / (K * (actual_areas ** m))) ** (1. / n)
-    # assert np.all(actual_slopes[model.grid.core_nodes]>predicted_slopes_normal[model.grid.core_nodes]) == True
+    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] < predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]) == True
+    assert np.all(predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]] > predicted_slopes_upper[model.grid.core_nodes[1:-1]]) == True
+    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] > predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]]) == True
+    assert np.all(predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]] > predicted_slopes_lower[model.grid.core_nodes[1:-1]]) == True
+
+
+
 
 
 
