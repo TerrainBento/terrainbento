@@ -19,6 +19,8 @@ def test_Aeff():
     recharge_rate = 0.5
     node_spacing = 100.0
     v_sc = 0.001
+    phi = 0.1
+    F_f = 0.0
 
     # construct dictionary. note that D is turned off here
     params = {

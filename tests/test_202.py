@@ -18,6 +18,7 @@ def test_Aeff():
     soil__initial_thickness = 0.1
     recharge_rate = 0.5
     node_spacing = 100.0
+    threshold = 0.5
 
     # construct dictionary. note that D is turned off here
     params = {
