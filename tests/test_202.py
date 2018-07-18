@@ -58,9 +58,11 @@ def test_Aeff():
 
     #somewhat circular test to make sure slopes are below predicted upper bound
     predicted_slopes_eff_upper = ((U + threshold) / (K * (model.eff_area ** m))) ** (1. / n)
+    predicted_slopes_eff_lower = ((U + 0.0) / (K * (model.eff_area ** m))) ** (1. / n)
 
     #somewhat circular test to make sure VSA slopes are higher than expected "normal" slopes
     predicted_slopes_normal_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (1. / n)
+    predicted_slopes_normal_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 
     assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] < predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]) == True
     assert np.all(predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]] > predicted_slopes_normal_upper[model.grid.core_nodes[1:-1]]) == True
