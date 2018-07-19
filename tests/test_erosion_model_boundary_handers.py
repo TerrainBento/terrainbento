@@ -48,7 +48,6 @@ def test_boundary_condition_handler_with_special_part_of_params():
     K = 0.001
     m = 1. / 3.
     n = 2. / 3.
-    dt = 1000
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",

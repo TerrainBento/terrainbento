@@ -1,8 +1,6 @@
 # coding: utf8
 #! /usr/env/python
 
-import numpy as np
-
 from landlab import HexModelGrid
 from terrainbento import StochasticErosionModel, BasicSt
 
