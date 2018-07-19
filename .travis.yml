@@ -48,7 +48,7 @@ install:
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n _testing python=$TRAVIS_PYTHON_VERSION
 - source activate _testing
-- conda install -q conda-build=3.0 anaconda-client coverage sphinx pytest pytest-cov
+- conda install -q conda-build=3.0 anaconda-client coverage sphinx pytest pytest-cov codacy-coverage
 - conda info -a && conda list
 
 script:
@@ -59,6 +59,9 @@ script:
 - |
   if [[ "$REPORT_TO_COVERALLS" == "1" ]]; then
     coveralls
+    export CODACY_PROJECT_TOKEN=$CODACITY_API_TOKEN
+    python-codacy-coverage -r coverage.xml
+
   fi
 - |
  if [[ "$BUILD_DOCS" == "1" && "$TRAVIS_OS_NAME" == "linux" ]]; then
