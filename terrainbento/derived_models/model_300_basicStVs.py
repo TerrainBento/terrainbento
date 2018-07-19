@@ -26,7 +26,6 @@ PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import StreamPowerEroder, LinearDiffuser

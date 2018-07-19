@@ -14,7 +14,6 @@ Landlab components used:
     5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/landlab.components.weathering.html>`_
 """
 
-import sys
 import numpy as np
 
 from landlab.components import (

@@ -15,7 +15,6 @@ Landlab components used:
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import (
