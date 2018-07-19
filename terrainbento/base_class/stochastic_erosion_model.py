@@ -80,7 +80,7 @@ _STRING_LENGTH = 80
 
 
 class StochasticErosionModel(ErosionModel):
-    """ Base class for stochastic-precipitation terrainbento models.
+    """Base class for stochastic-precipitation terrainbento models.
 
     A **StochasticErosionModel** inherits from **ErosionModel** and provides
     functionality needed by all stochastic-precipitation models.
@@ -118,8 +118,9 @@ class StochasticErosionModel(ErosionModel):
 
         Examples
         --------
-        We recommend that you look at the terrainbento tutorials for
-        examples of usage.
+        This model is a base class and is not designed to be run on its own. We
+        recommend that you look at the terrainbento tutorials for examples of
+        usage.
         """
 
         # Call StochasticErosionModel init
