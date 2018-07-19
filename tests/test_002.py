@@ -1,4 +1,3 @@
-import os
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
@@ -18,7 +17,8 @@ def test_bad_n_sp():
               'n_sp': 1.01,
               'regolith_transport_parameter': 0.001}
 
-    pytest.raises(ValueError, BasicTh, params=params)
+    with pytest.raises(ValueError)
+        model = BasicTh(params=params)
 
 def test_steady_Ksp_no_precip_changer():
     U = 0.0001

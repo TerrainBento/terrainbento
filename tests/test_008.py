@@ -1,4 +1,3 @@
-import os
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
@@ -20,7 +19,8 @@ def test_bad_n_sp():
               "water_erosion_rule__threshold": 0.001,
               "water_erosion_rule__thresh_depth_derivative": 0.001}
 
-    pytest.raises(ValueError, BasicDd, params=params)
+    with pytest.raises(ValueError)
+        model = BasicDd(params=params)
 
 
 # def test_steady_Ksp_no_precip_changer_no_thresh():
