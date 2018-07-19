@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from numpy.testing import assert_array_almost_equal, assert_array_equal, assert_array_almost_equal_nulp
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from landlab import HexModelGrid
 from terrainbento import BasicHyRt
@@ -55,25 +55,22 @@ def test_steady_Ksp_no_precip_changer():
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes_rock = np.power(
+    rock_predicted_slopes = np.power(
         ((U * v_sc) / (Kr * np.power(actual_areas, m)))
         + (U / (Kr * np.power(actual_areas, m))),
         1. / n,
     )
-    predicted_slopes_till = np.power(
+    till_predicted_slopes = np.power(
         ((U * v_sc) / (Kt * np.power(actual_areas, m)))
         + (U / (Kt * np.power(actual_areas, m))),
         1. / n,
     )
 
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal_nulp(
-        actual_slopes[model.grid.core_nodes[22:37]],
-        predicted_slopes_rock[model.grid.core_nodes[22:37]])
+    # assert actual and predicted slopes are the same for rock and till portions.
+    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
 
-    assert_array_almost_equal_nulp(
-        actual_slopes[model.grid.core_nodes[22:37]],
-        predicted_slopes_till[model.grid.core_nodes[22:37]])
+    # assert actual and predicted slopes are the same for rock and till portions.
+    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
@@ -123,25 +120,23 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes_rock = np.power(
+    rock_predicted_slopes = np.power(
         ((U * v_sc) / (Kr * np.power(actual_areas, m)))
         + (U / (Kr * np.power(actual_areas, m))),
         1. / n,
     )
-    predicted_slopes_till = np.power(
+    till_predicted_slopes = np.power(
         ((U * v_sc) / (Kt * np.power(actual_areas, m)))
         + (U / (Kt * np.power(actual_areas, m))),
         1. / n,
     )
 
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal_nulp(
-        actual_slopes[model.grid.core_nodes[22:37]],
-        predicted_slopes_rock[model.grid.core_nodes[22:37]])
+    # assert actual and predicted slopes are the same for rock and till portions.
+    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
 
-    assert_array_almost_equal_nulp(
-        actual_slopes[model.grid.core_nodes[22:37]],
-        predicted_slopes_till[model.grid.core_nodes[22:37]])
+    # assert actual and predicted slopes are the same for rock and till portions.
+    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
+
 
 def test_diffusion_only():
 
@@ -200,7 +195,7 @@ def test_diffusion_only():
     )
 
     # assert actual and predicted elevations are the same.
-    assert_array_almost_equal_nulp(
+    assert_array_almost_equal(
         predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes])
 
 
@@ -254,9 +249,9 @@ def test_with_precip_changer():
     model.run_one_step(1.0)
 
     true_fw = 10.32628
-    assert_array_almost_equal_nulp(
+    assert_array_almost_equal(
         model.eroder.K[model.grid.core_nodes[:8]], Kt * true_fw * np.ones((8))
     )
-    assert_array_almost_equal_nulp(
+    assert_array_almost_equal(
         model.eroder.K[model.grid.core_nodes[10:]], Kr * true_fw * np.ones((9))
     )
