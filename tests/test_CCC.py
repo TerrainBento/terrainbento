@@ -3,7 +3,6 @@ import subprocess
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal # assert_array_equal,
-import pytest
 
 from landlab import HexModelGrid
 from terrainbento import BasicCv
@@ -131,9 +130,3 @@ def test_with_precip_changer():
     model.run_one_step(1.0)
     model.run_one_step(1.0)
     #assert round(model.eroder.K, 5) == 0.10326
-
-
-
-
-
-
