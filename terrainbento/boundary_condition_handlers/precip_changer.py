@@ -449,7 +449,7 @@ class PrecipChanger(object):
 
         self.starting_psi = self.calculate_starting_psi()
 
-        _check_intermittency_value()
+        _check_intermittency_value(self.starting_frac_wet_days)
         _check_mean_depth(self.starting_daily_mean_depth)
         _check_infiltration_capacity(self.infilt_cap)
 

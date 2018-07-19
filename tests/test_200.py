@@ -1,4 +1,3 @@
-import os
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
@@ -42,7 +41,7 @@ def test_Aeff():
     }
 
     model = BasicVs(params=params)
-    for i in range(200):
+    for _ in range(200):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -97,7 +96,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicVs(params=params)
-    for i in range(100):
+    for _ in range(100):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -144,7 +143,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicVs(params=params)
-    for i in range(100):
+    for _ in range(100):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -195,7 +194,7 @@ def test_diffusion_only():
 	reference_node = 9
 	# construct and run model
 	model = BasicVs(params=params)
-	for i in range(nts):
+	for _ in range(nts):
 	    model.run_one_step(dt)
 
 	predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (

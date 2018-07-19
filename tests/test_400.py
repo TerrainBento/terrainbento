@@ -1,9 +1,6 @@
-import os
-import subprocess
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal # assert_array_equal,
-import pytest
 
 from landlab import HexModelGrid
 from terrainbento import BasicSa
@@ -50,7 +47,7 @@ def test_diffusion_only():
 
     #Construct and run model
     model = BasicSa(params=params)
-    for i in range(runtime):
+    for _ in range(runtime):
       model.run_one_step(dt)
 
     #test steady state soil depth
@@ -67,8 +64,6 @@ def test_diffusion_only():
     half_space = int(len(domain)/2)
     steady_z_profile_firsthalf = (steady_domain[0:half_space])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))-(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
     steady_z_profile_secondhalf = -(steady_domain[half_space:])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))+(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
-
-
 
     steady_z_profile = np.append([-steady_z_profile_firsthalf],[steady_z_profile_secondhalf])
     predicted_profile = steady_z_profile - np.min(steady_z_profile)
@@ -113,7 +108,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicSa(params=params)
-    for i in range(run_time):
+    for _ in range(run_time):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -163,7 +158,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicSa(params=params)
-    for i in range(run_time):
+    for _ in range(run_time):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes

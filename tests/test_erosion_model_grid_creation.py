@@ -67,7 +67,7 @@ def test_no_noise_sythetic_topo():
     }
     em = ErosionModel(params=params)
     known_z = np.zeros(em.z.shape)
-    known_z[em.grid.core_nodes] += 10.
+    known_z += 10.
     assert np.array_equiv(em.z, known_z) == True
 
 def test_noise_all_nodes_sythetic_topo():

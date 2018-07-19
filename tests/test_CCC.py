@@ -1,9 +1,5 @@
-import os
-import subprocess
 import numpy as np
-
 from numpy.testing import assert_array_almost_equal # assert_array_equal,
-import pytest
 
 from landlab import HexModelGrid
 from terrainbento import BasicCv
@@ -43,10 +39,8 @@ def test_steady_Ksp_with_depression_finding():
 
     # construct and run model
     model = BasicCv(params=params)
-    for i in range(run_time):
+    for _ in range(run_time):
         model.run_one_step(dt)
-
-
 
 
 def test_diffusion_only():
@@ -85,7 +79,7 @@ def test_diffusion_only():
     reference_node = 9
     # construct and run model
     model = BasicCv(params=params)
-    for i in range(nts):
+    for _ in range(nts):
         model.run_one_step(dt)
 
 
@@ -131,9 +125,3 @@ def test_with_precip_changer():
     model.run_one_step(1.0)
     model.run_one_step(1.0)
     #assert round(model.eroder.K, 5) == 0.10326
-
-
-
-
-
-
