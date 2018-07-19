@@ -23,9 +23,9 @@ from terrainbento.base_class import StochasticErosionModel
 
 class BasicSt(StochasticErosionModel):
     """
-    Model `BasicSt` program.
+    **BasicSt** model program.
 
-    Model ``BasicSt`` is a model program that evolves a topographic surface
+    **BasicSt** is a model program that evolves a topographic surface
     described by :math:`\eta (x,y,t)` with the following governing equation:
 
     .. math::
@@ -37,19 +37,26 @@ class BasicSt(StochasticErosionModel):
     slope gradient. Refer to the ``terrainbento`` manuscript Table XX (URL here) 
     for parameter symbols, names, and dimensions.
 
-    Model ``BasicSt`` inherits from the ``terrainbento`` 
-    ``StochasticErosionModel`` base
-    class. Depending on the values of :math:`K_{q}`, :math:`m`
-    and, :math:`n` this model program can be used to run the following two
-    ``terrainbento`` numerical models:
+    **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
 
-    1) Model ``BasicSt``: Here :math:`m` has a value of 0.5 and
-    :math:`n` has a value of 1. :math:`K_{w}` is given by the parameter
-    ``water_erodibility~stochastic``.
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_q`       | ``water_erodability~stochastic`` |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`I_m`       | ``infiltration_capacity``        |
+    +------------------+----------------------------------+
 
-    2) Model ``BasicSsSt``: In this model :math:`m` has a value of 1/3,
-    :math:`n` has a value of 2/3, and :math:`K_{w}` is given by the
-    parameter ``water_erodibility~stochastic~shear_stress``.
+    Refer to the terrainbento manuscript Table XX (URL here) for full list of
+    parameter symbols, names, and dimensions.
 
     Model BasicSt models discharge and erosion across a topographic
     surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
@@ -88,6 +95,7 @@ class BasicSt(StochasticErosionModel):
     that will generate runoff. This approach yields a smooth transition from
     near-zero runoff (when :math:`I>>P`) to :math:`R \approx P` (when :math`P>>I`),
     without a "hard threshold."
+
     """
 
     def __init__(
@@ -198,7 +206,8 @@ class BasicSt(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid, K_sp=K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
+            self.grid, K_sp=self.K, m_sp=self.params["m_sp"],
+            n_sp=self.params["n_sp"]
         )
 
         # Instantiate a LinearDiffuser component
@@ -265,13 +274,8 @@ class BasicSt(StochasticErosionModel):
         self.finalize__run_one_step(dt)
 
 
-<<<<<<< HEAD
 def main(): #pragma: no cover
     """Execute model."""
-=======
-def main():  # pragma: no cover
-    """Executes model."""
->>>>>>> master
     import sys
 
     try:

@@ -11,107 +11,103 @@ from terrainbento import BasicSt
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
-def test_no_Ksp_or_Kss():
+
+def test_steady_without_stochastic_duration():
+    """Test steady profile solution with fixed duration.
+
+    Notes
+    -----
+    We use m=1 because the integral that averages over storm events has an
+    analytical solution; it evaluates to 1/2 when mean rain intensity and
+    infiltration capacity are both equal to unity. This is where the factor of
+    2 in the predicted-slope calculation below comes from.
+    
+    The derivation is as follows.
+        
+    Instantaneous erosion rate, :math:E_i:
+            
+    ..math::
+        E_i = K_q Q^m S^n
+        
+    Instantaneous water discharge depends on drainage area, :math:A, rain
+    intensity, :math:P, and infiltration capacity, :math:I_m:
+        
+    ..math::
+        Q = R A
+        R = P - I_m (1 - e^{-P/I_m})
+        
+    Average erosion rate, :math:E, is the integral of instantaneous erosion
+    rate over all possible rain rates times the PDF of rain rate, :math:f(P):
+        
+    ..math::
+        E = \int_0^\infty f(P) K_q A^m S^n [P-I_m(1-e^{-P/I_m})]^m dP
+          = K_q A^m S^n \int_0^\infty f(P) [P-I_m(1-e^{-P/I_m})]^m dP
+          = K_q A^m S^n \Phi
+          
+    where :math:\Phi represents the integral. For testing purposes, we seek an
+    analytical solution to the integral. Take $m=n=1$ and $P=I_m=1$. Also 
+    assume that the distribution shape factor is 1, so that 
+    :math:f(P) = (1/Pbar) e^{-P/Pbar}.
+    
+    According to the online integrator, the indefinite integral solution under
+    these assumptions is
+    
+    ..math::
+        \Phi = e^{-P} (-\frac{1}{2} e^{-P} - P)
+        
+    The definite integral should therefore be 1/2.
+    
+    The slope-area relation is therefore
+    
+    ..math::
+        S = \frac{2U}{K_q A} 
+        
+    """
+    U = 0.0001
+    K = 0.001
+    m = 1.0
+    n = 1.0
+    dt = 1.0
+
+    # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
               'dt': 1,
               'output_interval': 2.,
               'run_duration': 200.,
-              'regolith_transport_parameter': 0.001}
+              'number_of_node_rows' : 3,
+              'number_of_node_columns' : 6,
+              'node_spacing' : 100.0,
+              'north_boundary_closed': True,
+              'south_boundary_closed': True,
+              'regolith_transport_parameter': 0.,
+              'water_erodability~stochastic': K,
+              'm_sp': m,
+              'n_sp': n,
+              'number_of_sub_time_steps': 100,
+              'infiltration_capacity': 1.0,
+              'daily_rainfall_intermittency_factor': 1.0,
+              'daily_rainfall__mean_intensity': 1.0,
+              'daily_rainfall__precipitation_shape_factor': 1.0,
+              'random_seed': 3141,
+              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
+              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
+                                              'lowering_rate': -U}}
 
-    pytest.raises(ValueError, BasicSt, params=params)
+    # construct and run model
+    model = BasicSt(params=params)
+    for i in range(100):
+        model.run_one_step(dt)
+
+    # construct actual and predicted slopes
+    ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
+    actual_slopes = model.grid.at_node['topographic__steepest_slope'][ic]
+    actual_areas = model.grid.at_node['drainage_area'][ic]
+    predicted_slopes = (2 * U/(K * (actual_areas**m))) ** (1./n)
+
+    # assert actual and predicted slopes are the same.
+    assert_array_almost_equal(actual_slopes, predicted_slopes)
 
 
-def test_both_Ksp_or_Kss():
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              'regolith_transport_parameter': 0.001,
-              'water_erodability': 0.001,
-              'water_erodability~shear_stress': 0.001}
-    pytest.raises(ValueError, BasicSt, params=params)
-
-
-#def test_steady_Kss_no_precip_changer():
-#    U = 0.0001
-#    K = 0.001
-#    m = 1./3.
-#    n = 2./3.
-#    dt = 1000
-#    # construct dictionary. note that D is turned off here
-#    params = {'model_grid': 'RasterModelGrid',
-#              'dt': 1,
-#              'output_interval': 2.,
-#              'run_duration': 200.,
-#              'number_of_node_rows' : 3,
-#              'number_of_node_columns' : 20,
-#              'node_spacing' : 100.0,
-#              'north_boundary_closed': True,
-#              'south_boundary_closed': True,
-#              'regolith_transport_parameter': 0.,
-#              'water_erodability~shear_stress': K,
-#              'm_sp': m,
-#              'n_sp': n,
-#              'random_seed': 3141,
-#              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-#              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-#                                              'lowering_rate': -U}}
-#
-#    # construct and run model
-#    model = Basic(params=params)
-#    for i in range(100):
-#        model.run_one_step(dt)
-#
-#    # construct actual and predicted slopes
-#    actual_slopes = model.grid.at_node['topographic__steepest_slope']
-#    actual_areas = model.grid.at_node['drainage_area']
-#    predicted_slopes = (U/(K * (actual_areas**m))) ** (1./n)
-#
-#    # assert actual and predicted slopes are the same.
-#    assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
-#                              predicted_slopes[model.grid.core_nodes[1:-1]])
-#
-#
-#def test_steady_Ksp_no_precip_changer():
-#    U = 0.0001
-#    K = 0.001
-#    m = 0.5
-#    n = 1.0
-#    dt = 1000
-#    # construct dictionary. note that D is turned off here
-#    params = {'model_grid': 'RasterModelGrid',
-#              'dt': 1,
-#              'output_interval': 2.,
-#              'run_duration': 200.,
-#              'number_of_node_rows' : 3,
-#              'number_of_node_columns' : 20,
-#              'node_spacing' : 100.0,
-#              'north_boundary_closed': True,
-#              'south_boundary_closed': True,
-#              'regolith_transport_parameter': 0.,
-#              'water_erodability': K,
-#              'm_sp': m,
-#              'n_sp': n,
-#              'random_seed': 3141,
-#              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-#              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-#                                              'lowering_rate': -U}}
-#
-#    # construct and run model
-#    model = Basic(params=params)
-#    for i in range(100):
-#        model.run_one_step(dt)
-#
-#    # construct actual and predicted slopes
-#    actual_slopes = model.grid.at_node['topographic__steepest_slope']
-#    actual_areas = model.grid.at_node['drainage_area']
-#    predicted_slopes = (U/(K * (actual_areas**m))) ** (1./n)
-#
-#    # assert actual and predicted slopes are the same.
-#    assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
-#                              predicted_slopes[model.grid.core_nodes[1:-1]])
-#
-#
 #def test_steady_Ksp_no_precip_changer_with_depression_finding():
 #    U = 0.0001
 #    K = 0.001
