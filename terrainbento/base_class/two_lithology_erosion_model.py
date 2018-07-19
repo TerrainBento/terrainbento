@@ -1,20 +1,55 @@
 # coding: utf8
 #! /usr/env/python
+"""
+Base class for common functions of terrainbentostochastic erosion models.
 
-import sys
-import numpy as np
+The **TwoLithologyErosionModel** is a base class that contains all of the
+functionality shared by the terrainbento models that have two lithologies.
+"""
 
 from landlab.io import read_esri_ascii
 from terrainbento.base_class import ErosionModel
 
 
 class TwoLithologyErosionModel(ErosionModel):
-    "" ""
+    """Base class for two lithology terrainbento models.
+
+    A **TwoLithologyErosionModel** inherits from **ErosionModel** and provides
+    functionality needed by all models with two lithologies.
+
+    This is a base class that handles setting up common parameters and the
+    contact zone elevation.
+    """
 
     def __init__(
         self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
     ):
-        """ """
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params
+            is required.
+        BoundaryHandlers : class or list of classes, optional
+            Classes used to handle boundary conditions. Alternatively can be
+            passed by input file as string. Valid options described above.
+        OutputWriters : class, function, or list of classes and/or functions,
+            optional classes or functions used to write incremental output
+            (e.g. make a diagnostic plot).
+
+        Returns
+        -------
+        TwoLithologyErosionModel : object
+
+        Examples
+        --------
+        This model is a base class and is not designed to be run on its own. We
+        recommend that you look at the terrainbento tutorials for examples of
+        usage.
+        """
         # Call ErosionModel's init
         super(TwoLithologyErosionModel, self).__init__(
             input_file=input_file,
