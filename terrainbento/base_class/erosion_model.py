@@ -268,8 +268,9 @@ class ErosionModel(object):
 
         Examples
         --------
-        We recommend that you look at the terrainbento tutorials for
-        examples of usage.
+        This model is a base class and is not designed to be run on its own. We
+        recommend that you look at the terrainbento tutorials for examples of
+        usage.
         """
         #######################################################################
         # get parameters
@@ -341,7 +342,7 @@ class ErosionModel(object):
 
         if "DEM_filename" in self.params:
             self._starting_topography = "inputDEM"
-            (self.grid, self.z) = self.read_topography(self.params["DEM_filename"])
+            (self.grid, self.z) = self.read_topography()
             self.opt_watershed = True
         else:
             # this routine will set self.opt_watershed internally
@@ -769,13 +770,12 @@ class ErosionModel(object):
                     east_closed, north_closed, west_closed, south_closed
                 )
 
-    def read_topography(self, file_path, name="topographic__elevation", halo=1):
-        """Read and return topography from file.
+    def read_topography(self, name="topographic__elevation", halo=1):
+        """Read and return topography from file located in the parameter
+        dictionary at ``DEM_filename``.
 
         Parameters
         ----------
-        file_path : str
-            File path to read. Must be either a NetCDF or ESRI ASCII type file.
         name : str, optional
             Name of grid field for read topography. Default value is
              topographic__elevation.
@@ -792,6 +792,7 @@ class ErosionModel(object):
         We recommend that you look at the terrainbento tutorials for
         examples of usage.
         """
+        file_path = self.params["DEM_filename"]
         try:
             (grid, vals) = read_esri_ascii(file_path, name=name, halo=halo)
         except:
