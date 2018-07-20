@@ -255,6 +255,9 @@ class StochasticErosionModel(ErosionModel):
             seed = 0
         self.rain_generator.seed_generator(seedval=seed)
 
+    def _pre_water_erosion_steps(self):
+        pass
+
     def handle_water_erosion(self, dt, flooded):
         """Handle water erosion for stochastic models.
 
@@ -295,6 +298,8 @@ class StochasticErosionModel(ErosionModel):
 
         if self.opt_stochastic_duration and self.rain_rate > 0.0:
 
+            self._pre_water_erosion_steps()
+
             runoff = self.calc_runoff_and_discharge()
 
             self.eroder.run_one_step(
@@ -318,6 +323,8 @@ class StochasticErosionModel(ErosionModel):
                 self.rain_rate = self.rain_generator.generate_from_stretched_exponential(
                     self.scale_factor, self.shape_factor
                 )
+
+                self._pre_water_erosion_steps()
 
                 runoff = self.calc_runoff_and_discharge()
                 self.eroder.run_one_step(
