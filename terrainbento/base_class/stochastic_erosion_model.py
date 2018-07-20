@@ -80,7 +80,7 @@ _STRING_LENGTH = 80
 
 
 class StochasticErosionModel(ErosionModel):
-    """ Base class for stochastic-precipitation terrainbento models.
+    """Base class for stochastic-precipitation terrainbento models.
 
     A **StochasticErosionModel** inherits from **ErosionModel** and provides
     functionality needed by all stochastic-precipitation models.
@@ -118,8 +118,9 @@ class StochasticErosionModel(ErosionModel):
 
         Examples
         --------
-        We recommend that you look at the terrainbento tutorials for
-        examples of usage.
+        This model is a base class and is not designed to be run on its own. We
+        recommend that you look at the terrainbento tutorials for examples of
+        usage.
         """
 
         # Call StochasticErosionModel init
@@ -313,7 +314,7 @@ class StochasticErosionModel(ErosionModel):
             dt_water = (dt * self.daily_rainfall_intermittency_factor) / float(
                 self.n_sub_steps
             )
-            for i in range(self.n_sub_steps):
+            for _ in range(self.n_sub_steps):
                 self.rain_rate = self.rain_generator.generate_from_stretched_exponential(
                     self.scale_factor, self.shape_factor
                 )

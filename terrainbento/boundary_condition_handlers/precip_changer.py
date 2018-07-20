@@ -228,6 +228,45 @@ def _scale_fac(pmean, c):
     return pmean * (1.0 / gamma(1.0 + 1.0 / c))
 
 
+def _check_intermittency_value(daily_rainfall_intermittency_factor):
+    """Check that daily_rainfall_intermittency_factor is >= 0 and <=1."""
+    if (daily_rainfall_intermittency_factor >= 0.0) and (
+        daily_rainfall_intermittency_factor <= 1.0
+    ):
+        pass
+    else:
+        raise ValueError(
+            (
+                "The PrecipChanger daily_rainfall_intermittency_factor has a "
+                "value of less than zero or greater than one. "
+                "This is invalid."
+            )
+        )
+
+
+def _check_mean_depth(mean_depth):
+    """Check that mean depth is >= 0."""
+    if mean_depth < 0:
+        raise ValueError(
+            (
+                "The PrecipChanger mean depth has a "
+                "value of less than zero. This is invalid."
+            )
+        )
+
+
+def _check_infiltration_capacity(infiltration_capacity):
+    """Check that infiltration_capacity >= 0."""
+    if infiltration_capacity < 0:
+        raise ValueError(
+            (
+                "The PrecipChanger infiltration_capacity has a "
+                "value of less than zero. This is invalid."
+            )
+        )
+
+
+
 class PrecipChanger(object):
     """Handle time varying precipitation.
 
@@ -410,44 +449,9 @@ class PrecipChanger(object):
 
         self.starting_psi = self.calculate_starting_psi()
 
-        self._check_intermittency_value(self.starting_frac_wet_days)
-        self._check_mean_depth(self.starting_daily_mean_depth)
-        self._check_infiltration_capacity(self.infilt_cap)
-
-    def _check_intermittency_value(self, daily_rainfall_intermittency_factor):
-        """Check that daily_rainfall_intermittency_factor is >= 0 and <=1."""
-        if (daily_rainfall_intermittency_factor >= 0.0) and (
-            daily_rainfall_intermittency_factor <= 1.0
-        ):
-            pass
-        else:
-            raise ValueError(
-                (
-                    "The PrecipChanger daily_rainfall_intermittency_factor has a "
-                    "value of less than zero or greater than one. "
-                    "This is invalid."
-                )
-            )
-
-    def _check_mean_depth(self, mean_depth):
-        """Check that mean depth is >= 0."""
-        if mean_depth < 0:
-            raise ValueError(
-                (
-                    "The PrecipChanger mean depth has a "
-                    "value of less than zero. This is invalid."
-                )
-            )
-
-    def _check_infiltration_capacity(self, infiltration_capacity):
-        """Check that infiltration_capacity >= 0."""
-        if infiltration_capacity < 0:
-            raise ValueError(
-                (
-                    "The PrecipChanger infiltration_capacity has a "
-                    "value of less than zero. This is invalid."
-                )
-            )
+        _check_intermittency_value(self.starting_frac_wet_days)
+        _check_mean_depth(self.starting_daily_mean_depth)
+        _check_infiltration_capacity(self.infilt_cap)
 
     def calculate_starting_psi(self):
         """Calculate and store for later the factor :math:`\Psi_0`.
@@ -515,8 +519,8 @@ class PrecipChanger(object):
                 self.starting_daily_mean_depth + self.mean_depth_rate_of_change * time
             )
 
-            self._check_intermittency_value(frac_wet_days)
-            self._check_mean_depth(mean_depth)
+            _check_intermittency_value(frac_wet_days)
+            _check_mean_depth(mean_depth)
 
             return frac_wet_days, mean_depth
         else:

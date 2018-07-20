@@ -33,7 +33,6 @@ PrecipitationDistribution, LinearDiffuser, HybridAlluvium
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import LinearDiffuser, ErosionDeposition
