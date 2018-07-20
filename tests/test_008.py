@@ -24,7 +24,7 @@ def test_bad_n_sp():
     }
 
     with pytest.raises(ValueError):
-        model = BasicDd(params=params)
+        BasicDd(params=params)
 
 
 # def test_steady_Ksp_no_precip_changer_no_thresh():

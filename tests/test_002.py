@@ -23,7 +23,7 @@ def test_bad_n_sp():
     }
 
     with pytest.raises(ValueError):
-        model = BasicTh(params=params)
+        BasicTh(params=params)
 
 
 def test_steady_Ksp_no_precip_changer():

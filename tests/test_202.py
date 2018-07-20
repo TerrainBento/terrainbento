@@ -116,7 +116,7 @@ def test_bad_n_sp():
     }
 
     with pytest.raises(ValueError):
-        model = BasicThVs(params=params)
+        BasicThVs(params=params)
 
 
 def test_diffusion_only():
