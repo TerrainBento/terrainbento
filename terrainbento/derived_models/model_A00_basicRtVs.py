@@ -197,13 +197,6 @@ class BasicRtVs(TwoLithologyErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
         recharge_rate = (self._length_factor) * self.params[
             "recharge_rate"
         ]  # has units length per time
@@ -213,10 +206,6 @@ class BasicRtVs(TwoLithologyErosionModel):
         K_hydraulic_conductivity = (self._length_factor) * self.params[
             "hydraulic_conductivity"
         ]  # has units length per time
-
-        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
-        self.rock_erody = self.K_rock_sp
-        self.till_erody = self.K_till_sp
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
@@ -255,42 +244,6 @@ class BasicRtVs(TwoLithologyErosionModel):
         cores = self.grid.core_nodes
         self.eff_area[cores] = area[cores] * (
             np.exp(-self.sat_param * slope[cores] / area[cores])
-        )
-
-    def _setup_rock_and_till(self):
-        """Set up fields to handle for two layers with different erodability."""
-        # Get a reference to the rock-till field\
-        self._setup_contact_elevation()
-
-        # Get a reference to the rock-till field
-        self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
-
-        # Create field for erodability
-        self.erody = self.grid.add_zeros("node", "substrate__erodability")
-
-        # Create array for erodability weighting function
-        self.erody_wt = np.zeros(self.grid.number_of_nodes)
-
-    def _update_erodability_field(self):
-        """Update erodability at each node.
-
-        The erodability at each node is a smooth function between the rock and
-        till erodabilities and is based on the contact zone width and the
-        elevation of the surface relative to contact elevation.
-        """
-        self._update_erodywt()
-
-        # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
-            erode_factor = self.boundary_handler[
-                "PrecipChanger"
-            ].get_erodability_adjustment_factor()
-            self.till_erody = self.K_till_sp * erode_factor
-            self.rock_erody = self.K_rock_sp * erode_factor
-
-        # Calculate the effective erodibilities using weighted averaging
-        self.erody[:] = (
-            self.erody_wt * self.till_erody + (1.0 - self.erody_wt) * self.rock_erody
         )
 
     def run_one_step(self, dt):

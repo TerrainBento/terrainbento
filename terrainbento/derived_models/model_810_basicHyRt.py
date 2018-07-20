@@ -198,28 +198,17 @@ class BasicHyRt(TwoLithologyErosionModel):
             OutputWriters=OutputWriters,
         )
 
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
         settling_velocity = self.get_parameter_from_exponent(
             "settling_velocity"
         )  # normalized settling velocity. Unitless.
 
-        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
-        self.rock_erody_br = self.K_rock_sp
-        self.till_erody_br = self.K_till_sp
 
         # Save the threshold values for rock and till
-        self.rock_thresh_br = 0.
-        self.till_thresh_br = 0.
+        self.rock_thresh = 0.
+        self.till_thresh = 0.
 
         # Set up rock-till boundary and associated grid fields.
-        self._setup_rock_and_till()
+        self._setup_rock_and_till_with_threshold()
 
         # Handle solver option
         solver = self.params.get("solver", "basic")
@@ -227,7 +216,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         # Instantiate an ErosionDeposition ("hybrid") component
         self.eroder = ErosionDeposition(
             self.grid,
-            K="K_br",
+            K="substrate__erodability",
             F_f=self.params["fraction_fines"],
             phi=self.params["sediment_porosity"],
             v_s=settling_velocity,
@@ -240,51 +229,6 @@ class BasicHyRt(TwoLithologyErosionModel):
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
             self.grid, linear_diffusivity=self.regolith_transport_parameter
-        )
-
-    def _setup_rock_and_till(self):
-        """Set up fields to handle for two layers with different erodability."""
-        # Get a reference to the rock-till field\
-        self._setup_contact_elevation()
-
-        # Create field for rock erodability
-        self.erody_br = self.grid.add_ones("node", "K_br")
-
-        # field for rock threshold values
-        self.threshold_br = self.grid.add_ones("node", "sp_crit_br")
-
-        # Create array for erodability weighting function for BEDROCK
-        self.erody_wt_br = np.zeros(self.grid.number_of_nodes)
-
-    def _update_erodability_and_threshold_fields(self):
-        """Update erodability at each node.
-
-        The erodability at each node is a smooth function between the rock and
-        till erodabilities and is based on the contact zone width and the
-        elevation of the surface relative to contact elevation.
-        """
-
-        # Update the erodability weighting function (this is "F")
-        self._update_erodywt()
-
-        # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
-            erode_factor = self.boundary_handler[
-                "PrecipChanger"
-            ].get_erodability_adjustment_factor()
-            self.till_erody_br = self.K_till_sp * erode_factor
-            self.rock_erody_br = self.K_rock_sp * erode_factor
-
-        # Calculate the effective BEDROCK erodibilities using weighted averaging
-        self.erody_br[:] = (
-            self.erody_wt_br * self.till_erody_br
-            + (1.0 - self.erody_wt_br) * self.rock_erody_br
-        )
-
-        # Calculate the effective BEDROCK thresholds using weighted averaging
-        self.threshold_br[:] = (
-            self.erody_wt_br * self.till_thresh_br
-            + (1.0 - self.erody_wt_br) * self.rock_thresh_br
         )
 
     def run_one_step(self, dt):
