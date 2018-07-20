@@ -14,7 +14,6 @@ def test_bad_n_sp():
         "dt": 1,
         "output_interval": 2.,
         "run_duration": 200.,
-        "water_erosion_rule__threshold": 0.001,
         "water_erodability": 0.001,
         "n_sp": 1.01,
         "regolith_transport_parameter": 0.001,

@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from numpy.testing import assert_array_almost_equal, assert_array_equal
+from numpy.testing import assert_array_almost_equal
 
 
 from terrainbento import BasicRtSa
@@ -18,7 +18,6 @@ def test_steady_Kss_no_precip_changer():
     dt = 1000
     max_soil_production_rate = 0.0
     soil_production_decay_depth = 0.2
-    regolith_transport_parameter = 0.0
     soil_transport_decay_depth = 0.5
     soil__initial_thickness = 0.
 

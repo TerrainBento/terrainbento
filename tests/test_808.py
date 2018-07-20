@@ -1,8 +1,7 @@
 import os
 import numpy as np
 
-from numpy.testing import assert_array_almost_equal, assert_array_equal
-
+from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicDdRt
 
@@ -236,14 +235,9 @@ def test_with_precip_changer():
     Kr = 0.01
     Kt = 0.001
 
-    U = 0.0001
-
     T = 0.001
     dTdz = 0.005
 
-    m = 0.5
-    n = 1.0
-    dt = 1000
     params = {
         "model_grid": "RasterModelGrid",
         "dt": 1,

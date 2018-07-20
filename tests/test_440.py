@@ -225,7 +225,6 @@ def test_with_precip_changer():
         "soil_production__decay_depth": soil_production_decay_depth,
         "soil__initial_thickness": 0.0,
         "critical_slope": S_c,
-        "critical_slope": 0.2,
         "water_erodability": K,
         "m_sp": 0.5,
         "n_sp": 1.0,
