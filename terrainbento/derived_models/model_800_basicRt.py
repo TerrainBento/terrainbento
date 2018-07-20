@@ -222,14 +222,7 @@ class BasicRt(TwoLithologyErosionModel):
         till erodabilities and is based on the contact zone width and the
         elevation of the surface relative to contact elevation.
         """
-        # Update the erodability weighting function (this is "F")
-        self.erody_wt[self.data_nodes] = 1.0 / (
-            1.0
-            + np.exp(
-                -(self.z[self.data_nodes] - self.rock_till_contact[self.data_nodes])
-                / self.contact_width
-            )
-        )
+        self._update_erodywt()
 
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handler:

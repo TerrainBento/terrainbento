@@ -278,18 +278,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         till erodabilities and is based on the contact zone width and the
         elevation of the surface relative to contact elevation.
         """
-        # Update the erodability weighting function (this is "F")
-        core = self.grid.core_nodes
-        if self.contact_width > 0.0:
-            self.erody_wt[core] = 1.0 / (
-                1.0
-                + np.exp(
-                    -(self.z[core] - self.rock_till_contact[core]) / self.contact_width
-                )
-            )
-        else:
-            self.erody_wt[core] = 0.0
-            self.erody_wt[np.where(self.z > self.rock_till_contact)[0]] = 1.0
+        self._update_erodywt()
 
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handler:

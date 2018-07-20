@@ -68,7 +68,6 @@ class TwoLithologyErosionModel(ErosionModel):
         ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
     def _setup_contact_elevation(self):
-        """ """
         file_name = self.params["lithology_contact_elevation__file_name"]
 
         # Read input data on rock-till contact elevation
@@ -76,3 +75,13 @@ class TwoLithologyErosionModel(ErosionModel):
             file_name, grid=self.grid, halo=1, name="rock_till_contact__elevation"
         )
         self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
+
+    def _update_erodywt(self):
+        # Update the erodability weighting function (this is "F")
+        self.erody_wt[self.data_nodes] = 1.0 / (
+            1.0
+            + np.exp(
+                -(self.z[self.data_nodes] - self.rock_till_contact[self.data_nodes])
+                / self.contact_width
+            )
+        )

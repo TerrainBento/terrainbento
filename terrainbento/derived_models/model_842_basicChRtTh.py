@@ -259,15 +259,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         elevation of the surface relative to contact elevation.
         """
         # Update the erodability weighting function (this is "F")
-        D_over_D_star = (
-            self.z[self.data_nodes] - self.rock_till_contact[self.data_nodes]
-        ) / self.contact_width
-
-        # truncate D_over_D star to remove potential for overflow in exponent
-        D_over_D_star[D_over_D_star < -100.0] = -100.0
-        D_over_D_star[D_over_D_star > 100.0] = 100.0
-
-        self.erody_wt[self.data_nodes] = 1.0 / (1.0 + np.exp(-D_over_D_star))
+        self._update_erodywt()
 
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handler:
