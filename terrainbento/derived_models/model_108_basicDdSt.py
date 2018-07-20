@@ -34,7 +34,6 @@ PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
@@ -239,7 +238,7 @@ class BasicDdSt(StochasticErosionModel):
             dt_water = (dt * self.daily_rainfall_intermittency_factor) / float(
                 self.n_sub_steps
             )
-            for i in range(self.n_sub_steps):
+            for _ in range(self.n_sub_steps):
                 self.rain_rate = self.rain_generator.generate_from_stretched_exponential(
                     self.scale_factor, self.shape_factor
                 )

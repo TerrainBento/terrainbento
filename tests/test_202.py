@@ -1,5 +1,6 @@
-import os
-import subprocess
+# coding: utf8
+#! /usr/env/python
+
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
@@ -114,7 +115,8 @@ def test_bad_n_sp():
         "regolith_transport_parameter": 0.001,
     }
 
-    pytest.raises(ValueError, BasicThVs, params=params)
+    with pytest.raises(ValueError):
+        BasicThVs(params=params)
 
 
 def test_diffusion_only():

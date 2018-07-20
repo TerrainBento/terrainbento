@@ -1,3 +1,6 @@
+# coding: utf8
+#! /usr/env/python
+
 from numpy.testing import assert_almost_equal, assert_array_equal
 import pytest
 

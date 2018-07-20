@@ -79,7 +79,7 @@ class CaptureNodeBaselevelHandler(object):
         ...                                  capture_start_time = 10,
         ...                                  capture_stop_time = 20,
         ...                                  post_capture_incision_rate = -0.1)
-        >>> for i in range(10):
+        >>> for _ in range(10):
         ...     bh.run_one_step(1)
 
         The capture has not yet started, so we should expect that the topography
@@ -95,7 +95,7 @@ class CaptureNodeBaselevelHandler(object):
         Running forward another 10 time units, we should
         see node three lower by 30.
 
-        >>> for i in range(10):
+        >>> for _ in range(10):
         ...     bh.run_one_step(1)
         >>> print(z.reshape(mg.shape))
         [[  0.   0.   0. -30.   0.]
@@ -110,7 +110,7 @@ class CaptureNodeBaselevelHandler(object):
         capture incision rate. The node should lower by 1 to -31 in the next
         10 time units.
 
-        >>> for i in range(10):
+        >>> for _ in range(10):
         ...     bh.run_one_step(1)
         >>> print(z.reshape(mg.shape))
         [[  0.   0.   0. -31.   0.]

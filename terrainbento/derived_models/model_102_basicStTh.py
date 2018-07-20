@@ -33,7 +33,6 @@ PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder

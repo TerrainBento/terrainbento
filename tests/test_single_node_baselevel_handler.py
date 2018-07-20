@@ -1,3 +1,6 @@
+# coding: utf8
+#! /usr/env/python
+
 import sys
 import os
 
