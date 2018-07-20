@@ -1,26 +1,30 @@
-import os
+# coding: utf8
+#! /usr/env/python
+
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 import pytest
 
-from landlab import HexModelGrid
+
 from terrainbento import BasicDd
 
 
 def test_bad_n_sp():
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              "water_erosion_rule__threshold": 0.001,
-              'water_erodability': 0.001,
-              'n_sp': 1.01,
-              'regolith_transport_parameter': 0.001,
-              "water_erosion_rule__threshold": 0.001,
-              "water_erosion_rule__thresh_depth_derivative": 0.001}
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "water_erodability": 0.001,
+        "n_sp": 1.01,
+        "regolith_transport_parameter": 0.001,
+        "water_erosion_rule__threshold": 0.001,
+        "water_erosion_rule__thresh_depth_derivative": 0.001,
+    }
 
-    pytest.raises(ValueError, BasicDd, params=params)
+    with pytest.raises(ValueError):
+        BasicDd(params=params)
 
 
 # def test_steady_Ksp_no_precip_changer_no_thresh():
@@ -54,7 +58,7 @@ def test_bad_n_sp():
 #
 #     # construct and run model
 #     model = BasicDd(params=params)
-#     for i in range(100):
+#     for _ in range(100):
 #         model.run_one_step(dt)
 #
 #     # construct actual and predicted slopes
@@ -66,6 +70,7 @@ def test_bad_n_sp():
 #     assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
 #                               predicted_slopes[model.grid.core_nodes[1:-1]])
 
+
 def test_steady_Ksp_no_precip_changer_no_thresh_change():
     U = 0.0001
     K = 0.001
@@ -75,29 +80,30 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change():
     threshold = 0.1
     thresh_change_per_depth = 0.0
     # construct dictionary. note that D is turned off here
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              'number_of_node_rows' : 3,
-              'number_of_node_columns' : 20,
-              'node_spacing' : 100.0,
-              'north_boundary_closed': True,
-              'south_boundary_closed': True,
-              'regolith_transport_parameter': 0.,
-              'water_erodability': K,
-              'm_sp': m,
-              'n_sp': n,
-              "water_erosion_rule__threshold": threshold,
-              "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
-              'random_seed': 3141,
-              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-                                              'lowering_rate': -U}}
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 20,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability": K,
+        "m_sp": m,
+        "n_sp": n,
+        "water_erosion_rule__threshold": threshold,
+        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
+        "random_seed": 3141,
+        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+    }
 
     # construct and run model
     model = BasicDd(params=params)
-    for i in range(200):
+    for _ in range(200):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -110,8 +116,20 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change():
     predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are in the correct range for the slopes.
-    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] > predicted_slopes_lower[model.grid.core_nodes[1:-1]]) == True
-    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] < predicted_slopes_upper[model.grid.core_nodes[1:-1]]) == True
+    assert (
+        np.all(
+            actual_slopes[model.grid.core_nodes[1:-1]]
+            > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+        )
+        == True
+    )
+    assert (
+        np.all(
+            actual_slopes[model.grid.core_nodes[1:-1]]
+            < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
+        )
+        == True
+    )
 
 
 def test_steady_Ksp_no_precip_changer_with_thresh_change():
@@ -123,29 +141,30 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change():
     threshold = 0.1
     thresh_change_per_depth = 0.001
     # construct dictionary. note that D is turned off here
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              'number_of_node_rows' : 3,
-              'number_of_node_columns' : 20,
-              'node_spacing' : 100.0,
-              'north_boundary_closed': True,
-              'south_boundary_closed': True,
-              'regolith_transport_parameter': 0.,
-              'water_erodability': K,
-              'm_sp': m,
-              'n_sp': n,
-              "water_erosion_rule__threshold": threshold,
-              "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
-              'random_seed': 3141,
-              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-                                              'lowering_rate': -U}}
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 20,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability": K,
+        "m_sp": m,
+        "n_sp": n,
+        "water_erosion_rule__threshold": threshold,
+        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
+        "random_seed": 3141,
+        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+    }
 
     # construct and run model
     model = BasicDd(params=params)
-    for i in range(200):
+    for _ in range(200):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -159,7 +178,13 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change():
     predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are in the correct range for the slopes.
-    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]] > predicted_slopes_lower[model.grid.core_nodes[1:-1]]) == True
+    assert (
+        np.all(
+            actual_slopes[model.grid.core_nodes[1:-1]]
+            > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+        )
+        == True
+    )
 
 
 def test_steady_Ksp_no_precip_changer():
@@ -194,7 +219,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicDd(params=params)
-    for i in range(100):
+    for _ in range(100):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -203,9 +228,12 @@ def test_steady_Ksp_no_precip_changer():
     predicted_slopes = ((U / K + threshold) / ((actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
-                              predicted_slopes[model.grid.core_nodes[1:-1]],
-                              decimal=4)
+    assert_array_almost_equal(
+        actual_slopes[model.grid.core_nodes[1:-1]],
+        predicted_slopes[model.grid.core_nodes[1:-1]],
+        decimal=4,
+    )
+
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
     U = 0.0001
@@ -240,7 +268,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicDd(params=params)
-    for i in range(100):
+    for _ in range(100):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -249,9 +277,12 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     predicted_slopes = ((U / K + threshold) / ((actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
-                              predicted_slopes[model.grid.core_nodes[1:-1]],
-                              decimal=4)
+    assert_array_almost_equal(
+        actual_slopes[model.grid.core_nodes[1:-1]],
+        predicted_slopes[model.grid.core_nodes[1:-1]],
+        decimal=4,
+    )
+
 
 def test_with_precip_changer():
     K = 0.01
@@ -328,7 +359,7 @@ def test_diffusion_only():
     reference_node = 9
     # construct and run model
     model = BasicDd(params=params)
-    for i in range(nts):
+    for _ in range(nts):
         model.run_one_step(dt)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
@@ -345,6 +376,6 @@ def test_diffusion_only():
     )
 
     # assert actual and predicted elevations are the same.
-    assert_array_almost_equal(predicted_z[model.grid.core_nodes],
-                              model.z[model.grid.core_nodes],
-                              decimal=2)
+    assert_array_almost_equal(
+        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+    )

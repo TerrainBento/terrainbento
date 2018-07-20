@@ -11,7 +11,7 @@ Landlab components used:
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
-import sys
+
 import numpy as np
 from scipy.interpolate import interp1d
 

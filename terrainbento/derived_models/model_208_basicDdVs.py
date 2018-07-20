@@ -13,7 +13,6 @@ Landlab components used:
     4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
-import sys
 import numpy as np
 
 from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
@@ -213,7 +212,9 @@ class BasicDdVs(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["water_erosion_rule__thresh_depth_derivative"]
+        self.thresh_change_per_depth = self.params[
+            "water_erosion_rule__thresh_depth_derivative"
+        ]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

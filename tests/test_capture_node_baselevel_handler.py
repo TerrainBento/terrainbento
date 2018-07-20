@@ -1,10 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 28 17:59:39 2018
-
-@author: barnhark
-"""
+# coding: utf8
+#! /usr/env/python
 
 import sys
 import os
@@ -45,7 +40,7 @@ def test_no_stop_time():
         mg, capture_node=3, capture_incision_rate=-3.0, capture_start_time=0
     )
 
-    for i in range(10):
+    for _ in range(10):
         bh.run_one_step(10)
 
     assert z[3] == -3.0 * 10 * 10

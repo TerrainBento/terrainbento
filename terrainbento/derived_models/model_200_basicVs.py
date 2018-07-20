@@ -12,7 +12,6 @@ Landlab components used:
     4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
-import sys
 import numpy as np
 
 from landlab.components import StreamPowerEroder, LinearDiffuser

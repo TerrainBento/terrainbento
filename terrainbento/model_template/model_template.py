@@ -70,8 +70,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
             BoundaryHandlers=BoundaryHandlers,
         )  # line.
 
-        # replace pass with all actions needed to initialize the model.
-        pass
+        # put all actions needed to initialize the model below this line.
 
     def run_one_step(self, dt):
         """Run each component for one time step.

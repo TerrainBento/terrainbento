@@ -1,3 +1,6 @@
+# coding: utf8
+#! /usr/env/python
+
 from numpy.testing import assert_almost_equal, assert_array_equal
 import pytest
 
@@ -68,7 +71,7 @@ def test_time_units_equivalent():
         time_unit="second",
     )
 
-    for i in range(10):
+    for _ in range(10):
         pc_day.run_one_step(1.0 / DAYS_PER_DAY)
         pc_yr.run_one_step(1.0 / DAYS_PER_YEAR)
         pc_sec.run_one_step(1.0 / DAYS_PER_SECOND)
@@ -107,7 +110,7 @@ def test_a_stop_time():
     )
 
     # for the first ten steps, nothing should change
-    for i in range(10):
+    for _ in range(10):
         pc.run_one_step(1.0)
         i, p = pc.get_current_precip_params()
         f = pc.get_erodability_adjustment_factor()
@@ -121,7 +124,7 @@ def test_a_stop_time():
     f_end = pc.get_erodability_adjustment_factor()
 
     # then verify that no change occurs again.
-    for i in range(10):
+    for _ in range(10):
         pc.run_one_step(1.0)
         i, p = pc.get_current_precip_params()
         f = pc.get_erodability_adjustment_factor()
