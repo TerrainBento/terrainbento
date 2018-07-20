@@ -1,10 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 28 17:59:39 2018
-
-@author: barnhark
-"""
+# coding: utf8
+#! /usr/env/python
 
 import sys
 import os
