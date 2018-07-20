@@ -68,8 +68,6 @@ def test_diffusion_only():
     steady_z_profile_firsthalf = (steady_domain[0:half_space])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))-(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
     steady_z_profile_secondhalf = -(steady_domain[half_space:])**2*U/(regolith_transport_parameter*2*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))+(U*(number_of_node_columns/2)**2)/(2*regolith_transport_parameter*(1-np.exp(-predicted_depth/soil_transport_decay_depth)))
 
-
-
     steady_z_profile = np.append([-steady_z_profile_firsthalf],[steady_z_profile_secondhalf])
     predicted_profile = steady_z_profile - np.min(steady_z_profile)
 
