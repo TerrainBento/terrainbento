@@ -104,6 +104,7 @@ class TwoLithologyErosionModel(ErosionModel):
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
 
         # Set values correctly
+        self._update_erodywt()
         self._update_erodability_field()
 
     def _setup_rock_and_till_with_threshold(self):
@@ -121,6 +122,7 @@ class TwoLithologyErosionModel(ErosionModel):
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
 
         # set values correctly
+        self._update_erodywt()
         self._update_erodability_and_threshold_fields()
 
     def _update_erodywt(self):

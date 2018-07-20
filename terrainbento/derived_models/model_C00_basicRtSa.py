@@ -214,16 +214,6 @@ class BasicRtSa(TwoLithologyErosionModel):
             BoundaryHandlers=BoundaryHandlers,
             OutputWriters=OutputWriters,
         )
-        self.K_rock = self.get_parameter_from_exponent("water_erodability~lower") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        self.K_till = self.get_parameter_from_exponent("water_erodability~upper") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
-        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
-        self.rock_erody = self.K_rock
-        self.till_erody = self.K_till
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
