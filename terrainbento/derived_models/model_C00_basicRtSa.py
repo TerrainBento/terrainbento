@@ -266,8 +266,8 @@ class BasicRtSa(TwoLithologyErosionModel):
 
         self.weatherer = ExponentialWeatherer(
             self.grid,
-            max_soil_production_rate=max_soil_production_rate,
-            soil_production_decay_depth=soil_production_decay_depth,
+            soil_production__maximum_rate=max_soil_production_rate,
+            soil_production__decay_depth=soil_production_decay_depth,
         )
 
     def _setup_rock_and_till(self):

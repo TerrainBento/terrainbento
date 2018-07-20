@@ -7,7 +7,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
-from landlab import HexModelGrid
+
 from terrainbento import BasicHySa
 
 
@@ -265,12 +265,10 @@ def test_stability_checker():
     }
 
     # construct and run model
-    # unstable model should raise SystemExit
     with pytest.raises(SystemExit):
         model = BasicHySa(params=params)
         for _ in range(800):
             model.run_one_step(dt)
-    os.remove("model_failed.txt")
 
 
 # =============================================================================
