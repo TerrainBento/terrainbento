@@ -17,7 +17,6 @@ def test_diffusion_only():
     dt = 10
     dx = 10.0
 
-    number_of_node_columns = 21
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2
     regolith_transport_parameter = 1.0
@@ -25,15 +24,14 @@ def test_diffusion_only():
     initial_soil_thickness = 0.0
     hydraulic_conductivity = 0.1
     recharge_rate = 0.5
-    runtime = 100000
-
+    number_of_node_columns = 21
     #Construct dictionary. Note that stream power is turned off
     params = {'model_grid': 'RasterModelGrid',
                 'dt': dt,
                 'output_interval': 2.,
                 'run_duration': 200.,
                 'number_of_node_rows' : 3,
-                'number_of_node_columns' : 21,
+                'number_of_node_columns' : number_of_node_columns,
                 'node_spacing' : dx,
                 'north_boundary_closed': True,
                 'south_boundary_closed': True,
@@ -43,10 +41,8 @@ def test_diffusion_only():
                 'soil_production__decay_depth': soil_production_decay_depth,
                 'soil__initial_thickness': initial_soil_thickness,
                 'water_erodability': K,
-                "hydraulic_conductivity": hydraulic_conductivity,
                 "recharge_rate": recharge_rate,
                 "hydraulic_conductivity": hydraulic_conductivity,
-                "recharge_rate": recharge_rate,
                 'm_sp': m,
                 'n_sp': n,
           	    'depression_finder': 'DepressionFinderAndRouter',
@@ -54,10 +50,9 @@ def test_diffusion_only():
                 'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
                                                 'lowering_rate': -U}}
 
-
     #Construct and run model
     model = BasicSaVs(params=params)
-    for _ in range(runtime):
+    for _ in range(100000):
       model.run_one_step(dt)
 
     #test steady state soil depth
@@ -86,8 +81,8 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.01
     m = 0.5
     n = 1.0
-    dt = 10
-    dx = 10.0
+    dt = 1000.
+    dx = 100.0
     max_soil_production_rate = 0.0
     soil_production_decay_depth = 0.2
     regolith_transport_parameter = 1.0
@@ -122,7 +117,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicSaVs(params=params)
-    for _ in range(2000):
+    for _ in range(100):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -141,14 +136,15 @@ def test_steady_Ksp_no_precip_changer():
     K = 0.01
     m = 0.5
     n = 1.0
-    dt = 10
-    dx = 10.0
+    dt = 1000.
+    dx = 100.0
     max_soil_production_rate = 0.0
     soil_production_decay_depth = 0.2
     regolith_transport_parameter = 1.0
     soil_transport_decay_depth = 0.5
     hydraulic_conductivity = 0.1
     recharge_rate = 0.5
+
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
                 'dt': dt,
@@ -175,7 +171,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicSaVs(params=params)
-    for _ in range(2000):
+    for _ in range(100):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -186,6 +182,7 @@ def test_steady_Ksp_no_precip_changer():
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
                               predicted_slopes[model.grid.core_nodes[1:-1]], decimal = 4)
+
 
 
 def test_with_precip_changer():
@@ -230,8 +227,8 @@ def test_with_precip_changer():
                                  'daily_rainfall__mean_intensity_time_rate_of_change': 0.2}}
 
     model = BasicSaVs(params=params)
-    assert model.eroder._K_unit_time == K
+    assert np.array_equiv(model.eroder._K_unit_time, K) == True
     assert 'PrecipChanger' in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder._K_unit_time, 5) == 0.10326
+    assert np.array_equiv(np.round(model.eroder._K_unit_time, 5), 0.10326) == True
