@@ -262,12 +262,11 @@ def test_stability_checker():
     }
 
     # construct and run model
-    # unstable model should raise SystemExit
     with pytest.raises(SystemExit):
         model = BasicHySa(params=params)
         for i in range(800):
             model.run_one_step(dt)
-    os.remove("model_failed.txt")
+
 # =============================================================================
 # def test_diffusion_only():
 #     total_time = 500
