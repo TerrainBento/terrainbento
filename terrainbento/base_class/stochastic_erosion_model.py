@@ -256,6 +256,11 @@ class StochasticErosionModel(ErosionModel):
         self.rain_generator.seed_generator(seedval=seed)
 
     def _pre_water_erosion_steps(self):
+        """Convenience function for pre-water erosion steps.
+
+        If a model needs to do anything before each erosion step is run, e.g.
+        recalculate a threshold value, that model should overwrite this function.
+        """
         pass
 
     def handle_water_erosion(self, dt, flooded):
