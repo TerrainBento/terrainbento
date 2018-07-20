@@ -1,10 +1,9 @@
-import os
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 import pytest
 
-from landlab import HexModelGrid
+
 from terrainbento import BasicHySa
 
 
@@ -59,7 +58,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicHySa(params=params)
-    for i in range(800):
+    for _ in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -132,7 +131,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicHySa(params=params)
-    for i in range(800):
+    for _ in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -262,12 +261,12 @@ def test_stability_checker():
     }
 
     # construct and run model
-    # unstable model should raise SystemExit
     with pytest.raises(SystemExit):
         model = BasicHySa(params=params)
-        for i in range(800):
+        for _ in range(800):
             model.run_one_step(dt)
-    os.remove("model_failed.txt")
+
+
 # =============================================================================
 # def test_diffusion_only():
 #     total_time = 500
@@ -325,7 +324,7 @@ def test_stability_checker():
 #     reference_node = 9
 #     # construct and run model
 #     model = BasicHySa(params=params)
-#     for i in range(nts):
+#     for _ in range(nts):
 #         model.run_one_step(dt)
 #
 #

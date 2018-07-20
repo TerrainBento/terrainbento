@@ -213,7 +213,9 @@ class BasicDdVs(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["water_erosion_rule__thresh_depth_derivative"]
+        self.thresh_change_per_depth = self.params[
+            "water_erosion_rule__thresh_depth_derivative"
+        ]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
@@ -292,7 +294,7 @@ class BasicDdVs(ErosionModel):
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handler:
             self.eroder.K = (
-                self.K_sp
+                self.K
                 * self.boundary_handler[
                     "PrecipChanger"
                 ].get_erodability_adjustment_factor()
