@@ -267,6 +267,7 @@ def test_stability_checker():
         for _ in range(800):
             model.run_one_step(dt)
 
+
 # =============================================================================
 # def test_diffusion_only():
 #     total_time = 500

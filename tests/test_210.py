@@ -8,6 +8,7 @@ import pytest
 
 from terrainbento import BasicHyVs
 
+
 def test_Aeff():
     U = 0.0001
     K = 0.001
@@ -56,22 +57,31 @@ def test_Aeff():
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
 
-    alpha = hydraulic_conductivity * soil__initial_thickness*node_spacing/recharge_rate
-    A_eff_predicted = actual_areas*np.exp(-(-alpha*actual_slopes)/actual_areas)
+    alpha = (
+        hydraulic_conductivity * soil__initial_thickness * node_spacing / recharge_rate
+    )
+    A_eff_predicted = actual_areas * np.exp(-(-alpha * actual_slopes) / actual_areas)
 
     # assert aeff internally calculated correclty
-    #assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes],decimal = 2)
+    # assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes],decimal = 2)
 
     # assert correct s a relationship (slightly circular)
     predicted_slopes = (U / (K * (A_eff_predicted ** m))) ** (1. / n)
-    assert_array_almost_equal(actual_slopes[model.grid.core_nodes], predicted_slopes[model.grid.core_nodes],decimal = 3)
+    assert_array_almost_equal(
+        actual_slopes[model.grid.core_nodes],
+        predicted_slopes[model.grid.core_nodes],
+        decimal=3,
+    )
 
     # assert all slopes above non effective
     predicted_slopes_normal = (U / (K * (actual_areas ** m))) ** (1. / n)
-    assert np.all(actual_slopes[model.grid.core_nodes]>predicted_slopes_normal[model.grid.core_nodes]) == True
-
-
-
+    assert (
+        np.all(
+            actual_slopes[model.grid.core_nodes]
+            > predicted_slopes_normal[model.grid.core_nodes]
+        )
+        == True
+    )
 
 
 def test_steady_Kss_no_precip_changer():
@@ -409,4 +419,3 @@ def test_diffusion_only():
     assert_array_almost_equal(
         predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )
-

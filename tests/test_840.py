@@ -36,7 +36,7 @@ def test_steady_Kss_no_precip_changer():
         "contact_zone__width": 1.,
         "m_sp": m,
         "n_sp": n,
-        'critical_slope': Sc,
+        "critical_slope": Sc,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
@@ -87,7 +87,7 @@ def test_steady_Ksp_no_precip_changer():
         "contact_zone__width": 1.,
         "m_sp": m,
         "n_sp": n,
-        'critical_slope': Sc,
+        "critical_slope": Sc,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
@@ -136,7 +136,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "water_erodability~upper": Kt,
         "lithology_contact_elevation__file_name": file_name,
         "contact_zone__width": 1.,
-        'critical_slope': Sc,
+        "critical_slope": Sc,
         "m_sp": m,
         "n_sp": n,
         "random_seed": 3141,
@@ -174,50 +174,51 @@ def test_diffusion_only():
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
 
-    #Construct dictionary. Note that stream power is turned off
-    params = {'model_grid': 'RasterModelGrid',
-                'dt': dt,
-                'output_interval': 2.,
-                'run_duration': 200.,
-                'number_of_node_rows' : 21,
-                'number_of_node_columns' : 3,
-                'node_spacing' : dx,
-                'east_boundary_closed': True,
-                'west_boundary_closed': True,
-                'regolith_transport_parameter': D,
-                "water_erodability~lower": 0,
-                "water_erodability~upper": 0,
-                "contact_zone__width": 1.0,
-                'm_sp': m,
-                'n_sp': n,
-          	    'critical_slope': S_c,
-                "lithology_contact_elevation__file_name": file_name,
-          	    'depression_finder': 'DepressionFinderAndRouter',
-          	    'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-                'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-                                                'lowering_rate': -U}}
+    # Construct dictionary. Note that stream power is turned off
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": dt,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 21,
+        "number_of_node_columns": 3,
+        "node_spacing": dx,
+        "east_boundary_closed": True,
+        "west_boundary_closed": True,
+        "regolith_transport_parameter": D,
+        "water_erodability~lower": 0,
+        "water_erodability~upper": 0,
+        "contact_zone__width": 1.0,
+        "m_sp": m,
+        "n_sp": n,
+        "critical_slope": S_c,
+        "lithology_contact_elevation__file_name": file_name,
+        "depression_finder": "DepressionFinderAndRouter",
+        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+    }
 
-    #Construct and run model
+    # Construct and run model
     model = BasicChRt(params=params)
     for _ in range(runtime):
-      model.run_one_step(dt)
+        model.run_one_step(dt)
 
-    #Construct actual and predicted slope at top edge of domain
-    x = 8.5*dx
-    qs = U*x
+    # Construct actual and predicted slope at top edge of domain
+    x = 8.5 * dx
+    qs = U * x
     nterms = 11
-    p = np.zeros(2*nterms-1)
-    for k in range(1,nterms+1):
-      p[2*k-2] = D*(1/(S_c**(2*(k-1))))
+    p = np.zeros(2 * nterms - 1)
+    for k in range(1, nterms + 1):
+        p[2 * k - 2] = D * (1 / (S_c ** (2 * (k - 1))))
     p = np.fliplr([p])[0]
-    p = np.append(p,qs)
+    p = np.append(p, qs)
     p_roots = np.roots(p)
     predicted_slope = np.abs(np.real(p_roots[-1]))
-    #print(predicted_slope)
+    # print(predicted_slope)
 
-    actual_slope = np.abs(model.grid.at_node['topographic__steepest_slope'][7])
-    #print model.grid.at_node['topographic__steepest_slope']
-    assert_array_almost_equal(actual_slope, predicted_slope, decimal = 3)
+    actual_slope = np.abs(model.grid.at_node["topographic__steepest_slope"][7])
+    # print model.grid.at_node['topographic__steepest_slope']
+    assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)
 
 
 def test_with_precip_changer():
@@ -243,7 +244,7 @@ def test_with_precip_changer():
         "contact_zone__width": 1.,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        'critical_slope': Sc,
+        "critical_slope": Sc,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
         "PrecipChanger": {

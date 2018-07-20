@@ -35,7 +35,7 @@ def test_steady_Kss_no_precip_changer():
         "regolith_transport_parameter": 0.,
         "water_erodability~lower": Kr,
         "water_erodability~upper": Kt,
-        'soil__initial_thickness': initial_soil_thickness,
+        "soil__initial_thickness": initial_soil_thickness,
         "recharge_rate": recharge_rate,
         "hydraulic_conductivity": hydraulic_conductivity,
         "lithology_contact_elevation__file_name": file_name,
@@ -90,7 +90,7 @@ def test_steady_Ksp_no_precip_changer():
         "regolith_transport_parameter": 0.,
         "water_erodability~lower": Kr,
         "water_erodability~upper": Kt,
-        'soil__initial_thickness': initial_soil_thickness,
+        "soil__initial_thickness": initial_soil_thickness,
         "recharge_rate": recharge_rate,
         "hydraulic_conductivity": hydraulic_conductivity,
         "lithology_contact_elevation__file_name": file_name,
@@ -145,7 +145,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "regolith_transport_parameter": 0.,
         "water_erodability~lower": Kr,
         "water_erodability~upper": Kt,
-        'soil__initial_thickness': initial_soil_thickness,
+        "soil__initial_thickness": initial_soil_thickness,
         "recharge_rate": recharge_rate,
         "hydraulic_conductivity": hydraulic_conductivity,
         "lithology_contact_elevation__file_name": file_name,
@@ -202,7 +202,7 @@ def test_diffusion_only():
         "regolith_transport_parameter": D,
         "water_erodability~lower": 0,
         "water_erodability~upper": 0,
-        'soil__initial_thickness': initial_soil_thickness,
+        "soil__initial_thickness": initial_soil_thickness,
         "recharge_rate": recharge_rate,
         "hydraulic_conductivity": hydraulic_conductivity,
         "lithology_contact_elevation__file_name": file_name,
@@ -257,7 +257,7 @@ def test_with_precip_changer():
         "regolith_transport_parameter": 0.,
         "water_erodability~lower": Kr,
         "water_erodability~upper": Kt,
-        'soil__initial_thickness': initial_soil_thickness,
+        "soil__initial_thickness": initial_soil_thickness,
         "recharge_rate": recharge_rate,
         "hydraulic_conductivity": hydraulic_conductivity,
         "lithology_contact_elevation__file_name": file_name,
@@ -276,8 +276,13 @@ def test_with_precip_changer():
 
     model = BasicRtVs(params=params)
     model._update_erodability_field()
-    assert np.array_equiv(model.eroder._K_unit_time[model.grid.core_nodes[:8]], Kt) == True
-    assert np.array_equiv(model.eroder._K_unit_time[model.grid.core_nodes[10:]], Kr) == True
+    assert (
+        np.array_equiv(model.eroder._K_unit_time[model.grid.core_nodes[:8]], Kt) == True
+    )
+    assert (
+        np.array_equiv(model.eroder._K_unit_time[model.grid.core_nodes[10:]], Kr)
+        == True
+    )
 
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
@@ -285,8 +290,10 @@ def test_with_precip_changer():
 
     true_fw = 10.32628
     assert_array_almost_equal(
-        model.eroder._K_unit_time[model.grid.core_nodes[:8]], Kt * true_fw * np.ones((8))
+        model.eroder._K_unit_time[model.grid.core_nodes[:8]],
+        Kt * true_fw * np.ones((8)),
     )
     assert_array_almost_equal(
-        model.eroder._K_unit_time[model.grid.core_nodes[10:]], Kr * true_fw * np.ones((9))
+        model.eroder._K_unit_time[model.grid.core_nodes[10:]],
+        Kr * true_fw * np.ones((9)),
     )
