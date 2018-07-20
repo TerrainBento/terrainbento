@@ -12,6 +12,7 @@ Landlab components used:
     4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
+import numpy as np
 
 from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
 from terrainbento.base_class import ErosionModel
