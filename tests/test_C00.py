@@ -188,12 +188,13 @@ def test_diffusion_only():
     U = 0.001
     m = 0.5
     n = 1.0
-    dt = 10
+    dt = 10.
+    dx = 10.
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2
     regolith_transport_parameter = 1.0
     soil_transport_decay_depth = 0.5
-    soil__initial_thickness = 0.0
+    initial_soil_thickness = 0.0
     number_of_node_rows = 21
 
     # construct dictionary. note that D is turned off here
@@ -201,19 +202,19 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "dt": dt,
         "output_interval": 2.,
         "run_duration": 200.,
         "number_of_node_rows": number_of_node_rows,
         "number_of_node_columns": 3,
-        "node_spacing": 100.0,
+        "node_spacing": dx,
         "east_boundary_closed": True,
         "west_boundary_closed": True,
         "regolith_transport_parameter": regolith_transport_parameter,
         "soil_transport_decay_depth": soil_transport_decay_depth,
         "soil_production__maximum_rate": max_soil_production_rate,
         "soil_production__decay_depth": soil_production_decay_depth,
-        "soil__initial_thickness": soil__initial_thickness,
+        "soil__initial_thickness": initial_soil_thickness,
         "water_erodability~lower": 0,
         "water_erodability~upper": 0,
         "lithology_contact_elevation__file_name": file_name,
@@ -227,38 +228,38 @@ def test_diffusion_only():
 
     # construct and run model
     model = BasicRtSa(params=params)
-    for _ in range(100000):
+    for _ in range(120000):
         model.run_one_step(dt)
 
     # test steady state soil depth
-    actual_depth = model.grid.at_node["soil__depth"][31]
+    actual_depth = model.grid.at_node["soil__depth"][28]
     predicted_depth = -soil_production_decay_depth * np.log(
         U / max_soil_production_rate
     )
     assert_array_almost_equal(actual_depth, predicted_depth, decimal=3)
 
     # test steady state slope
-    actual_profile = model.grid.at_node["topographic__elevation"][21:42]
+    actual_profile = model.grid.at_node["topographic__elevation"][model.grid.core_nodes]
 
-    domain = np.arange(0, max(model.grid.node_x + dx), dx)
+    domain = np.arange(0, max(model.grid.node_y + dx), dx)
     steady_domain = np.arange(-max(domain) / 2., max(domain) / 2. + dx, dx)
 
     half_space = int(len(domain) / 2)
     steady_z_profile_firsthalf = (steady_domain[0:half_space]) ** 2 * U / (
         regolith_transport_parameter
-        * 2
+        * 2.
         * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))
-    ) - (U * (number_of_node_columns / 2) ** 2) / (
-        2
+    ) - (U * (number_of_node_rows / 2) ** 2) / (
+        2.
         * regolith_transport_parameter
         * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))
     )
     steady_z_profile_secondhalf = -(steady_domain[half_space:]) ** 2 * U / (
         regolith_transport_parameter
-        * 2
+        * 2.
         * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))
-    ) + (U * (number_of_node_columns / 2) ** 2) / (
-        2
+    ) + (U * (number_of_node_rows / 2) ** 2) / (
+        2.
         * regolith_transport_parameter
         * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))
     )
@@ -268,7 +269,7 @@ def test_diffusion_only():
     )
     predicted_profile = steady_z_profile - np.min(steady_z_profile)
 
-    assert_array_almost_equal(actual_profile, predicted_profile)
+    assert_array_almost_equal(actual_profile, predicted_profile[1:-1])
 
 
 def test_with_precip_changer():
