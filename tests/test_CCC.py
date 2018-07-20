@@ -42,7 +42,7 @@ def test_steady_Ksp_with_depression_finding():
 
     # construct and run model
     model = BasicCv(params=params)
-    for i in range(run_time):
+    for _ in range(run_time):
         model.run_one_step(dt)
 
 
@@ -84,7 +84,7 @@ def test_diffusion_only():
     reference_node = 9
     # construct and run model
     model = BasicCv(params=params)
-    for i in range(nts):
+    for _ in range(nts):
         model.run_one_step(dt)
 
 

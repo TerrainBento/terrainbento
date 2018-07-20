@@ -50,7 +50,7 @@ def test_diffusion_only():
 
     #Construct and run model
     model = BasicSa(params=params)
-    for i in range(runtime):
+    for _ in range(runtime):
       model.run_one_step(dt)
 
     #test steady state soil depth
@@ -113,7 +113,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicSa(params=params)
-    for i in range(run_time):
+    for _ in range(run_time):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -163,7 +163,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicSa(params=params)
-    for i in range(run_time):
+    for _ in range(run_time):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes

@@ -183,7 +183,7 @@ def test_diffusion_only():
     reference_node = 9
     # construct and run model
     model = BasicHyRt(params=params)
-    for i in range(nts):
+    for _ in range(nts):
         model.run_one_step(dt)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (

@@ -73,7 +73,7 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
     b = mg.add_zeros("node", "bedrock__elevation")
 
     bh = NotCoreNodeBaselevelHandler(mg, modify_core_nodes=True, lowering_rate=-0.1)
-    for i in range(240):
+    for _ in range(240):
         bh.run_one_step(10)
 
     closed = mg.status_at_node != 0
@@ -93,7 +93,7 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
     b = mg.add_zeros("node", "bedrock__elevation")
 
     bh = NotCoreNodeBaselevelHandler(mg, modify_core_nodes=False, lowering_rate=-0.1)
-    for i in range(240):
+    for _ in range(240):
         bh.run_one_step(10)
 
     closed = mg.status_at_node != 0
@@ -119,7 +119,7 @@ def test_outlet_lowering_object_no_scaling_bedrock():
     bh = NotCoreNodeBaselevelHandler(
         mg, modify_core_nodes=False, lowering_file_path=file
     )
-    for i in range(241):
+    for _ in range(241):
         bh.run_one_step(10)
 
     closed = mg.status_at_node != 0
@@ -143,7 +143,7 @@ def test_outlet_lowering_object_no_scaling():
     bh = NotCoreNodeBaselevelHandler(
         mg, modify_core_nodes=False, lowering_file_path=file
     )
-    for i in range(241):
+    for _ in range(241):
         bh.run_one_step(10)
 
     closed = mg.status_at_node != 0
@@ -165,7 +165,7 @@ def test_outlet_lowering_object_no_scaling_core_nodes():
     bh = NotCoreNodeBaselevelHandler(
         mg, modify_core_nodes=True, lowering_file_path=file
     )
-    for i in range(241):
+    for _ in range(241):
         bh.run_one_step(10)
 
     closed = mg.status_at_node != 0
@@ -187,7 +187,7 @@ def test_outlet_lowering_object_with_scaling():
     bh = NotCoreNodeBaselevelHandler(
         mg, modify_core_nodes=False, lowering_file_path=file, model_end_elevation=-318.0
     )
-    for i in range(241):
+    for _ in range(241):
         bh.run_one_step(10)
 
     closed = mg.status_at_node != 0

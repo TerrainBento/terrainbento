@@ -43,7 +43,7 @@ def test_steady_Kss_no_precip_changer():
 
     # construct and run model
     model = BasicHy(params=params)
-    for i in range(2000):
+    for _ in range(2000):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -98,7 +98,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicHy(params=params)
-    for i in range(800):
+    for _ in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -152,7 +152,7 @@ def test_steady_Ksp_no_precip_changer_no_solver_given():
 
     # construct and run model
     model = BasicHy(params=params)
-    for i in range(800):
+    for _ in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -208,7 +208,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicHy(params=params)
-    for i in range(800):
+    for _ in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -309,7 +309,7 @@ def test_diffusion_only():
     reference_node = 9
     # construct and run model
     model = BasicHy(params=params)
-    for i in range(nts):
+    for _ in range(nts):
         model.run_one_step(dt)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (

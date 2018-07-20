@@ -94,7 +94,6 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     soil_transport_decay_depth = 0.5
     hydraulic_conductivity = 0.1
     recharge_rate = 0.5
-    run_time = 1000
 
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
@@ -123,7 +122,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicSaVs(params=params)
-    for i in range(run_time):
+    for _ in range(2000):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -138,6 +137,18 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
 
 def test_steady_Ksp_no_precip_changer():
+    U = 0.001
+    K = 0.01
+    m = 0.5
+    n = 1.0
+    dt = 10
+    dx = 10.0
+    max_soil_production_rate = 0.0
+    soil_production_decay_depth = 0.2
+    regolith_transport_parameter = 1.0
+    soil_transport_decay_depth = 0.5
+    hydraulic_conductivity = 0.1
+    recharge_rate = 0.5
     # construct dictionary. note that D is turned off here
     params = {'model_grid': 'RasterModelGrid',
                 'dt': dt,
@@ -164,7 +175,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicSaVs(params=params)
-    for i in range(run_time):
+    for _ in range(2000):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -219,8 +230,8 @@ def test_with_precip_changer():
                                  'daily_rainfall__mean_intensity_time_rate_of_change': 0.2}}
 
     model = BasicSaVs(params=params)
-    assert model.eroder.K == K
+    assert model.eroder._K_unit_time == K
     assert 'PrecipChanger' in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K, 5) == 0.10326
+    assert round(model.eroder._K_unit_time, 5) == 0.10326
