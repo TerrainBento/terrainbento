@@ -293,7 +293,7 @@ class BasicSaVs(ErosionModel):
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handler:
-            self.eroder.K = (
+            self.eroder._K_unit_time = (
                 self.K_sp
                 * self.boundary_handler[
                     "PrecipChanger"
