@@ -3,7 +3,7 @@ import numpy as np
 
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from landlab import HexModelGrid
+
 from terrainbento import BasicRtSa
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
