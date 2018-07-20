@@ -5,8 +5,9 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 import pytest
 
-from landlab import HexModelGrid
+
 from terrainbento import BasicHyVs
+
 
 def test_Aeff():
     U = 0.0001
@@ -49,29 +50,38 @@ def test_Aeff():
     }
 
     model = BasicHyVs(params=params)
-    for i in range(200):
+    for _ in range(200):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
 
-    alpha = hydraulic_conductivity * soil__initial_thickness*node_spacing/recharge_rate
-    A_eff_predicted = actual_areas*np.exp(-(-alpha*actual_slopes)/actual_areas)
+    alpha = (
+        hydraulic_conductivity * soil__initial_thickness * node_spacing / recharge_rate
+    )
+    A_eff_predicted = actual_areas * np.exp(-(-alpha * actual_slopes) / actual_areas)
 
     # assert aeff internally calculated correclty
-    #assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes],decimal = 2)
+    # assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes],decimal = 2)
 
     # assert correct s a relationship (slightly circular)
     predicted_slopes = (U / (K * (A_eff_predicted ** m))) ** (1. / n)
-    assert_array_almost_equal(actual_slopes[model.grid.core_nodes], predicted_slopes[model.grid.core_nodes],decimal = 3)
+    assert_array_almost_equal(
+        actual_slopes[model.grid.core_nodes],
+        predicted_slopes[model.grid.core_nodes],
+        decimal=3,
+    )
 
     # assert all slopes above non effective
     predicted_slopes_normal = (U / (K * (actual_areas ** m))) ** (1. / n)
-    assert np.all(actual_slopes[model.grid.core_nodes]>predicted_slopes_normal[model.grid.core_nodes]) == True
-
-
-
+    assert (
+        np.all(
+            actual_slopes[model.grid.core_nodes]
+            > predicted_slopes_normal[model.grid.core_nodes]
+        )
+        == True
+    )
 
 
 def test_steady_Kss_no_precip_changer():
@@ -113,7 +123,7 @@ def test_steady_Kss_no_precip_changer():
 
     # construct and run model
     model = BasicHyVs(params=params)
-    for i in range(2000):
+    for _ in range(2000):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -171,7 +181,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicHyVs(params=params)
-    for i in range(800):
+    for _ in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -228,7 +238,7 @@ def test_steady_Ksp_no_precip_changer_no_solver_given():
 
     # construct and run model
     model = BasicHyVs(params=params)
-    for i in range(800):
+    for _ in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -287,7 +297,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicHyVs(params=params)
-    for i in range(800):
+    for _ in range(800):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -394,7 +404,7 @@ def test_diffusion_only():
     reference_node = 9
     # construct and run model
     model = BasicHyVs(params=params)
-    for i in range(nts):
+    for _ in range(nts):
         model.run_one_step(dt)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
@@ -409,4 +419,3 @@ def test_diffusion_only():
     assert_array_almost_equal(
         predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )
-
