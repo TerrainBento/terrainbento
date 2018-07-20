@@ -45,11 +45,6 @@ def test_diffusion_only():
     for i in range(runtime):
       model.run_one_step(dt)
 
-
-
-
-
-
     #Construct actual and predicted slope at right edge of domain
     x = 8.5*dx
     qs = U*x
@@ -66,7 +61,6 @@ def test_diffusion_only():
     actual_slope = np.abs(model.grid.at_node['topographic__steepest_slope'][39])
     #print model.grid.at_node['topographic__steepest_slope']
     assert_array_almost_equal(actual_slope, predicted_slope, decimal = 3)
-
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
@@ -96,7 +90,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
               'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
               'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
                                               'lowering_rate': -U}}
-    
+
     # construct and run model
     model = BasicCh(params=params)
     for i in range(run_time):
@@ -184,19 +178,3 @@ def test_with_precip_changer():
     model.run_one_step(1.0)
     model.run_one_step(1.0)
     assert round(model.eroder.K, 5) == 0.10326
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -183,9 +183,8 @@ def test_diffusion_only():
     T = 0.001
     dTdz = 0.005
 
-    # construct dictionary. note that D is turned off here
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
-    # construct dictionary. note that D is turned off here
+
     params = {
         "model_grid": "RasterModelGrid",
         "dt": 1,
