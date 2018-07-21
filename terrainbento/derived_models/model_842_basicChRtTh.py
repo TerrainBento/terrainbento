@@ -171,7 +171,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         ...           'water_erosion_rule~upper__threshold': 0.1,
         ...           'water_erosion_rule~lower__threshold': 0.2,
         ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'critical_slope': 0.1}
