@@ -149,7 +149,7 @@ class StochasticErosionModel(ErosionModel):
             self.params["record_rain"] = True
 
         # Second, test that
-        if self.params.get("record_rain"):
+        if self.params.get("record_rain", False):
             self.record_rain = True
             self.rain_record = {
                 "event_start_time": [],
