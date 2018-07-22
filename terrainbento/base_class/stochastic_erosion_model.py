@@ -351,7 +351,7 @@ class StochasticErosionModel(ErosionModel):
 
                 # if dry time is greater than zero, record.
                 if dt_dry > 0:
-                    event_start_time = self.model_time + ((i + 1) * dt_water)
+                    event_start_time = self.model_time + (self.n_sub_steps * dt_water)
                     self.record_rain_event(event_start_time, dt_dry, 0.0, 0.0)
 
     def finalize(self):
