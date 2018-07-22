@@ -72,7 +72,7 @@ class BasicSt(StochasticErosionModel):
         self.n = self.params["n_sp"]
         self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
             self._length_factor ** ((3. * self.m) - 1)
-        ) # K stochastic has units of [=] T^{m-1}/L^{3m-1}
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.

@@ -202,7 +202,6 @@ class BasicHyRt(TwoLithologyErosionModel):
             "settling_velocity"
         )  # normalized settling velocity. Unitless.
 
-
         # Save the threshold values for rock and till
         self.rock_thresh = 0.
         self.till_thresh = 0.
