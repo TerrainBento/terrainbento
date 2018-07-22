@@ -100,7 +100,7 @@ class BasicSt(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid, K_sp=K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
+            self.grid, K_sp=self.K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
         )
 
         # Instantiate a LinearDiffuser component
