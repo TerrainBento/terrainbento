@@ -10,6 +10,9 @@ that have been designed to modify model boundary conditions during a model run.
 
 from .base_class import ErosionModel
 from .base_class import StochasticErosionModel
+from .base_class import TwoLithologyErosionModel
+
+from .model_template import ModelTemplate
 
 from .boundary_condition_handlers import PrecipChanger
 from .boundary_condition_handlers import SingleNodeBaselevelHandler
