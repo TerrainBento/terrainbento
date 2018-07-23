@@ -303,7 +303,7 @@ class ErosionModel(object):
         for req in ["dt", "output_interval", "run_duration"]:
             if req in self.params:
                 try:
-                    val = float(self.params[req])
+                    _ = float(self.params[req])
                 except ValueError:
                     msg = (
                         "Required parameter {0} is not compatible with type float.".format(

@@ -8,6 +8,7 @@ from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 from terrainbento import BasicHySa
 
+
 def test_steady_Ksp_no_precip_changer():
     U = 0.0001
     K_rock_sp = 0.001
