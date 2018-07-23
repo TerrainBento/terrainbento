@@ -266,7 +266,6 @@ def _check_infiltration_capacity(infiltration_capacity):
         )
 
 
-
 class PrecipChanger(object):
     """Handle time varying precipitation.
 

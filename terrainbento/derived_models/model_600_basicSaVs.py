@@ -327,7 +327,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    vssa = BasicVsSa(input_file=infile)
+    vssa = BasicSaVs(input_file=infile)
     vssa.run()
 
 
