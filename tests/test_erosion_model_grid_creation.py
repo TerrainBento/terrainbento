@@ -296,7 +296,8 @@ def test_DEM_two_possible_outlets():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
     params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
 
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
     params = {

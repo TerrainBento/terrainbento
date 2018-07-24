@@ -19,9 +19,8 @@ from terrainbento.boundary_condition_handlers import (
 
 def test_bad_boundary_condition_component():
     params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    pytest.raises(
-        ValueError, ErosionModel, params=params, BoundaryHandlers=LinearDiffuser
-    )
+    with pytest.raises(ValueError):
+        ErosionModel(params=params, BoundaryHandlers=LinearDiffuser)
 
 
 def test_boundary_condition_already_instantiated():
@@ -30,17 +29,20 @@ def test_boundary_condition_already_instantiated():
     nf = NormalFault(mg)
 
     params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    pytest.raises(ValueError, ErosionModel, params=params, BoundaryHandlers=nf)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params, BoundaryHandlers=nf)
 
 
 def test_bad_boundary_condition_string():
     params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    pytest.raises(ValueError, ErosionModel, params=params, BoundaryHandlers="spam")
+    with pytest.raises(ValueError):
+        ErosionModel(params=params, BoundaryHandlers="spam")
 
 
 def test_bad_boundary_condition_string():
     params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    pytest.raises(ValueError, ErosionModel, params=params, BoundaryHandlers="spam")
+    with pytest.raises(ValueError):
+        ErosionModel(params=params, BoundaryHandlers="spam")
 
 
 def test_boundary_condition_handler_with_special_part_of_params():

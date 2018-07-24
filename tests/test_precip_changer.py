@@ -18,9 +18,8 @@ from terrainbento.boundary_condition_handlers.precip_changer import (
 def test_bad_time_unit():
     """Test passing a bad time unit."""
     mg = RasterModelGrid(5, 5)
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
+    with pytest.raises(ValueError)
+        PrecipChanger(
         mg,
         daily_rainfall__intermittency_factor=0.3,
         daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
@@ -136,9 +135,8 @@ def test_a_stop_time():
 def test_bad_intermittency():
     """Test intermittency factors that are too big or small."""
     mg = RasterModelGrid(5, 5)
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
+    with pytest.raises(ValueError):
+        PrecipChanger(
         mg,
         daily_rainfall__intermittency_factor=-0.001,
         daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
@@ -149,9 +147,8 @@ def test_bad_intermittency():
         time_unit="year",
     )
 
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
+    with pytest.raises(ValueError):
+        PrecipChanger(
         mg,
         daily_rainfall__intermittency_factor=1.001,
         daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
@@ -166,9 +163,8 @@ def test_bad_intermittency():
 def test_bad_intensity():
     """Test rainfall intensity that is too small."""
     mg = RasterModelGrid(5, 5)
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
+    with pytest.raises(ValueError):
+        PrecipChanger(
         mg,
         daily_rainfall__intermittency_factor=1.0,
         daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
@@ -183,9 +179,8 @@ def test_bad_intensity():
 def test_bad_infiltration():
     """Test infiltration_capacity that is too small."""
     mg = RasterModelGrid(5, 5)
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
+    with pytest.raises(ValueError):
+        PrecipChanger(
         mg,
         daily_rainfall__intermittency_factor=1.0,
         daily_rainfall__intermittency_factor_time_rate_of_change=0.01,

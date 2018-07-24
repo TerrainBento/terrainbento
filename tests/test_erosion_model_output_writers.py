@@ -40,10 +40,6 @@ def output_writer_function_b(model):
     pass
 
 
-def test_pickle_with_output_writers():
-    pass
-
-
 def test_two_function_writers():
     pass
 

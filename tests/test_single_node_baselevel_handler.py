@@ -28,7 +28,8 @@ def test_passing_neither_lowering_method():
     mg = RasterModelGrid(5, 5)
     _ = mg.add_zeros("node", "topographic__elevation")
 
-    pytest.raises(ValueError, SingleNodeBaselevelHandler, mg, outlet_node=0)
+    with pytest.raises(ValueError):
+        SingleNodeBaselevelHandler(mg, outlet_node=0)
 
 
 def test_passing_both_lowering_methods():
@@ -37,9 +38,8 @@ def test_passing_both_lowering_methods():
     z = mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
-    pytest.raises(
-        ValueError,
-        SingleNodeBaselevelHandler,
+    with pytest.raises(ValueError):
+        SingleNodeBaselevelHandler(
         mg,
         outlet_node=0,
         lowering_rate=-0.1,
@@ -53,9 +53,8 @@ def test_outlet_lowering_object_bad_file():
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
 
-    pytest.raises(
-        ValueError,
-        SingleNodeBaselevelHandler,
+    with pytest.raises(ValueError):
+        SingleNodeBaselevelHandler(
         mg,
         outlet_node=0,
         lowering_file_path="foo.txt",

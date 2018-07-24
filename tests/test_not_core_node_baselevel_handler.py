@@ -38,7 +38,8 @@ def test_passing_neither_lowering_method():
     mg = RasterModelGrid(5, 5)
     _ = mg.add_zeros("node", "topographic__elevation")
 
-    pytest.raises(ValueError, NotCoreNodeBaselevelHandler, mg)
+    with pytest.raises(ValueError):
+        NotCoreNodeBaselevelHandler(mg)
 
 
 def test_passing_both_lowering_methods():
@@ -47,13 +48,8 @@ def test_passing_both_lowering_methods():
     z = mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
-    pytest.raises(
-        ValueError,
-        NotCoreNodeBaselevelHandler,
-        mg,
-        lowering_rate=-0.1,
-        lowering_file_path=file,
-    )
+    with pytest.raises(ValueError):
+        NotCoreNodeBaselevelHandler(mg, lowering_rate=-0.1, lowering_file_path=file)
 
 
 def test_outlet_lowering_object_bad_file():
@@ -62,8 +58,8 @@ def test_outlet_lowering_object_bad_file():
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
 
-    pytest.raises(
-        ValueError, NotCoreNodeBaselevelHandler, mg, lowering_file_path="foo.txt"
+    with pytest.raises(ValueError):
+        NotCoreNodeBaselevelHandler(mg, lowering_file_path="foo.txt"
     )
 
 
