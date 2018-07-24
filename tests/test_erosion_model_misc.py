@@ -20,7 +20,7 @@ def test_length_conversion_raises_error():
         "output_interval": 2.,
         "run_duration": 10.,
     }
-    with pytest.raises(ValueError)
+    with pytest.raises(ValueError):
         ErosionModel(params=params)
 
 

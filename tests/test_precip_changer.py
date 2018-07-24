@@ -18,7 +18,7 @@ from terrainbento.boundary_condition_handlers.precip_changer import (
 def test_bad_time_unit():
     """Test passing a bad time unit."""
     mg = RasterModelGrid(5, 5)
-    with pytest.raises(ValueError)
+    with pytest.raises(ValueError):
         PrecipChanger(
         mg,
         daily_rainfall__intermittency_factor=0.3,
