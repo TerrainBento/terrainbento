@@ -94,9 +94,7 @@ class StochasticErosionModel(ErosionModel):
      existing ``run_for``, **run**, and **finalize** methods.
     """
 
-    def __init__(
-        self, input_file=None, params=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -125,10 +123,7 @@ class StochasticErosionModel(ErosionModel):
         """
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(
-            input_file=input_file,
-            params=params,
-
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         self.opt_stochastic_duration = self.params.get("opt_stochastic_duration", False)

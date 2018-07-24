@@ -70,17 +70,12 @@ class BasicDdSt(StochasticErosionModel):
     >>> srt = BasicDdSt(params=my_pars)
     """
 
-    def __init__(
-        self, input_file=None, params=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """Initialize the BasicDdSt."""
 
         # Call ErosionModel's init
         super(BasicDdSt, self).__init__(
-            input_file=input_file,
-            params=params,
-            
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters:

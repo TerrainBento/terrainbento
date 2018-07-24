@@ -40,11 +40,8 @@ def test_passing_both_lowering_methods():
 
     with pytest.raises(ValueError):
         SingleNodeBaselevelHandler(
-        mg,
-        outlet_node=0,
-        lowering_rate=-0.1,
-        lowering_file_path=file,
-    )
+            mg, outlet_node=0, lowering_rate=-0.1, lowering_file_path=file
+        )
 
 
 def test_outlet_lowering_object_bad_file():
@@ -54,11 +51,7 @@ def test_outlet_lowering_object_bad_file():
     z = mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
-        SingleNodeBaselevelHandler(
-        mg,
-        outlet_node=0,
-        lowering_file_path="foo.txt",
-    )
+        SingleNodeBaselevelHandler(mg, outlet_node=0, lowering_file_path="foo.txt")
 
 
 def test_outlet_lowering_rate_no_scaling_bedrock():

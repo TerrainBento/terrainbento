@@ -66,7 +66,7 @@ def test_no_noise_sythetic_topo():
         "dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
-        "add_random_noise": False
+        "add_random_noise": False,
     }
     em = ErosionModel(params=params)
     known_z = np.zeros(em.z.shape)
@@ -260,7 +260,13 @@ def test_Raster_with_boundaries():
 
 def test_DEM_and_rows():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10., "number_of_node_rows": 5}
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+        "number_of_node_rows": 5,
+    }
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)

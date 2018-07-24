@@ -59,8 +59,7 @@ def test_outlet_lowering_object_bad_file():
     z = mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
-        NotCoreNodeBaselevelHandler(mg, lowering_file_path="foo.txt"
-    )
+        NotCoreNodeBaselevelHandler(mg, lowering_file_path="foo.txt")
 
 
 def test_outlet_lowering_rate_no_scaling_bedrock():

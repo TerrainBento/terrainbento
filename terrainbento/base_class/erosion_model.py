@@ -243,9 +243,7 @@ class ErosionModel(object):
     existing **run_for**, **run**, and **finalize** methods.
     """
 
-    def __init__(
-        self, input_file=None, params=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -417,7 +415,6 @@ class ErosionModel(object):
         if "BoundaryHandlers" in self.params:
             BoundaryHandlers = self.params["BoundaryHandlers"]
 
-        if BoundaryHandlers is not None:
             if isinstance(BoundaryHandlers, list):
                 for comp in BoundaryHandlers:
                     self.setup_boundary_handler(comp)
@@ -722,9 +719,11 @@ class ErosionModel(object):
             self.z[noise_nodes] += init_z + (init_sigma * rs)
         else:
             if noise_location:
-                msg = ("terrainbento ErosionModel: `add_random_noise` is False "
-                       "but `add_noise_to_all_nodes` is set as True. This "
-                       "parameter has no effect.")
+                msg = (
+                    "terrainbento ErosionModel: `add_random_noise` is False "
+                    "but `add_noise_to_all_nodes` is set as True. This "
+                    "parameter has no effect."
+                )
                 raise ValueError(msg)
             self.z += init_z
 
@@ -787,9 +786,11 @@ class ErosionModel(object):
                 grid = read_netcdf(file_path)
                 vals = grid.at_node[name]
             except:
-                msg = ("terrainbento ErosionModel base class: the parameter "
-                       "provided in 'DEM_filename' is not a valid ESRII ASCII file "
-                       "or NetCDF file.")
+                msg = (
+                    "terrainbento ErosionModel base class: the parameter "
+                    "provided in 'DEM_filename' is not a valid ESRII ASCII file "
+                    "or NetCDF file."
+                )
                 raise ValueError(msg)
 
         return (grid, vals)

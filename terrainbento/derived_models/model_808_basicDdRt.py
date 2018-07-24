@@ -122,9 +122,7 @@ class BasicDdRt(TwoLithologyErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -134,9 +132,6 @@ class BasicDdRt(TwoLithologyErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        
-            
-            
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -189,10 +184,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         """
         # Call ErosionModel's init
         super(BasicDdRt, self).__init__(
-            input_file=input_file,
-            params=params,
-            
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         self.threshold_value = self._length_factor * self.get_parameter_from_exponent(

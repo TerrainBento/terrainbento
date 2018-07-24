@@ -57,9 +57,7 @@ class BasicTh(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -117,9 +115,7 @@ class BasicTh(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicTh, self).__init__(
-            input_file=input_file,
-            params=params,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         if float(self.params["n_sp"]) != 1.0:

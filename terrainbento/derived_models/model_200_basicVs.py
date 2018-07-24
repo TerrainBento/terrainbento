@@ -71,9 +71,7 @@ class BasicVs(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -134,9 +132,7 @@ class BasicVs(ErosionModel):
 
         # Call ErosionModel's init
         super(BasicVs, self).__init__(
-            input_file=input_file,
-            params=params,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
         # Get Parameters:
         self.m = self.params["m_sp"]

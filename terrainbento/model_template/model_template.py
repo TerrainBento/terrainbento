@@ -20,22 +20,37 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     This is where you will put introductory information about the model.
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None
-    ):  # Do not change this line
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
-        parameter_name : type
-            This is an example parameter_name.
-        option_a : bool, optional
-            List all parameters here, including their type, if they are optional,
-            and what their default values are. Default value is True.
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
 
-        Attributes
-        ----------
-        attribute_a : str
-            This would be an example attribute.
+        The **ModelTemplate** program inherits from the terrainbento
+        **ErosionModel** base class. In addition to the parameters required by
+        the base class, models built with this program require the following parameters.
+
+        +------------------+----------------------------------+
+        | Parameter Symbol | Input File Parameter Name        |
+        +==================+==================================+
+        |:math:`m`         | ``m_sp``                         |
+        +------------------+----------------------------------+
+        |:math:`n`         | ``n_sp``                         |
+        +------------------+----------------------------------+
+        |:math:`K`         | ``water_erodability``            |
+        +------------------+----------------------------------+
+        |:math:`D`         | ``regolith_transport_parameter`` |
+        +------------------+----------------------------------+
+
+        Expand on this table to include all required parameters.
 
         See also
         --------
@@ -67,7 +82,6 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         super(ModelTemplate, self).__init__(
             input_file=input_file,  # Replace  `ModelTemplate` with your model name.
             params=params,  # Do not change any additional parts of this
-            
         )  # line.
 
         # put all actions needed to initialize the model below this line.

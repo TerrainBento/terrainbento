@@ -66,9 +66,7 @@ class BasicCv(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -78,9 +76,6 @@ class BasicCv(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        
-            
-            
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -130,10 +125,7 @@ class BasicCv(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicCv, self).__init__(
-            input_file=input_file,
-            params=params,
-            
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]

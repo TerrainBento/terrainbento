@@ -17,34 +17,6 @@ from terrainbento.boundary_condition_handlers import (
 )
 
 
-def test_bad_boundary_condition_component():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    with pytest.raises(ValueError):
-        ErosionModel(params=params, BoundaryHandlers=LinearDiffuser)
-
-
-def test_boundary_condition_already_instantiated():
-    mg = RasterModelGrid(10, 10)
-    z = mg.add_zeros("node", "topographic__elevation")
-    nf = NormalFault(mg)
-
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    with pytest.raises(ValueError):
-        ErosionModel(params=params, BoundaryHandlers=nf)
-
-
-def test_bad_boundary_condition_string():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    with pytest.raises(ValueError):
-        ErosionModel(params=params, BoundaryHandlers="spam")
-
-
-def test_bad_boundary_condition_string():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    with pytest.raises(ValueError):
-        ErosionModel(params=params, BoundaryHandlers="spam")
-
-
 def test_boundary_condition_handler_with_special_part_of_params():
     U = 0.0001
     K = 0.001
@@ -137,9 +109,12 @@ def test_pass_two_boundary_handlers():
         "m_sp": m,
         "n_sp": n,
         "random_seed": 3141,
-        "BoundaryHandlers": ["NotCoreNodeBaselevelHandler", "SingleNodeBaselevelHandler"],
+        "BoundaryHandlers": [
+            "NotCoreNodeBaselevelHandler",
+            "SingleNodeBaselevelHandler",
+        ],
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
-        "SingleNodeBaselevelHandler":{"lowering_rate": -U}
+        "SingleNodeBaselevelHandler": {"lowering_rate": -U},
     }
     model = Basic(params=params)
     model.run_one_step(1.0)

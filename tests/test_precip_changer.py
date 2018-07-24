@@ -20,15 +20,15 @@ def test_bad_time_unit():
     mg = RasterModelGrid(5, 5)
     with pytest.raises(ValueError):
         PrecipChanger(
-        mg,
-        daily_rainfall__intermittency_factor=0.3,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=3.0,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=0,
-        time_unit="foo",
-    )
+            mg,
+            daily_rainfall__intermittency_factor=0.3,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=3.0,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=0,
+            time_unit="foo",
+        )
 
 
 def test_time_units_equivalent():
@@ -137,27 +137,27 @@ def test_bad_intermittency():
     mg = RasterModelGrid(5, 5)
     with pytest.raises(ValueError):
         PrecipChanger(
-        mg,
-        daily_rainfall__intermittency_factor=-0.001,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=3.0,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=0,
-        time_unit="year",
-    )
+            mg,
+            daily_rainfall__intermittency_factor=-0.001,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=3.0,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=0,
+            time_unit="year",
+        )
 
     with pytest.raises(ValueError):
         PrecipChanger(
-        mg,
-        daily_rainfall__intermittency_factor=1.001,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=3.0,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=0,
-        time_unit="year",
-    )
+            mg,
+            daily_rainfall__intermittency_factor=1.001,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=3.0,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=0,
+            time_unit="year",
+        )
 
 
 def test_bad_intensity():
@@ -165,15 +165,15 @@ def test_bad_intensity():
     mg = RasterModelGrid(5, 5)
     with pytest.raises(ValueError):
         PrecipChanger(
-        mg,
-        daily_rainfall__intermittency_factor=1.0,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=-1,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=0,
-        time_unit="year",
-    )
+            mg,
+            daily_rainfall__intermittency_factor=1.0,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=-1,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=0,
+            time_unit="year",
+        )
 
 
 def test_bad_infiltration():
@@ -181,12 +181,12 @@ def test_bad_infiltration():
     mg = RasterModelGrid(5, 5)
     with pytest.raises(ValueError):
         PrecipChanger(
-        mg,
-        daily_rainfall__intermittency_factor=1.0,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=0.34,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=-0.001,
-        time_unit="year",
-    )
+            mg,
+            daily_rainfall__intermittency_factor=1.0,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=0.34,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=-0.001,
+            time_unit="year",
+        )
