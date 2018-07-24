@@ -14,7 +14,7 @@ from landlab import RasterModelGrid, HexModelGrid
 
 
 def test_hex():
-    """Test using a hex grid""""
+    """Test using a hex grid"""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
