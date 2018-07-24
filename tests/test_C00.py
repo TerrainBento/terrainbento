@@ -21,7 +21,7 @@ def test_steady_Kss_no_precip_changer():
     soil_transport_decay_depth = 0.5
     soil__initial_thickness = 0.
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -79,7 +79,7 @@ def test_steady_Ksp_no_precip_changer():
     soil_transport_decay_depth = 0.5
     soil__initial_thickness = 0.
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -137,7 +137,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     soil_transport_decay_depth = 0.5
     soil__initial_thickness = 0.
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -197,7 +197,7 @@ def test_diffusion_only():
     number_of_node_rows = 21
 
     # construct dictionary. note that D is turned off here
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -272,7 +272,7 @@ def test_diffusion_only():
 
 
 def test_with_precip_changer():
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     Kr = 0.01
     Kt = 0.001

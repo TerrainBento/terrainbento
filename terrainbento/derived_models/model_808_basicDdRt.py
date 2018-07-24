@@ -171,7 +171,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         ...           "water_erosion_rule__threshold": 0.2,
         ...           'water_erosion_rule__thresh_depth_derivative': 0.001,
         ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0}
 
