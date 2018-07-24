@@ -73,7 +73,7 @@ class BasicHySt(StochasticErosionModel):
     """
 
     def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+        self, input_file=None, params=None, OutputWriters=None
     ):
         """Initialize the BasicHySt."""
 
@@ -81,7 +81,7 @@ class BasicHySt(StochasticErosionModel):
         super(BasicHySt, self).__init__(
             input_file=input_file,
             params=params,
-            BoundaryHandlers=BoundaryHandlers,
+            
             OutputWriters=OutputWriters,
         )
 

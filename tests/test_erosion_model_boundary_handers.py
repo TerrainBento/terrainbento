@@ -116,18 +116,6 @@ def test_boundary_condition_handler_without_special_part_of_params():
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
 
 
-def test_example_boundary_handlers():
-    pass
-
-
-def test_pass_boundary_handlers_as_str():
-    pass
-
-
-def test_pass_boundary_handlers_as_instance():
-    pass
-
-
 def test_pass_two_boundary_handlers():
     U = 0.0001
     K = 0.001

@@ -69,7 +69,7 @@ class BasicStTh(StochasticErosionModel):
     """
 
     def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+        self, input_file=None, params=None, OutputWriters=None
     ):
         """Initialize the BasicStTh."""
 
@@ -77,7 +77,7 @@ class BasicStTh(StochasticErosionModel):
         super(BasicStTh, self).__init__(
             input_file=input_file,
             params=params,
-            BoundaryHandlers=BoundaryHandlers,
+            
             OutputWriters=OutputWriters,
         )
 

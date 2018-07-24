@@ -67,7 +67,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         super(ModelTemplate, self).__init__(
             input_file=input_file,  # Replace  `ModelTemplate` with your model name.
             params=params,  # Do not change any additional parts of this
-            BoundaryHandlers=BoundaryHandlers,
+            
         )  # line.
 
         # put all actions needed to initialize the model below this line.

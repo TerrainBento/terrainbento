@@ -244,7 +244,7 @@ class ErosionModel(object):
     """
 
     def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
+        self, input_file=None, params=None, OutputWriters=None
     ):
         """
         Parameters
@@ -255,9 +255,6 @@ class ErosionModel(object):
         params : dict
             Dictionary containing the input file. One of input_file or params
             is required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions,
             optional Classes or functions used to write incremental output
             (e.g. make a diagnostic plot).
@@ -458,27 +455,16 @@ class ErosionModel(object):
         handler : str or object
             Name of instance of a supported boundary condition handler.
         """
-        try:  # if handler is an uninstantiated component
-            name = handler._name
-
-            if isinstance(handler, Component):
-                raise ValueError(
-                    (
-                        "Object passed to terrainbento is instantiated "
-                        ". This is not permitted."
-                    )
+        try:  # if handler is a string
+            name = handler
+            handler = _HANDLER_METHODS[name]
+        except KeyError:
+            raise ValueError(
+                (
+                    "Object passed to terrainbento init is not a "
+                    "valid Boundary Handler."
                 )
-        except AttributeError:
-            try:  # if handler is a string
-                name = handler
-                handler = _HANDLER_METHODS[name]
-            except KeyError:
-                raise ValueError(
-                    (
-                        "Object passed to terrainbento init is not a "
-                        "valid Boundary Handler."
-                    )
-                )
+            )
 
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 
