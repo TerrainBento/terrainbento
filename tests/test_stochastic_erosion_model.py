@@ -254,12 +254,39 @@ def test_float_number_of_sub_time_steps():
         model = BasicSt(params=params)
 
 
-def test_run_opt_true_with_changer():
-    pass
-
-
 def test_run_opt_false_with_changer():
-    pass
+    params = {
+    "opt_stochastic_duration": False,
+    "dt": 10,
+    "output_interval": 2.,
+    "run_duration": 1000.,
+    "record_rain": True,
+    "m_sp": 0.5,
+    "n_sp": 1.0,
+    "water_erodability~stochastic": 0.01,
+    "regolith_transport_parameter": 0.1,
+    "infiltration_capacity": 0.0,
+    "daily_rainfall__mean_intensity": 1.,
+    "daily_rainfall_intermittency_factor": 0.1,
+    "daily_rainfall__precipitation_shape_factor": 0.6,
+    "number_of_sub_time_steps": 1,
+    "random_seed": 1234,
+    "BoundaryHandlers": "PrecipChanger",
+    "PrecipChanger": {
+        "daily_rainfall__intermittency_factor": 0.1,
+        "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
+        "daily_rainfall__mean_intensity": 1.,
+        "daily_rainfall__mean_intensity_time_rate_of_change": 0.0001,
+    }
+    }
+
+    model = BasicSt(params=params)
+    model.run_for(params["dt"], params["run_duration"])
+    assert "PrecipChanger" in model.boundary_handler
+
+    assert model.daily_rainfall_intermittency_factor == 0.199
+    assert (np.round(model.daily_rainfall__mean_intensity, decimals=3) ==
+           np.round( 0.10173785078713211, decimals =3))
 
 
 def test_finalize_opt_duration_stochastic_true():
