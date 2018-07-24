@@ -144,7 +144,7 @@ class BasicSt(StochasticErosionModel):
         self.diffuser.run_one_step(dt)
 
         # Finalize the run_one_step_method
-        self.finalize_run_one_step(dt)
+        self.finalize__run_one_step(dt)
 
 
 def main():  # pragma: no cover
