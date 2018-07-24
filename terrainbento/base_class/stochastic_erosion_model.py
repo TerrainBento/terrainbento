@@ -359,20 +359,25 @@ class StochasticErosionModel(ErosionModel):
         """
         # if rain was recorded, write it out.
         if self.record_rain:
-            filename = self.params.get("storm_sequence_filename", 'storm_sequence.txt')
+            filename = self.params.get("storm_sequence_filename", "storm_sequence.txt")
             self.write_storm_sequence_to_file(filename=filename)
 
             if self.opt_stochastic_duration == False:
                 # if opt_stochastic_duration = False, calculate exceedance
                 # frequencies and write out.
-                frequency_filename = self.params.get("frequency_filename", 'exceedance_summary.txt')
+                frequency_filename = self.params.get(
+                    "frequency_filename", "exceedance_summary.txt"
+                )
                 try:
                     self.write_exceedance_frequency_file(filename=frequency_filename)
                 except IndexError:
-                    msg = ('terrainbento stochastic model: the rain record was '
-                           'too short to calculate exceedance frequency statistics.')
+                    msg = (
+                        "terrainbento stochastic model: the rain record was "
+                        "too short to calculate exceedance frequency statistics."
+                    )
                     os.remove(frequency_filename)
                     raise RuntimeError(msg)
+
     def record_rain_event(
         self, event_start_time, event_duration, rainfall_rate, runoff_rate
     ):
@@ -461,7 +466,7 @@ class StochasticErosionModel(ErosionModel):
                 "No rain fell, which makes calculating exceedance "
                 "frequencies problematic. We recommend that you "
                 "check the valude of daily_rainfall_intermittency_factor."
-                        )
+            )
 
         with open(filename, "w") as exceedance_file:
 
@@ -478,12 +483,16 @@ class StochasticErosionModel(ErosionModel):
                     + "\n"
                 )
             )
-            exceedance_file.write(("Number of wet days per year: " + str(nwet) + "\n\n"))
+            exceedance_file.write(
+                ("Number of wet days per year: " + str(nwet) + "\n\n")
+            )
             message_text = (
                 "The scale factor that describes this distribution is "
                 + "calculated based on a provided value for the mean wet day rainfall."
             )
-            exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+            exceedance_file.write(
+                "\n".join(textwrap.wrap(message_text, _STRING_LENGTH))
+            )
             exceedance_file.write("\n")
 
             exceedance_file.write(
@@ -524,7 +533,9 @@ class StochasticErosionModel(ErosionModel):
                 + "distribution, we can calculate theoretical predictions "
                 + "of the daily rainfall amounts associated with N-year events."
             )
-            exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+            exceedance_file.write(
+                "\n".join(textwrap.wrap(message_text, _STRING_LENGTH))
+            )
             exceedance_file.write("\n")
 
             for i in range(len(daily_distribution_exceedance_probabilities)):
@@ -558,7 +569,9 @@ class StochasticErosionModel(ErosionModel):
                 "Section 3: Predicted 95% confidence bounds on the "
                 + "exceedance values based on number of samples drawn."
             )
-            exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+            exceedance_file.write(
+                "\n".join(textwrap.wrap(message_text, _STRING_LENGTH))
+            )
             exceedance_file.write("\n")
 
             message_text = (
@@ -570,7 +583,9 @@ class StochasticErosionModel(ErosionModel):
                 + "and decreases with decreasing probability of event "
                 + "occurrence."
             )
-            exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+            exceedance_file.write(
+                "\n".join(textwrap.wrap(message_text, _STRING_LENGTH))
+            )
             exceedance_file.write("\n")
 
             message_text = (
@@ -581,7 +596,9 @@ class StochasticErosionModel(ErosionModel):
                 + str(num_effective_years)
                 + " effective years."
             )
-            exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+            exceedance_file.write(
+                "\n".join(textwrap.wrap(message_text, _STRING_LENGTH))
+            )
             exceedance_file.write("\n")
 
             # For a general probability distribution, f, with a continuous not zero
@@ -608,7 +625,8 @@ class StochasticErosionModel(ErosionModel):
                 * ((expected_rainfall / self.scale_factor) ** (self.shape_factor - 1.0))
                 * (
                     np.exp(
-                        -1. * (expected_rainfall / self.scale_factor) ** self.shape_factor
+                        -1.
+                        * (expected_rainfall / self.scale_factor) ** self.shape_factor
                     )
                 )
             )
@@ -628,7 +646,9 @@ class StochasticErosionModel(ErosionModel):
                 + "confidence bounds for the following event "
                 + "return intervals are as follows: "
             )
-            exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+            exceedance_file.write(
+                "\n".join(textwrap.wrap(message_text, _STRING_LENGTH))
+            )
             exceedance_file.write("\n")
             for i in range(len(event_intervals)):
 
@@ -681,7 +701,9 @@ class StochasticErosionModel(ErosionModel):
                 + "record of rainfall. The empirical values should fall "
                 + "within the expected range at a 95% confidence level."
             )
-            exceedance_file.write("\n".join(textwrap.wrap(message_text, _STRING_LENGTH)))
+            exceedance_file.write(
+                "\n".join(textwrap.wrap(message_text, _STRING_LENGTH))
+            )
             exceedance_file.write("\n")
 
             for i in range(len(event_percentiles)):
