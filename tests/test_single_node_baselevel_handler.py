@@ -1,12 +1,6 @@
 # coding: utf8
 #! /usr/env/python
 
-import sys
-import os
-
-import numpy as np
-
-from numpy.testing import assert_almost_equal
 import pytest
 
 from terrainbento.boundary_condition_handlers import SingleNodeBaselevelHandler
@@ -31,7 +25,7 @@ def text_hex():
 def test_passing_neither_lowering_method():
     """Test passing no lowering information"""
     mg = RasterModelGrid(5, 5)
-    z = mg.add_zeros("node", "topographic__elevation")
+    _ = mg.add_zeros("node", "topographic__elevation")
 
     pytest.raises(ValueError, SingleNodeBaselevelHandler, mg, outlet_node=0)
 
