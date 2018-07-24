@@ -145,14 +145,6 @@ def test_freq_file_with_opt_duration_true():
         _ = StochasticErosionModel(params=params)
 
 
-def test_run_opt_true_with_changer():
-    pass
-
-
-def test_run_opt_false_with_changer():
-    pass
-
-
 def test_reset_random_seed_stochastic_duration_true():
     params = {
         "opt_stochastic_duration": True,
@@ -240,15 +232,6 @@ def test_reset_random_seed_stochastic_duration_false():
         )
     np.testing.assert_array_equal(depth_1, depth_2)
 
-
-def test_finalize_opt_duration_stochastic_true():
-    pass
-
-
-def test_finalize_opt_duration_stochastic_false():
-    pass
-
-
 def test_float_number_of_sub_time_steps():
     params = {
         "opt_stochastic_duration": False,
@@ -269,6 +252,22 @@ def test_float_number_of_sub_time_steps():
     }
     with pytest.raises(ValueError):
         model = BasicSt(params=params)
+
+
+def test_run_opt_true_with_changer():
+    pass
+
+
+def test_run_opt_false_with_changer():
+    pass
+
+
+def test_finalize_opt_duration_stochastic_true():
+    pass
+
+
+def test_finalize_opt_duration_stochastic_false():
+    pass
 
 
 # double check if these two options work with BOTH stochastic duration options.
