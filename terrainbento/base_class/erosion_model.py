@@ -904,7 +904,7 @@ class ErosionModel(object):
                 }
             )
 
-            if field_names is not None:
+            if field_names is None:
                 field_names = self.grid.at_node.keys()
 
             for field_name in field_names:
