@@ -420,9 +420,7 @@ class ErosionModel(object):
         if "BoundaryHandlers" in self.params:
             BoundaryHandlers = self.params["BoundaryHandlers"]
 
-        if BoundaryHandlers is None:
-            pass
-        else:
+        if BoundaryHandlers is not None:
             if isinstance(BoundaryHandlers, list):
                 for comp in BoundaryHandlers:
                     self.setup_boundary_handler(comp)
@@ -433,9 +431,7 @@ class ErosionModel(object):
         # Output Writers
         ###################################################################
         self.output_writers = {"class": {}, "function": []}
-        if OutputWriters is None:
-            pass
-        else:
+        if OutputWriters is not None:
             if isinstance(OutputWriters, list):
                 for comp in OutputWriters:
                     self.setup_output_writer(comp)

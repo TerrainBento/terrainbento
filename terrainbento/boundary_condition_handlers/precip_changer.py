@@ -230,11 +230,9 @@ def _scale_fac(pmean, c):
 
 def _check_intermittency_value(daily_rainfall_intermittency_factor):
     """Check that daily_rainfall_intermittency_factor is >= 0 and <=1."""
-    if (daily_rainfall_intermittency_factor >= 0.0) and (
-        daily_rainfall_intermittency_factor <= 1.0
+    if (daily_rainfall_intermittency_factor < 0.0) or (
+        daily_rainfall_intermittency_factor > 1.0
     ):
-        pass
-    else:
         raise ValueError(
             (
                 "The PrecipChanger daily_rainfall_intermittency_factor has a "
