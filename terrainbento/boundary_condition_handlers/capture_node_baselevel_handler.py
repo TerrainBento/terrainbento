@@ -21,7 +21,7 @@ class CaptureNodeBaselevelHandler(object):
     def __init__(
         self,
         grid,
-        capture_node,
+        capture_node=None,
         capture_start_time=0,
         capture_stop_time=None,
         capture_incision_rate=-0.01,

@@ -279,10 +279,10 @@ class PrecipChanger(object):
     def __init__(
         self,
         grid,
-        daily_rainfall__intermittency_factor,
-        daily_rainfall__intermittency_factor_time_rate_of_change,
-        daily_rainfall__mean_intensity,
-        daily_rainfall__mean_intensity_time_rate_of_change,
+        daily_rainfall__intermittency_factor=0.2,
+        daily_rainfall__intermittency_factor_time_rate_of_change=0.0,
+        daily_rainfall__mean_intensity=0.1,
+        daily_rainfall__mean_intensity_time_rate_of_change=0.0,
         daily_rainfall__precipitation_shape_factor=0.65,
         time_unit="year",
         infiltration_capacity=0,
@@ -297,20 +297,22 @@ class PrecipChanger(object):
         Parameters
         ----------
         grid : landlab model grid
-        daily_rainfall_daily_rainfall_intermittency_factor : float
+        daily_rainfall_intermittency_factor : float, optional
             Starting value of the rainfall daily_rainfall_intermittency_factor :math:`F`. This
             value is a proportion and ranges from 0 (no rain ever) to 1 (rains
-            every day).
-        daily_rainfall_daily_rainfall_intermittency_factor__time_rate_of_change : float
+            every day). Default value is 0.2.
+        daily_rainfall_intermittency_factor__time_rate_of_change : float, optional
             Time rate of change of the rainfall daily_rainfall_intermittency_factor :math:`F`.
             Units are implied by the ``time_unit`` argument. Note that this
-            factor must always be between 0 and 1.
-        daily_rainfall__mean_intensity : float
+            factor must always be between 0 and 1. Default value is 0.0.
+        daily_rainfall__mean_intensity : float, optional
             Starting value of the mean daily rainfall intensity :math:`p_d`.
-            Units are implied by the ``time_unit`` argument.
-        daily_rainfall__mean_intensity__time_rate_of_change : float
+            Units are implied by the ``time_unit`` argument. Default value is
+            0.1.
+        daily_rainfall__mean_intensity__time_rate_of_change : float, optional
             Time rate of change of the mean daily rainfall intensity :math:`p_d`.
-            Units are implied by the ``time_unit`` argument.
+            Units are implied by the ``time_unit`` argument. Default value is
+            0.0.
         daily_rainfall__precipitation_shape_factor : float, optional
             Weibull distribution shape factor :math:`c`. Default value is 0.65.
         infiltration_capacity : float, optional
