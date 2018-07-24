@@ -1,9 +1,13 @@
 # coding: utf8
 #! /usr/env/python
 import os
+import filecmp
 import pytest
 import numpy as np
 from terrainbento import StochasticErosionModel, BasicSt
+
+
+_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_defaults():
@@ -193,7 +197,6 @@ def test_reset_random_seed_stochastic_duration_true():
 
 
 def test_reset_random_seed_stochastic_duration_false():
-
     params = {
         "opt_stochastic_duration": False,
         "dt": 10,
@@ -340,6 +343,7 @@ def test_finalize_opt_duration_stochastic_false_too_short():
     model.run_for(params["dt"], params["run_duration"])
     with pytest.raises(RuntimeError):
         model.finalize()
+
     os.remove('storm_sequence.txt')
 
 def test_finalize_opt_duration_stochastic_false_no_rain():
@@ -360,7 +364,6 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
         "number_of_sub_time_steps": 1,
         "random_seed": 1234
     }
-
     model = BasicSt(params=params)
     model.run_for(params["dt"], params["run_duration"])
     with pytest.raises(ValueError):
@@ -384,13 +387,17 @@ def test_finalize_opt_duration_stochastic_false():
     "number_of_sub_time_steps": 1,
     "random_seed": 1234
     }
-
     model = BasicSt(params=params)
     model.run_for(params["dt"], params["run_duration"])
     model.finalize()
 
     # assert that these are correct
-    #%%
+    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt")
+    filecmp.cmp('storm_sequence.txt', truth_file)
+
+    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt")
+    filecmp.cmp('exceedance_summary.txt', truth_file)
+
     os.remove('storm_sequence.txt')
     os.remove('exceedance_summary.txt')
 
@@ -418,5 +425,7 @@ def test_finalize_opt_duration_stochastic_true():
     model.finalize()
 
     # assert that these are correct
+    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt")
+    filecmp.cmp('storm_sequence.txt', truth_file)
 
     os.remove('storm_sequence.txt')
