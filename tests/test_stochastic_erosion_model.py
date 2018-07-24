@@ -397,10 +397,10 @@ def test_finalize_opt_duration_stochastic_false():
 
     # assert that these are correct
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt")
-    filecmp.cmp("storm_sequence.txt", truth_file)
+    assert filecmp.cmp("storm_sequence.txt", truth_file) == True
 
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt")
-    filecmp.cmp("exceedance_summary.txt", truth_file)
+    assert filecmp.cmp("exceedance_summary.txt", truth_file) == True
 
     os.remove("storm_sequence.txt")
     os.remove("exceedance_summary.txt")
@@ -430,6 +430,6 @@ def test_finalize_opt_duration_stochastic_true():
 
     # assert that these are correct
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt")
-    filecmp.cmp("storm_sequence.txt", truth_file)
+    assert filecmp.cmp("storm_sequence.txt", truth_file) == True
 
     os.remove("storm_sequence.txt")

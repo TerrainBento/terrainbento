@@ -71,7 +71,7 @@ def test_calc_cumulative_erosion():
     assert np.array_equiv(em.z, 0.) == True
     em.z += 1.
     em.calculate_cumulative_change()
-    assert np.array_equiv(em.grid.at_node["cumulative_erosion__depth"], 1.) == True
+    assert np.array_equiv(em.grid.at_node["cumulative_elevation_change"], 1.) == True
 
 
 def test_parameter_exponent_both_provided():

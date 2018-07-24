@@ -15,7 +15,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 at_node_fields = [
     "topographic__elevation",
     "initial_topographic__elevation",
-    "cumulative_erosion__depth",
+    "cumulative_elevation_change",
     "water__unit_flux_in",
     "flow__receiver_node",
     "topographic__steepest_slope",

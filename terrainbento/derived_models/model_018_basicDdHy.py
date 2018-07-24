@@ -241,7 +241,7 @@ class BasicDdHy(ErosionModel):
             )[0]
 
         # Calculate cumulative erosion and update threshold
-        cum_ero = self.grid.at_node["cumulative_erosion__depth"]
+        cum_ero = self.grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.sp_crit - (self.thresh_change_per_depth * cum_ero)
         self.threshold[self.threshold < self.sp_crit] = self.sp_crit

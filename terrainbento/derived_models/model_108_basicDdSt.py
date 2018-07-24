@@ -150,7 +150,7 @@ class BasicDdSt(StochasticErosionModel):
 
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
-        cum_ero = self.grid.at_node["cumulative_erosion__depth"]
+        cum_ero = self.grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero

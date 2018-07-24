@@ -226,7 +226,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         # The second line handles the case where there is growth, in which case
         # we want the threshold to stay at its initial value rather than
         # getting smaller.
-        cum_ero = self.grid.at_node["cumulative_erosion__depth"]
+        cum_ero = self.grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero

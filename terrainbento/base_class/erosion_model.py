@@ -192,6 +192,7 @@ is a list of model grid fields to write as output.
 import sys
 import time as tm
 import numpy as np
+from types import FunctionType
 
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
@@ -199,7 +200,7 @@ from landlab import load_params
 from landlab.io.netcdf import write_raster_netcdf
 from landlab.graph import Graph
 
-from landlab import Component, CLOSED_BOUNDARY
+from landlab import CLOSED_BOUNDARY
 from landlab.components import FlowAccumulator, NormalFault
 
 from terrainbento.boundary_condition_handlers import (
@@ -363,7 +364,7 @@ class ErosionModel(object):
         # Add fields for initial topography and cumulative erosion depth
         z0 = self.grid.add_zeros("node", "initial_topographic__elevation")
         z0[:] = self.z  # keep a copy of starting elevation
-        self.grid.add_zeros("node", "cumulative_erosion__depth")
+        self.grid.add_zeros("node", "cumulative_elevation_change")
 
         # identify which nodes are data nodes:
         self.data_nodes = self.grid.at_node["topographic__elevation"] != -9999.
@@ -510,11 +511,11 @@ class ErosionModel(object):
         writer : function or class
             An OutputWriter function or class
         """
-        if isinstance(writer, object):
+        if isinstance(writer, FunctionType):
+            self.output_writers["function"].append(writer)
+        else:
             name = writer.__name__
             self.output_writers["class"][name] = writer(self)
-        else:
-            self.output_writers["function"].append(writer)
 
     def setup_hexagonal_grid(self):
         """Create hexagonal grid based on input parameters.
@@ -858,7 +859,7 @@ class ErosionModel(object):
 
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
-        self.grid.at_node["cumulative_erosion__depth"] = (
+        self.grid.at_node["cumulative_elevation_change"][:] = (
             self.grid.at_node["topographic__elevation"]
             - self.grid.at_node["initial_topographic__elevation"]
         )
@@ -975,7 +976,7 @@ class ErosionModel(object):
         """Run all output writers."""
         if self.output_writers is not None:
             for name in self.output_writers["class"]:
-                self.output_writers[name].run_one_step()
+                self.output_writers["class"][name].run_one_step()
             for function in self.output_writers["function"]:
                 function(self)
 
