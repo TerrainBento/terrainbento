@@ -122,7 +122,6 @@ class StochasticErosionModel(ErosionModel):
         recommend that you look at the terrainbento tutorials for examples of
         usage.
         """
-
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(
             input_file=input_file,
@@ -132,7 +131,7 @@ class StochasticErosionModel(ErosionModel):
         )
 
         self.opt_stochastic_duration = self.params.get("opt_stochastic_duration", False)
-
+        self.seed = int(self.params.get("random_seed", 0))
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the dt may
         # change. Thus, rather than writing routines to reconstruct the time
@@ -209,7 +208,7 @@ class StochasticErosionModel(ErosionModel):
                 mean_storm_depth=self.params["mean_storm_depth"],
                 total_t=self.params["run_duration"],
                 delta_t=self.params["dt"],
-                random_seed=int(self.params["random_seed"]),
+                random_seed=self.seed,
             )
             self.run_for = self.run_for_stochastic  # override base method
         else:
@@ -226,7 +225,7 @@ class StochasticErosionModel(ErosionModel):
                 mean_storm_duration=1.0,
                 mean_interstorm_duration=1.0,
                 mean_storm_depth=1.0,
-                random_seed=int(self.params["random_seed"]),
+                random_seed=self.seed,
             )
             self.daily_rainfall_intermittency_factor = (
                 daily_rainfall_intermittency_factor
@@ -249,11 +248,7 @@ class StochasticErosionModel(ErosionModel):
 
     def reset_random_seed(self):
         """Reset the random number generation sequence."""
-        try:
-            seed = int(self.params["random_seed"])
-        except KeyError:
-            seed = 0
-        self.rain_generator.seed_generator(seedval=seed)
+        self.rain_generator.seed_generator(seedval=self.seed)
 
     def _pre_water_erosion_steps(self):
         """Convenience function for pre-water erosion steps.
