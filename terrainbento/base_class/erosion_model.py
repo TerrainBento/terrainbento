@@ -730,16 +730,21 @@ class ErosionModel(object):
         noise_location = self.params.get("add_noise_to_all_nodes", False)
         np.random.seed(seed)
 
-        if noise_location:
-            noise_nodes = np.arange(self.grid.size("node"))
-        else:
-            noise_nodes = self.grid.core_nodes
-
         if add_noise:
+            if noise_location:
+                noise_nodes = np.arange(self.grid.size("node"))
+            else:
+                noise_nodes = self.grid.core_nodes
+
             rs = np.random.randn(noise_nodes.size)
             self.z[noise_nodes] += init_z + (init_sigma * rs)
         else:
-            self.z[noise_nodes] += init_z
+            if noise_location:
+                msg = ("terrainbento ErosionModel: `add_random_noise` is False "
+                       "but `add_noise_to_all_nodes` is set as True. This "
+                       "parameter has no effect.")
+                raise ValueError(msg)
+            self.z += init_z
 
     def _setup_synthetic_boundary_conditions(self):
         """Set up boundary conditions for synthetic grids."""
@@ -796,8 +801,15 @@ class ErosionModel(object):
         try:
             (grid, vals) = read_esri_ascii(file_path, name=name, halo=halo)
         except:
-            grid = read_netcdf(file_path)
-            vals = grid.at_node[name]
+            try:
+                grid = read_netcdf(file_path)
+                vals = grid.at_node[name]
+            except:
+                msg = ("terrainbento ErosionModel base class: the parameter "
+                       "provided in 'DEM_filename' is not a valid ESRII ASCII file "
+                       "or NetCDF file.")
+                raise ValueError(msg)
+
         return (grid, vals)
 
     def get_parameter_from_exponent(self, param_name, raise_error=True):
@@ -896,9 +908,7 @@ class ErosionModel(object):
                 }
             )
 
-            if field_names:
-                pass
-            else:
+            if field_names is not None:
                 field_names = self.grid.at_node.keys()
 
             for field_name in field_names:
