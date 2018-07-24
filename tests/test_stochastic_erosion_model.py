@@ -250,7 +250,25 @@ def test_finalize_opt_duration_stochastic_false():
 
 
 def test_float_number_of_sub_time_steps():
-    pass
+    params = {
+        "opt_stochastic_duration": False,
+        "dt": 10,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "record_rain": True,
+        "m_sp": 0.5,
+        "n_sp": 1.0,
+        "water_erodability~stochastic": 0.01,
+        "regolith_transport_parameter": 0.1,
+        "infiltration_capacity": 0.0,
+        "daily_rainfall__mean_intensity": 1.,
+        "daily_rainfall_intermittency_factor": 0.1,
+        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "number_of_sub_time_steps": 1.5,
+        "random_seed": 1234,
+    }
+    with pytest.raises(ValueError):
+        model = BasicSt(params=params)
 
 
 # double check if these two options work with BOTH stochastic duration options.
