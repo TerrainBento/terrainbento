@@ -26,11 +26,11 @@ def test_hex():
     closed = mg.status_at_node != 0
     not_closed = mg.status_at_node == 0
 
-    # closed should have stayed the same
-    assert_array_equal(z[closed], np.zeros(np.sum(closed)))
+    # closed should have been downdropped 10*0.1
+    assert_array_equal(z[closed], -1.* np.ones(np.sum(closed)))
 
-    # not closed should have been uplifted 10*0.1
-    assert_array_equal(z[not_closed], np.ones(np.sum(not_closed)))
+    # not closed should have stayed the same
+    assert_array_equal(z[not_closed], np.zeros(np.sum(not_closed)))
 
 
 def test_passing_neither_lowering_method():

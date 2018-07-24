@@ -16,7 +16,7 @@ def test_hex():
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
 
-    bh = SingleNodeBaselevelHandler(mg, outlet_node=0, lowering_rate=0.1)
+    bh = SingleNodeBaselevelHandler(mg, outlet_node=0, lowering_rate=-0.1)
     bh.run_one_step(10.0)
 
     assert z[1] == 0.0
