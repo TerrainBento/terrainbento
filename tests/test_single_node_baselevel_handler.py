@@ -10,7 +10,7 @@ from landlab import RasterModelGrid, HexModelGrid
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def text_hex():
+def test_hex():
     "Test using a hex grid"
 
     mg = HexModelGrid(5, 5)
