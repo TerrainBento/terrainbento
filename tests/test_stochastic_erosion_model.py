@@ -289,29 +289,84 @@ def test_run_opt_false_with_changer():
            np.round( 0.10173785078713211, decimals =3))
 
 
-def test_finalize_opt_duration_stochastic_true():
-    pass
-
-
-def test_finalize_opt_duration_stochastic_false():
-    pass
-
-
-# double check if these two options work with BOTH stochastic duration options.
-def test_write_storm_sequence_to_file():
-    # this works with both
-    pass
-
-
-def test_write_exceedance_frequency_file():
-    # this with stochastic duration = False.
-    pass
-
-
 def test_not_specifying_record_rain():
-    pass
+    params = {
+        "opt_stochastic_duration": False,
+        "dt": 10,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "record_rain": False,
+        "m_sp": 0.5,
+        "n_sp": 1.0,
+        "water_erodability~stochastic": 0.01,
+        "regolith_transport_parameter": 0.1,
+        "infiltration_capacity": 0.0,
+        "daily_rainfall__mean_intensity": 1.,
+        "daily_rainfall_intermittency_factor": 0.1,
+        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "number_of_sub_time_steps": 1,
+        "random_seed": 1234,
+    }
+
+    model = BasicSt(params=params)
+    model.run_for(params["dt"], params["run_duration"])
+    with pytest.raises(ValueError):
+        model.write_storm_sequence_to_file()
+
+    with pytest.raises(ValueError):
+        model.write_exceedance_frequency_file()
 
 
-def test_write_files_no_record():
-    pass
-    # both of these raise value errors.
+    def test_finalize_opt_duration_stochastic_true():
+        params = {
+            "opt_stochastic_duration": False,
+            "dt": 10,
+            "output_interval": 2.,
+            "run_duration": 200.,
+            "record_rain": True,
+            "m_sp": 0.5,
+            "n_sp": 1.0,
+            "water_erodability~stochastic": 0.01,
+            "regolith_transport_parameter": 0.1,
+            "infiltration_capacity": 0.0,
+            "daily_rainfall__mean_intensity": 1.,
+            "daily_rainfall_intermittency_factor": 0.1,
+            "daily_rainfall__precipitation_shape_factor": 0.6,
+            "number_of_sub_time_steps": 1,
+            "random_seed": 1234
+        }
+
+        model = BasicSt(params=params)
+        model.run_for(params["dt"], params["run_duration"])
+        model.finalize()
+
+        # assert that these are correct
+
+        os.remove('storm_sequence.txt')
+        os.remove('exceedance_summary.txt')
+
+    def test_finalize_opt_duration_stochastic_false():
+        params = {
+            "opt_stochastic_duration": True,
+            "dt": 1,
+            "output_interval": 2.,
+            "run_duration": 200.,
+            "record_rain": True,
+            "m_sp": 0.5,
+            "n_sp": 1.0,
+            "water_erodability~stochastic": 0.01,
+            "regolith_transport_parameter": 0.1,
+            "infiltration_capacity": 0.0,
+            "mean_storm_duration": 2.,
+            "mean_interstorm_duration": 3.,
+            "mean_storm_depth": 1.,
+            "random_seed": 1234,
+        }
+
+        model = BasicSt(params=params)
+        model.run_for(params["dt"], params["run_duration"])
+        model.finalize()
+
+        # assert that these are correct
+
+        os.remove('storm_sequence.txt')

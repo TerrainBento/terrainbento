@@ -358,14 +358,14 @@ class StochasticErosionModel(ErosionModel):
         """
         # if rain was recorded, write it out.
         if self.record_rain:
-            filename = self.params.get("storm_sequence_filename")
-            self.write_storm_sequence_to_file(filename)
+            filename = self.params.get("storm_sequence_filename", 'storm_sequence.txt')
+            self.write_storm_sequence_to_file(filename=filename)
 
         if self.record_rain and (self.opt_stochastic_duration == False):
             # if opt_stochastic_duration = False, calculate exceedance
             # frequencies and write out.
-            frequency_filename = self.params.get("frequency_filename")
-            self.write_exceedance_frequency_file(frequency_filename)
+            frequency_filename = self.params.get("frequency_filename", 'exceedance_summary.txt')
+            self.write_exceedance_frequency_file(filename=frequency_filename)
 
     def record_rain_event(
         self, event_start_time, event_duration, rainfall_rate, runoff_rate
@@ -387,7 +387,7 @@ class StochasticErosionModel(ErosionModel):
         self.rain_record["rainfall_rate"].append(rainfall_rate)
         self.rain_record["runoff_rate"].append(runoff_rate)
 
-    def write_storm_sequence_to_file(self, filename=None):
+    def write_storm_sequence_to_file(self, filename="storm_sequence.txt"):
         """ Write event duration and intensity to a formatted text file.
 
         Parameters
@@ -403,8 +403,7 @@ class StochasticErosionModel(ErosionModel):
                 'record rain, set the parameter "record_rain"'
                 "to True."
             )
-        if filename is None:
-            filename = "storm_sequence.txt"
+
         stormfile = open(filename, "w")
         stormfile.write(
             "event_start_time"
@@ -433,7 +432,7 @@ class StochasticErosionModel(ErosionModel):
         # Close the file
         stormfile.close()
 
-    def write_exceedance_frequency_file(self, filename=None):
+    def write_exceedance_frequency_file(self, filename="exceedance_summary.txt"):
         """Write summary of rainfall exceedance statistics to file.
 
         Parameters
@@ -448,8 +447,6 @@ class StochasticErosionModel(ErosionModel):
                 "to True."
             )
 
-        if filename is None:
-            filename = "exceedance_summary.txt"
         exceedance_file = open(filename, "w")
 
         # calculate the number of wet days per year.
