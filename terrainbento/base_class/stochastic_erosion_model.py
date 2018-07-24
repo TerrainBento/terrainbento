@@ -68,13 +68,14 @@ frequency_filename : str
     'exceedance_summary.txt'
 """
 
-from terrainbento.base_class import ErosionModel
-
-from landlab.components import PrecipitationDistribution
-
+import os
 import numpy as np
 import scipy.stats as stats
 import textwrap
+
+from landlab.components import PrecipitationDistribution
+from terrainbento.base_class import ErosionModel
+
 
 _STRING_LENGTH = 80
 
@@ -361,12 +362,17 @@ class StochasticErosionModel(ErosionModel):
             filename = self.params.get("storm_sequence_filename", 'storm_sequence.txt')
             self.write_storm_sequence_to_file(filename=filename)
 
-        if self.record_rain and (self.opt_stochastic_duration == False):
-            # if opt_stochastic_duration = False, calculate exceedance
-            # frequencies and write out.
-            frequency_filename = self.params.get("frequency_filename", 'exceedance_summary.txt')
-            self.write_exceedance_frequency_file(filename=frequency_filename)
-
+            if self.opt_stochastic_duration == False:
+                # if opt_stochastic_duration = False, calculate exceedance
+                # frequencies and write out.
+                frequency_filename = self.params.get("frequency_filename", 'exceedance_summary.txt')
+                try:
+                    self.write_exceedance_frequency_file(filename=frequency_filename)
+                except IndexError:
+                    msg = ('terrainbento stochastic model: the rain record was '
+                           'too short to calculate exceedance frequency statistics.')
+                    os.remove(frequency_filename)
+                    raise RuntimeError(msg)
     def record_rain_event(
         self, event_start_time, event_duration, rainfall_rate, runoff_rate
     ):
