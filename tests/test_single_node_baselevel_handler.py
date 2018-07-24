@@ -1,6 +1,7 @@
 # coding: utf8
 #! /usr/env/python
 
+import os
 import pytest
 
 from terrainbento.boundary_condition_handlers import SingleNodeBaselevelHandler
