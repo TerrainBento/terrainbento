@@ -18,7 +18,7 @@ def test_steady_Ksp_no_precip_changer():
     n = 1.0
     dt = 1000
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -80,7 +80,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     n = 1.0
     dt = 1000
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -143,7 +143,7 @@ def test_diffusion_only():
     dx = 10.0
     runtime = 30000
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     # Construct dictionary. Note that stream power is turned off
     params = {
@@ -195,7 +195,7 @@ def test_diffusion_only():
 
 
 def test_with_precip_changer():
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     Kr = 0.01
     Kt = 0.001
