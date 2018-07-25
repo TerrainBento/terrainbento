@@ -438,7 +438,7 @@ class ErosionModel(object):
         """Return current time of model integration in model time units."""
         return self._model_time
 
-    def setup_boundary_handler(self, handler):
+    def setup_boundary_handler(self, name):
         """ Setup BoundaryHandlers for use by a terrainbento model.
 
         A boundary condition handler is a class with a run_one_step method that
@@ -450,20 +450,9 @@ class ErosionModel(object):
 
         Parameters
         ----------
-        handler : str or object
-            Name of instance of a supported boundary condition handler.
+        handler : str
+            Name of a supported boundary condition handler.
         """
-        try:  # if handler is a string
-            name = handler
-            handler = _HANDLER_METHODS[name]
-        except KeyError:
-            raise ValueError(
-                (
-                    "Object passed to terrainbento init is not a "
-                    "valid Boundary Handler."
-                )
-            )
-
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 
             # if unique parameters for the boundary condition handler have
@@ -477,6 +466,7 @@ class ErosionModel(object):
                 handler_params = self.params
 
             # Instantiate handler
+            handler = _HANDLER_METHODS[name]
             self.boundary_handler[name] = handler(self.grid, **handler_params)
 
         # Raise an error if the handler is not supported.
