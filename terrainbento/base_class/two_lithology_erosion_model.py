@@ -32,9 +32,6 @@ class TwoLithologyErosionModel(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params
             is required.
-        
-            
-            
         OutputWriters : class, function, or list of classes and/or functions,
             optional classes or functions used to write incremental output
             (e.g. make a diagnostic plot).
