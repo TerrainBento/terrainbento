@@ -192,6 +192,7 @@ is a list of model grid fields to write as output.
 import sys
 import time as tm
 import numpy as np
+from types import FunctionType
 
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
@@ -199,7 +200,7 @@ from landlab import load_params
 from landlab.io.netcdf import write_raster_netcdf
 from landlab.graph import Graph
 
-from landlab import Component, CLOSED_BOUNDARY
+from landlab import CLOSED_BOUNDARY
 from landlab.components import FlowAccumulator, NormalFault
 
 from terrainbento.boundary_condition_handlers import (
@@ -243,9 +244,7 @@ class ErosionModel(object):
     existing **run_for**, **run**, and **finalize** methods.
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -255,9 +254,6 @@ class ErosionModel(object):
         params : dict
             Dictionary containing the input file. One of input_file or params
             is required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions,
             optional Classes or functions used to write incremental output
             (e.g. make a diagnostic plot).
@@ -368,7 +364,7 @@ class ErosionModel(object):
         # Add fields for initial topography and cumulative erosion depth
         z0 = self.grid.add_zeros("node", "initial_topographic__elevation")
         z0[:] = self.z  # keep a copy of starting elevation
-        self.grid.add_zeros("node", "cumulative_erosion__depth")
+        self.grid.add_zeros("node", "cumulative_elevation_change")
 
         # identify which nodes are data nodes:
         self.data_nodes = self.grid.at_node["topographic__elevation"] != -9999.
@@ -420,9 +416,6 @@ class ErosionModel(object):
         if "BoundaryHandlers" in self.params:
             BoundaryHandlers = self.params["BoundaryHandlers"]
 
-        if BoundaryHandlers is None:
-            pass
-        else:
             if isinstance(BoundaryHandlers, list):
                 for comp in BoundaryHandlers:
                     self.setup_boundary_handler(comp)
@@ -433,9 +426,7 @@ class ErosionModel(object):
         # Output Writers
         ###################################################################
         self.output_writers = {"class": {}, "function": []}
-        if OutputWriters is None:
-            pass
-        else:
+        if OutputWriters is not None:
             if isinstance(OutputWriters, list):
                 for comp in OutputWriters:
                     self.setup_output_writer(comp)
@@ -447,7 +438,7 @@ class ErosionModel(object):
         """Return current time of model integration in model time units."""
         return self._model_time
 
-    def setup_boundary_handler(self, handler):
+    def setup_boundary_handler(self, name):
         """ Setup BoundaryHandlers for use by a terrainbento model.
 
         A boundary condition handler is a class with a run_one_step method that
@@ -459,31 +450,9 @@ class ErosionModel(object):
 
         Parameters
         ----------
-        handler : str or object
-            Name of instance of a supported boundary condition handler.
+        handler : str
+            Name of a supported boundary condition handler.
         """
-        try:  # if handler is an uninstantiated component
-            name = handler._name
-
-            if isinstance(handler, Component):
-                raise ValueError(
-                    (
-                        "Object passed to terrainbento is instantiated "
-                        ". This is not permitted."
-                    )
-                )
-        except AttributeError:
-            try:  # if handler is a string
-                name = handler
-                handler = _HANDLER_METHODS[name]
-            except KeyError:
-                raise ValueError(
-                    (
-                        "Object passed to terrainbento init is not a "
-                        "valid Boundary Handler."
-                    )
-                )
-
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 
             # if unique parameters for the boundary condition handler have
@@ -497,6 +466,7 @@ class ErosionModel(object):
                 handler_params = self.params
 
             # Instantiate handler
+            handler = _HANDLER_METHODS[name]
             self.boundary_handler[name] = handler(self.grid, **handler_params)
 
         # Raise an error if the handler is not supported.
@@ -531,11 +501,11 @@ class ErosionModel(object):
         writer : function or class
             An OutputWriter function or class
         """
-        if isinstance(writer, object):
+        if isinstance(writer, FunctionType):
+            self.output_writers["function"].append(writer)
+        else:
             name = writer.__name__
             self.output_writers["class"][name] = writer(self)
-        else:
-            self.output_writers["function"].append(writer)
 
     def setup_hexagonal_grid(self):
         """Create hexagonal grid based on input parameters.
@@ -730,16 +700,23 @@ class ErosionModel(object):
         noise_location = self.params.get("add_noise_to_all_nodes", False)
         np.random.seed(seed)
 
-        if noise_location:
-            noise_nodes = np.arange(self.grid.size("node"))
-        else:
-            noise_nodes = self.grid.core_nodes
-
         if add_noise:
+            if noise_location:
+                noise_nodes = np.arange(self.grid.size("node"))
+            else:
+                noise_nodes = self.grid.core_nodes
+
             rs = np.random.randn(noise_nodes.size)
             self.z[noise_nodes] += init_z + (init_sigma * rs)
         else:
-            self.z[noise_nodes] += init_z
+            if noise_location:
+                msg = (
+                    "terrainbento ErosionModel: `add_random_noise` is False "
+                    "but `add_noise_to_all_nodes` is set as True. This "
+                    "parameter has no effect."
+                )
+                raise ValueError(msg)
+            self.z += init_z
 
     def _setup_synthetic_boundary_conditions(self):
         """Set up boundary conditions for synthetic grids."""
@@ -796,8 +773,17 @@ class ErosionModel(object):
         try:
             (grid, vals) = read_esri_ascii(file_path, name=name, halo=halo)
         except:
-            grid = read_netcdf(file_path)
-            vals = grid.at_node[name]
+            try:
+                grid = read_netcdf(file_path)
+                vals = grid.at_node[name]
+            except:
+                msg = (
+                    "terrainbento ErosionModel base class: the parameter "
+                    "provided in 'DEM_filename' is not a valid ESRII ASCII file "
+                    "or NetCDF file."
+                )
+                raise ValueError(msg)
+
         return (grid, vals)
 
     def get_parameter_from_exponent(self, param_name, raise_error=True):
@@ -863,7 +849,7 @@ class ErosionModel(object):
 
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
-        self.grid.at_node["cumulative_erosion__depth"] = (
+        self.grid.at_node["cumulative_elevation_change"][:] = (
             self.grid.at_node["topographic__elevation"]
             - self.grid.at_node["initial_topographic__elevation"]
         )
@@ -896,9 +882,7 @@ class ErosionModel(object):
                 }
             )
 
-            if field_names:
-                pass
-            else:
+            if field_names is None:
                 field_names = self.grid.at_node.keys()
 
             for field_name in field_names:
@@ -982,7 +966,7 @@ class ErosionModel(object):
         """Run all output writers."""
         if self.output_writers is not None:
             for name in self.output_writers["class"]:
-                self.output_writers[name].run_one_step()
+                self.output_writers["class"][name].run_one_step()
             for function in self.output_writers["function"]:
                 function(self)
 

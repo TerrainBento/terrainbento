@@ -13,8 +13,8 @@ from terrainbento.boundary_condition_handlers import CaptureNodeBaselevelHandler
 from landlab import RasterModelGrid, HexModelGrid
 
 
-def text_hex():
-    "Test using a hex grid"
+def test_hex():
+    """Test using a hex grid"""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")

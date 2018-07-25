@@ -14,7 +14,7 @@ from landlab import RasterModelGrid, HexModelGrid
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def text_hex():
+def test_hex():
     "Test using a hex grid"
 
     mg = HexModelGrid(5, 5)
@@ -26,11 +26,11 @@ def text_hex():
     closed = mg.status_at_node != 0
     not_closed = mg.status_at_node == 0
 
-    # closed should have stayed the same
-    assert_array_equal(z[closed], np.zeros(np.sum(closed)))
+    # closed should have been downdropped 10*0.1
+    assert_array_equal(z[closed], -1.* np.ones(np.sum(closed)))
 
-    # not closed should have been uplifted 10*0.1
-    assert_array_equal(z[not_closed], np.ones(np.sum(not_closed)))
+    # not closed should have stayed the same
+    assert_array_equal(z[not_closed], np.zeros(np.sum(not_closed)))
 
 
 def test_passing_neither_lowering_method():
@@ -38,7 +38,8 @@ def test_passing_neither_lowering_method():
     mg = RasterModelGrid(5, 5)
     _ = mg.add_zeros("node", "topographic__elevation")
 
-    pytest.raises(ValueError, NotCoreNodeBaselevelHandler, mg)
+    with pytest.raises(ValueError):
+        NotCoreNodeBaselevelHandler(mg)
 
 
 def test_passing_both_lowering_methods():
@@ -47,13 +48,8 @@ def test_passing_both_lowering_methods():
     z = mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
-    pytest.raises(
-        ValueError,
-        NotCoreNodeBaselevelHandler,
-        mg,
-        lowering_rate=-0.1,
-        lowering_file_path=file,
-    )
+    with pytest.raises(ValueError):
+        NotCoreNodeBaselevelHandler(mg, lowering_rate=-0.1, lowering_file_path=file)
 
 
 def test_outlet_lowering_object_bad_file():
@@ -62,9 +58,8 @@ def test_outlet_lowering_object_bad_file():
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
 
-    pytest.raises(
-        ValueError, NotCoreNodeBaselevelHandler, mg, lowering_file_path="foo.txt"
-    )
+    with pytest.raises(ValueError):
+        NotCoreNodeBaselevelHandler(mg, lowering_file_path="foo.txt")
 
 
 def test_outlet_lowering_rate_no_scaling_bedrock():

@@ -15,7 +15,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 at_node_fields = [
     "topographic__elevation",
     "initial_topographic__elevation",
-    "cumulative_erosion__depth",
+    "cumulative_elevation_change",
     "water__unit_flux_in",
     "flow__receiver_node",
     "topographic__steepest_slope",
@@ -66,12 +66,26 @@ def test_no_noise_sythetic_topo():
         "dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
-        "add_noise_to_all_nodes": True,
+        "add_random_noise": False,
     }
     em = ErosionModel(params=params)
     known_z = np.zeros(em.z.shape)
     known_z += 10.
     assert np.array_equiv(em.z, known_z) == True
+
+
+def test_no_noise_all_nodes_sythetic_topo_valueError():
+    params = {
+        "initial_elevation": 10.,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+        "add_random_noise": False,
+        "add_noise_to_all_nodes": True,
+        "initial_noise_std": 2.0,
+    }
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
 
 def test_noise_all_nodes_sythetic_topo():
@@ -244,6 +258,20 @@ def test_Raster_with_boundaries():
     assert_array_equal(status, em.grid.status_at_node)
 
 
+def test_DEM_and_rows():
+    fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+        "number_of_node_rows": 5,
+    }
+
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
+
+
 def test_DEM_ascii():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
     params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
@@ -262,11 +290,20 @@ def test_DEM_ascii():
     assert em.opt_watershed == True
 
 
+def test_bad_DEM_file():
+    fp = os.path.join(_TEST_DATA_DIR, "bad_dem.txt")
+    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
+
+
 def test_DEM_two_possible_outlets():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
     params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
 
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
     params = {

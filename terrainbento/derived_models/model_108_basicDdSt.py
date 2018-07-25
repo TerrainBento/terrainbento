@@ -70,17 +70,12 @@ class BasicDdSt(StochasticErosionModel):
     >>> srt = BasicDdSt(params=my_pars)
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """Initialize the BasicDdSt."""
 
         # Call ErosionModel's init
         super(BasicDdSt, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters:
@@ -155,7 +150,7 @@ class BasicDdSt(StochasticErosionModel):
 
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
-        cum_ero = self.grid.at_node["cumulative_erosion__depth"]
+        cum_ero = self.grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero

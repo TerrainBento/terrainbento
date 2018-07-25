@@ -94,9 +94,7 @@ class StochasticErosionModel(ErosionModel):
      existing ``run_for``, **run**, and **finalize** methods.
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -106,9 +104,6 @@ class StochasticErosionModel(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params
             is required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions,
             optional classes or functions used to write incremental output
             (e.g. make a diagnostic plot).
@@ -125,10 +120,7 @@ class StochasticErosionModel(ErosionModel):
         """
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         self.opt_stochastic_duration = self.params.get("opt_stochastic_duration", False)
@@ -430,13 +422,13 @@ class StochasticErosionModel(ErosionModel):
             n_events = len(self.rain_record["event_start_time"])
             for i in range(n_events):
                 stormfile.write(
-                    str(self.rain_record["event_start_time"][i])
+                    str(np.around(self.rain_record["event_start_time"][i], decimals=5))
                     + ","
-                    + str(self.rain_record["event_duration"][i])
+                    + str(np.around(self.rain_record["event_duration"][i], decimals=5))
                     + ","
-                    + str(self.rain_record["rainfall_rate"][i])
+                    + str(np.around(self.rain_record["rainfall_rate"][i], decimals=5))
                     + ","
-                    + str(self.rain_record["runoff_rate"][i])
+                    + str(np.around(self.rain_record["runoff_rate"][i], decimals=5))
                     + "\n"
                 )
 

@@ -74,9 +74,7 @@ class BasicThVs(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -86,9 +84,6 @@ class BasicThVs(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -140,10 +135,7 @@ class BasicThVs(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicThVs, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         if float(self.params["n_sp"]) != 1.0:
