@@ -82,7 +82,7 @@ class GenericFuncBaselevelHandler(object):
 
         We should expect that the boundary nodes (except for node 0) will all
         have lowered by ``10*(x+y)`` in which ``x`` and ``y`` are the node x and
-        y positions
+        y positions. The function we provided has no time dependence.
 
         >>> print(z.reshape(mg.shape))
         [[  0. -10. -20. -30. -40.]
@@ -92,10 +92,14 @@ class GenericFuncBaselevelHandler(object):
          [-40. -50. -60. -70. -80.]]
 
         If we wanted instead for all of the non core nodes to change their
-        elevation, we would set ``modify_core_nodes = True``.
+        elevation, we would set ``modify_core_nodes = True``. Next we will do
+        an example with this option, that also includes a bedrock elevation
+        field.
 
         >>> mg = RasterModelGrid(5, 5)
         >>> z = mg.add_zeros('node', 'topographic__elevation')
+        >>> b = mg.add_zeros('node', 'bedrock__elevation')
+        >>> b -= 10.
         >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
         ...                                        left_is_closed=True,
         ...                                        right_is_closed=True,
@@ -112,6 +116,12 @@ class GenericFuncBaselevelHandler(object):
          [  0.  30.  40.  50.   0.]
          [  0.  40.  50.  60.   0.]
          [  0.   0.   0.   0.   0.]]
+        >>> print(b.reshape(mg.shape))
+        [[-10. -10. -10. -10. -10.]
+         [-10.  10.  20.  30. -10.]
+         [-10.  20.  30.  40. -10.]
+         [-10.  30.  40.  50. -10.]
+         [-10. -10. -10. -10. -10.]]
 
         There is no limit to how complex a function a user can provide. The
         function must only take the variables ``x``, ``y``, and ``t`` and
