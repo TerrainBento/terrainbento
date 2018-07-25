@@ -180,17 +180,16 @@ class BasicSt(StochasticErosionModel):
             "regolith_transport_parameter"
         )  # has units length^2/time
 
+        # Get the infiltration-capacity parameter
+        # has units length per time
+        self.infilt = (self._length_factor) * self.params[
+            "infiltration_capacity"]
+
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for discharge
         self.discharge = self.grid.at_node["surface_water__discharge"]
-
-        # Get the infiltration-capacity parameter
-        infiltration_capacity = (self._length_factor) * self.params[
-            "infiltration_capacity"
-        ]  # has units length per time
-        self.infilt = infiltration_capacity
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
@@ -200,7 +199,7 @@ class BasicSt(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
         )
 
         # Instantiate a LinearDiffuser component

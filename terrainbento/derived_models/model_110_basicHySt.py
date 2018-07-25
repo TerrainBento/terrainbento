@@ -113,18 +113,17 @@ class BasicHySt(StochasticErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicHySt, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters:
-        K = (
-            self._length_factor ** 0.5
-        ) * self.get_parameter_from_exponent(  # K_stochastic [=] L^(1/2)  T^-(1/2)
-            "water_erodability~stochastic"
-        )
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+            self._length_factor ** ((3. * self.m) - 1)
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2
@@ -136,12 +135,6 @@ class BasicHySt(StochasticErosionModel):
             "v_s"
         )  # has units length per time
 
-        # set methods and fields.
-        method = "simple_stream_power"
-        discharge_method = "discharge_field"
-        area_field = None
-        discharge_field = "surface_water__discharge"
-
         # instantiate rain generator
         self.instantiate_rain_generator()
 
@@ -149,10 +142,9 @@ class BasicHySt(StochasticErosionModel):
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        infiltration_capacity = (
-            self._length_factor * self.params["infiltration_capacity"]
-        )  # L/T
-        self.infilt = infiltration_capacity
+        # has units length per time
+        self.infilt = (self._length_factor) * self.params[
+            "infiltration_capacity"]
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
@@ -166,12 +158,12 @@ class BasicHySt(StochasticErosionModel):
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
             self.grid,
-            K=K,
+            K=self.K,
             F_f=self.params["fraction_fines"],
             phi=self.params["sediment_porosity"],
             v_s=v_s,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            m_sp=self.m,
+            n_sp=self.n,
             discharge_field="surface_water__discharge",
             solver=solver,
         )

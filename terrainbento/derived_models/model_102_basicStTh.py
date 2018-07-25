@@ -112,13 +112,18 @@ class BasicStTh(StochasticErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicStTh, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
-        K_stoch_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
+        # Get Parameters:
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+            self._length_factor ** ((3. * self.m) - 1)
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -138,10 +143,9 @@ class BasicStTh(StochasticErosionModel):
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        infiltration_capacity = (self._length_factor) * self.params[
-            "infiltration_capacity"
-        ]  # has units length per time
-        self.infilt = infiltration_capacity
+        # has units length per time
+        self.infilt = (self._length_factor) * self.params[
+            "infiltration_capacity"]
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
@@ -152,9 +156,9 @@ class BasicStTh(StochasticErosionModel):
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
-            K_sp=K_stoch_sp,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
             threshold_sp=threshold,
             use_Q=self.discharge,
         )

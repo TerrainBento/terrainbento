@@ -103,13 +103,16 @@ class BasicStVs(StochasticErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicStVs, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+            self._length_factor ** ((3. * self.m) - 1)
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -153,9 +156,9 @@ class BasicStVs(StochasticErosionModel):
         self.eroder = StreamPowerEroder(
             self.grid,
             use_Q=self.discharge,
-            K_sp=K_sp,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.m,
         )
 
         # Instantiate a LinearDiffuser component
