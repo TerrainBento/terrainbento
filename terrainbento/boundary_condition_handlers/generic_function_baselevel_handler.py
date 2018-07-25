@@ -32,7 +32,7 @@ class GenericFuncBaselevelHandler(object):
         self,
         grid,
         modify_core_nodes=False,
-        function=lambda x, y, t: (0 * x + 0 * y + 0 * t),
+        function=lambda grid, t: (0 * grid.x_of_node + 0 * grid.y_of_node + 0 * t),
         **kwargs
     ):
         """
@@ -49,7 +49,7 @@ class GenericFuncBaselevelHandler(object):
             be a function of three variables and return an array of size
             number of nodes. If a constant value is desired, used
             **NotCoreNodeBaselevelHandler** instead. The default function is:
-            ``lambda x, y, t: (0*x + 0*y + 0*t)``
+            ``lambda grid, t: (0 * grid.x_of_node + 0 * grid.y_of_node + 0 * t)``
 
         Examples
         --------
@@ -77,7 +77,7 @@ class GenericFuncBaselevelHandler(object):
         ...                                         GenericFuncBaselevelHandler)
         >>> bh = GenericFuncBaselevelHandler(mg,
         ...                                 modify_core_nodes = False,
-        ...                                 function = lambda x, y, t: -(x + y + (0*t)))
+        ...                                 function = lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0*t)))
         >>> bh.run_one_step(10.0)
 
         We should expect that the boundary nodes (except for node 0) will all
@@ -108,7 +108,7 @@ class GenericFuncBaselevelHandler(object):
         ...     0, mg.at_node['topographic__elevation'], -9999.)
         >>> bh = GenericFuncBaselevelHandler(mg,
         ...                                 modify_core_nodes = True,
-        ...                                 function = lambda x, y, t: -(x + y + (0*t)))
+        ...                                 function = lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0*t)))
         >>> bh.run_one_step(10.0)
         >>> print(z.reshape(mg.shape))
         [[  0.   0.   0.   0.   0.]
@@ -124,8 +124,15 @@ class GenericFuncBaselevelHandler(object):
          [-10. -10. -10. -10. -10.]]
 
         There is no limit to how complex a function a user can provide. The
-        function must only take the variables ``x``, ``y``, and ``t`` and
-        return an array of size number of nodes.
+        function must only take the variables ``grid``, and ``t`` and
+        return an array that represents the desired rate of surface elevation
+        change (dzdt) at each node.
+
+        If a user wanted to use this function to implement boundary conditions
+        that involved modifying the grid, but not necessarily modifying the
+        elevation of core or not-core nodes, then the function could modify the
+        grid in the desired way and then return an array of zeros of size
+        (n_nodes,).
 
         """
         self.model_time = 0.0
@@ -133,12 +140,12 @@ class GenericFuncBaselevelHandler(object):
 
         # test the function behaves well
         function_args = function.__code__.co_varnames
-        if len(function_args) != 3:
-            msg = "GenericFuncBaselevelHandler: function must take only three arguments, x, y, and t."
+        if len(function_args) != 2:
+            msg = "GenericFuncBaselevelHandler: function must take only two arguments, grid and t."
             raise ValueError(msg)
 
         test_dzdt = function(
-            self._grid.x_of_node, self._grid.y_of_node, self.model_time
+            self._grid, self.model_time
         )
 
         if test_dzdt.shape != self._grid.x_of_node.shape:
@@ -178,7 +185,7 @@ class GenericFuncBaselevelHandler(object):
 
         """
         self.dzdt = self.function(
-            self._grid.x_of_node, self._grid.y_of_node, self.model_time
+            self._grid, self.model_time
         )
 
         # calculate lowering amount and subtract
