@@ -62,17 +62,17 @@ def test_run_stochastic_opt_true():
     assert model.opt_stochastic_duration == True
     model.run_for(10, 10000.)
 
-    rainfall_rate = np.asarray(model.rain_record["rainfall_rate"])
-    event_duration = np.asarray(model.rain_record["event_duration"])
+    rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(decimals=5)
+    event_duration = np.asarray(model.rain_record["event_duration"]).round(decimals=5)
 
     dry_times = event_duration[rainfall_rate == 0]
     wet_times = event_duration[rainfall_rate > 0]
 
     np.testing.assert_almost_equal(
-        np.mean(dry_times), params["mean_interstorm_duration"], decimal=1
+        np.round(np.mean(dry_times), decimals=1), params["mean_interstorm_duration"], decimal=1
     )
     np.testing.assert_almost_equal(
-        np.mean(wet_times), params["mean_storm_duration"], decimal=1
+        np.round(np.mean(wet_times), decimals=1), params["mean_storm_duration"], decimal=1
     )
 
     avg_storm_depth = np.sum((rainfall_rate * event_duration)) / len(wet_times)
@@ -235,6 +235,7 @@ def test_reset_random_seed_stochastic_duration_false():
         )
     np.testing.assert_array_equal(depth_1, depth_2)
 
+
 def test_float_number_of_sub_time_steps():
     params = {
         "opt_stochastic_duration": False,
@@ -259,37 +260,39 @@ def test_float_number_of_sub_time_steps():
 
 def test_run_opt_false_with_changer():
     params = {
-    "opt_stochastic_duration": False,
-    "dt": 10,
-    "output_interval": 2.,
-    "run_duration": 1000.,
-    "record_rain": True,
-    "m_sp": 0.5,
-    "n_sp": 1.0,
-    "water_erodability~stochastic": 0.01,
-    "regolith_transport_parameter": 0.1,
-    "infiltration_capacity": 0.0,
-    "daily_rainfall__mean_intensity": 1.,
-    "daily_rainfall_intermittency_factor": 0.1,
-    "daily_rainfall__precipitation_shape_factor": 0.6,
-    "number_of_sub_time_steps": 1,
-    "random_seed": 1234,
-    "BoundaryHandlers": "PrecipChanger",
-    "PrecipChanger": {
-        "daily_rainfall__intermittency_factor": 0.1,
-        "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
+        "opt_stochastic_duration": False,
+        "dt": 10,
+        "output_interval": 2.,
+        "run_duration": 1000.,
+        "record_rain": True,
+        "m_sp": 0.5,
+        "n_sp": 1.0,
+        "water_erodability~stochastic": 0.01,
+        "regolith_transport_parameter": 0.1,
+        "infiltration_capacity": 0.0,
         "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall__mean_intensity_time_rate_of_change": 0.0001,
-    }
+        "daily_rainfall_intermittency_factor": 0.1,
+        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "number_of_sub_time_steps": 1,
+        "random_seed": 1234,
+        "BoundaryHandlers": "PrecipChanger",
+        "PrecipChanger": {
+            "daily_rainfall__intermittency_factor": 0.1,
+            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
+            "daily_rainfall__mean_intensity": 1.,
+            "daily_rainfall__mean_intensity_time_rate_of_change": 0.0001,
+        },
     }
 
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     assert "PrecipChanger" in model.boundary_handler
 
     assert model.daily_rainfall_intermittency_factor == 0.199
-    assert (np.round(model.daily_rainfall__mean_intensity, decimals=3) ==
-           np.round( 0.10173785078713211, decimals =3))
+    assert np.round(model.daily_rainfall__mean_intensity, decimals=3) == np.round(
+        0.10173785078713211, decimals=3
+    )
 
 
 def test_not_specifying_record_rain():
@@ -312,6 +315,7 @@ def test_not_specifying_record_rain():
     }
 
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     with pytest.raises(ValueError):
         model.write_storm_sequence_to_file()
@@ -336,15 +340,17 @@ def test_finalize_opt_duration_stochastic_false_too_short():
         "daily_rainfall_intermittency_factor": 0.1,
         "daily_rainfall__precipitation_shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
-        "random_seed": 1234
+        "random_seed": 1234,
     }
 
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     with pytest.raises(RuntimeError):
         model.finalize()
 
-    os.remove('storm_sequence.txt')
+    os.remove("storm_sequence.txt")
+
 
 def test_finalize_opt_duration_stochastic_false_no_rain():
     params = {
@@ -362,44 +368,47 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
         "daily_rainfall_intermittency_factor": 0.0,
         "daily_rainfall__precipitation_shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
-        "random_seed": 1234
+        "random_seed": 1234,
     }
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     with pytest.raises(ValueError):
         model.finalize()
 
+
 def test_finalize_opt_duration_stochastic_false():
     params = {
-    "opt_stochastic_duration": False,
-    "dt": 10.,
-    "output_interval": 2.,
-    "run_duration": 10000.,
-    "record_rain": True,
-    "m_sp": 0.5,
-    "n_sp": 1.0,
-    "water_erodability~stochastic": 0.01,
-    "regolith_transport_parameter": 0.1,
-    "infiltration_capacity": 0.0,
-    "daily_rainfall__mean_intensity": 1.,
-    "daily_rainfall_intermittency_factor": 0.1,
-    "daily_rainfall__precipitation_shape_factor": 0.6,
-    "number_of_sub_time_steps": 1,
-    "random_seed": 1234
+        "opt_stochastic_duration": False,
+        "dt": 10.,
+        "output_interval": 2.,
+        "run_duration": 10000.,
+        "record_rain": True,
+        "m_sp": 0.5,
+        "n_sp": 1.0,
+        "water_erodability~stochastic": 0.01,
+        "regolith_transport_parameter": 0.1,
+        "infiltration_capacity": 0.0,
+        "daily_rainfall__mean_intensity": 1.,
+        "daily_rainfall_intermittency_factor": 0.1,
+        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "number_of_sub_time_steps": 1,
+        "random_seed": 1234,
     }
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     model.finalize()
 
     # assert that these are correct
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt")
-    filecmp.cmp('storm_sequence.txt', truth_file)
+    assert filecmp.cmp("storm_sequence.txt", truth_file) == True
 
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt")
-    filecmp.cmp('exceedance_summary.txt', truth_file)
+    assert filecmp.cmp("exceedance_summary.txt", truth_file) == True
 
-    os.remove('storm_sequence.txt')
-    os.remove('exceedance_summary.txt')
+    os.remove("storm_sequence.txt")
+    os.remove("exceedance_summary.txt")
 
 
 def test_finalize_opt_duration_stochastic_true():
@@ -421,11 +430,12 @@ def test_finalize_opt_duration_stochastic_true():
     }
 
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     model.finalize()
 
     # assert that these are correct
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt")
-    filecmp.cmp('storm_sequence.txt', truth_file)
+    assert filecmp.cmp("storm_sequence.txt", truth_file) == True
 
-    os.remove('storm_sequence.txt')
+    os.remove("storm_sequence.txt")

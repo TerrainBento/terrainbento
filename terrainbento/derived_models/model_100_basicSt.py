@@ -55,17 +55,12 @@ class BasicSt(StochasticErosionModel):
     water discharge at each node.
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """Initialize the StochasticDischargeHortonianModel."""
 
         # Call ErosionModel's init
         super(BasicSt, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
         # Get Parameters:
         self.m = self.params["m_sp"]

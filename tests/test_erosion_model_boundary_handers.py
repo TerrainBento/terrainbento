@@ -17,31 +17,10 @@ from terrainbento.boundary_condition_handlers import (
 )
 
 
-def test_bad_boundary_condition_component():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    pytest.raises(
-        ValueError, ErosionModel, params=params, BoundaryHandlers=LinearDiffuser
-    )
-
-
-def test_boundary_condition_already_instantiated():
-    mg = RasterModelGrid(10, 10)
-    z = mg.add_zeros("node", "topographic__elevation")
-    nf = NormalFault(mg)
-
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    pytest.raises(ValueError, ErosionModel, params=params, BoundaryHandlers=nf)
-
-
 def test_bad_boundary_condition_string():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    pytest.raises(ValueError, ErosionModel, params=params, BoundaryHandlers="spam")
-
-
-def test_bad_boundary_condition_string():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
-    pytest.raises(ValueError, ErosionModel, params=params, BoundaryHandlers="spam")
-
+    params = {"dt": 1, "output_interval": 2., "run_duration": 10., 'BoundaryHandlers':"spam"}
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
 def test_boundary_condition_handler_with_special_part_of_params():
     U = 0.0001
@@ -114,17 +93,38 @@ def test_boundary_condition_handler_without_special_part_of_params():
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
 
 
-def test_example_boundary_handlers():
-    pass
-
-
-def test_pass_boundary_handlers_as_str():
-    pass
-
-
-def test_pass_boundary_handlers_as_instance():
-    pass
-
-
 def test_pass_two_boundary_handlers():
-    pass
+    U = 0.0001
+    K = 0.001
+    m = 1. / 3.
+    n = 2. / 3.
+    # construct dictionary. note that D is turned off here
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 20,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability": K,
+        "m_sp": m,
+        "n_sp": n,
+        "random_seed": 3141,
+        "BoundaryHandlers": [
+            "NotCoreNodeBaselevelHandler",
+            "SingleNodeBaselevelHandler",
+        ],
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "SingleNodeBaselevelHandler": {"lowering_rate": -U},
+    }
+    model = Basic(params=params)
+    model.run_one_step(1.0)
+
+    truth = np.zeros(model.z.size)
+    truth[0] -= U
+    truth[model.grid.core_nodes] += U
+    assert_array_equal(model.z, truth)

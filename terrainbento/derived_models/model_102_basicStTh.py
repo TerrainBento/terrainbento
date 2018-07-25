@@ -68,17 +68,12 @@ class BasicStTh(StochasticErosionModel):
     >>> srt = BasicStTh(params=my_pars)
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """Initialize the BasicStTh."""
 
         # Call ErosionModel's init
         super(BasicStTh, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         K_stoch_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
