@@ -62,17 +62,17 @@ def test_run_stochastic_opt_true():
     assert model.opt_stochastic_duration == True
     model.run_for(10, 10000.)
 
-    rainfall_rate = np.asarray(model.rain_record["rainfall_rate"])
-    event_duration = np.asarray(model.rain_record["event_duration"])
+    rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(decimals=5)
+    event_duration = np.asarray(model.rain_record["event_duration"]).round(decimals=5)
 
     dry_times = event_duration[rainfall_rate == 0]
     wet_times = event_duration[rainfall_rate > 0]
 
     np.testing.assert_almost_equal(
-        np.mean(dry_times), params["mean_interstorm_duration"], decimal=1
+        np.round(np.mean(dry_times), decimals=1), params["mean_interstorm_duration"], decimal=1
     )
     np.testing.assert_almost_equal(
-        np.mean(wet_times), params["mean_storm_duration"], decimal=1
+        np.round(np.mean(wet_times), decimals=1), params["mean_storm_duration"], decimal=1
     )
 
     avg_storm_depth = np.sum((rainfall_rate * event_duration)) / len(wet_times)
