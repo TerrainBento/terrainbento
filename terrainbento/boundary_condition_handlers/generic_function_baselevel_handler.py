@@ -11,20 +11,24 @@ class GenericFuncBaselevelHandler(object):
     """Control the elevation of all nodes that are not core nodes.
 
     The **GenericFuncBaselevelHandler** controls the elevation of all nodes on
-    the model grid with ``status != 0`` (core nodes). The elevation change
-
-    XXXX
+    the model grid with ``status != 0`` (core nodes). The elevation change is
+    defined by a generic function of the x and y position across the grid and
+    the model time, t. Thus a user is able to use this single BaselevelHandler
+    object to make many different uplift patterns, including uplift patterns
+    that change as a function of model time.
 
     Through the parameter ``modify_core_nodes`` the user can determine if the
     core nodes should be moved in the direction (up or down) specified by the
     elevation change directive, or if the non-core nodes should be moved in
-    the opposite direction.
+    the opposite direction. Negative values returned by the function indicate
+    that the core nodes would be uplifted and the not-core nodes would be
+    down-dropped.
 
-    The **NotCoreNodeBaselevelHandler** expects that ``topographic__elevation``
+    The **GenericFuncBaselevelHandler** expects that ``topographic__elevation``
     is an at-node model grid field. It will modify this field as well as
     the field ``bedrock__elevation``, if it exists.
 
-    Note that **NotCoreNodeBaselevelHandler** increments time at the end of the
+    Note that **GenericFuncBaselevelHandler** increments time at the end of the
     **run_one_step** method.
     """
 
@@ -32,7 +36,7 @@ class GenericFuncBaselevelHandler(object):
         self,
         grid,
         modify_core_nodes=False,
-        function = function=lambda x, y: 0*x + 0*y,
+        function = lambda x, y, t: (0*x + 0*y + 0*t),
         **kwargs
     ):
         """
@@ -43,7 +47,8 @@ class GenericFuncBaselevelHandler(object):
             Flag to indicate if the core nodes or the non-core nodes will
             be modified. Default is False, indicating that nodes in the core
             will be modified.
-        function
+        function : function, optional
+            Default is ``lambda x, y: (0*x + 0*y + 0*t)``
 
         Examples
         --------
@@ -65,24 +70,25 @@ class GenericFuncBaselevelHandler(object):
          [ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]]
 
-        Now import the **NotCoreNodeBaselevelHandler** and instantiate.
+        Now import the **GenericFuncBaselevelHandler** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         NotCoreNodeBaselevelHandler)
-        >>> bh = NotCoreNodeBaselevelHandler(mg,
+        ...                                         GenericFuncBaselevelHandler)
+        >>> bh = GenericFuncBaselevelHandler(mg,
         ...                                 modify_core_nodes = False,
-        ...                                 lowering_rate = -0.1)
+        ...                                 function = lambda x, y, t: -(x + y + (0*t)))
         >>> bh.run_one_step(10.0)
 
         We should expect that the boundary nodes (except for node 0) will all
-        have lowered by -1.
+        have lowered by ``10*(x+y)`` in which ``x`` and ``y`` are the node x and
+        y positions
 
         >>> print(z.reshape(mg.shape))
-        [[-1. -1. -1. -1. -1.]
-         [-1.  0.  0.  0. -1.]
-         [-1.  0.  0.  0. -1.]
-         [-1.  0.  0.  0. -1.]
-         [-1. -1. -1. -1. -1.]]
+        [[  0. -10. -20. -30. -40.]
+         [-10.   0.   0.   0. -50.]
+         [-20.   0.   0.   0. -60.]
+         [-30.   0.   0.   0. -70.]
+         [-40. -50. -60. -70. -80.]]
 
         If we wanted instead for all of the non core nodes to change their
         elevation, we would set ``modify_core_nodes = True``.
@@ -95,25 +101,38 @@ class GenericFuncBaselevelHandler(object):
         ...                                        top_is_closed=True)
         >>> mg.set_watershed_boundary_condition_outlet_id(
         ...     0, mg.at_node['topographic__elevation'], -9999.)
-        >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         NotCoreNodeBaselevelHandler)
-        >>> bh = NotCoreNodeBaselevelHandler(mg,
+        >>> bh = GenericFuncBaselevelHandler(mg,
         ...                                 modify_core_nodes = True,
-        ...                                 lowering_rate = -0.1)
+        ...                                 function = lambda x, y, t: -(x + y + (0*t)))
         >>> bh.run_one_step(10.0)
         >>> print(z.reshape(mg.shape))
-        [[ 0.  0.  0.  0.  0.]
-         [ 0.  1.  1.  1.  0.]
-         [ 0.  1.  1.  1.  0.]
-         [ 0.  1.  1.  1.  0.]
-         [ 0.  0.  0.  0.  0.]]
+        [[  0.   0.   0.   0.   0.]
+         [  0.  20.  30.  40.   0.]
+         [  0.  30.  40.  50.   0.]
+         [  0.  40.  50.  60.   0.]
+         [  0.   0.   0.   0.   0.]]
 
-        More complex baselevel histories can be provided with a
-        ``lowering_file_path``.
+        There is no limit to how complex a function a user can provide. The
+        function must only take the variables ``x``, ``y``, and ``t`` and
+        return an array of size number of nodes.
 
         """
         self.model_time = 0.0
         self._grid = grid
+
+        # test the function behaves well
+        function_args = function.__code__.co_varnames
+        if len(function_args) != 3:
+            msg = 'GenericFuncBaselevelHandler: function must take only three arguments, x, y, and t.'
+            raise ValueError(msg)
+
+        test_dzdt = function(self._grid.x_of_node, self._grid.y_of_node, self.model_time)
+
+        if test_dzdt.shape != self._grid.x_of_node.shape:
+            msg = 'GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)'
+            raise ValueError(msg)
+
+        self.function = function
         self.modify_core_nodes = modify_core_nodes
         self.z = self._grid.at_node["topographic__elevation"]
 
@@ -126,71 +145,17 @@ class GenericFuncBaselevelHandler(object):
             self.nodes_to_lower = self._grid.status_at_node != 0
             self.prefactor = 1.0
 
-        if (lowering_file_path is None) and (lowering_rate is None):
-            raise ValueError(
-                (
-                    "NotCoreNodeBaselevelHandler requires one of "
-                    "lowering_rate and lowering_file_path"
-                )
-            )
-        else:
-            if lowering_rate is None:
-                # initialize outlet elevation object
-                if os.path.exists(lowering_file_path):
-
-                    elev_change_df = np.loadtxt(
-                        lowering_file_path, skiprows=1, delimiter=","
-                    )
-                    time = elev_change_df[:, 0]
-                    elev_change = elev_change_df[:, 1]
-
-                    model_start_elevation = np.mean(self.z[self.nodes_to_lower])
-
-                    if model_end_elevation is None:
-                        self.scaling_factor = 1.0
-                    else:
-                        self.scaling_factor = np.abs(
-                            model_start_elevation - model_end_elevation
-                        ) / np.abs(elev_change[0] - elev_change[-1])
-
-                    outlet_elevation = (
-                        self.scaling_factor * self.prefactor * elev_change_df[:, 1]
-                    ) + model_start_elevation
-
-                    self.outlet_elevation_obj = interp1d(time, outlet_elevation)
-                    self.lowering_rate = None
-                else:
-                    raise ValueError(
-                        (
-                            "The lowering_file_path provided "
-                            "to NotCoreNodeBaselevelHandler does not "
-                            "exist."
-                        )
-                    )
-            elif lowering_file_path is None:
-                self.lowering_rate = lowering_rate
-                self.outlet_elevation_obj = None
-            else:
-                raise ValueError(
-                    (
-                        "Both an lowering_rate and a "
-                        "lowering_file_path have been provided "
-                        "to NotCoreNodeBaselevelHandler. Please provide "
-                        "only one."
-                    )
-                )
-
     def run_one_step(self, dt):
-        """ Run **NotCoreNodeBaselevelHandler** forward and update elevations.
+        """ Run **GenericFuncBaselevelHandler** forward and update elevations.
 
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.
 
-        In the **run_one_step** routine, the **NotCoreNodeBaselevelHandler** will
+        In the **run_one_step** routine, the **GenericFuncBaselevelHandler** will
         either lower the closed or raise the non-closed nodes based on inputs
         specified at instantiation.
 
-        Note that **NotCoreNodeBaselevelHandler** increments time at the end of
+        Note that **GenericFuncBaselevelHandler** increments time at the end of
         the **run_one_step** method.
 
         Parameters
@@ -199,35 +164,18 @@ class GenericFuncBaselevelHandler(object):
             Duration of model time to advance forward.
 
         """
-        # next, lower the correct nodes the desired amount
-        # first, if we do not have an outlet elevation object
-        if self.outlet_elevation_obj is None:
+        self.dzdt = self.function(self._grid.x_of_node,
+                                      self._grid.y_of_node,
+                                      self.model_time)
 
-            # calculate lowering amount and subtract
-            self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
+        # calculate lowering amount and subtract
+        self.z[self.nodes_to_lower] += self.prefactor * self.dzdt[self.nodes_to_lower] * dt
 
-            # if bedrock__elevation exists as a field, lower it also
-            if "bedrock__elevation" in self._grid.at_node:
-                self._grid.at_node["bedrock__elevation"][self.nodes_to_lower] += (
-                    self.prefactor * self.lowering_rate * dt
-                )
-
-        # if there is an outlet elevation object
-        else:
-            # if bedrock__elevation exists as a field, lower it also
-            # calcuate the topographic change required to match the current time's value for
-            # outlet elevation. This must be done in case bedrock elevation exists, and must
-            # be done before the topography is lowered
-            mean_z = np.mean(self.z[self.nodes_to_lower])
-            self.topo_change = mean_z - self.outlet_elevation_obj(self.model_time)
-
-            if "bedrock__elevation" in self._grid.at_node:
-                self._grid.at_node["bedrock__elevation"][
-                    self.nodes_to_lower
-                ] -= self.topo_change
-
-            # lower topography
-            self.z[self.nodes_to_lower] -= self.topo_change
+        # if bedrock__elevation exists as a field, lower it also
+        if "bedrock__elevation" in self._grid.at_node:
+            self._grid.at_node["bedrock__elevation"][self.nodes_to_lower] += (
+                self.prefactor * self.dzdt[self.nodes_to_lower] * dt
+            )
 
         # increment model time
         self.model_time += dt
