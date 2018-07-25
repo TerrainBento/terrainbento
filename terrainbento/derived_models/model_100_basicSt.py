@@ -178,7 +178,7 @@ class BasicSt(StochasticErosionModel):
         self.n = self.params["n_sp"]
         self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
             self._length_factor ** ((3. * self.m) - 1)
-        ) # K stochastic has units of [=] T^{m-1}/L^{3m-1}
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -206,8 +206,7 @@ class BasicSt(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.K, m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"]
+            self.grid, K_sp=self.K, m_sp=self.params["m_sp"], n_sp=self.params["n_sp"]
         )
 
         # Instantiate a LinearDiffuser component

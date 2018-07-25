@@ -1,0 +1,46 @@
+Section 1: Distribution Description
+Scale Factor: 0.664639300459
+Shape Factor: 0.6
+Intermittency Factor: 0.1
+Number of wet days per year: 37
+
+The scale factor that describes this distribution is calculated based on a
+provided value for the mean wet day rainfall.
+This provided value was:
+1.0
+
+
+Section 2: Theoretical Predictions
+Based on the analytical form of the wet day rainfall distribution, we can
+calculate theoretical predictions of the daily rainfall amounts associated with
+N-year events.
+Expected value for the wet day total of the 10.0 year event is: 12.853
+Expected value for the wet day total of the 25.0 year event is: 16.34
+Expected value for the wet day total of the 100.0 year event is: 22.235
+
+
+Section 3: Predicted 95% confidence bounds on the exceedance values based on
+number of samples drawn.
+The ability to empirically estimate the rainfall associated with an N-year event
+depends on the probability of that event occurring and the number of draws from
+the probability distribution. The ability to estimate increases with an
+increasing number of samples and decreases with decreasing probability of event
+occurrence.
+Exceedance values calculated from 1000 draws from the daily-rainfall probability
+distribution. This corresponds to 27 effective years.
+
+For the given number of samples, the 95% confidence bounds for the following
+event return intervals are as follows:
+Expected range for the wet day total of the 10.0 year event is: (8.338, 17.368)
+Expected range for the wet day total of the 25.0 year event is: (8.476, 24.205)
+Expected range for the wet day total of the 100.0 year event is: (4.436, 40.034)
+
+
+Section 4: Empirical Values
+These empirical values should be interpreted in the context of the expected
+ranges printed in Section 3. If the expected range is large, consider using a
+longer record of rainfall. The empirical values should fall within the expected
+range at a 95% confidence level.
+Estimated value for the wet day total of the 10.0 year event is: 10.161
+Estimated value for the wet day total of the 25.0 year event is: 13.49
+Estimated value for the wet day total of the 100.0 year event is: 14.602

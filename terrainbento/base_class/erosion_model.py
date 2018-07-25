@@ -38,6 +38,10 @@ If neither of the two following parameters is specified, a synthetic
 a synthetic ``RasterModelGrid`` are not provided, default values will be used
 for grid size, initial topography, and boundary conditions.
 
+If a user desires providing elevations from a numpy arrary, then they can
+instantiate a synthetic grid and set the value of ``model.z`` to the values of
+the numpy array.
+
 DEM_filename : str, optional
     File path to either an ESRII ASCII or netCDF file. Either  ``'DEM_filename'``
     or ``'model_grid'`` must be specified.
@@ -264,8 +268,9 @@ class ErosionModel(object):
 
         Examples
         --------
-        We recommend that you look at the terrainbento tutorials for
-        examples of usage.
+        This model is a base class and is not designed to be run on its own. We
+        recommend that you look at the terrainbento tutorials for examples of
+        usage.
         """
         #######################################################################
         # get parameters
@@ -298,7 +303,7 @@ class ErosionModel(object):
         for req in ["dt", "output_interval", "run_duration"]:
             if req in self.params:
                 try:
-                    val = float(self.params[req])
+                    _ = float(self.params[req])
                 except ValueError:
                     msg = (
                         "Required parameter {0} is not compatible with type float.".format(
@@ -337,7 +342,7 @@ class ErosionModel(object):
 
         if "DEM_filename" in self.params:
             self._starting_topography = "inputDEM"
-            (self.grid, self.z) = self.read_topography(self.params["DEM_filename"])
+            (self.grid, self.z) = self.read_topography()
             self.opt_watershed = True
         else:
             # this routine will set self.opt_watershed internally
@@ -765,13 +770,12 @@ class ErosionModel(object):
                     east_closed, north_closed, west_closed, south_closed
                 )
 
-    def read_topography(self, file_path, name="topographic__elevation", halo=1):
-        """Read and return topography from file.
+    def read_topography(self, name="topographic__elevation", halo=1):
+        """Read and return topography from file located in the parameter
+        dictionary at ``DEM_filename``.
 
         Parameters
         ----------
-        file_path : str
-            File path to read. Must be either a NetCDF or ESRI ASCII type file.
         name : str, optional
             Name of grid field for read topography. Default value is
              topographic__elevation.
@@ -788,6 +792,7 @@ class ErosionModel(object):
         We recommend that you look at the terrainbento tutorials for
         examples of usage.
         """
+        file_path = self.params["DEM_filename"]
         try:
             (grid, vals) = read_esri_ascii(file_path, name=name, halo=halo)
         except:
@@ -891,7 +896,9 @@ class ErosionModel(object):
                 }
             )
 
-            if field_names is None:
+            if field_names:
+                pass
+            else:
                 field_names = self.grid.at_node.keys()
 
             for field_name in field_names:

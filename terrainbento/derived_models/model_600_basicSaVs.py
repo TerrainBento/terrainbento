@@ -14,7 +14,6 @@ Landlab components used:
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import (
@@ -232,8 +231,8 @@ class BasicSaVs(ErosionModel):
 
         self.weatherer = ExponentialWeatherer(
             self.grid,
-            max_soil_production_rate=max_soil_production_rate,
-            soil_production_decay_depth=soil_production_decay_depth,
+            soil_production__maximum_rate=max_soil_production_rate,
+            soil_production__decay_depth=soil_production_decay_depth,
         )
 
     def _calc_effective_drainage_area(self):
@@ -293,8 +292,8 @@ class BasicSaVs(ErosionModel):
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handler:
-            self.eroder.K = (
-                self.K_sp
+            self.eroder._K_unit_time.fill(
+                self.K
                 * self.boundary_handler[
                     "PrecipChanger"
                 ].get_erodability_adjustment_factor()
@@ -328,7 +327,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    vssa = BasicVsSa(input_file=infile)
+    vssa = BasicSaVs(input_file=infile)
     vssa.run()
 
 

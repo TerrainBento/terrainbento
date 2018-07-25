@@ -1,9 +1,7 @@
-import sys
+# coding: utf8
+#! /usr/env/python
+
 import os
-
-import numpy as np
-
-from numpy.testing import assert_almost_equal
 import pytest
 
 from terrainbento.boundary_condition_handlers import SingleNodeBaselevelHandler
@@ -28,7 +26,7 @@ def text_hex():
 def test_passing_neither_lowering_method():
     """Test passing no lowering information"""
     mg = RasterModelGrid(5, 5)
-    z = mg.add_zeros("node", "topographic__elevation")
+    _ = mg.add_zeros("node", "topographic__elevation")
 
     pytest.raises(ValueError, SingleNodeBaselevelHandler, mg, outlet_node=0)
 
@@ -73,7 +71,7 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
 
     node_id = 27
     bh = SingleNodeBaselevelHandler(mg, outlet_node=node_id, lowering_rate=-0.1)
-    for i in range(240):
+    for _ in range(240):
         bh.run_one_step(10)
 
     assert z[1] == 1.0
@@ -93,7 +91,7 @@ def test_outlet_lowering_object_no_scaling_bedrock():
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
     bh = SingleNodeBaselevelHandler(mg, outlet_node=node_id, lowering_file_path=file)
-    for i in range(241):
+    for _ in range(241):
         bh.run_one_step(10)
 
     assert z[1] == 1.0
@@ -111,7 +109,7 @@ def test_outlet_lowering_object_no_scaling():
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
     bh = SingleNodeBaselevelHandler(mg, outlet_node=node_id, lowering_file_path=file)
-    for i in range(241):
+    for _ in range(241):
         bh.run_one_step(10)
 
     assert z[1] == 0.0
@@ -129,7 +127,7 @@ def test_outlet_lowering_object_with_scaling():
         mg, outlet_node=node_id, lowering_file_path=file, model_end_elevation=-318.0
     )
 
-    for i in range(241):
+    for _ in range(241):
         bh.run_one_step(10)
 
     assert bh.z[node_id] == -95.0

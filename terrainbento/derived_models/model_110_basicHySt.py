@@ -33,7 +33,6 @@ PrecipitationDistribution, LinearDiffuser, HybridAlluvium
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import LinearDiffuser, ErosionDeposition
@@ -139,7 +138,7 @@ class BasicHySt(StochasticErosionModel):
             v_s=v_s,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            discharge_field='surface_water__discharge',
+            discharge_field="surface_water__discharge",
             solver=solver,
         )
 

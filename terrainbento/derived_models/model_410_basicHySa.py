@@ -244,10 +244,6 @@ class BasicHySa(ErosionModel):
         bedrock_elev = self.grid.at_node["bedrock__elevation"]
 
         # Set soil thickness and bedrock elevation
-        try:
-            initial_soil_thickness = self.params["soil__initial_thickness"]
-        except KeyError:
-            initial_soil_thickness = 1.0  # default value
         soil_thickness[:] = initial_soil_thickness
         bedrock_elev[:] = self.z - initial_soil_thickness
 
@@ -343,12 +339,7 @@ class BasicHySa(ErosionModel):
             if np.any(np.isnan(self.grid.at_node[f])) or np.any(
                 np.isinf(self.grid.at_node[f])
             ):
-
-                # model is unstable, write message and exit.
-                with open("model_failed.txt", "w") as f:
-                    f.write("This model run became unstable\n")
-
-                raise SystemExit("Model became unstable")
+                raise SystemExit("terrainbento ModelHySa: Model became unstable")
 
 
 def main():  # pragma: no cover
