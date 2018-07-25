@@ -18,6 +18,7 @@ from .boundary_condition_handlers import PrecipChanger
 from .boundary_condition_handlers import SingleNodeBaselevelHandler
 from .boundary_condition_handlers import CaptureNodeBaselevelHandler
 from .boundary_condition_handlers import NotCoreNodeBaselevelHandler
+from .boundary_condition_handlers import GenericFuncBaselevelHandler
 
 from .derived_models import Basic
 from .derived_models import BasicTh
@@ -82,6 +83,7 @@ __all__ = [
     "CaptureNodeBaselevelHandler",
     "NotCoreNodeBaselevelHandler",
     "SingleNodeBaselevelHandler",
+    "GenericFuncBaselevelHandler",
     "PrecipChanger",
     "ErosionModel",
     "StochasticErosionModel",
