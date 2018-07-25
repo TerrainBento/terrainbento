@@ -48,7 +48,12 @@ class GenericFuncBaselevelHandler(object):
             be modified. Default is False, indicating that nodes in the core
             will be modified.
         function : function, optional
-            Default is ``lambda x, y: (0*x + 0*y + 0*t)``
+            Function of model grid node x position, y position and model time
+            that defines the rate of node elevation change. This function must
+            be a function of three variables and return an array of size
+            number of nodes. If a constant value is desired, used
+            **NotCoreNodeBaselevelHandler** instead. The default function is:
+            ``lambda x, y, t: (0*x + 0*y + 0*t)``
 
         Examples
         --------
