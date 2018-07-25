@@ -422,13 +422,13 @@ class StochasticErosionModel(ErosionModel):
             n_events = len(self.rain_record["event_start_time"])
             for i in range(n_events):
                 stormfile.write(
-                    str(self.rain_record["event_start_time"][i])
+                    str(np.around(self.rain_record["event_start_time"][i], decimals=5))
                     + ","
-                    + str(self.rain_record["event_duration"][i])
+                    + str(np.around(self.rain_record["event_duration"][i], decimals=5))
                     + ","
-                    + str(self.rain_record["rainfall_rate"][i])
+                    + str(np.around(self.rain_record["rainfall_rate"][i], decimals=5))
                     + ","
-                    + str(self.rain_record["runoff_rate"][i])
+                    + str(np.around(self.rain_record["runoff_rate"][i], decimals=5))
                     + "\n"
                 )
 
