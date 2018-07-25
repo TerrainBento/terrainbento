@@ -2,10 +2,6 @@
 #! /usr/env/python
 """**GenericFuncBaselevelHandler** modifies elevation for all not-core nodes."""
 
-import os
-import numpy as np
-from scipy.interpolate import interp1d
-
 
 class GenericFuncBaselevelHandler(object):
     """Control the elevation of all nodes that are not core nodes.
