@@ -285,6 +285,7 @@ def test_run_opt_false_with_changer():
     }
 
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     assert "PrecipChanger" in model.boundary_handler
 
@@ -314,6 +315,7 @@ def test_not_specifying_record_rain():
     }
 
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     with pytest.raises(ValueError):
         model.write_storm_sequence_to_file()
@@ -342,6 +344,7 @@ def test_finalize_opt_duration_stochastic_false_too_short():
     }
 
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     with pytest.raises(RuntimeError):
         model.finalize()
@@ -368,6 +371,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
         "random_seed": 1234,
     }
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     with pytest.raises(ValueError):
         model.finalize()
@@ -392,6 +396,7 @@ def test_finalize_opt_duration_stochastic_false():
         "random_seed": 1234,
     }
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     model.finalize()
 
@@ -425,6 +430,7 @@ def test_finalize_opt_duration_stochastic_true():
     }
 
     model = BasicSt(params=params)
+    model.reset_random_seed()
     model.run_for(params["dt"], params["run_duration"])
     model.finalize()
 
