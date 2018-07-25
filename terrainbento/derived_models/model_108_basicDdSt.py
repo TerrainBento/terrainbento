@@ -34,7 +34,6 @@ PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
@@ -71,17 +70,12 @@ class BasicDdSt(StochasticErosionModel):
     >>> srt = BasicDdSt(params=my_pars)
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """Initialize the BasicDdSt."""
 
         # Call ErosionModel's init
         super(BasicDdSt, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters:
@@ -156,12 +150,15 @@ class BasicDdSt(StochasticErosionModel):
 
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
-        cum_ero = self.grid.at_node["cumulative_erosion__depth"]
+        cum_ero = self.grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero
         )
         self.threshold[self.threshold < self.threshold_value] = self.threshold_value
+
+    def _pre_water_erosion_steps(self):
+        self.update_threshold_field()
 
     def run_one_step(self, dt):
         """
@@ -180,72 +177,13 @@ class BasicDdSt(StochasticErosionModel):
             )[0]
 
         # Handle water erosion
-        self.handle_water_erosion_with_threshold(dt, flooded)
+        self.handle_water_erosion(dt, flooded)
 
         # Do some soil creep
         self.diffuser.run_one_step(dt)
 
         # Finalize the run_one_step_method
         self.finalize__run_one_step(dt)
-
-    def handle_water_erosion_with_threshold(self, dt, flooded):
-        """Handle water erosion.
-
-        This function takes the place of the _BaseSt function of the name
-        handle_water_erosion_with_threshold in order to handle water erosion
-        correctly for model BasicDdSt.
-        """
-        # (if we're varying precipitation parameters through time, update them)
-        if "PrecipChanger" in self.boundary_handler:
-            self.daily_rainfall_intermittency_factor, self.daily_rainfall__mean_intensity = self.boundary_handler[
-                "PrecipChanger"
-            ].get_current_precip_params()
-
-        # If we're handling duration deterministically, as a set fraction of
-        # time step duration, calculate a rainfall intensity. Otherwise,
-        # assume it's already been calculated.
-        if not self.opt_stochastic_duration:
-            self.rain_rate = np.random.exponential(self.daily_rainfall__mean_intensity)
-            dt_water = dt * self.daily_rainfall_intermittency_factor
-        else:
-            dt_water = dt
-
-        # Calculate discharge field
-        area = self.grid.at_node["drainage_area"]
-        if self.rain_rate > 0.0 and self.infilt > 0.0:
-            runoff = self.rain_rate - (
-                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
-            )
-        else:
-            runoff = self.rain_rate
-
-        self.discharge[:] = runoff * area
-
-        # Handle water erosion:
-        #
-        #   If we are running stochastic duration, then self.rain_rate will
-        #   have been calculated already. It might be zero, in which case we
-        #   are between storms, so we don't do water erosion.
-        #
-        #   If we're NOT doing stochastic duration, then we'll run water
-        #   erosion for one or more sub-time steps, each with its own
-        #   randomly drawn precipitation intensity.
-        #
-        if self.opt_stochastic_duration and self.rain_rate > 0.0:
-            self.update_threshold_field()
-            runoff = self.calc_runoff_and_discharge()
-            self.eroder.run_one_step(dt, flooded_nodes=flooded)
-        elif not self.opt_stochastic_duration:
-            dt_water = (dt * self.daily_rainfall_intermittency_factor) / float(
-                self.n_sub_steps
-            )
-            for i in range(self.n_sub_steps):
-                self.rain_rate = self.rain_generator.generate_from_stretched_exponential(
-                    self.scale_factor, self.shape_factor
-                )
-                self.update_threshold_field()
-                runoff = self.calc_runoff_and_discharge()
-                self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
 
 
 def main():  # pragma: no cover

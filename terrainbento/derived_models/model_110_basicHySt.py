@@ -33,7 +33,6 @@ PrecipitationDistribution, LinearDiffuser, HybridAlluvium
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import LinearDiffuser, ErosionDeposition
@@ -73,17 +72,12 @@ class BasicHySt(StochasticErosionModel):
     >>> srt = BasicHySt(params=my_pars)
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """Initialize the BasicHySt."""
 
         # Call ErosionModel's init
         super(BasicHySt, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters:
@@ -139,7 +133,7 @@ class BasicHySt(StochasticErosionModel):
             v_s=v_s,
             m_sp=self.params["m_sp"],
             n_sp=self.params["n_sp"],
-            discharge_field='surface_water__discharge',
+            discharge_field="surface_water__discharge",
             solver=solver,
         )
 

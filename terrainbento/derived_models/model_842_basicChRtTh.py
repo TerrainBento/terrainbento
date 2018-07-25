@@ -13,15 +13,13 @@ Landlab components used:
     4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
 """
 
-import sys
 import numpy as np
 
 from landlab.components import StreamPowerSmoothThresholdEroder, TaylorNonLinearDiffuser
-from landlab.io import read_esri_ascii
-from terrainbento.base_class import ErosionModel
+from terrainbento.base_class import TwoLithologyErosionModel
 
 
-class BasicChRtTh(ErosionModel):
+class BasicChRtTh(TwoLithologyErosionModel):
     """**BasicChRtTh** model program.
 
     **BasicChRtTh** combines the **BasicCh**, **BasicTh** and **BasicRt**
@@ -63,11 +61,10 @@ class BasicChRtTh(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    The **BasicChRtTh** program inherits from the terrainbento **ErosionModel**
-    base class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    1) Model **BasicChRtTh**:
+    The **BasicChRtTh** program inherits from the terrainbento
+    **TwoLithologyErosionModel** base class. In addition to the parameters
+    required by the base class, models built with this program require the
+    following parameters.
 
     +--------------------+-----------------------------------------+
     | Parameter Symbol   | Input File Parameter Name               |
@@ -95,7 +92,7 @@ class BasicChRtTh(ErosionModel):
     parameter symbols, names, and dimensions.
 
     *Specifying the Lithology Contact*
-    
+
     In all two-lithology models the spatially variable elevation of the contact
     elevation must be given as the file path to an ESRII ASCII format file using
     the parameter ``lithology_contact_elevation__file_name``. If topography was
@@ -106,7 +103,7 @@ class BasicChRtTh(ErosionModel):
     by a halo of size 1.
 
     *Reference Frame Considerations*
-    
+
     Note that the developers had to make a decision about how to represent the
     contact. We could represent the contact between two layers either as a depth
     below present land surface, or as an altitude. Using a depth would allow for
@@ -125,9 +122,7 @@ class BasicChRtTh(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -137,9 +132,6 @@ class BasicChRtTh(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -174,7 +166,7 @@ class BasicChRtTh(ErosionModel):
         ...           'water_erosion_rule~upper__threshold': 0.1,
         ...           'water_erosion_rule~lower__threshold': 0.2,
         ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'critical_slope': 0.1}
@@ -193,42 +185,19 @@ class BasicChRtTh(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicChRtTh, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-        self.contact_width = (self._length_factor) * self.params[
-            "contact_zone__width"
-        ]  # has units length
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        rock_erosion__threshold = self.get_parameter_from_exponent(
-            "water_erosion_rule~lower__threshold"
-        )
-        till_erosion__threshold = self.get_parameter_from_exponent(
-            "water_erosion_rule~upper__threshold"
-        )
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
-
-        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
-        self.rock_erody = self.K_rock_sp
-        self.till_erody = self.K_till_sp
 
         # Save the threshold values for rock and till
-        self.rock_thresh = rock_erosion__threshold
-        self.till_thresh = till_erosion__threshold
+        self.rock_thresh = self.get_parameter_from_exponent(
+            "water_erosion_rule~lower__threshold"
+        )
+        self.till_thresh = self.get_parameter_from_exponent(
+            "water_erosion_rule~upper__threshold"
+        )
 
         # Set up rock-till boundary and associated grid fields.
-        self._setup_rock_and_till()
+        self._setup_rock_and_till_with_threshold()
 
         # Instantiate a StreamPowerSmoothThresholdEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
@@ -242,65 +211,9 @@ class BasicChRtTh(ErosionModel):
         # Instantiate a LinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
-            linear_diffusivity=regolith_transport_parameter,
+            linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
             nterms=7,
-        )
-
-    def _setup_rock_and_till(self):
-        """Set up fields to handle for two layers with different erodability."""
-        file_name = self.params["lithology_contact_elevation__file_name"]
-        # Read input data on rock-till contact elevation
-        read_esri_ascii(
-            file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
-        )
-
-        # Get a reference to the rock-till field
-        self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
-
-        # Create field for erodability
-        self.erody = self.grid.add_zeros("node", "substrate__erodability")
-
-        # Create field for threshold values
-        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
-
-        # Create array for erodability weighting function
-        self.erody_wt = np.zeros(self.grid.number_of_nodes)
-
-    def _update_erodability_and_threshold_fields(self):
-        """Update erodability at each node.
-
-        The erodability at each node is a smooth function between the rock and
-        till erodabilities and is based on the contact zone width and the
-        elevation of the surface relative to contact elevation.
-        """
-        # Update the erodability weighting function (this is "F")
-        D_over_D_star = (
-            self.z[self.data_nodes] - self.rock_till_contact[self.data_nodes]
-        ) / self.contact_width
-
-        # truncate D_over_D star to remove potential for overflow in exponent
-        D_over_D_star[D_over_D_star < -100.0] = -100.0
-        D_over_D_star[D_over_D_star > 100.0] = 100.0
-
-        self.erody_wt[self.data_nodes] = 1.0 / (1.0 + np.exp(-D_over_D_star))
-
-        # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
-            erode_factor = self.boundary_handler[
-                "PrecipChanger"
-            ].get_erodability_adjustment_factor()
-            self.till_erody = self.K_till_sp * erode_factor
-            self.rock_erody = self.K_rock_sp * erode_factor
-
-        # Calculate the effective erodibilities using weighted averaging
-        self.erody[:] = (
-            self.erody_wt * self.till_erody + (1.0 - self.erody_wt) * self.rock_erody
-        )
-
-        # Calculate the effective thresholds using weighted averaging
-        self.threshold[:] = (
-            self.erody_wt * self.till_thresh + (1.0 - self.erody_wt) * self.rock_thresh
         )
 
     def run_one_step(self, dt):

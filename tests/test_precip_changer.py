@@ -1,3 +1,6 @@
+# coding: utf8
+#! /usr/env/python
+
 from numpy.testing import assert_almost_equal, assert_array_equal
 import pytest
 
@@ -15,18 +18,17 @@ from terrainbento.boundary_condition_handlers.precip_changer import (
 def test_bad_time_unit():
     """Test passing a bad time unit."""
     mg = RasterModelGrid(5, 5)
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
-        mg,
-        daily_rainfall__intermittency_factor=0.3,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=3.0,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=0,
-        time_unit="foo",
-    )
+    with pytest.raises(ValueError):
+        PrecipChanger(
+            mg,
+            daily_rainfall__intermittency_factor=0.3,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=3.0,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=0,
+            time_unit="foo",
+        )
 
 
 def test_time_units_equivalent():
@@ -68,7 +70,7 @@ def test_time_units_equivalent():
         time_unit="second",
     )
 
-    for i in range(10):
+    for _ in range(10):
         pc_day.run_one_step(1.0 / DAYS_PER_DAY)
         pc_yr.run_one_step(1.0 / DAYS_PER_YEAR)
         pc_sec.run_one_step(1.0 / DAYS_PER_SECOND)
@@ -107,7 +109,7 @@ def test_a_stop_time():
     )
 
     # for the first ten steps, nothing should change
-    for i in range(10):
+    for _ in range(10):
         pc.run_one_step(1.0)
         i, p = pc.get_current_precip_params()
         f = pc.get_erodability_adjustment_factor()
@@ -121,7 +123,7 @@ def test_a_stop_time():
     f_end = pc.get_erodability_adjustment_factor()
 
     # then verify that no change occurs again.
-    for i in range(10):
+    for _ in range(10):
         pc.run_one_step(1.0)
         i, p = pc.get_current_precip_params()
         f = pc.get_erodability_adjustment_factor()
@@ -133,62 +135,58 @@ def test_a_stop_time():
 def test_bad_intermittency():
     """Test intermittency factors that are too big or small."""
     mg = RasterModelGrid(5, 5)
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
-        mg,
-        daily_rainfall__intermittency_factor=-0.001,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=3.0,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=0,
-        time_unit="year",
-    )
+    with pytest.raises(ValueError):
+        PrecipChanger(
+            mg,
+            daily_rainfall__intermittency_factor=-0.001,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=3.0,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=0,
+            time_unit="year",
+        )
 
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
-        mg,
-        daily_rainfall__intermittency_factor=1.001,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=3.0,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=0,
-        time_unit="year",
-    )
+    with pytest.raises(ValueError):
+        PrecipChanger(
+            mg,
+            daily_rainfall__intermittency_factor=1.001,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=3.0,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=0,
+            time_unit="year",
+        )
 
 
 def test_bad_intensity():
     """Test rainfall intensity that is too small."""
     mg = RasterModelGrid(5, 5)
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
-        mg,
-        daily_rainfall__intermittency_factor=1.0,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=-1,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=0,
-        time_unit="year",
-    )
+    with pytest.raises(ValueError):
+        PrecipChanger(
+            mg,
+            daily_rainfall__intermittency_factor=1.0,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=-1,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=0,
+            time_unit="year",
+        )
 
 
 def test_bad_infiltration():
     """Test infiltration_capacity that is too small."""
     mg = RasterModelGrid(5, 5)
-    pytest.raises(
-        ValueError,
-        PrecipChanger,
-        mg,
-        daily_rainfall__intermittency_factor=1.0,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-        daily_rainfall__mean_intensity=0.34,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        infiltration_capacity=-0.001,
-        time_unit="year",
-    )
+    with pytest.raises(ValueError):
+        PrecipChanger(
+            mg,
+            daily_rainfall__intermittency_factor=1.0,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+            daily_rainfall__mean_intensity=0.34,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
+            daily_rainfall__precipitation_shape_factor=0.65,
+            infiltration_capacity=-0.001,
+            time_unit="year",
+        )

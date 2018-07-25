@@ -10,11 +10,15 @@ that have been designed to modify model boundary conditions during a model run.
 
 from .base_class import ErosionModel
 from .base_class import StochasticErosionModel
+from .base_class import TwoLithologyErosionModel
+
+from .model_template import ModelTemplate
 
 from .boundary_condition_handlers import PrecipChanger
 from .boundary_condition_handlers import SingleNodeBaselevelHandler
 from .boundary_condition_handlers import CaptureNodeBaselevelHandler
 from .boundary_condition_handlers import NotCoreNodeBaselevelHandler
+from .boundary_condition_handlers import GenericFuncBaselevelHandler
 
 from .derived_models import Basic
 from .derived_models import BasicTh
@@ -45,6 +49,46 @@ from .derived_models import BasicRtVs
 from .derived_models import BasicRtSa
 from .derived_models import BasicChRtTh
 
+
+__all__ = [
+    "ModelTemplate",
+    "Basic",
+    "BasicTh",
+    "BasicDd",
+    "BasicHy",
+    "BasicCh",
+    "BasicSt",
+    "BasicVs",
+    "BasicSa",
+    "BasicRt",
+    "BasicCv",
+    "BasicDdHy",
+    "BasicStTh",
+    "BasicDdSt",
+    "BasicHySt",
+    "BasicThVs",
+    "BasicDdVs",
+    "BasicStVs",
+    "BasicHySa",
+    "BasicHyVs",
+    "BasicChSa",
+    "BasicSaVs",
+    "BasicRtTh",
+    "BasicDdRt",
+    "BasicHyRt",
+    "BasicChRt",
+    "BasicRtVs",
+    "BasicRtSa",
+    "BasicChRtTh",
+    "CaptureNodeBaselevelHandler",
+    "NotCoreNodeBaselevelHandler",
+    "SingleNodeBaselevelHandler",
+    "GenericFuncBaselevelHandler",
+    "PrecipChanger",
+    "ErosionModel",
+    "StochasticErosionModel",
+    "TwoLithologyErosionModel",
+]
 
 from ._version import get_versions
 

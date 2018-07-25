@@ -25,7 +25,7 @@ class SingleNodeBaselevelHandler(object):
     def __init__(
         self,
         grid,
-        outlet_node,
+        outlet_node=0,
         lowering_rate=None,
         lowering_file_path=None,
         model_end_elevation=None,
@@ -35,8 +35,8 @@ class SingleNodeBaselevelHandler(object):
         Parameters
         ----------
         grid : landlab model grid
-        outlet_node : int
-            Node ID of the outlet node.
+        outlet_node : int, optional
+            Node ID of the outlet node. Default value is 0.
         lowering_rate : float, optional
             Lowering rate of the outlet node. One of ``lowering_rate`` and
             ``lowering_file_path`` is required. Units are implied by the

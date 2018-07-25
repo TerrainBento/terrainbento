@@ -228,6 +228,42 @@ def _scale_fac(pmean, c):
     return pmean * (1.0 / gamma(1.0 + 1.0 / c))
 
 
+def _check_intermittency_value(daily_rainfall_intermittency_factor):
+    """Check that daily_rainfall_intermittency_factor is >= 0 and <=1."""
+    if (daily_rainfall_intermittency_factor < 0.0) or (
+        daily_rainfall_intermittency_factor > 1.0
+    ):
+        raise ValueError(
+            (
+                "The PrecipChanger daily_rainfall_intermittency_factor has a "
+                "value of less than zero or greater than one. "
+                "This is invalid."
+            )
+        )
+
+
+def _check_mean_depth(mean_depth):
+    """Check that mean depth is >= 0."""
+    if mean_depth < 0:
+        raise ValueError(
+            (
+                "The PrecipChanger mean depth has a "
+                "value of less than zero. This is invalid."
+            )
+        )
+
+
+def _check_infiltration_capacity(infiltration_capacity):
+    """Check that infiltration_capacity >= 0."""
+    if infiltration_capacity < 0:
+        raise ValueError(
+            (
+                "The PrecipChanger infiltration_capacity has a "
+                "value of less than zero. This is invalid."
+            )
+        )
+
+
 class PrecipChanger(object):
     """Handle time varying precipitation.
 
@@ -243,10 +279,10 @@ class PrecipChanger(object):
     def __init__(
         self,
         grid,
-        daily_rainfall__intermittency_factor,
-        daily_rainfall__intermittency_factor_time_rate_of_change,
-        daily_rainfall__mean_intensity,
-        daily_rainfall__mean_intensity_time_rate_of_change,
+        daily_rainfall__intermittency_factor=0.2,
+        daily_rainfall__intermittency_factor_time_rate_of_change=0.0,
+        daily_rainfall__mean_intensity=0.1,
+        daily_rainfall__mean_intensity_time_rate_of_change=0.0,
         daily_rainfall__precipitation_shape_factor=0.65,
         time_unit="year",
         infiltration_capacity=0,
@@ -261,20 +297,22 @@ class PrecipChanger(object):
         Parameters
         ----------
         grid : landlab model grid
-        daily_rainfall_daily_rainfall_intermittency_factor : float
+        daily_rainfall_intermittency_factor : float, optional
             Starting value of the rainfall daily_rainfall_intermittency_factor :math:`F`. This
             value is a proportion and ranges from 0 (no rain ever) to 1 (rains
-            every day).
-        daily_rainfall_daily_rainfall_intermittency_factor__time_rate_of_change : float
+            every day). Default value is 0.2.
+        daily_rainfall_intermittency_factor__time_rate_of_change : float, optional
             Time rate of change of the rainfall daily_rainfall_intermittency_factor :math:`F`.
             Units are implied by the ``time_unit`` argument. Note that this
-            factor must always be between 0 and 1.
-        daily_rainfall__mean_intensity : float
+            factor must always be between 0 and 1. Default value is 0.0.
+        daily_rainfall__mean_intensity : float, optional
             Starting value of the mean daily rainfall intensity :math:`p_d`.
-            Units are implied by the ``time_unit`` argument.
-        daily_rainfall__mean_intensity__time_rate_of_change : float
+            Units are implied by the ``time_unit`` argument. Default value is
+            0.1.
+        daily_rainfall__mean_intensity__time_rate_of_change : float, optional
             Time rate of change of the mean daily rainfall intensity :math:`p_d`.
-            Units are implied by the ``time_unit`` argument.
+            Units are implied by the ``time_unit`` argument. Default value is
+            0.0.
         daily_rainfall__precipitation_shape_factor : float, optional
             Weibull distribution shape factor :math:`c`. Default value is 0.65.
         infiltration_capacity : float, optional
@@ -410,44 +448,9 @@ class PrecipChanger(object):
 
         self.starting_psi = self.calculate_starting_psi()
 
-        self._check_intermittency_value(self.starting_frac_wet_days)
-        self._check_mean_depth(self.starting_daily_mean_depth)
-        self._check_infiltration_capacity(self.infilt_cap)
-
-    def _check_intermittency_value(self, daily_rainfall_intermittency_factor):
-        """Check that daily_rainfall_intermittency_factor is >= 0 and <=1."""
-        if (daily_rainfall_intermittency_factor >= 0.0) and (
-            daily_rainfall_intermittency_factor <= 1.0
-        ):
-            pass
-        else:
-            raise ValueError(
-                (
-                    "The PrecipChanger daily_rainfall_intermittency_factor has a "
-                    "value of less than zero or greater than one. "
-                    "This is invalid."
-                )
-            )
-
-    def _check_mean_depth(self, mean_depth):
-        """Check that mean depth is >= 0."""
-        if mean_depth < 0:
-            raise ValueError(
-                (
-                    "The PrecipChanger mean depth has a "
-                    "value of less than zero. This is invalid."
-                )
-            )
-
-    def _check_infiltration_capacity(self, infiltration_capacity):
-        """Check that infiltration_capacity >= 0."""
-        if infiltration_capacity < 0:
-            raise ValueError(
-                (
-                    "The PrecipChanger infiltration_capacity has a "
-                    "value of less than zero. This is invalid."
-                )
-            )
+        _check_intermittency_value(self.starting_frac_wet_days)
+        _check_mean_depth(self.starting_daily_mean_depth)
+        _check_infiltration_capacity(self.infilt_cap)
 
     def calculate_starting_psi(self):
         """Calculate and store for later the factor :math:`\Psi_0`.
@@ -515,8 +518,8 @@ class PrecipChanger(object):
                 self.starting_daily_mean_depth + self.mean_depth_rate_of_change * time
             )
 
-            self._check_intermittency_value(frac_wet_days)
-            self._check_mean_depth(mean_depth)
+            _check_intermittency_value(frac_wet_days)
+            _check_mean_depth(mean_depth)
 
             return frac_wet_days, mean_depth
         else:

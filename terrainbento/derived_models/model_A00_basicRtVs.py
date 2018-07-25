@@ -13,15 +13,13 @@ Landlab components used:
     4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
 """
 
-import sys
 import numpy as np
 
 from landlab.components import StreamPowerEroder, LinearDiffuser
-from landlab.io import read_esri_ascii
-from terrainbento.base_class import ErosionModel
+from terrainbento.base_class import TwoLithologyErosionModel
 
 
-class BasicRtVs(ErosionModel):
+class BasicRtVs(TwoLithologyErosionModel):
     """**BasicRtVs** model program.
 
     **BasicRtVs** is a model program that combines the **BasicRt** and
@@ -64,9 +62,10 @@ class BasicRtVs(ErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    The **BasicRtVs** program inherits from the terrainbento **ErosionModel**
-    base class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
+    The **BasicRtVs** program inherits from the terrainbento
+    **TwoLithologyErosionModel** base class. In addition to the parameters
+    required by the base class, models built with this program require the
+    following parameters.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Name                  |
@@ -124,9 +123,7 @@ class BasicRtVs(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -136,9 +133,6 @@ class BasicRtVs(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -171,7 +165,7 @@ class BasicRtVs(ErosionModel):
         ...           'water_erodability~lower': 0.001,
         ...           'water_erodability~upper': 0.01,
         ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'recharge_rate': 0.5,
@@ -192,28 +186,8 @@ class BasicRtVs(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicRtVs, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
-
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-
-        self.contact_width = (self._length_factor) * self.params[
-            "contact_zone__width"
-        ]  # has units length
-
-        self.K_rock_sp = self.get_parameter_from_exponent("water_erodability~lower") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        self.K_till_sp = self.get_parameter_from_exponent("water_erodability~upper") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
 
         recharge_rate = (self._length_factor) * self.params[
             "recharge_rate"
@@ -224,10 +198,6 @@ class BasicRtVs(ErosionModel):
         K_hydraulic_conductivity = (self._length_factor) * self.params[
             "hydraulic_conductivity"
         ]  # has units length per time
-
-        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
-        self.rock_erody = self.K_rock_sp
-        self.till_erody = self.K_till_sp
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
@@ -247,7 +217,7 @@ class BasicRtVs(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self.grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def _calc_effective_drainage_area(self):
@@ -266,56 +236,6 @@ class BasicRtVs(ErosionModel):
         cores = self.grid.core_nodes
         self.eff_area[cores] = area[cores] * (
             np.exp(-self.sat_param * slope[cores] / area[cores])
-        )
-
-    def _setup_rock_and_till(self):
-        """Set up fields to handle for two layers with different erodability."""
-        file_name = self.params["lithology_contact_elevation__file_name"]
-        # Read input data on rock-till contact elevation
-        read_esri_ascii(
-            file_name, grid=self.grid, name="rock_till_contact__elevation", halo=1
-        )
-
-        # Get a reference to the rock-till field
-        self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
-
-        # Create field for erodability
-        self.erody = self.grid.add_zeros("node", "substrate__erodability")
-
-        # Create array for erodability weighting function
-        self.erody_wt = np.zeros(self.grid.number_of_nodes)
-
-    def _update_erodability_field(self):
-        """Update erodability at each node.
-
-        The erodability at each node is a smooth function between the rock and
-        till erodabilities and is based on the contact zone width and the
-        elevation of the surface relative to contact elevation.
-        """
-        # Update the erodability weighting function (this is "F")
-        core = self.grid.core_nodes
-        if self.contact_width > 0.0:
-            self.erody_wt[core] = 1.0 / (
-                1.0
-                + np.exp(
-                    -(self.z[core] - self.rock_till_contact[core]) / self.contact_width
-                )
-            )
-        else:
-            self.erody_wt[core] = 0.0
-            self.erody_wt[np.where(self.z > self.rock_till_contact)[0]] = 1.0
-
-        # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
-            erode_factor = self.boundary_handler[
-                "PrecipChanger"
-            ].get_erodability_adjustment_factor()
-            self.till_erody = self.K_till_sp * erode_factor
-            self.rock_erody = self.K_rock_sp * erode_factor
-
-        # Calculate the effective erodibilities using weighted averaging
-        self.erody[:] = (
-            self.erody_wt * self.till_erody + (1.0 - self.erody_wt) * self.rock_erody
         )
 
     def run_one_step(self, dt):

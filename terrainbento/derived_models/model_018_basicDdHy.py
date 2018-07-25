@@ -88,9 +88,7 @@ class BasicDdHy(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -100,9 +98,6 @@ class BasicDdHy(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -156,10 +151,7 @@ class BasicDdHy(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicDdHy, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters and convert units if necessary:
@@ -201,7 +193,9 @@ class BasicDdHy(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params["water_erosion_rule__thresh_depth_derivative"]
+        self.thresh_change_per_depth = self.params[
+            "water_erosion_rule__thresh_depth_derivative"
+        ]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
@@ -247,7 +241,7 @@ class BasicDdHy(ErosionModel):
             )[0]
 
         # Calculate cumulative erosion and update threshold
-        cum_ero = self.grid.at_node["cumulative_erosion__depth"]
+        cum_ero = self.grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.sp_crit - (self.thresh_change_per_depth * cum_ero)
         self.threshold[self.threshold < self.sp_crit] = self.sp_crit

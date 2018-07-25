@@ -14,7 +14,6 @@ Landlab components used:
 
 """
 
-import sys
 import numpy as np
 
 from landlab.components import (
@@ -95,9 +94,7 @@ class BasicSaVs(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -107,9 +104,6 @@ class BasicSaVs(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -164,10 +158,7 @@ class BasicSaVs(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicSaVs, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters and convert units if necessary:
@@ -232,8 +223,8 @@ class BasicSaVs(ErosionModel):
 
         self.weatherer = ExponentialWeatherer(
             self.grid,
-            max_soil_production_rate=max_soil_production_rate,
-            soil_production_decay_depth=soil_production_decay_depth,
+            soil_production__maximum_rate=max_soil_production_rate,
+            soil_production__decay_depth=soil_production_decay_depth,
         )
 
     def _calc_effective_drainage_area(self):
@@ -293,8 +284,8 @@ class BasicSaVs(ErosionModel):
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handler:
-            self.eroder.K = (
-                self.K_sp
+            self.eroder._K_unit_time.fill(
+                self.K
                 * self.boundary_handler[
                     "PrecipChanger"
                 ].get_erodability_adjustment_factor()
@@ -328,7 +319,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    vssa = BasicVsSa(input_file=infile)
+    vssa = BasicSaVs(input_file=infile)
     vssa.run()
 
 

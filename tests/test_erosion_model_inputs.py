@@ -1,3 +1,6 @@
+# coding: utf8
+#! /usr/env/python
+
 import os
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
@@ -12,7 +15,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 at_node_fields = [
     "topographic__elevation",
     "initial_topographic__elevation",
-    "cumulative_erosion__depth",
+    "cumulative_elevation_change",
     "water__unit_flux_in",
     "flow__receiver_node",
     "topographic__steepest_slope",
@@ -26,7 +29,8 @@ at_node_fields = [
 
 
 def test_no_inputs():
-    pytest.raises(ValueError, ErosionModel)
+    with pytest.raises(ValueError):
+        ErosionModel()
 
 
 def test_both_inputs():
@@ -38,7 +42,8 @@ def test_both_inputs():
     }
     fp = os.path.join(_TEST_DATA_DIR, "inputs.txt")
 
-    pytest.raises(ValueError, ErosionModel, params=params, input_file=fp)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params, input_file=fp)
 
 
 def test_both_node_rows_and_DEM():
@@ -49,18 +54,22 @@ def test_both_node_rows_and_DEM():
         "number_of_node_rows": 5,
         "DEM_filename": "foo.nc",
     }
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
 
 def test_no_required_params():
     params = {"model_grid": "HexModelGrid", "dt": 1, "output_interval": 2.}
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
     params = {"model_grid": "HexModelGrid", "dt": 1, "run_duration": 10.}
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
     params = {"model_grid": "HexModelGrid", "output_interval": 2, "run_duration": 10.}
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
 
 def test_bad_req_params():
@@ -70,7 +79,8 @@ def test_bad_req_params():
         "output_interval": 2.,
         "run_duration": 10.,
     }
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
     params = {
         "model_grid": "HexModelGrid",
@@ -78,7 +88,8 @@ def test_bad_req_params():
         "output_interval": "eggs",
         "run_duration": 10.,
     }
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
     params = {
         "model_grid": "HexModelGrid",
@@ -86,7 +97,8 @@ def test_bad_req_params():
         "output_interval": 2.,
         "run_duration": "wooo",
     }
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
 
 def test_input_file():

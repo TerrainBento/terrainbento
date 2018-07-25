@@ -1,11 +1,12 @@
+# coding: utf8
+#! /usr/env/python
+
 import os
-import subprocess
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal, assert_array_equal
-import pytest
 
-from landlab import HexModelGrid
+
 from terrainbento import BasicRt
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -19,7 +20,7 @@ def test_steady_Kss_no_precip_changer():
     n = 2. / 3.
     dt = 1000
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -45,7 +46,7 @@ def test_steady_Kss_no_precip_changer():
 
     # construct and run model
     model = BasicRt(params=params)
-    for i in range(100):
+    for _ in range(100):
         model.run_one_step(dt)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -68,7 +69,7 @@ def test_steady_Ksp_no_precip_changer():
     n = 1.0
     dt = 1000
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -94,7 +95,7 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct and run model
     model = BasicRt(params=params)
-    for i in range(100):
+    for _ in range(100):
         model.run_one_step(dt)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -117,7 +118,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     n = 1.0
     dt = 1000
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -144,7 +145,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # construct and run model
     model = BasicRt(params=params)
-    for i in range(100):
+    for _ in range(100):
         model.run_one_step(dt)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -168,7 +169,7 @@ def test_diffusion_only():
     dt = 1000
 
     # construct dictionary. note that D is turned off here
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
@@ -196,7 +197,7 @@ def test_diffusion_only():
     reference_node = 9
     # construct and run model
     model = BasicRt(params=params)
-    for i in range(nts):
+    for _ in range(nts):
         model.run_one_step(dt)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
@@ -214,7 +215,7 @@ def test_diffusion_only():
 
 
 def test_with_precip_changer():
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.txt")
+    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     Kr = 0.01
     Kt = 0.001

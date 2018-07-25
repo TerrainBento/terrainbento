@@ -58,6 +58,7 @@ install:
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda config --add channels landlab
+  - cmd: conda install -q landlab
   - cmd: conda info -a && conda list
 
 build: false
