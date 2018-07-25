@@ -46,32 +46,72 @@ class BasicDdSt(StochasticErosionModel):
     stream power with a threshold, (2) linear nhillslope diffusion, and
     (3) generation of a random sequence of runoff events across a topographic
     surface.
-
-    Examples
-    --------
-    >>> from terrainbento import BasicDdSt
-    >>> my_pars = {}
-    >>> my_pars['dt'] = 1.0
-    >>> my_pars['run_duration'] = 1.0
-    >>> my_pars['output_interval'] = 2.0
-    >>> my_pars['infiltration_capacity'] = 1.0
-    >>> my_pars["water_erodability~stochastic"] = 1.0
-    >>> my_pars['m_sp'] = 0.5
-    >>> my_pars['n_sp'] = 1.0
-    >>> my_pars["water_erosion_rule__threshold"] = 1.0
-    >>> my_pars['thresh_change_per_depth'] = 0.1
-    >>> my_pars['regolith_transport_parameter'] = 0.01
-    >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
-    >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
-    >>> my_pars['mean_storm_depth'] = 0.025
-    >>> my_pars['random_seed'] = 907
-    >>> my_pars['daily_rainfall__precipitation_shape_factor'] = 0.65
-    >>> my_pars['number_of_sub_time_steps'] = 10
-    >>> srt = BasicDdSt(params=my_pars)
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
-        """Initialize the BasicDdSt."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
+
+        Returns
+        -------
+        BasicDdSt : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicDdSt**. Note that a YAML input file can be used instead
+        of a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicDdSt
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability~stochastic': 0.001,
+        ...           'water_erosion_rule__threshold': 1.0,
+        ...           'thresh_change_per_depth': 0.1,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'opt_stochastic_duration': False,
+        ...           'number_of_sub_time_steps': 1,
+        ...           'daily_rainfall_intermittency_factor': 0.5,
+        ...           'daily_rainfall__mean_intensity': 1.0,
+        ...           'daily_rainfall__precipitation_shape_factor': 1.0,
+        ...           'infiltration_capacity': 1.0,
+        ...           'random_seed': 0}
+
+        Construct the model.
+
+        >>> model = BasicDdSt(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
 
         # Call ErosionModel's init
         super(BasicDdSt, self).__init__(
