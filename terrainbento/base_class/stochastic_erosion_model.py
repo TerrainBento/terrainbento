@@ -176,6 +176,19 @@ class StochasticErosionModel(ErosionModel):
                 )
             )
 
+    def calc_runoff_and_discharge(self):
+        """Calculate runoff rate and discharge; return runoff."""
+        if self.rain_rate > 0.0 and self.infilt > 0.0:
+            runoff = self.rain_rate - (
+                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
+            )
+            if runoff < 0:
+                runoff = 0
+        else:
+            runoff = self.rain_rate
+        self.discharge[:] = runoff * self.area
+        return runoff
+
     def run_for_stochastic(self, dt, runtime):
         """Run_for with stochastic duration.
 
