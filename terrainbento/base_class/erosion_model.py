@@ -461,6 +461,20 @@ class ErosionModel(object):
                 handler_params = self.params[name]
                 handler_params["length_factor"] = self._length_factor
 
+                # check that values in handler params are not different than
+                # equivalents in params, if they exist.
+                for par in handler_params:
+                    if par in self.params:
+                        if handler_params[par] != self.params[par]:
+                            msg = ("terrainbento ErosionModel: "
+                                    "parameter " + par + "provided is different "
+                                    "in the main parameter dictionary and the "
+                                    "handler dictionary. You probably don't "
+                                    "want this. If you think you can't do your "
+                                    "research without this functionality, make "
+                                    "a GitHub Issue that requests it. ")
+                            raise ValueError(msg)
+
             # otherwise pass all parameters
             else:
                 handler_params = self.params
