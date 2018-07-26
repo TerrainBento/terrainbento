@@ -296,9 +296,13 @@ def test_run_opt_false_with_changer():
         0.10173785078713211, decimals=3
     )
 
+
 def test_opt_dur_true_with_changer():
     params = {
         "opt_stochastic_duration": True,
+        "dt": 10,
+        "output_interval": 2.,
+        "run_duration": 1000.,
         "BoundaryHandlers": "PrecipChanger",
         "PrecipChanger": {
             "daily_rainfall__intermittency_factor": 0.1,
@@ -311,6 +315,7 @@ def test_opt_dur_true_with_changer():
 
     with pytest.raises(ValueError):
         StochasticErosionModel(params=params)
+
 
 def test_not_specifying_record_rain():
     params = {

@@ -79,7 +79,7 @@ def test_not_passing_daily_rainfall__precipitation_shape_factor():
             daily_rainfall__intermittency_factor=0.3,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.001 * DAYS_PER_DAY,
             daily_rainfall__mean_intensity=3.0 * DAYS_PER_DAY,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            daily_rainfall__mean_intensity_time_rate_of_change=0.2 * DAYS_PER_DAY,
             infiltration_capacity=2.0 / DAYS_PER_DAY,
             time_unit="day",
         )
