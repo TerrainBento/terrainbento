@@ -281,6 +281,8 @@ def test_run_opt_false_with_changer():
             "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
             "daily_rainfall__mean_intensity": 1.,
             "daily_rainfall__mean_intensity_time_rate_of_change": 0.0001,
+            "infiltration_capacity": 0,
+            "daily_rainfall__precipitation_shape_factor": 0.65,
         },
     }
 
@@ -294,6 +296,21 @@ def test_run_opt_false_with_changer():
         0.10173785078713211, decimals=3
     )
 
+def test_opt_dur_true_with_changer():
+    params = {
+        "opt_stochastic_duration": True,
+        "BoundaryHandlers": "PrecipChanger",
+        "PrecipChanger": {
+            "daily_rainfall__intermittency_factor": 0.1,
+            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
+            "daily_rainfall__mean_intensity": 1.,
+            "daily_rainfall__mean_intensity_time_rate_of_change": 0.0001,
+            "infiltration_capacity": 0,
+            "daily_rainfall__precipitation_shape_factor": 0.65,
+        }}
+
+    with pytest.raises(ValueError):
+        StochasticErosionModel(params=params)
 
 def test_not_specifying_record_rain():
     params = {

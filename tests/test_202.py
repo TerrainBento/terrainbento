@@ -6,8 +6,8 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 import pytest
 
-
 from terrainbento import BasicThVs
+from terrainbento.utilities.utilities import precip_defaults
 
 
 def test_Aeff():
@@ -309,12 +309,7 @@ def test_with_precip_changer():
         "water_erosion_rule__threshold": threshold,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.5,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.1,
-            "daily_rainfall__mean_intensity": 1.0,
-            "daily_rainfall__mean_intensity_time_rate_of_change": 0.2,
-        },
+        "PrecipChanger": precip_defaults,
     }
 
     model = BasicThVs(params=params)

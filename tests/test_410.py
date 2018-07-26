@@ -7,6 +7,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 from terrainbento import BasicHySa
+from terrainbento.utilities.utilities import precip_defaults
 
 
 def test_steady_Ksp_no_precip_changer():
@@ -196,12 +197,7 @@ def test_with_precip_changer():
         "soil_production__decay_depth": soil_production__decay_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.5,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.1,
-            "daily_rainfall__mean_intensity": 1.0,
-            "daily_rainfall__mean_intensity_time_rate_of_change": 0.2,
-        },
+        "PrecipChanger": precip_defaults
     }
 
     model = BasicHySa(params=params)

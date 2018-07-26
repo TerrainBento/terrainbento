@@ -124,6 +124,14 @@ class StochasticErosionModel(ErosionModel):
         )
 
         self.opt_stochastic_duration = self.params.get("opt_stochastic_duration", False)
+
+        # verify that opt_stochastic_duration and PrecipChanger are consistent
+        if self.opt_stochastic_duration and ("PrecipChanger" in self.boundary_handler):
+            msg = ("terrainbento StochasticErosionModel: setting "
+                   "opt_stochastic_duration=True and using the PrecipChanger "
+                   "boundary condition handler are not compatible.")
+            raise ValueError(msg)
+
         self.seed = int(self.params.get("random_seed", 0))
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the dt may

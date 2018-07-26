@@ -85,7 +85,7 @@ class BasicHyRt(TwoLithologyErosionModel):
     |:math:`\phi`      | ``sediment_porosity``            |
     +------------------+----------------------------------+
 
-    A value for the paramter ``solver`` can also be used to indicate if the
+    A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **ErosionDeposition**
     component or if an adaptive internal timestep is used. Refer to the
     **ErosionDeposition** documentation for details.

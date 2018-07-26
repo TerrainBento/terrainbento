@@ -858,7 +858,7 @@ class ErosionModel(object):
         """Write output to file as a netCDF.
 
         Filenames will have the value of ``'output_filename'`` from the input
-        file or paramter dictionary as the first part of the file name and the
+        file or parameter dictionary as the first part of the file name and the
         model run iteration as the second part of the filename.
 
         Parameters

@@ -279,20 +279,19 @@ class PrecipChanger(object):
     def __init__(
         self,
         grid,
-        daily_rainfall__intermittency_factor=0.2,
-        daily_rainfall__intermittency_factor_time_rate_of_change=0.0,
-        daily_rainfall__mean_intensity=0.1,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.0,
-        daily_rainfall__precipitation_shape_factor=0.65,
+        daily_rainfall__intermittency_factor=None,
+        daily_rainfall__intermittency_factor_time_rate_of_change=None,
+        daily_rainfall__mean_intensity=None,
+        daily_rainfall__mean_intensity_time_rate_of_change=None,
+        daily_rainfall__precipitation_shape_factor=None,
         time_unit="year",
-        infiltration_capacity=0,
+        infiltration_capacity=None,
         m_sp=0.5,
         precipchanger_start_time=0,
         precipchanger_stop_time=None,
         length_factor=1.0,
         **kwargs
     ):
-
         """
         Parameters
         ----------
@@ -300,24 +299,22 @@ class PrecipChanger(object):
         daily_rainfall_intermittency_factor : float, optional
             Starting value of the rainfall daily_rainfall_intermittency_factor :math:`F`. This
             value is a proportion and ranges from 0 (no rain ever) to 1 (rains
-            every day). Default value is 0.2.
+            every day).
         daily_rainfall_intermittency_factor__time_rate_of_change : float, optional
             Time rate of change of the rainfall daily_rainfall_intermittency_factor :math:`F`.
             Units are implied by the ``time_unit`` argument. Note that this
-            factor must always be between 0 and 1. Default value is 0.0.
+            factor must always be between 0 and 1.
         daily_rainfall__mean_intensity : float, optional
             Starting value of the mean daily rainfall intensity :math:`p_d`.
-            Units are implied by the ``time_unit`` argument. Default value is
-            0.1.
+            Units are implied by the ``time_unit`` argument.
         daily_rainfall__mean_intensity__time_rate_of_change : float, optional
             Time rate of change of the mean daily rainfall intensity :math:`p_d`.
-            Units are implied by the ``time_unit`` argument. Default value is
-            0.0.
+            Units are implied by the ``time_unit`` argument.
         daily_rainfall__precipitation_shape_factor : float, optional
-            Weibull distribution shape factor :math:`c`. Default value is 0.65.
+            Weibull distribution shape factor :math:`c`.
         infiltration_capacity : float, optional
             Infiltration capacity. Time units are implied by the ``time_unit``
-            argument. Default value is 0.
+            argument.
         m_sp : float, optional
             Drainage area exponent in erosion rule, :math:`m`.  Default value is
             0.5.
@@ -397,6 +394,30 @@ class PrecipChanger(object):
         >>> print(round(fw, 3))
         1.721
         """
+        if daily_rainfall__intermittency_factor is None:
+            msg = 'terrainbento PrecipChanger requires the parameter daily_rainfall__intermittency_factor'
+            raise ValueError(msg)
+
+        if daily_rainfall__intermittency_factor_time_rate_of_change is None:
+            msg = 'terrainbento PrecipChanger requires the parameter daily_rainfall__intermittency_factor_time_rate_of_change'
+            raise ValueError(msg)
+
+        if daily_rainfall__mean_intensity is None:
+            msg = 'terrainbento PrecipChanger requires the parameter daily_rainfall__mean_intensity'
+            raise ValueError(msg)
+
+        if daily_rainfall__mean_intensity_time_rate_of_change is None:
+            msg = 'terrainbento PrecipChanger requires the parameter daily_rainfall__mean_intensity_time_rate_of_change'
+            raise ValueError(msg)
+
+        if daily_rainfall__precipitation_shape_factor is None:
+            msg = 'terrainbento PrecipChanger requires the parameter daily_rainfall__precipitation_shape_factor'
+            raise ValueError(msg)
+
+        if infiltration_capacity is None:
+            msg = 'terrainbento PrecipChanger requires the parameter infiltration_capacity'
+            raise ValueError(msg)
+
         self.model_time = 0.0
         self._length_factor = length_factor
 

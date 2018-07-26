@@ -8,8 +8,10 @@ import pytest
 from landlab import HexModelGrid
 from terrainbento import BasicSt
 
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+from terrainbento.utilities.utilities import precip_defaults
 
+
+_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
 def test_steady_without_stochastic_duration():
@@ -21,47 +23,47 @@ def test_steady_without_stochastic_duration():
     analytical solution; it evaluates to 1/2 when mean rain intensity and
     infiltration capacity are both equal to unity. This is where the factor of
     2 in the predicted-slope calculation below comes from.
-    
+
     The derivation is as follows.
-        
+
     Instantaneous erosion rate, :math:E_i:
-            
+
     ..math::
         E_i = K_q Q^m S^n
-        
+
     Instantaneous water discharge depends on drainage area, :math:A, rain
     intensity, :math:P, and infiltration capacity, :math:I_m:
-        
+
     ..math::
         Q = R A
         R = P - I_m (1 - e^{-P/I_m})
-        
+
     Average erosion rate, :math:E, is the integral of instantaneous erosion
     rate over all possible rain rates times the PDF of rain rate, :math:f(P):
-        
+
     ..math::
         E = \int_0^\infty f(P) K_q A^m S^n [P-I_m(1-e^{-P/I_m})]^m dP
           = K_q A^m S^n \int_0^\infty f(P) [P-I_m(1-e^{-P/I_m})]^m dP
           = K_q A^m S^n \Phi
-          
+
     where :math:\Phi represents the integral. For testing purposes, we seek an
-    analytical solution to the integral. Take $m=n=1$ and $P=I_m=1$. Also 
-    assume that the distribution shape factor is 1, so that 
+    analytical solution to the integral. Take $m=n=1$ and $P=I_m=1$. Also
+    assume that the distribution shape factor is 1, so that
     :math:f(P) = (1/Pbar) e^{-P/Pbar}.
-    
+
     According to the online integrator, the indefinite integral solution under
     these assumptions is
-    
+
     ..math::
         \Phi = e^{-P} (-\frac{1}{2} e^{-P} - P)
-        
+
     The definite integral should therefore be 1/2.
-    
+
     The slope-area relation is therefore
-    
+
     ..math::
-        S = \frac{2U}{K_q A} 
-        
+        S = \frac{2U}{K_q A}
+
     """
     U = 0.0001
     K = 0.001
@@ -110,7 +112,7 @@ def test_steady_without_stochastic_duration():
 
 def test_stochastic_duration_rainfall_means():
     """Test option with stochastic duration.
-    
+
     Test is simply to get the correct total cumulative rain depth.
     """
     U = 0.0001
@@ -222,10 +224,7 @@ def test_diffusion_only():
 #              'n_sp': 1.0,
 #              'random_seed': 3141,
 #              'BoundaryHandlers': 'PrecipChanger',
-#              'PrecipChanger' : {'daily_rainfall__intermittency_factor': 0.5,
-#                                 'daily_rainfall__intermittency_factor_time_rate_of_change': 0.1,
-#                                 'daily_rainfall__mean_intensity': 1.0,
-#                                 'daily_rainfall__mean_intensity_time_rate_of_change': 0.2}}
+#              'PrecipChanger' : precip_defaults}
 #
 #    model = Basic(params=params)
 #    assert model.eroder.K == K

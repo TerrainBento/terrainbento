@@ -78,7 +78,7 @@ class BasicDdHy(ErosionModel):
     |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
     +--------------------+-------------------------------------------------+
 
-    A value for the paramter ``solver`` can also be used to indicate if the
+    A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **ErosionDeposition**
     component or if an adaptive internal timestep is used. Refer to the
     **ErosionDeposition** documentation for details.

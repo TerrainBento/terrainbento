@@ -8,6 +8,7 @@ import pytest
 
 
 from terrainbento import BasicTh
+from terrainbento.utilities.utilities import precip_defaults
 
 
 def test_bad_n_sp():
@@ -196,12 +197,7 @@ def test_with_precip_changer():
         "water_erosion_rule__threshold": threshold,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.5,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.1,
-            "daily_rainfall__mean_intensity": 1.0,
-            "daily_rainfall__mean_intensity_time_rate_of_change": 0.2,
-        },
+        "PrecipChanger": precip_defaults,
     }
 
     model = BasicTh(params=params)
