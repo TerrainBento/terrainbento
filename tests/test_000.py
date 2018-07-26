@@ -8,7 +8,7 @@ from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 import pytest
 
 from terrainbento import Basic
-from terrainbento.utilities import precip_defaults
+from terrainbento.utilities import precip_defaults, precip_testing_factor
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -219,7 +219,7 @@ def test_with_precip_changer():
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K, 5) == 0.10326
+    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
 
 
 def test_steady_m_075():

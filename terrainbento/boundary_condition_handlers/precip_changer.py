@@ -164,10 +164,6 @@ import numpy as np
 from scipy.special import gamma
 from scipy.integrate import quad
 
-DAYS_PER_YEAR = 365.25
-DAYS_PER_DAY = 1.0
-DAYS_PER_SECOND = 1.0 / (60. * 60. * 24.)
-
 
 def _integrand(p, Ic, lam, c, m):
     """Calculate the integrand for numerical integration.
@@ -284,7 +280,6 @@ class PrecipChanger(object):
         daily_rainfall__mean_intensity=None,
         daily_rainfall__mean_intensity_time_rate_of_change=None,
         daily_rainfall__precipitation_shape_factor=None,
-        time_unit="year",
         infiltration_capacity=None,
         m_sp=0.5,
         precipchanger_start_time=0,
@@ -324,9 +319,6 @@ class PrecipChanger(object):
         precipchanger_stop_time : float, optional
             Model Time at which changing the precipitation statistics should end.
             Default is no end time.
-        time_unit : str, optional
-            Time unit of input parameters. Currently only 'second', 'day', and
-            'year' are supported. Default value is 'year'.
         length_factor : float, optional
             terrainbento model internal length factor conversion related to
             ``meters_to_feet`` and ``feet_to_meters`` input parameters. Default
@@ -360,8 +352,7 @@ class PrecipChanger(object):
         ...                    daily_rainfall__mean_intensity = 3.0,
         ...                    daily_rainfall__mean_intensity_time_rate_of_change = 0.2,
         ...                    daily_rainfall__precipitation_shape_factor = 0.65,
-        ...                    infiltration_capacity = 0,
-        ...                    time_unit = 'day')
+        ...                    infiltration_capacity = 0)
 
         We can get the current precipitation parameters
 
@@ -370,7 +361,7 @@ class PrecipChanger(object):
         0.3
 
         Note that ``daily_rainfall__mean_intensity`` is provided in units of
-        length per year, but is used by the
+        length per year.
 
         >>> print(pd)
         3.0
@@ -421,20 +412,6 @@ class PrecipChanger(object):
         self.model_time = 0.0
         self._length_factor = length_factor
 
-        if time_unit == "year":
-            self._time_conversion = DAYS_PER_YEAR
-        elif time_unit == "day":
-            self._time_conversion = DAYS_PER_DAY
-        elif time_unit == "second":
-            self._time_conversion = DAYS_PER_SECOND
-        else:
-            raise ValueError(
-                (
-                    "time_unit provided is invalid. Valid options "
-                    'are "second", "day" and "year".'
-                )
-            )
-
         if precipchanger_stop_time is None:
             self.no_stop_time = True
         else:
@@ -443,26 +420,21 @@ class PrecipChanger(object):
         self.start_time = precipchanger_start_time
 
         self.starting_frac_wet_days = daily_rainfall__intermittency_factor
-        self.frac_wet_days_rate_of_change = (
-            daily_rainfall__intermittency_factor_time_rate_of_change
-            / self._time_conversion
-        )
+        self.frac_wet_days_rate_of_change = daily_rainfall__intermittency_factor_time_rate_of_change
 
         self.starting_daily_mean_depth = (
-            daily_rainfall__mean_intensity / self._time_conversion * self._length_factor
+            daily_rainfall__mean_intensity * self._length_factor
         )
         self.mean_depth_rate_of_change = (
             daily_rainfall__mean_intensity_time_rate_of_change
-            / self._time_conversion
             * self._length_factor
         )
 
         self.daily_rainfall__precipitation_shape_factor = (
             daily_rainfall__precipitation_shape_factor
         )
-        self.time_unit = time_unit
         self.infilt_cap = (
-            infiltration_capacity / self._time_conversion * self._length_factor
+            infiltration_capacity * self._length_factor
         )
 
         self.m = m_sp
@@ -524,12 +496,12 @@ class PrecipChanger(object):
 
             # get current evaluation time
             if self.no_stop_time:
-                time = self.model_time * self._time_conversion
+                time = self.model_time
             else:
                 if self.model_time > self.stop_time:
-                    time = self.stop_time * self._time_conversion
+                    time = self.stop_time
                 else:
-                    time = self.model_time * self._time_conversion
+                    time = self.model_time
 
             # calculate and return updated values
             frac_wet_days = (

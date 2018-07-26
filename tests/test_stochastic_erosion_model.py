@@ -4,7 +4,9 @@ import os
 import filecmp
 import pytest
 import numpy as np
+
 from terrainbento import StochasticErosionModel, BasicSt
+from terrainbento.utilities import precip_defaults, precip_testing_factor
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -261,9 +263,9 @@ def test_float_number_of_sub_time_steps():
 def test_run_opt_false_with_changer():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "dt": 1,
         "output_interval": 2.,
-        "run_duration": 1000.,
+        "run_duration": 3.,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -271,19 +273,12 @@ def test_run_opt_false_with_changer():
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
+        "daily_rainfall_intermittency_factor": 0.5,
         "daily_rainfall__precipitation_shape_factor": 0.65,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.1,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
-            "daily_rainfall__mean_intensity": 1.,
-            "daily_rainfall__mean_intensity_time_rate_of_change": 0.0001,
-            "infiltration_capacity": 0,
-            "daily_rainfall__precipitation_shape_factor": 0.65,
-        },
+        "PrecipChanger": precip_defaults,
     }
 
     model = BasicSt(params=params)
@@ -291,10 +286,15 @@ def test_run_opt_false_with_changer():
     model.run_for(params["dt"], params["run_duration"])
     assert "PrecipChanger" in model.boundary_handler
 
-    assert model.daily_rainfall_intermittency_factor == 0.199
-    assert np.round(model.daily_rainfall__mean_intensity, decimals=3) == np.round(
-        0.10173785078713211, decimals=3
-    )
+    predicted_intermittency = (params["daily_rainfall_intermittency_factor"] +
+                               params["PrecipChanger"]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+
+    predicted_intensity = (params["daily_rainfall__mean_intensity"] +
+                               params["PrecipChanger"]["daily_rainfall__mean_intensity_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+
+    assert model.daily_rainfall_intermittency_factor == predicted_intermittency
+    assert model.daily_rainfall__mean_intensity == predicted_intensity
+
 
 
 def test_opt_dur_true_with_changer():
@@ -304,14 +304,7 @@ def test_opt_dur_true_with_changer():
         "output_interval": 2.,
         "run_duration": 1000.,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.1,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
-            "daily_rainfall__mean_intensity": 1.,
-            "daily_rainfall__mean_intensity_time_rate_of_change": 0.0001,
-            "infiltration_capacity": 0,
-            "daily_rainfall__precipitation_shape_factor": 0.65,
-        }}
+        "PrecipChanger": precip_defaults}
 
     with pytest.raises(ValueError):
         StochasticErosionModel(params=params)

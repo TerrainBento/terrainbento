@@ -9,3 +9,5 @@ precip_defaults = {
         "infiltration_capacity": 0,
         "daily_rainfall__precipitation_shape_factor": 0.65,
     }
+
+precip_testing_factor = 1.3145341380253433
