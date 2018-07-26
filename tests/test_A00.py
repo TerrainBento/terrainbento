@@ -285,12 +285,9 @@ def test_with_precip_changer():
     model.run_one_step(1.0)
     model.run_one_step(1.0)
 
-    true_fw = 10.32628
     assert_array_almost_equal(
-        model.eroder._K_unit_time[model.grid.core_nodes[:8]],
-        Kt * true_fw * np.ones((8)),
+        model.eroder._K_unit_time[model.grid.core_nodes[:8]], Kt * precip_testing_factor * np.ones((8))
     )
     assert_array_almost_equal(
-        model.eroder._K_unit_time[model.grid.core_nodes[10:]],
-        Kr * true_fw * np.ones((9)),
+        model.eroder._K_unit_time[model.grid.core_nodes[10:]], Kr * precip_testing_factor * np.ones((9))
     )

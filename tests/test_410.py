@@ -202,11 +202,12 @@ def test_with_precip_changer():
 
     model = BasicHySa(params=params)
     assert model.eroder.K_sed[0] == K_sed_sp
+    assert model.eroder.K_br[0] == K_rock_sp
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K_sed, 5) == 0.10326
-
+    assert round(model.eroder.K_sed, 5) == round(K_sed_sp * precip_testing_factor, 5)
+    assert round(model.eroder.K_br, 5) == round(K_rock_sp * precip_testing_factor, 5)
 
 def test_stability_checker():
     U = 0.0001

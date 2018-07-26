@@ -130,4 +130,4 @@ def test_with_precip_changer():
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    # assert round(model.eroder.K, 5) == 0.10326
+    # assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
