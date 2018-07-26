@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import glob
 
 from numpy.testing import assert_equal, assert_array_almost_equal
 
@@ -152,6 +153,10 @@ def test_stochastic_duration_rainfall_means():
                              * np.array( model.rain_record['rainfall_rate']))
     assert_equal(np.round(cum_rain_depth), 200.0)
 
+    os.remove("storm_sequence.txt")
+    fs = glob.glob(model._out_file_name + "*.nc")
+    for f in fs:
+        os.remove(f)
 
 
 def test_diffusion_only():
