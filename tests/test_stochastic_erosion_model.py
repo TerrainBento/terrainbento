@@ -454,3 +454,26 @@ def test_finalize_opt_duration_stochastic_true():
     assert filecmp.cmp("storm_sequence.txt", truth_file) == True
 
     os.remove("storm_sequence.txt")
+
+def test_runoff_equals_zero():
+    params = {
+        "opt_stochastic_duration": False,
+        "dt": 10.,
+        "output_interval": 2.,
+        "run_duration": 10000.,
+        "record_rain": True,
+        "m_sp": 0.5,
+        "n_sp": 1.0,
+        "water_erodability~stochastic": 0.01,
+        "regolith_transport_parameter": 0.1,
+        "infiltration_capacity": 100000.,
+        "daily_rainfall__mean_intensity": 0.0,
+        "daily_rainfall_intermittency_factor": 0.1,
+        "daily_rainfall__precipitation_shape_factor": 1.,
+        "number_of_sub_time_steps": 1,
+        "random_seed": 1234,
+    }
+    model = BasicSt(params=params)
+    model.run_one_step(1.)
+    runoff = model.calc_runoff_and_discharge()
+    assert runoff == 0
