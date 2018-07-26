@@ -7,7 +7,7 @@ from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 
 from terrainbento import BasicHy
-from terrainbento.utilities import precip_defaults
+from terrainbento.utilities import precip_defaults, precip_testing_factor
 
 
 def test_steady_Kss_no_precip_changer():

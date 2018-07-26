@@ -4,7 +4,7 @@
 import numpy as np
 
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
-from terrainbento.utilities import precip_defaults
+from terrainbento.utilities import precip_defaults, precip_testing_factor
 
 
 from terrainbento import BasicSa

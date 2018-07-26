@@ -7,7 +7,7 @@ from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 import pytest
 
 from terrainbento import BasicHyVs
-from terrainbento.utilities import precip_defaults
+from terrainbento.utilities import precip_defaults, precip_testing_factor
 
 
 def test_Aeff():

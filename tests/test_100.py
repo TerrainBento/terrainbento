@@ -6,7 +6,7 @@ from numpy.testing import assert_equal, assert_array_almost_equal
 
 from terrainbento import BasicSt
 
-from terrainbento.utilities import precip_defaults
+from terrainbento.utilities import precip_defaults, precip_testing_factor
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
@@ -209,30 +209,39 @@ def test_diffusion_only():
                               decimal=2)
 
 
-#def test_with_precip_changer():
-#    K =  0.01
-#    params = {'model_grid': 'RasterModelGrid',
-#              'dt': 1,
-#              'output_interval': 2.,
-#              'run_duration': 200.,
-#              'number_of_node_rows' : 3,
-#              'number_of_node_columns' : 20,
-#              'node_spacing' : 100.0,
-#              'north_boundary_closed': True,
-#              'south_boundary_closed': True,
-#              'regolith_transport_parameter': 0.,
-#              'water_erodability': K,
-#              'm_sp': 0.5,
-#              'n_sp': 1.0,
-#              'random_seed': 3141,
-#              'BoundaryHandlers': 'PrecipChanger',
-#              'PrecipChanger' : precip_defaults}
-#
-#    model = Basic(params=params)
-#    assert model.eroder.K == K
-#    assert 'PrecipChanger' in model.boundary_handler
-#    model.run_one_step(1.0)
-#    model.run_one_step(1.0)
-#    assert round(model.eroder.K, 5) == 0.10326
-#
+def test_with_precip_changer():
+   params = {
+       "opt_stochastic_duration": False,
+       "dt": 1,
+       "output_interval": 2.,
+       "run_duration": 3.,
+       "record_rain": True,
+       "m_sp": 0.5,
+       "n_sp": 1.0,
+       "water_erodability~stochastic": 0.01,
+       "regolith_transport_parameter": 0.1,
+       "infiltration_capacity": 0.0,
+       "daily_rainfall__mean_intensity": 1.,
+       "daily_rainfall_intermittency_factor": 0.5,
+       "daily_rainfall__precipitation_shape_factor": 0.65,
+       "number_of_sub_time_steps": 1,
+       "random_seed": 1234,
+       "BoundaryHandlers": "PrecipChanger",
+       "PrecipChanger": precip_defaults,
+   }
+
+   model = BasicSt(params=params)
+   model.reset_random_seed()
+   model.run_for(params["dt"], params["run_duration"])
+   assert "PrecipChanger" in model.boundary_handler
+
+   predicted_intermittency = (params["daily_rainfall_intermittency_factor"] +
+                              params["PrecipChanger"]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+
+   predicted_intensity = (params["daily_rainfall__mean_intensity"] +
+                              params["PrecipChanger"]["daily_rainfall__mean_intensity_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+
+   assert model.daily_rainfall_intermittency_factor == predicted_intermittency
+   assert model.daily_rainfall__mean_intensity == predicted_intensity
+
 #
