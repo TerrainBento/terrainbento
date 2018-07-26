@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicDdRt
-from terrainbento.utilities.utilities import precip_defaults
+from terrainbento.utilities import precip_defaults
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")

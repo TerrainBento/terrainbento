@@ -8,7 +8,7 @@ import pytest
 from landlab import HexModelGrid
 from terrainbento import BasicSt
 
-from terrainbento.utilities.utilities import precip_defaults
+from terrainbento.utilities import precip_defaults
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')

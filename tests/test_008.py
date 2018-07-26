@@ -8,7 +8,7 @@ import pytest
 
 
 from terrainbento import BasicDd
-from terrainbento.utilities.utilities import precip_defaults
+from terrainbento.utilities import precip_defaults
 
 
 def test_bad_n_sp():
