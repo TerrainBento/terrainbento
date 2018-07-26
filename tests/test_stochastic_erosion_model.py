@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 
 from terrainbento import StochasticErosionModel, BasicSt
-from terrainbento.utilities import precip_defaults, precip_testing_factor, filecmp
+from terrainbento.utilities import precip_defaults, filecmp
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
