@@ -1,12 +1,11 @@
 # coding: utf8
 #! /usr/env/python
 import os
-import filecmp
 import pytest
 import numpy as np
 
 from terrainbento import StochasticErosionModel, BasicSt
-from terrainbento.utilities import precip_defaults, precip_testing_factor
+from terrainbento.utilities import precip_defaults, precip_testing_factor, filecmp
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -45,9 +44,9 @@ def test_init_record_opt_false():
 def test_run_stochastic_opt_true():
     params = {
         "opt_stochastic_duration": True,
-        "dt": 1,
+        "dt": 10,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 100000.,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -62,7 +61,7 @@ def test_run_stochastic_opt_true():
 
     model = BasicSt(params=params)
     assert model.opt_stochastic_duration == True
-    model.run_for(10, 10000.)
+    model.run_for(params['dt'], params['run_duration'])
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(decimals=5)
     event_duration = np.asarray(model.rain_record["event_duration"]).round(decimals=5)
@@ -417,10 +416,10 @@ def test_finalize_opt_duration_stochastic_false():
 
     # assert that these are correct
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt")
-    assert filecmp.cmp("storm_sequence.txt", truth_file) == True
+    assert filecmp("storm_sequence.txt", truth_file) == True
 
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt")
-    assert filecmp.cmp("exceedance_summary.txt", truth_file) == True
+    assert filecmp("exceedance_summary.txt", truth_file) == True
 
     os.remove("storm_sequence.txt")
     os.remove("exceedance_summary.txt")
@@ -451,7 +450,7 @@ def test_finalize_opt_duration_stochastic_true():
 
     # assert that these are correct
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt")
-    assert filecmp.cmp("storm_sequence.txt", truth_file) == True
+    assert filecmp("storm_sequence.txt", truth_file) == True
 
     os.remove("storm_sequence.txt")
 
