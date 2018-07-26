@@ -77,9 +77,9 @@ class BasicSt(StochasticErosionModel):
     opt_stochastic_duration to False), then the default (erosion_model base class)
     run_for method is used. Whenever run_one_step is called, storm intensity is
     generated at random from an exponential distribution with mean given by the
-    parameter daily_rainfall__mean_intensity. The stream power component is run for
+    parameter rainfall__mean_rate. The stream power component is run for
     only a fraction of the time step duration dt, as specified by the parameter
-    daily_rainfall_intermittency_factor. For example, if dt is 10 years and the
+    rainfall_intermittency_factor. For example, if dt is 10 years and the
     intermittency factor is 0.25, then the stream power component is run for only
     2.5 years.
 
@@ -144,9 +144,9 @@ class BasicSt(StochasticErosionModel):
         ...           'n_sp': 1.0,
         ...           'opt_stochastic_duration': False,
         ...           'number_of_sub_time_steps': 1,
-        ...           'daily_rainfall_intermittency_factor': 0.5,
-        ...           'daily_rainfall__mean_intensity': 1.0,
-        ...           'daily_rainfall__precipitation_shape_factor': 1.0,
+        ...           'rainfall_intermittency_factor': 0.5,
+        ...           'rainfall__mean_rate': 1.0,
+        ...           'rainfall__shape_factor': 1.0,
         ...           'infiltration_capacity': 1.0,
         ...           'random_seed': 0}
 

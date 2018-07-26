@@ -96,9 +96,9 @@ def test_run_stochastic_opt_false():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -116,13 +116,13 @@ def test_run_stochastic_opt_false():
     assert (
         np.array_equiv(
             dry_times,
-            params["dt"] * (1. - params["daily_rainfall_intermittency_factor"]),
+            params["dt"] * (1. - params["rainfall_intermittency_factor"]),
         )
         == True
     )
     assert (
         np.array_equiv(
-            wet_times, params["dt"] * (params["daily_rainfall_intermittency_factor"])
+            wet_times, params["dt"] * (params["rainfall_intermittency_factor"])
         )
         == True
     )
@@ -130,7 +130,7 @@ def test_run_stochastic_opt_false():
     avg_storm_depth = np.sum((rainfall_rate * event_duration)) / len(wet_times)
 
     np.testing.assert_array_almost_equal(
-        avg_storm_depth, params["daily_rainfall__mean_intensity"], decimal=1
+        avg_storm_depth, params["rainfall__mean_rate"], decimal=1
     )
 
 
@@ -210,9 +210,9 @@ def test_reset_random_seed_stochastic_duration_false():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -250,9 +250,9 @@ def test_float_number_of_sub_time_steps():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1.5,
         "random_seed": 1234,
     }
@@ -272,9 +272,9 @@ def test_run_opt_false_with_changer():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.5,
-        "daily_rainfall__precipitation_shape_factor": 0.65,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.5,
+        "rainfall__shape_factor": 0.65,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
         "BoundaryHandlers": "PrecipChanger",
@@ -286,14 +286,14 @@ def test_run_opt_false_with_changer():
     model.run_for(params["dt"], params["run_duration"])
     assert "PrecipChanger" in model.boundary_handler
 
-    predicted_intermittency = (params["daily_rainfall_intermittency_factor"] +
+    predicted_intermittency = (params["rainfall_intermittency_factor"] +
                                params["PrecipChanger"]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (params['run_duration']-params["dt"]))
 
-    predicted_intensity = (params["daily_rainfall__mean_intensity"] +
-                               params["PrecipChanger"]["daily_rainfall__mean_intensity_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+    predicted_intensity = (params["rainfall__mean_rate"] +
+                               params["PrecipChanger"]["rainfall__mean_rate_time_rate_of_change"] * (params['run_duration']-params["dt"]))
 
-    assert model.daily_rainfall_intermittency_factor == predicted_intermittency
-    assert model.daily_rainfall__mean_intensity == predicted_intensity
+    assert model.rainfall_intermittency_factor == predicted_intermittency
+    assert model.rainfall__mean_rate == predicted_intensity
 
 
 
@@ -322,9 +322,9 @@ def test_not_specifying_record_rain():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -351,9 +351,9 @@ def test_finalize_opt_duration_stochastic_false_too_short():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -379,9 +379,9 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.0,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.0,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -404,9 +404,9 @@ def test_finalize_opt_duration_stochastic_false():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -467,9 +467,9 @@ def test_runoff_equals_zero():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 100000.,
-        "daily_rainfall__mean_intensity": 0.0,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 1.,
+        "rainfall__mean_rate": 0.0,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 1.,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }

@@ -14,9 +14,9 @@ def test_not_passing_daily_rainfall__intermittency_factor():
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            daily_rainfall__mean_intensity=3.0 ,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2 ,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate=3.0 ,
+            rainfall__mean_rate_time_rate_of_change=0.2 ,
+            rainfall__shape_factor=0.65,
             infiltration_capacity=2.0 ,
         )
 
@@ -27,48 +27,48 @@ def test_not_passing_daily_rainfall__intermittency_factor_time_rate_of_change():
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
-            daily_rainfall__mean_intensity=3.0 ,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2 ,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate=3.0 ,
+            rainfall__mean_rate_time_rate_of_change=0.2 ,
+            rainfall__shape_factor=0.65,
             infiltration_capacity=2.0 ,
         )
 
 
-def test_not_passing_daily_rainfall__mean_intensity():
+def test_not_passing_rainfall__mean_rate():
     mg = HexModelGrid(5, 5)
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2 ,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate_time_rate_of_change=0.2 ,
+            rainfall__shape_factor=0.65,
             infiltration_capacity=2.0 ,
         )
 
 
-def test_not_passing_daily_rainfall__mean_intensity_time_rate_of_change():
+def test_not_passing_rainfall__mean_rate_time_rate_of_change():
     mg = HexModelGrid(5, 5)
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            daily_rainfall__mean_intensity=3.0 ,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate=3.0 ,
+            rainfall__shape_factor=0.65,
             infiltration_capacity=2.0 ,
         )
 
 
-def test_not_passing_daily_rainfall__precipitation_shape_factor():
+def test_not_passing_rainfall__shape_factor():
     mg = HexModelGrid(5, 5)
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            daily_rainfall__mean_intensity=3.0 ,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2 ,
+            rainfall__mean_rate=3.0 ,
+            rainfall__mean_rate_time_rate_of_change=0.2 ,
             infiltration_capacity=2.0 ,
         )
 
@@ -80,9 +80,9 @@ def test_not_passing_infiltration_capacity():
             mg,
             daily_rainfall__intermittency_factor=0.3,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            daily_rainfall__mean_intensity=3.0 ,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2 ,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate=3.0 ,
+            rainfall__mean_rate_time_rate_of_change=0.2 ,
+            rainfall__shape_factor=0.65,
         )
 
 
@@ -94,9 +94,9 @@ def test_a_stop_time():
         mg,
         daily_rainfall__intermittency_factor=0.3,
         daily_rainfall__intermittency_factor_time_rate_of_change=0.001,
-        daily_rainfall__mean_intensity=3.0,
-        daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-        daily_rainfall__precipitation_shape_factor=0.65,
+        rainfall__mean_rate=3.0,
+        rainfall__mean_rate_time_rate_of_change=0.2,
+        rainfall__shape_factor=0.65,
         infiltration_capacity=2.0,
         time_unit="day",
         precipchanger_start_time=10.0,
@@ -135,9 +135,9 @@ def test_bad_intermittency():
             mg,
             daily_rainfall__intermittency_factor=-0.001,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-            daily_rainfall__mean_intensity=3.0,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate=3.0,
+            rainfall__mean_rate_time_rate_of_change=0.2,
+            rainfall__shape_factor=0.65,
             infiltration_capacity=0,
         )
 
@@ -146,9 +146,9 @@ def test_bad_intermittency():
             mg,
             daily_rainfall__intermittency_factor=1.001,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-            daily_rainfall__mean_intensity=3.0,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate=3.0,
+            rainfall__mean_rate_time_rate_of_change=0.2,
+            rainfall__shape_factor=0.65,
             infiltration_capacity=0,
         )
 
@@ -161,9 +161,9 @@ def test_bad_intensity():
             mg,
             daily_rainfall__intermittency_factor=1.0,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-            daily_rainfall__mean_intensity=-1,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate=-1,
+            rainfall__mean_rate_time_rate_of_change=0.2,
+            rainfall__shape_factor=0.65,
             infiltration_capacity=0,
         )
 
@@ -176,8 +176,8 @@ def test_bad_infiltration():
             mg,
             daily_rainfall__intermittency_factor=1.0,
             daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-            daily_rainfall__mean_intensity=0.34,
-            daily_rainfall__mean_intensity_time_rate_of_change=0.2,
-            daily_rainfall__precipitation_shape_factor=0.65,
+            rainfall__mean_rate=0.34,
+            rainfall__mean_rate_time_rate_of_change=0.2,
+            rainfall__shape_factor=0.65,
             infiltration_capacity=-0.001,
         )
