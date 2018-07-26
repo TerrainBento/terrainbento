@@ -6,8 +6,6 @@ from numpy.testing import assert_equal, assert_array_almost_equal
 
 from terrainbento import BasicSt
 
-from terrainbento.utilities import precip_testing_factor
-
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
