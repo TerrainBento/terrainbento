@@ -467,7 +467,7 @@ class ErosionModel(object):
                     if par in self.params:
                         if handler_params[par] != self.params[par]:
                             msg = ("terrainbento ErosionModel: "
-                                    "parameter " + par + "provided is different "
+                                    "parameter " + par + " provided is different "
                                     "in the main parameter dictionary and the "
                                     "handler dictionary. You probably don't "
                                     "want this. If you think you can't do your "
