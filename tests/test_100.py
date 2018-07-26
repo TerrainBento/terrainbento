@@ -1,11 +1,8 @@
 import os
-import subprocess
 import numpy as np
 
 from numpy.testing import assert_equal, assert_array_almost_equal
-import pytest
 
-from landlab import HexModelGrid
 from terrainbento import BasicSt
 
 from terrainbento.utilities import precip_defaults
@@ -97,7 +94,7 @@ def test_steady_without_stochastic_duration():
 
     # construct and run model
     model = BasicSt(params=params)
-    for i in range(100):
+    for _ in range(100):
         model.run_one_step(dt)
 
     # construct actual and predicted slopes
@@ -194,7 +191,7 @@ def test_diffusion_only():
     reference_node = 9
     # construct and run model
     model = BasicSt(params=params)
-    for i in range(nts):
+    for _ in range(nts):
         model.run_one_step(dt)
 
 
