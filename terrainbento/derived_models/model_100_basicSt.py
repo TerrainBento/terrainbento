@@ -162,7 +162,6 @@ class BasicSt(StochasticErosionModel):
         1.0
 
         """
-
         # Call ErosionModel's init
         super(BasicSt, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
