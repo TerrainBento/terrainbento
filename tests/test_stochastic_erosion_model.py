@@ -272,7 +272,7 @@ def test_run_opt_false_with_changer():
         "infiltration_capacity": 0.0,
         "daily_rainfall__mean_intensity": 1.,
         "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "daily_rainfall__precipitation_shape_factor": 0.65,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
         "BoundaryHandlers": "PrecipChanger",
