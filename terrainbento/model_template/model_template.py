@@ -1,4 +1,5 @@
-"""A template for making a derived terrainbento model.
+"""
+A template for making a derived terrainbento model.
 
 This template shows all of the required parts of a new terrainbento model,
 designed and created by **you**
@@ -14,10 +15,23 @@ from terrainbento.base_class import ErosionModel
 
 
 class ModelTemplate(ErosionModel):  # The model must inherit from either
-    # ErosionModel or StochasticErosionModel
-    """ModelTemplate is a template for making your own terrainbento models.
+    # ErosionModel, StochasticErosionModel, or TwoLithologyErosionModel
+    """
+    ModelTemplate is a template for making your own terrainbento models.
 
-    This is where you will put introductory information about the model.
+    This is where you will put introductory information about the model. We
+    recommend that you start from an existing terrainbento model's docstring
+    and modify to preserve a somewhat standard style.
+
+    The docstring should have:
+
+    1. A brief description of the model.
+
+    2. Links to all landlab components used.
+
+    3. Description of the governing equation of the model.
+
+    4. A table listing the required parameters.
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -34,37 +48,6 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
 
-        The **ModelTemplate** program inherits from the terrainbento
-        **ErosionModel** base class. In addition to the parameters required by
-        the base class, models built with this program require the following parameters.
-
-        +------------------+----------------------------------+
-        | Parameter Symbol | Input File Parameter Name        |
-        +==================+==================================+
-        |:math:`m`         | ``m_sp``                         |
-        +------------------+----------------------------------+
-        |:math:`n`         | ``n_sp``                         |
-        +------------------+----------------------------------+
-        |:math:`K`         | ``water_erodability``            |
-        +------------------+----------------------------------+
-        |:math:`D`         | ``regolith_transport_parameter`` |
-        +------------------+----------------------------------+
-
-        Expand on this table to include all required parameters.
-
-        See also
-        --------
-        function_a : description of related function a.
-
-        Notes
-        -----
-        If there are other things you'd like users to know about, consider putting
-        them here.
-
-        References
-        ----------
-        If there are references associated with your model, consider putting them
-        here.
 
         Examples
         --------
@@ -73,10 +56,10 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
         >>> from terrainbento.model_template import ModelTemplate
         >>> # this is where you'd show how to import and use your model.
-        >>> # these statements get evaluated in testing so its also a way to show
-        >>> # that the model does what you say it will do.
+        >>> # these statements get evaluated in testing so its also a way to
+        >>> # show that the model does what you say it will do.
         >>> # its important to make sure that all lines of your model are tested
-        >>> # either in these docstring tests or in test files.
+        >>> # either in these docstring tests or in unit test files.
 
         """
         super(ModelTemplate, self).__init__(
