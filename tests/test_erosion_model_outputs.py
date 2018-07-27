@@ -28,8 +28,7 @@ def test_write_output_raster():
 
     # todo assess raster output.
 
-    for f in fs:
-        os.remove(f)
+    model.remove_output_netcdfs()
 
 
 def test_write_output_hex():
@@ -44,5 +43,4 @@ def test_write_output_hex():
 
     # todo assess hex output
 
-    for f in fs:
-        os.remove(f)
+    model.remove_output_netcdfs()
