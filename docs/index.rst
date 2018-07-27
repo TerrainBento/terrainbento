@@ -13,8 +13,10 @@ dynamics. It was built on top of the `Landlab Toolkit`_.
 
 The goal of terrainbento is to make it easier to create alternative Earth
 surface dynamics models. The package has four main parts that support this
-goal. First, a **Model Base Class** that contains the functionality required
-across models (e.g. reading in input files, writing out output).
+goal. First, a model base class called **ErosionModel** contains the
+functionality requires across models (e.g. reading in input files, writing out
+output). Two specialized base classes also exist for models that use stochastic
+hydrology or multiple lithology layers.
 
 Second, a set of **Boundary Condition Handlers** provide tools to set and modify
 boundary conditions during a model run. Third, we provide an initial set of
@@ -24,6 +26,11 @@ from the base mode.
 
 Finally, a **ModelTemplate** provides an skeleton of a model made with the main
 base class that can be used to create your own terrainbento model.
+
+A number of Jupyter Notebook Tutorials have been developed to highlight how to
+use terrainbento. They can be found in `this GitHub repository.`_.
+
+.. _this GitHub Repository: https://github.com/TerrainBento/examples_tests_and_tutorials
 
 
 Model Base Class
