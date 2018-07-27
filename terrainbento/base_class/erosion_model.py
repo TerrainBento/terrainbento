@@ -1006,8 +1006,26 @@ class ErosionModel(object):
             for handler_name in self.boundary_handler:
                 self.boundary_handler[handler_name].run_one_step(dt)
 
-    def to_xarray_dataset(self):
-        """Convert model output to an xarray dataset"""
+    def to_xarray_dataset(self, time_unit='time units', reference_time='model start', space_unit='space units'):
+        """Convert model output to an xarray dataset.
+
+        If you would like to have CF compliant NetCDF make sure that your time
+        and space units and reference times will work with standard decoding.
+
+        The default time unit and reference time will give the time dimention a
+        value of "time units since model start". The default space unit will
+        give a value of "space unit".
+
+        Parameters
+        ----------
+        time_unit: str, optional
+            Name of time unit. Default is "time units".
+        reference time: str, optional
+            Reference tim. Default is "model start".
+        space_unit: str, optional
+            Name of space unit. Default is "space unit".
+        """
+
         # open all files as a xarray dataset
         ds = xr.open_mfdataset(self._output_files,
                            concat_dim='nt',
@@ -1018,7 +1036,7 @@ class ErosionModel(object):
         time_array = np.asarray(self._itters[:-1]) * self.params["output_interval"]
         time = xr.DataArray(time_array,
                             dims=('nt'),
-                            attrs={'units': 'time units since model start',
+                            attrs={'units': time_unit + ' since ' + reference_time,
                                    'standard_name' : 'time'})
 
         ds['time'] = time
@@ -1029,12 +1047,35 @@ class ErosionModel(object):
         # rename dimensions
         ds.rename(name_dict={'ni': 'x', 'nj': 'y', 'nt':'time'}, inplace=True)
 
+        # set x and y units
+        ds['x'] = xr.DataArray(ds.x, dims=('x'), attrs={'units': space_unit})
+        ds['y'] = xr.DataArray(ds.y, dims=('y'), attrs={'units': space_unit})
+
         return ds
 
-    def save_to_xarray_dataset(self, filename="terrainbento.nc"):
+    def save_to_xarray_dataset(self, filename="terrainbento.nc", time_unit='time units', reference_time='model start', space_unit='space units'):
+        """Save model output to xarray dataset.
+
+        If you would like to have CF compliant NetCDF make sure that your time
+        and space units and reference times will work with standard decoding.
+
+        The default time unit and reference time will give the time dimention a
+        value of "time units since model start". The default space unit will
+        give a value of "space unit".
+
+        Parameters
+        ----------
+        filename: str, optional
+            The file path where the file should be saved. The default value is
+            "terrainbento.nc".
+        time_unit: str, optional
+            Name of time unit. Default is "time units".
+        reference time: str, optional
+            Reference tim. Default is "model start".
+        space_unit: str, optional
+            Name of space unit. Default is "space unit".
         """
-        """
-        ds = self.to_xarray_dataset()
+        ds = self.to_xarray_dataset(time_unit=time_unit, space_unit=space_unit)
         ds.to_netcdf(filename, engine='netcdf4', format='NETCDF4')
 
     def remove_output_netcdfs(self):
