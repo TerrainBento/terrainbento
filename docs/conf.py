@@ -77,6 +77,9 @@ MOCK_MODULES = [
     "doctests.Doctest",
     "test",
     "bench",
+    "xarray",
+    "dask",
+    "glob",
 ]
 
 TEST_MOCK_MODULES = ["TerrainBentoTester"]
