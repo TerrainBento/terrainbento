@@ -116,7 +116,7 @@ initial_elevation : float, optional
 random_seed : int, optional
     Default value is 0.
 add_random_noise : boolean, optional
-    Default value is True.
+    Default value is False.
 initial_noise_std : float, optional
     Standard deviation of zero-mean, normally distributed random perturbations
     to initial node elevations. Default value is 0.
@@ -706,7 +706,7 @@ class ErosionModel(object):
         If noise or initial elevation is added, it will only be added to the
         core nodes.
         """
-        add_noise = self.params.get("add_random_noise", True)
+        add_noise = self.params.get("add_random_noise", False)
         init_z = self.params.get("initial_elevation", 0.0)
         init_sigma = self.params.get("initial_noise_std", 0.0)
         seed = self.params.get("random_seed", 0)
