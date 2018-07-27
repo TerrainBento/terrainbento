@@ -127,9 +127,11 @@ class StochasticErosionModel(ErosionModel):
 
         # verify that opt_stochastic_duration and PrecipChanger are consistent
         if self.opt_stochastic_duration and ("PrecipChanger" in self.boundary_handler):
-            msg = ("terrainbento StochasticErosionModel: setting "
-                   "opt_stochastic_duration=True and using the PrecipChanger "
-                   "boundary condition handler are not compatible.")
+            msg = (
+                "terrainbento StochasticErosionModel: setting "
+                "opt_stochastic_duration=True and using the PrecipChanger "
+                "boundary condition handler are not compatible."
+            )
             raise ValueError(msg)
 
         self.seed = int(self.params.get("random_seed", 0))
@@ -231,9 +233,7 @@ class StochasticErosionModel(ErosionModel):
             rainfall__mean_rate = (self._length_factor) * self.params[
                 "rainfall__mean_rate"
             ]  # has units length per time
-            rainfall_intermittency_factor = self.params[
-                "rainfall_intermittency_factor"
-            ]
+            rainfall_intermittency_factor = self.params["rainfall_intermittency_factor"]
 
             self.rain_generator = PrecipitationDistribution(
                 mean_storm_duration=1.0,
@@ -241,13 +241,9 @@ class StochasticErosionModel(ErosionModel):
                 mean_storm_depth=1.0,
                 random_seed=self.seed,
             )
-            self.rainfall_intermittency_factor = (
-                rainfall_intermittency_factor
-            )
+            self.rainfall_intermittency_factor = rainfall_intermittency_factor
             self.rainfall__mean_rate = rainfall__mean_rate
-            self.shape_factor = self.params[
-                "rainfall__shape_factor"
-            ]
+            self.shape_factor = self.params["rainfall__shape_factor"]
             self.scale_factor = self.rainfall__mean_rate / gamma(
                 1.0 + (1.0 / self.shape_factor)
             )
@@ -509,11 +505,7 @@ class StochasticErosionModel(ErosionModel):
             exceedance_file.write("\n")
 
             exceedance_file.write(
-                (
-                    "This provided value was:\n"
-                    + str(self.rainfall__mean_rate)
-                    + "\n"
-                )
+                ("This provided value was:\n" + str(self.rainfall__mean_rate) + "\n")
             )
 
             # calculate the predictions for 10, 25, and 100 year event based on

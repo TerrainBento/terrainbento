@@ -18,9 +18,15 @@ from terrainbento.boundary_condition_handlers import (
 
 
 def test_bad_boundary_condition_string():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10., 'BoundaryHandlers':"spam"}
+    params = {
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+        "BoundaryHandlers": "spam",
+    }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
+
 
 def test_boundary_condition_handler_with_special_part_of_params():
     U = 0.0001
@@ -54,6 +60,7 @@ def test_boundary_condition_handler_with_special_part_of_params():
     assert bh.lowering_rate == -U
     assert bh.prefactor == -1
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
+
 
 def test_boundary_condition_handler_with_bad_special_part_of_params():
     params = {

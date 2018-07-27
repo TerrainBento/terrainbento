@@ -231,7 +231,7 @@ def test_with_precip_changer():
         "n_sp": 1.0,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults
+        "PrecipChanger": precip_defaults,
     }
 
     model = BasicChSa(params=params)

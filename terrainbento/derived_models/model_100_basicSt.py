@@ -98,9 +98,7 @@ class BasicSt(StochasticErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -181,8 +179,7 @@ class BasicSt(StochasticErosionModel):
 
         # Get the infiltration-capacity parameter
         # has units length per time
-        self.infilt = (self._length_factor) * self.params[
-            "infiltration_capacity"]
+        self.infilt = (self._length_factor) * self.params["infiltration_capacity"]
 
         # instantiate rain generator
         self.instantiate_rain_generator()
@@ -197,9 +194,7 @@ class BasicSt(StochasticErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
-        )
+        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

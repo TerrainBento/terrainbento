@@ -17,35 +17,35 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 def output_writer_function_a(model):
     average_elevation = np.mean(model.z[model.grid.core_nodes])
-    with open('ow_func_a.'+str(model.model_time)+'.txt', 'w') as f:
+    with open("ow_func_a." + str(model.model_time) + ".txt", "w") as f:
         f.write(str(average_elevation))
 
 
 def output_writer_function_b(model):
     minimum_elevation = np.min(model.z[model.grid.core_nodes])
-    with open('ow_func_b.'+str(model.model_time)+'.txt', 'w') as f:
+    with open("ow_func_b." + str(model.model_time) + ".txt", "w") as f:
         f.write(str(minimum_elevation))
 
 
 class output_writer_class_a(object):
     def __init__(self, model):
         self.model = model
-        self.change = model.grid.at_node['cumulative_elevation_change']
+        self.change = model.grid.at_node["cumulative_elevation_change"]
 
     def run_one_step(self):
         average_change = np.mean(self.change[self.model.grid.core_nodes])
-        with open('ow_class_a.'+str(self.model.model_time)+'.txt', 'w') as f:
+        with open("ow_class_a." + str(self.model.model_time) + ".txt", "w") as f:
             f.write(str(average_change))
 
 
 class output_writer_class_b(object):
     def __init__(self, model):
         self.model = model
-        self.change = model.grid.at_node['cumulative_elevation_change']
+        self.change = model.grid.at_node["cumulative_elevation_change"]
 
     def run_one_step(self):
         min_change = np.min(self.change[self.model.grid.core_nodes])
-        with open('ow_class_b.'+str(self.model.model_time)+'.txt', 'w') as f:
+        with open("ow_class_b." + str(self.model.model_time) + ".txt", "w") as f:
             f.write(str(min_change))
 
 
@@ -77,8 +77,9 @@ def test_one_function_writer():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_a.20.0.txt")
     assert filecmp("ow_func_a.20.0.txt", truth_file) == True
 
-    cleanup_files('terrainbento_output*.nc')
-    cleanup_files('ow_func_a.*.txt')
+    cleanup_files("terrainbento_output*.nc")
+    cleanup_files("ow_func_a.*.txt")
+
 
 def test_one_class_writer():
     params = {
@@ -102,8 +103,9 @@ def test_one_class_writer():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_a.20.0.txt")
     assert filecmp("ow_class_a.20.0.txt", truth_file) == True
 
-    cleanup_files('terrainbento_output*.nc')
-    cleanup_files('ow_class_a.*.txt')
+    cleanup_files("terrainbento_output*.nc")
+    cleanup_files("ow_class_a.*.txt")
+
 
 def test_two_function_writers():
     params = {
@@ -120,7 +122,10 @@ def test_two_function_writers():
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -1},
     }
     # construct and run model
-    model = Basic(params=params, OutputWriters=[output_writer_function_a, output_writer_function_b])
+    model = Basic(
+        params=params,
+        OutputWriters=[output_writer_function_a, output_writer_function_b],
+    )
     model.run()
 
     # assert things were done correctly
@@ -130,8 +135,9 @@ def test_two_function_writers():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_b.20.0.txt")
     assert filecmp("ow_func_b.20.0.txt", truth_file) == True
 
-    cleanup_files('terrainbento_output*.nc')
-    cleanup_files('ow_func_*.txt')
+    cleanup_files("terrainbento_output*.nc")
+    cleanup_files("ow_func_*.txt")
+
 
 def test_two_class_writers():
     params = {
@@ -148,7 +154,9 @@ def test_two_class_writers():
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -1},
     }
     # construct and run model
-    model = Basic(params=params, OutputWriters=[output_writer_class_a, output_writer_class_b])
+    model = Basic(
+        params=params, OutputWriters=[output_writer_class_a, output_writer_class_b]
+    )
     model.run()
 
     # assert things were done correctly
@@ -158,8 +166,9 @@ def test_two_class_writers():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_b.20.0.txt")
     assert filecmp("ow_class_b.20.0.txt", truth_file) == True
 
-    cleanup_files('terrainbento_output*.nc')
-    cleanup_files('ow_class_*.txt')
+    cleanup_files("terrainbento_output*.nc")
+    cleanup_files("ow_class_*.txt")
+
 
 def test_all_four_writers():
     params = {
@@ -176,7 +185,15 @@ def test_all_four_writers():
         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -1},
     }
     # construct and run model
-    model = Basic(params=params, OutputWriters=[output_writer_function_a, output_writer_function_b, output_writer_class_a, output_writer_class_b])
+    model = Basic(
+        params=params,
+        OutputWriters=[
+            output_writer_function_a,
+            output_writer_function_b,
+            output_writer_class_a,
+            output_writer_class_b,
+        ],
+    )
     model.run()
 
     # assert things were done correctly
@@ -192,6 +209,6 @@ def test_all_four_writers():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_b.20.0.txt")
     assert filecmp("ow_class_b.20.0.txt", truth_file) == True
 
-    cleanup_files('terrainbento_output*.nc')
-    cleanup_files('ow_func_*.txt')
-    cleanup_files('ow_class_*.txt')
+    cleanup_files("terrainbento_output*.nc")
+    cleanup_files("ow_func_*.txt")
+    cleanup_files("ow_class_*.txt")
