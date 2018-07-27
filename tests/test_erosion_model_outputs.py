@@ -44,3 +44,26 @@ def test_write_output_hex():
     # todo assess hex output
 
     model.remove_output_netcdfs()
+
+def test_write_synthesis_netcdf():
+    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs_for_nc.txt")
+    truth = os.path.join(_TEST_DATA_DIR, "truth.nc" )
+    model = Basic(input_file=fp)
+    model.run()
+
+    ds = model.to_xarray_dataset(time_unit='years', space_unit='meter')
+
+    out_fn = "tb_output.nc"
+    model.save_to_xarray_dataset(filename=out_fn, time_unit='years', space_unit='meter')
+
+    output = xr.open_dataset(out_fn, decode_times=False)
+    truth = xr.open_dataset(truth, decode_times=False)
+
+    assert truth.dims == output.dims
+    assert truth.dims == ds.dims
+
+    assert truth.equals(output) == True
+    assert truth.equals(ds) == True
+
+    model.remove_output_netcdfs()
+    os.remove(out_fn)
