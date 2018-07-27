@@ -190,11 +190,14 @@ is a list of model grid fields to write as output.
 """
 
 import sys
+import os
+
+import six
 import time as tm
 import numpy as np
 from types import FunctionType
-import glob
-import xarray
+
+import xarray as xr
 import dask
 
 from landlab.io import read_esri_ascii
@@ -319,6 +322,7 @@ class ErosionModel(object):
         # default behavior is to not save the first timestep
         self.save_first_timestep = self.params.get("save_first_timestep", True)
         self._out_file_name = self.params.get("output_filename", "terrainbento_output")
+        self._output_files = []
         # instantiate model time.
         self._model_time = 0.
 
@@ -871,28 +875,19 @@ class ErosionModel(object):
             - self.grid.at_node["initial_topographic__elevation"]
         )
 
-    def write_output(self, field_names=None):
+    def write_output(self):
         """Write output to file as a netCDF.
 
         Filenames will have the value of ``'output_filename'`` from the input
         file or parameter dictionary as the first part of the file name and the
         model run iteration as the second part of the filename.
-
-        Parameters
-        ----------
-        output_fields : list of str, optional
-            List of model grid fields to write as output. Default is to write
-            out all fields.
         """
-        if field_names is None:
-            field_names = self.grid.at_node.keys()
-        self.field_names = field_names
-
         self.calculate_cumulative_change()
         filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
+        self._output_files.append(filename)
         try:
             write_raster_netcdf(
-                filename, self.grid, names=field_names, format="NETCDF4"
+                filename, self.grid, names=self.output_fields, format="NETCDF4"
             )
         except NotImplementedError:
             graph = Graph.from_dict(
@@ -903,7 +898,7 @@ class ErosionModel(object):
                 }
             )
 
-            for field_name in field_names:
+            for field_name in self.output_fields:
 
                 graph._ds.__setitem__(
                     field_name, ("node", self.grid.at_node[field_name])
@@ -963,19 +958,29 @@ class ErosionModel(object):
             List of model grid fields to write as output. Default is to write
             out all fields.
         """
+        self._itters = []
+        if output_fields is None:
+            output_fields = self.grid.at_node.keys()
+        if isinstance(output_fields, six.string_types):
+            output_fields = [output_fields]
+        self.output_fields = output_fields
+
         if self.save_first_timestep:
             self.iteration = 0
-            self.write_output(field_names=output_fields)
+            self._itters.append(0)
+            self.write_output()
         total_run_duration = self.params["run_duration"]
         output_interval = self.params["output_interval"]
         self.iteration = 1
+        self._itters.append(1)
         time_now = self._model_time
         while time_now < total_run_duration:
             next_run_pause = min(time_now + output_interval, total_run_duration)
             self.run_for(self.params["dt"], next_run_pause - time_now)
             time_now = next_run_pause
-            self.write_output(field_names=output_fields)
+            self.write_output()
             self.iteration += 1
+            self._itters.append(self.iteration)
 
         # now that the model is finished running, execute finalize.
         self.finalize()
@@ -1003,18 +1008,15 @@ class ErosionModel(object):
 
     def to_xarray_dataset(self):
         """Convert model output to an xarray dataset"""
-
-        # get a list of all NetCDF files.
-        output_files = glob.glob(self._out_file_name + "*nc")
-
-        # open them as a xarray dataset
-        ds = xr.open_mfdataset(output_files,
+        # open all files as a xarray dataset
+        ds = xr.open_mfdataset(self._output_files,
                            concat_dim='nt',
                            engine='netcdf4',
                            data_vars=self.output_fields)
 
         # add a time dimension
-        time = xr.DataArray(self.params['output_interval'] * np.arange(len(output_files)),
+        time_array = np.asarray(self._itters[:-1]) * self.params["output_interval"]
+        time = xr.DataArray(time_array,
                             dims=('nt'),
                             attrs={'units': 'time units since model start',
                                    'standard_name' : 'time'})
@@ -1029,6 +1031,17 @@ class ErosionModel(object):
 
         return ds
 
+    def save_to_xarray_dataset(self, filename="terrainbento.nc"):
+        """
+        """
+        ds = self.to_xarray_dataset()
+        ds.to_netcdf(filename, engine='netcdf4', format='NETCDF4')
+
+    def remove_output_netcdfs(self):
+        """
+        """
+        for f in self._output_files:
+            os.remove(f)
 
 def main():  # pragma: no cover
     """Executes model."""
