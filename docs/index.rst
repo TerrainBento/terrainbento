@@ -11,6 +11,11 @@ dynamics. It was built on top of the `Landlab Toolkit`_.
 
 .. _Landlab Toolkit: https://landlab.github.io
 
+You can find all the source code, request additional features, or report a bug
+in the `GitHub repository`_.
+
+.. _GitHub repository: https://github.com/TerrainBento/terrainbento
+
 The goal of terrainbento is to make it easier to create alternative Earth
 surface dynamics models. The package has four main parts that support this
 goal. First, a model base class called **ErosionModel** contains the
@@ -28,9 +33,9 @@ Finally, a **ModelTemplate** provides an skeleton of a model made with the main
 base class that can be used to create your own terrainbento model.
 
 A number of Jupyter Notebook Tutorials have been developed to highlight how to
-use terrainbento. They can be found in `this GitHub Repository`_.
+use terrainbento. They can be found in `the terrainbento tutorials repository`_.
 
-.. _this GitHub Repository: https://github.com/TerrainBento/examples_tests_and_tutorials
+.. _the terrainbento tutorials repository: https://github.com/TerrainBento/examples_tests_and_tutorials
 
 
 Model Base Class
