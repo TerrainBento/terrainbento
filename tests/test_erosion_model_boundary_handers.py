@@ -8,7 +8,7 @@ import pytest
 from landlab import HexModelGrid, RasterModelGrid
 from landlab.components import LinearDiffuser, NormalFault
 
-from terrainbento import ErosionModel, Basic
+from terrainbento import ErosionModel, Basic, BasicSt
 from terrainbento.boundary_condition_handlers import (
     NotCoreNodeBaselevelHandler,
     PrecipChanger,
@@ -54,6 +54,36 @@ def test_boundary_condition_handler_with_special_part_of_params():
     assert bh.lowering_rate == -U
     assert bh.prefactor == -1
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
+
+def test_boundary_condition_handler_with_bad_special_part_of_params():
+    params = {
+        "opt_stochastic_duration": False,
+        "dt": 10,
+        "output_interval": 2.,
+        "run_duration": 1000.,
+        "record_rain": True,
+        "m_sp": 0.5,
+        "n_sp": 1.0,
+        "water_erodability~stochastic": 0.01,
+        "regolith_transport_parameter": 0.1,
+        "infiltration_capacity": 0.0,
+        "rainfall__mean_rate": 1.2,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
+        "number_of_sub_time_steps": 1,
+        "random_seed": 1234,
+        "BoundaryHandlers": "PrecipChanger",
+        "PrecipChanger": {
+            "daily_rainfall__intermittency_factor": 0.1,
+            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
+            "rainfall__mean_rate": 1.,
+            "rainfall__mean_rate_time_rate_of_change": 0.0001,
+            "infiltration_capacity": 0,
+            "rainfall__shape_factor": 0.65,
+        },
+    }
+    with pytest.raises(ValueError):
+        BasicSt(params=params)
 
 
 def test_boundary_condition_handler_without_special_part_of_params():

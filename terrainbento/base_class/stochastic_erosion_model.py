@@ -36,22 +36,22 @@ If ``opt_stochastic_duration=False`` then the duration indicated by the
 parameter ``dt`` will first be split into a series of sub-timesteps based on
 the parameter ``number_of_sub_time_steps``, and then each of these
 sub-timesteps will experience a duration of rain and no-rain based on the value
-of ``daily_rainfall_intermittency_factor``. The duration of rain and no-rain
+of ``rainfall_intermittency_factor``. The duration of rain and no-rain
 will not change, but the intensity of rain will vary based on a stretched
 exponential distribution described by the shape factor
-``daily_rainfall__precipitation_shape_factor`` and with a scale factor
+``rainfall__shape_factor`` and with a scale factor
 calculated so that the mean of the distribution has the value given by
-``daily_rainfall__mean_intensity``.
+``rainfall__mean_rate``.
 
 number_of_sub_time_steps : int
     Number of sub-timesteps.
-daily_rainfall_intermittency_factor : float
+rainfall_intermittency_factor : float
     Value between zero and one that indicates the proportion of time rain
     occurs. A value of 0 means it never rains and a value of 1 means that rain
     never ceases.
-daily_rainfall__mean_intensity : float
+rainfall__mean_rate : float
     Mean of the precipitation distribution.
-daily_rainfall__precipitation_shape_factor : float
+rainfall__shape_factor : float
     Shape factor of the precipitation distribution.
 
 Parameters that control output
@@ -124,6 +124,14 @@ class StochasticErosionModel(ErosionModel):
         )
 
         self.opt_stochastic_duration = self.params.get("opt_stochastic_duration", False)
+
+        # verify that opt_stochastic_duration and PrecipChanger are consistent
+        if self.opt_stochastic_duration and ("PrecipChanger" in self.boundary_handler):
+            msg = ("terrainbento StochasticErosionModel: setting "
+                   "opt_stochastic_duration=True and using the PrecipChanger "
+                   "boundary condition handler are not compatible.")
+            raise ValueError(msg)
+
         self.seed = int(self.params.get("random_seed", 0))
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the dt may
@@ -168,6 +176,19 @@ class StochasticErosionModel(ErosionModel):
                 )
             )
 
+    def calc_runoff_and_discharge(self):
+        """Calculate runoff rate and discharge; return runoff."""
+        if self.rain_rate > 0.0 and self.infilt > 0.0:
+            runoff = self.rain_rate - (
+                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
+            )
+            if runoff < 0:
+                runoff = 0
+        else:
+            runoff = self.rain_rate
+        self.discharge[:] = runoff * self.area
+        return runoff
+
     def run_for_stochastic(self, dt, runtime):
         """Run_for with stochastic duration.
 
@@ -207,11 +228,11 @@ class StochasticErosionModel(ErosionModel):
         else:
             from scipy.special import gamma
 
-            daily_rainfall__mean_intensity = (self._length_factor) * self.params[
-                "daily_rainfall__mean_intensity"
+            rainfall__mean_rate = (self._length_factor) * self.params[
+                "rainfall__mean_rate"
             ]  # has units length per time
-            daily_rainfall_intermittency_factor = self.params[
-                "daily_rainfall_intermittency_factor"
+            rainfall_intermittency_factor = self.params[
+                "rainfall_intermittency_factor"
             ]
 
             self.rain_generator = PrecipitationDistribution(
@@ -220,14 +241,14 @@ class StochasticErosionModel(ErosionModel):
                 mean_storm_depth=1.0,
                 random_seed=self.seed,
             )
-            self.daily_rainfall_intermittency_factor = (
-                daily_rainfall_intermittency_factor
+            self.rainfall_intermittency_factor = (
+                rainfall_intermittency_factor
             )
-            self.daily_rainfall__mean_intensity = daily_rainfall__mean_intensity
+            self.rainfall__mean_rate = rainfall__mean_rate
             self.shape_factor = self.params[
-                "daily_rainfall__precipitation_shape_factor"
+                "rainfall__shape_factor"
             ]
-            self.scale_factor = self.daily_rainfall__mean_intensity / gamma(
+            self.scale_factor = self.rainfall__mean_rate / gamma(
                 1.0 + (1.0 / self.shape_factor)
             )
 
@@ -285,7 +306,7 @@ class StochasticErosionModel(ErosionModel):
         """
         # (if we're varying precipitation parameters through time, update them)
         if "PrecipChanger" in self.boundary_handler:
-            self.daily_rainfall_intermittency_factor, self.daily_rainfall__mean_intensity = self.boundary_handler[
+            self.rainfall_intermittency_factor, self.rainfall__mean_rate = self.boundary_handler[
                 "PrecipChanger"
             ].get_current_precip_params()
 
@@ -309,7 +330,7 @@ class StochasticErosionModel(ErosionModel):
 
         elif not self.opt_stochastic_duration:
 
-            dt_water = (dt * self.daily_rainfall_intermittency_factor) / float(
+            dt_water = (dt * self.rainfall_intermittency_factor) / float(
                 self.n_sub_steps
             )
             for i in range(self.n_sub_steps):
@@ -335,7 +356,7 @@ class StochasticErosionModel(ErosionModel):
             if self.record_rain:
 
                 # calculate dry time
-                dt_dry = dt * (1 - self.daily_rainfall_intermittency_factor)
+                dt_dry = dt * (1 - self.rainfall_intermittency_factor)
 
                 # if dry time is greater than zero, record.
                 if dt_dry > 0:
@@ -450,14 +471,14 @@ class StochasticErosionModel(ErosionModel):
         # calculate the number of wet days per year.
         number_of_days_per_year = 365
         nwet = int(
-            np.ceil(self.daily_rainfall_intermittency_factor * number_of_days_per_year)
+            np.ceil(self.rainfall_intermittency_factor * number_of_days_per_year)
         )
 
         if nwet == 0:
             raise ValueError(
                 "No rain fell, which makes calculating exceedance "
                 "frequencies problematic. We recommend that you "
-                "check the valude of daily_rainfall_intermittency_factor."
+                "check the valude of rainfall_intermittency_factor."
             )
 
         with open(filename, "w") as exceedance_file:
@@ -471,7 +492,7 @@ class StochasticErosionModel(ErosionModel):
             exceedance_file.write(
                 (
                     "Intermittency Factor: "
-                    + str(self.daily_rainfall_intermittency_factor)
+                    + str(self.rainfall_intermittency_factor)
                     + "\n"
                 )
             )
@@ -490,7 +511,7 @@ class StochasticErosionModel(ErosionModel):
             exceedance_file.write(
                 (
                     "This provided value was:\n"
-                    + str(self.daily_rainfall__mean_intensity)
+                    + str(self.rainfall__mean_rate)
                     + "\n"
                 )
             )

@@ -40,14 +40,79 @@ class BasicStVs(StochasticErosionModel):
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
-        """Initialize the StochasticDischargeHortonianModel."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
 
+        Returns
+        -------
+        BasicStVs : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicStVs**. Note that a YAML input file can be used instead
+        of a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicStVs
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability~stochastic': 0.001,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'opt_stochastic_duration': False,
+        ...           'number_of_sub_time_steps': 1,
+        ...           'rainfall_intermittency_factor': 0.5,
+        ...           'rainfall__mean_rate': 1.0,
+        ...           'rainfall__shape_factor': 1.0,
+        ...           'infiltration_capacity': 1.0,
+        ...           'random_seed': 0,
+        ...           'soil__initial_thickness': 2.0,
+        ...           'hydraulic_conductivity': 0.1}
+
+        Construct the model.
+
+        >>> model = BasicStVs(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
         # Call ErosionModel's init
         super(BasicStVs, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+            self._length_factor ** ((3. * self.m) - 1)
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -91,9 +156,9 @@ class BasicStVs(StochasticErosionModel):
         self.eroder = StreamPowerEroder(
             self.grid,
             use_Q=self.discharge,
-            K_sp=K_sp,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.m,
         )
 
         # Instantiate a LinearDiffuser component

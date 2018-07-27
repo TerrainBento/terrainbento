@@ -7,6 +7,7 @@ from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 
 from terrainbento import BasicDdHy
+from terrainbento.utilities import precip_defaults, precip_testing_factor
 
 
 def test_steady_Ksp_no_precip_changer_no_thresh():
@@ -215,12 +216,7 @@ def test_with_precip_changer():
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.5,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.1,
-            "daily_rainfall__mean_intensity": 1.0,
-            "daily_rainfall__mean_intensity_time_rate_of_change": 0.2,
-        },
+        "PrecipChanger": precip_defaults,
     }
 
     model = BasicDdHy(params=params)
@@ -228,7 +224,7 @@ def test_with_precip_changer():
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K, 5) == 0.10326
+    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
 
 
 def test_diffusion_only():

@@ -90,7 +90,7 @@ class BasicHySa(ErosionModel):
 
     TODO XXX add threshold
 
-    A value for the paramter ``solver`` can also be used to indicate if the
+    A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **Space** component or if an
     adaptive internal timestep is used. Refer to the **Space** documentation for
     details.

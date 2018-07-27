@@ -7,8 +7,8 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 import pytest
 
-
 from terrainbento import Basic
+from terrainbento.utilities import precip_defaults, precip_testing_factor
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -211,12 +211,7 @@ def test_with_precip_changer():
         "n_sp": 1.0,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.5,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.1,
-            "daily_rainfall__mean_intensity": 1.0,
-            "daily_rainfall__mean_intensity_time_rate_of_change": 0.2,
-        },
+        "PrecipChanger": precip_defaults,
     }
 
     model = Basic(params=params)
@@ -224,7 +219,7 @@ def test_with_precip_changer():
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K, 5) == 0.10326
+    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
 
 
 def test_steady_m_075():

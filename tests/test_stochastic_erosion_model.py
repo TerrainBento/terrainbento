@@ -1,10 +1,11 @@
 # coding: utf8
 #! /usr/env/python
 import os
-import filecmp
 import pytest
 import numpy as np
+
 from terrainbento import StochasticErosionModel, BasicSt
+from terrainbento.utilities import precip_defaults, filecmp
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -43,9 +44,9 @@ def test_init_record_opt_false():
 def test_run_stochastic_opt_true():
     params = {
         "opt_stochastic_duration": True,
-        "dt": 1,
+        "dt": 10,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 100000.,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -60,7 +61,7 @@ def test_run_stochastic_opt_true():
 
     model = BasicSt(params=params)
     assert model.opt_stochastic_duration == True
-    model.run_for(10, 10000.)
+    model.run_for(params['dt'], params['run_duration'])
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(decimals=5)
     event_duration = np.asarray(model.rain_record["event_duration"]).round(decimals=5)
@@ -94,9 +95,9 @@ def test_run_stochastic_opt_false():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -114,13 +115,13 @@ def test_run_stochastic_opt_false():
     assert (
         np.array_equiv(
             dry_times,
-            params["dt"] * (1. - params["daily_rainfall_intermittency_factor"]),
+            params["dt"] * (1. - params["rainfall_intermittency_factor"]),
         )
         == True
     )
     assert (
         np.array_equiv(
-            wet_times, params["dt"] * (params["daily_rainfall_intermittency_factor"])
+            wet_times, params["dt"] * (params["rainfall_intermittency_factor"])
         )
         == True
     )
@@ -128,7 +129,7 @@ def test_run_stochastic_opt_false():
     avg_storm_depth = np.sum((rainfall_rate * event_duration)) / len(wet_times)
 
     np.testing.assert_array_almost_equal(
-        avg_storm_depth, params["daily_rainfall__mean_intensity"], decimal=1
+        avg_storm_depth, params["rainfall__mean_rate"], decimal=1
     )
 
 
@@ -208,9 +209,9 @@ def test_reset_random_seed_stochastic_duration_false():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -248,9 +249,9 @@ def test_float_number_of_sub_time_steps():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1.5,
         "random_seed": 1234,
     }
@@ -261,27 +262,22 @@ def test_float_number_of_sub_time_steps():
 def test_run_opt_false_with_changer():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "dt": 1,
         "output_interval": 2.,
-        "run_duration": 1000.,
+        "run_duration": 3.,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.5,
+        "rainfall__shape_factor": 0.65,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.1,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
-            "daily_rainfall__mean_intensity": 1.,
-            "daily_rainfall__mean_intensity_time_rate_of_change": 0.0001,
-        },
+        "PrecipChanger": precip_defaults,
     }
 
     model = BasicSt(params=params)
@@ -289,10 +285,28 @@ def test_run_opt_false_with_changer():
     model.run_for(params["dt"], params["run_duration"])
     assert "PrecipChanger" in model.boundary_handler
 
-    assert model.daily_rainfall_intermittency_factor == 0.199
-    assert np.round(model.daily_rainfall__mean_intensity, decimals=3) == np.round(
-        0.10173785078713211, decimals=3
-    )
+    predicted_intermittency = (params["rainfall_intermittency_factor"] +
+                               params["PrecipChanger"]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+
+    predicted_intensity = (params["rainfall__mean_rate"] +
+                               params["PrecipChanger"]["rainfall__mean_rate_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+
+    assert model.rainfall_intermittency_factor == predicted_intermittency
+    assert model.rainfall__mean_rate == predicted_intensity
+
+
+
+def test_opt_dur_true_with_changer():
+    params = {
+        "opt_stochastic_duration": True,
+        "dt": 10,
+        "output_interval": 2.,
+        "run_duration": 1000.,
+        "BoundaryHandlers": "PrecipChanger",
+        "PrecipChanger": precip_defaults}
+
+    with pytest.raises(ValueError):
+        StochasticErosionModel(params=params)
 
 
 def test_not_specifying_record_rain():
@@ -307,9 +321,9 @@ def test_not_specifying_record_rain():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -336,9 +350,9 @@ def test_finalize_opt_duration_stochastic_false_too_short():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -364,9 +378,9 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.0,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.0,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -389,9 +403,9 @@ def test_finalize_opt_duration_stochastic_false():
         "water_erodability~stochastic": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "daily_rainfall__mean_intensity": 1.,
-        "daily_rainfall_intermittency_factor": 0.1,
-        "daily_rainfall__precipitation_shape_factor": 0.6,
+        "rainfall__mean_rate": 1.,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
@@ -402,10 +416,10 @@ def test_finalize_opt_duration_stochastic_false():
 
     # assert that these are correct
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt")
-    assert filecmp.cmp("storm_sequence.txt", truth_file) == True
+    assert filecmp("storm_sequence.txt", truth_file) == True
 
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt")
-    assert filecmp.cmp("exceedance_summary.txt", truth_file) == True
+    assert filecmp("exceedance_summary.txt", truth_file) == True
 
     os.remove("storm_sequence.txt")
     os.remove("exceedance_summary.txt")
@@ -436,6 +450,29 @@ def test_finalize_opt_duration_stochastic_true():
 
     # assert that these are correct
     truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt")
-    assert filecmp.cmp("storm_sequence.txt", truth_file) == True
+    assert filecmp("storm_sequence.txt", truth_file) == True
 
     os.remove("storm_sequence.txt")
+
+def test_runoff_equals_zero():
+    params = {
+        "opt_stochastic_duration": False,
+        "dt": 10.,
+        "output_interval": 2.,
+        "run_duration": 10000.,
+        "record_rain": True,
+        "m_sp": 0.5,
+        "n_sp": 1.0,
+        "water_erodability~stochastic": 0.01,
+        "regolith_transport_parameter": 0.1,
+        "infiltration_capacity": 100000.,
+        "rainfall__mean_rate": 0.0,
+        "rainfall_intermittency_factor": 0.1,
+        "rainfall__shape_factor": 1.,
+        "number_of_sub_time_steps": 1,
+        "random_seed": 1234,
+    }
+    model = BasicSt(params=params)
+    model.run_one_step(1.)
+    runoff = model.calc_runoff_and_discharge()
+    assert runoff == 0

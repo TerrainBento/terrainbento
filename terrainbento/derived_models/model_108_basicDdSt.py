@@ -46,40 +46,84 @@ class BasicDdSt(StochasticErosionModel):
     stream power with a threshold, (2) linear nhillslope diffusion, and
     (3) generation of a random sequence of runoff events across a topographic
     surface.
-
-    Examples
-    --------
-    >>> from terrainbento import BasicDdSt
-    >>> my_pars = {}
-    >>> my_pars['dt'] = 1.0
-    >>> my_pars['run_duration'] = 1.0
-    >>> my_pars['output_interval'] = 2.0
-    >>> my_pars['infiltration_capacity'] = 1.0
-    >>> my_pars["water_erodability~stochastic"] = 1.0
-    >>> my_pars['m_sp'] = 0.5
-    >>> my_pars['n_sp'] = 1.0
-    >>> my_pars["water_erosion_rule__threshold"] = 1.0
-    >>> my_pars['thresh_change_per_depth'] = 0.1
-    >>> my_pars['regolith_transport_parameter'] = 0.01
-    >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
-    >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
-    >>> my_pars['mean_storm_depth'] = 0.025
-    >>> my_pars['random_seed'] = 907
-    >>> my_pars['daily_rainfall__precipitation_shape_factor'] = 0.65
-    >>> my_pars['number_of_sub_time_steps'] = 10
-    >>> srt = BasicDdSt(params=my_pars)
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
-        """Initialize the BasicDdSt."""
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
 
+        Returns
+        -------
+        BasicDdSt : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicDdSt**. Note that a YAML input file can be used instead
+        of a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicDdSt
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability~stochastic': 0.001,
+        ...           'water_erosion_rule__threshold': 1.0,
+        ...           'thresh_change_per_depth': 0.1,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'opt_stochastic_duration': False,
+        ...           'number_of_sub_time_steps': 1,
+        ...           'rainfall_intermittency_factor': 0.5,
+        ...           'rainfall__mean_rate': 1.0,
+        ...           'rainfall__shape_factor': 1.0,
+        ...           'infiltration_capacity': 1.0,
+        ...           'random_seed': 0}
+
+        Construct the model.
+
+        >>> model = BasicDdSt(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
         # Call ErosionModel's init
         super(BasicDdSt, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
+        # Get Parameters:
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+            self._length_factor ** ((3. * self.m) - 1)
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -102,10 +146,9 @@ class BasicDdSt(StochasticErosionModel):
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        infiltration_capacity = (self._length_factor) * self.params[
-            "infiltration_capacity"
-        ]  # has units length per time
-        self.infilt = infiltration_capacity
+        # has units length per time
+        self.infilt = (self._length_factor) * self.params[
+            "infiltration_capacity"]
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
@@ -123,9 +166,9 @@ class BasicDdSt(StochasticErosionModel):
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
-            K_sp=K_sp,
+            m_sp=self.m,
+            n_sp=self.n,
+            K_sp=self.K,
             use_Q=self.discharge,
             threshold_sp=self.threshold,
         )
@@ -134,19 +177,6 @@ class BasicDdSt(StochasticErosionModel):
         self.diffuser = LinearDiffuser(
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
-
-    def calc_runoff_and_discharge(self):
-        """Calculate runoff rate and discharge; return runoff."""
-        if self.rain_rate > 0.0 and self.infilt > 0.0:
-            runoff = self.rain_rate - (
-                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
-            )
-            if runoff < 0:
-                runoff = 0
-        else:
-            runoff = self.rain_rate
-        self.discharge[:] = runoff * self.area
-        return runoff
 
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""

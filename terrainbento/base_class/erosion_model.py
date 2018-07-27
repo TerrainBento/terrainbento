@@ -116,7 +116,7 @@ initial_elevation : float, optional
 random_seed : int, optional
     Default value is 0.
 add_random_noise : boolean, optional
-    Default value is True.
+    Default value is False.
 initial_noise_std : float, optional
     Standard deviation of zero-mean, normally distributed random perturbations
     to initial node elevations. Default value is 0.
@@ -461,6 +461,20 @@ class ErosionModel(object):
                 handler_params = self.params[name]
                 handler_params["length_factor"] = self._length_factor
 
+                # check that values in handler params are not different than
+                # equivalents in params, if they exist.
+                for par in handler_params:
+                    if par in self.params:
+                        if handler_params[par] != self.params[par]:
+                            msg = ("terrainbento ErosionModel: "
+                                    "parameter " + par + " provided is different "
+                                    "in the main parameter dictionary and the "
+                                    "handler dictionary. You probably don't "
+                                    "want this. If you think you can't do your "
+                                    "research without this functionality, make "
+                                    "a GitHub Issue that requests it. ")
+                            raise ValueError(msg)
+
             # otherwise pass all parameters
             else:
                 handler_params = self.params
@@ -692,7 +706,7 @@ class ErosionModel(object):
         If noise or initial elevation is added, it will only be added to the
         core nodes.
         """
-        add_noise = self.params.get("add_random_noise", True)
+        add_noise = self.params.get("add_random_noise", False)
         init_z = self.params.get("initial_elevation", 0.0)
         init_sigma = self.params.get("initial_noise_std", 0.0)
         seed = self.params.get("random_seed", 0)
@@ -858,7 +872,7 @@ class ErosionModel(object):
         """Write output to file as a netCDF.
 
         Filenames will have the value of ``'output_filename'`` from the input
-        file or paramter dictionary as the first part of the file name and the
+        file or parameter dictionary as the first part of the file name and the
         model run iteration as the second part of the filename.
 
         Parameters
