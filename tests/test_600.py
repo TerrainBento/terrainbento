@@ -1,3 +1,5 @@
+# coding: utf8
+#! /usr/env/python
 
 import numpy as np
 
@@ -251,4 +253,6 @@ def test_with_precip_changer():
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert np.array_equiv(model.eroder._K_unit_time, K * precip_testing_factor) == True
+
+    truth = K * precip_testing_factor * np.ones(model.eroder._K_unit_time.size)
+    assert_array_almost_equal(model.eroder._K_unit_time, truth, decimal=4)
