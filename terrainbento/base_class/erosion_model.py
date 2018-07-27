@@ -193,6 +193,9 @@ import sys
 import time as tm
 import numpy as np
 from types import FunctionType
+import glob
+import xarray
+import dask
 
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
@@ -881,6 +884,10 @@ class ErosionModel(object):
             List of model grid fields to write as output. Default is to write
             out all fields.
         """
+        if field_names is None:
+            field_names = self.grid.at_node.keys()
+        self.field_names = field_names
+
         self.calculate_cumulative_change()
         filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
         try:
@@ -895,9 +902,6 @@ class ErosionModel(object):
                     "nodes_at_link": self.grid.nodes_at_link,
                 }
             )
-
-            if field_names is None:
-                field_names = self.grid.at_node.keys()
 
             for field_name in field_names:
 
@@ -996,6 +1000,34 @@ class ErosionModel(object):
         if self.boundary_handler is not None:
             for handler_name in self.boundary_handler:
                 self.boundary_handler[handler_name].run_one_step(dt)
+
+    def to_xarray_dataset(self):
+        """Convert model output to an xarray dataset"""
+
+        # get a list of all NetCDF files.
+        output_files = glob.glob(self._out_file_name + "*nc")
+
+        # open them as a xarray dataset
+        ds = xr.open_mfdataset(output_files,
+                           concat_dim='nt',
+                           engine='netcdf4',
+                           data_vars=self.output_fields)
+
+        # add a time dimension
+        time = xr.DataArray(self.params['output_interval'] * np.arange(len(output_files)),
+                            dims=('nt'),
+                            attrs={'units': 'time units since model start',
+                                   'standard_name' : 'time'})
+
+        ds['time'] = time
+
+        # set x and y to coordinates
+        ds.set_coords(['x', 'y','time'], inplace=True)
+
+        # rename dimensions
+        ds.rename(name_dict={'ni': 'x', 'nj': 'y', 'nt':'time'}, inplace=True)
+
+        return ds
 
 
 def main():  # pragma: no cover
