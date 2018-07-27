@@ -28,7 +28,7 @@ Finally, a **ModelTemplate** provides an skeleton of a model made with the main
 base class that can be used to create your own terrainbento model.
 
 A number of Jupyter Notebook Tutorials have been developed to highlight how to
-use terrainbento. They can be found in `this GitHub repository.`_.
+use terrainbento. They can be found in `this GitHub Repository`_.
 
 .. _this GitHub Repository: https://github.com/TerrainBento/examples_tests_and_tutorials
 
