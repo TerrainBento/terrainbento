@@ -41,12 +41,45 @@ from terrainbento.base_class import StochasticErosionModel
 
 class BasicStTh(StochasticErosionModel):
     """
-    A BasicStTh computes erosion using (1) unit stream
-    power with a threshold, (2) linear nhillslope diffusion, and
-    (3) generation of a random sequence of runoff events across a topographic
-    surface.
+    **BasicStTh** model program.
 
+    **BasicStTh** is a model program that uses a stochastic treatment of runoff
+    and discharge, and includes an erosion threshold in the water erosion law.
+    THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
+    with the following governing equation:
 
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -(K_{q}\hat{Q}^{m}S^{n} - \omega_c) + D\\nabla^2 \eta
+
+    where :math:`\hat{Q}` is the local stream discharge (the hat symbol
+    indicates that it is a random-in-time variable) and :math:`S` is the local
+    slope gradient. Refer to the terrainbento manuscript Table XX (URL here)
+    for parameter symbols, names, and dimensions.
+
+    **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_q`       | ``water_erodability~stochastic`` |
+    +------------------+----------------------------------+
+    |:math:`\omega_c`  | ``water_erosion_rule__threshold``|
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`I_m`       | ``infiltration_capacity``        |
+    +------------------+----------------------------------+
+
+    For information about the stochastic precipitation and runoff model used,
+    see the documentation for **BasicSt** and the base class
+    **StochasticErosionModel**.
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
