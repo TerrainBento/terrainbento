@@ -1,36 +1,19 @@
 # coding: utf8
 #! /usr/env/python
 """
-model_110_basicHySt.py: erosion model with stochastic
-rainfall and hybrid alluvial incision.
+terrainbento Model **BasicHySt** program.
 
-Model 110 BasicHySt
+Erosion model program using linear diffusion for gravitational mass transport,
+and an entrainment-deposition law for water erosion and deposition. Discharge
+is calculated from drainage area, infiltration capacity (a parameter), and
+precipitation rate, which is a stochastic variable.
 
-The hydrology aspect models discharge and erosion across a topographic
-surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
-flow routing, and (3) Hortonian infiltration model. Includes stream-power
-erosion plus linear diffusion.
-
-The hydrology uses calculation of drainage area using the standard "D8"
-approach (assuming the input grid is a raster; "DN" if not), then modifies it
-by running a lake-filling component. It then iterates through a sequence of
-storm and interstorm periods. Storm depth is drawn at random from a gamma
-distribution, and storm duration from an exponential distribution; storm
-intensity is then depth divided by duration. Given a storm precipitation
-intensity $P$, the runoff production rate $R$ [L/T] is calculated using:
-
-$R = P - I (1 - \exp ( -P / I ))$
-
-where $I$ is the soil infiltration capacity. At the sub-grid scale, soil
-infiltration capacity is assumed to have an exponential distribution of which
-$I$ is the mean. Hence, there are always some spots within any given grid cell
-that will generate runoff. This approach yields a smooth transition from
-near-zero runoff (when $I>>P$) to $R \approx P$ (when $P>>I$), without a
-"hard threshold."
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-PrecipitationDistribution, LinearDiffuser, HybridAlluvium
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.erosion_deposition.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    5. `PrecipitationDistribution <http://landlab.readthedocs.io/en/latest/landlab.components.html#landlab.components.PrecipitationDistribution>`_
 """
 
 import numpy as np
@@ -41,10 +24,51 @@ from terrainbento.base_class import StochasticErosionModel
 
 class BasicHySt(StochasticErosionModel):
     """
-    A BasicHySt computes erosion using (1) hybrid alluvium river erosion,
-    (2) linear nhillslope diffusion, and
-    (3) generation of a random sequence of runoff events across a topographic
-    surface.
+    **BasicHySt** model program.
+
+    **BasicHySt** is a model program that uses a stochastic treatment of runoff
+    and discharge, and includes an erosion threshold in the water erosion law.
+    THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
+    with the following governing equation:
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -E(\hat{Q}) + D_s(\hat{Q}) + D\\nabla^2 \eta
+
+    where :math:`\hat{Q}` is the local stream discharge (the hat symbol
+    indicates that it is a random-in-time variable), $E$ is the bed erosion
+    (entrainment) rate due to fluid entrainment, and $D_s$ is the deposition
+    rateof sediment settling out of active transport. Refer to the terrainbento 
+    manuscript Table XX (URL here) for parameter symbols, names, and
+    dimensions.
+
+    **BasicHySt** inherits from the terrainbento **StochasticErosionModel**
+    base class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_q`       | ``water_erodability~stochastic`` |
+    +------------------+----------------------------------+
+    |:math:`V_s`       | ``v_s``                          |
+    +------------------+----------------------------------+
+    |:math:`F_f`       | ``fraction_fines``               |
+    +------------------+----------------------------------+
+    |:math:`\phi`      | ``sediment_porosity``            |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`I_m`       | ``infiltration_capacity``        |
+    +------------------+----------------------------------+
+
+    For information about the stochastic precipitation and runoff model used,
+    see the documentation for **BasicSt** and the base class
+    **StochasticErosionModel**.
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
