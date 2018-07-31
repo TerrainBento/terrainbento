@@ -3,8 +3,9 @@
 """
 "terrainbento **BasicStTh** model program.
 
-Erosion model program using linear diffusion, stream power, and discharge
-proportional to drainage area.
+Erosion model program using linear diffusion, smoothly thresholded stream
+power, and stochastic discharge with a smoothed infiltration capacity
+threshold.
 
 Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
