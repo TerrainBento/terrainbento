@@ -1,7 +1,7 @@
 # coding: utf8
 #! /usr/env/python
 """
-"terrainbento **BasicStTh** model program.
+terrainbento **BasicStTh** model program.
 
 Erosion model program using linear diffusion, smoothly thresholded stream
 power, and stochastic discharge with a smoothed infiltration capacity
