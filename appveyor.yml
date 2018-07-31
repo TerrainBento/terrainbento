@@ -58,12 +58,12 @@ install:
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
+  - cmd: conda config --add channels landlab
+  - cmd: conda install --file=requirements.txt
+  - "%WITH_COMPILER% conda build -q .conda-recipe --old-build-string --build-only"
+  - cmd: conda install -q terrainbento -c local
 
 build: false
 
 test_script:
-  - cmd: conda config --add channels landlab
-  - cmd: conda install --file=requirements.txt
-  - "%WITH_COMPILER% conda build -q .conda-recipe --old-build-string --build-only"
-  - cmd: conda install -q --use-local terrainbento
   - cmd: pytest
