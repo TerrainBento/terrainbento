@@ -198,7 +198,6 @@ import numpy as np
 from types import FunctionType
 
 import xarray as xr
-import dask
 
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf

@@ -78,7 +78,6 @@ MOCK_MODULES = [
     "test",
     "bench",
     "xarray",
-    "dask",
     "glob",
 ]
 

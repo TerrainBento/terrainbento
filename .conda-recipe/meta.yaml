@@ -18,7 +18,6 @@ requirements:
     - numpy
     - scipy
     - xarray
-    - dask
     - sympy
     - six
     - pyyaml
