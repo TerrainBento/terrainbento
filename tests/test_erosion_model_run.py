@@ -16,7 +16,6 @@ def test_run_for():
     model._out_file_name = "run_for_output"
     model.run_for(10., 100.)
     assert model.model_time == 100.
-    model.remove_output_netcdfs()
 
 
 def test_finalize():
