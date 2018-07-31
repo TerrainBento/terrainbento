@@ -56,7 +56,7 @@ class BasicStTh(StochasticErosionModel):
     indicates that it is a random-in-time variable) and :math:`S` is the local
     slope gradient. Refer to the terrainbento manuscript Table XX (URL here)
     for parameter symbols, names, and dimensions.
-    
+
     **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
     class. In addition to the parameters required by the base class, models
     built with this program require the following parameters.
