@@ -167,8 +167,7 @@ class BasicDdSt(StochasticErosionModel):
 
         # Get the infiltration-capacity parameter
         # has units length per time
-        self.infilt = (self._length_factor) * self.params[
-            "infiltration_capacity"]
+        self.infilt = (self._length_factor) * self.params["infiltration_capacity"]
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
