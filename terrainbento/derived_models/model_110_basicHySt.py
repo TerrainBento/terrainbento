@@ -38,7 +38,7 @@ class BasicHySt(StochasticErosionModel):
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), $E$ is the bed erosion
     (entrainment) rate due to fluid entrainment, and $D_s$ is the deposition
-    rateof sediment settling out of active transport. Refer to the terrainbento 
+    rate of sediment settling out of active transport. Refer to the terrainbento
     manuscript Table XX (URL here) for parameter symbols, names, and
     dimensions.
 
