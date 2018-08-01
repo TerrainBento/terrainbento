@@ -724,6 +724,13 @@ class ErosionModel(object):
             self.z[init_z_nodes] += init_z
 
         if add_noise:
+            if init_sigma < 0:
+                msg = ""
+                raise ValueError(msg)
+            if init_sigma == 0:
+                msg = ""
+                raise ValueError(msg)
+
             np.random.seed(seed)
             if noise_location:
                 noise_nodes = np.arange(self.grid.size("node"))
