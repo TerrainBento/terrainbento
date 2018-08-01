@@ -28,16 +28,8 @@ class BasicThVs(ErosionModel):
 
         \\frac{\partial \eta}{\partial t} = -\left(K A_{eff}^{m}S^{n} - \omega_{c}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{c}}\\right)\\right) + D\\nabla^2 \eta
 
-    where:
-        
-    .. math::
-        
         A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
 
-    and:
-        
-    .. math::
-        
         \\alpha = \\frac{K_{sat}  H_{init}  dx}{R_m}
 
 
