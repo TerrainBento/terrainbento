@@ -214,6 +214,7 @@ from terrainbento.boundary_condition_handlers import (
     CaptureNodeBaselevelHandler,
     NotCoreNodeBaselevelHandler,
     SingleNodeBaselevelHandler,
+    GenericFuncBaselevelHandler,
 )
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
@@ -222,6 +223,7 @@ _SUPPORTED_BOUNDARY_HANDLERS = [
     "CaptureNodeBaselevelHandler",
     "NotCoreNodeBaselevelHandler",
     "SingleNodeBaselevelHandler",
+    "GenericFuncBaselevelHandler",
 ]
 
 _HANDLER_METHODS = {
@@ -230,6 +232,7 @@ _HANDLER_METHODS = {
     "CaptureNodeBaselevelHandler": CaptureNodeBaselevelHandler,
     "NotCoreNodeBaselevelHandler": NotCoreNodeBaselevelHandler,
     "SingleNodeBaselevelHandler": SingleNodeBaselevelHandler,
+    "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
 
 

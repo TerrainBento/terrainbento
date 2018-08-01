@@ -158,3 +158,83 @@ def test_pass_two_boundary_handlers():
     truth[0] -= U
     truth[model.grid.core_nodes] += U
     assert_array_equal(model.z, truth)
+
+def test_generic_bch():
+    U = 0.0001
+    K = 0.001
+    m = 1. / 3.
+    n = 2. / 3.
+    # construct dictionary. note that D is turned off here
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 20,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability": K,
+        "m_sp": m,
+        "n_sp": n,
+        "random_seed": 3141,
+        "BoundaryHandlers": "GenericFuncBaselevelHandler",
+        "GenericFuncBaselevelHandler": {"modify_core_nodes": True, "function": lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0*t))} , # returns a rate in meters/year
+    }
+    model = Basic(params=params)
+    bh = model.boundary_handler["GenericFuncBaselevelHandler"]
+
+    # assertion tests
+    assert "GenericFuncBaselevelHandler" in model.boundary_handler
+    assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
+
+    dt = 10.
+    model.run_one_step(dt)
+
+    dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
+    truth_z = -1. * dzdt * dt
+    assert_array_equal(model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes])
+
+def test_capture_node():
+    U = 0.0001
+    K = 0.001
+    m = 1. / 3.
+    n = 2. / 3.
+    # construct dictionary. note that D is turned off here
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 20,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability": K,
+        "m_sp": m,
+        "n_sp": n,
+        "random_seed": 3141,
+        "BoundaryHandlers": "CaptureNodeBaselevelHandler",
+        "CaptureNodeBaselevelHandler": {"capture_node": 1,
+                                        "capture_incision_rate": -3.0,
+                                        "capture_start_time": 10,
+                                        "capture_stop_time": 20,
+                                        "post_capture_incision_rate":-0.1} , # returns a rate in meters/year
+    }
+
+    model = Basic(params=params)
+    bh = model.boundary_handler["CaptureNodeBaselevelHandler"]
+
+    # assertion tests
+    assert "CaptureNodeBaselevelHandler" in model.boundary_handler
+    assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == 0
+    model.run_one_step(10.)
+    assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == 0
+    model.run_one_step(10)
+    assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == -30.
+    model.run_one_step(10)
+    assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == -31.
