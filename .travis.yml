@@ -53,7 +53,7 @@ install:
 - conda info -a && conda list
 - conda config --add channels landlab
 - conda install --file=requirements.txt
-- conda build -q -b .conda-recipe
+- conda build -q .conda-recipe
 - conda install -q terrainbento --use-local
 
 script:
