@@ -725,11 +725,9 @@ class ErosionModel(object):
             self.z[init_z_nodes] += init_z
 
         if add_noise:
-            if init_sigma < 0:
-                msg = ""
-                raise ValueError(msg)
-            if init_sigma == 0:
-                msg = ""
+            if init_sigma <= 0:
+                msg = ("terrainbento ErosionModel: initial_noise_std is <= 0 "
+                       "and add_random_noise is True. This is an error.")
                 raise ValueError(msg)
 
             np.random.seed(seed)
