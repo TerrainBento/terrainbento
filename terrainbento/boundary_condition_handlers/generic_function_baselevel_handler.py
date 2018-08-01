@@ -7,11 +7,11 @@ class GenericFuncBaselevelHandler(object):
     """Control the elevation of all nodes that are not core nodes.
 
     The **GenericFuncBaselevelHandler** controls the elevation of all nodes on
-    the model grid with ``status != 0`` (core nodes). The elevation change is
-    defined by a generic function of the x and y position across the grid and
-    the model time, t. Thus a user is able to use this single BaselevelHandler
-    object to make many different uplift patterns, including uplift patterns
-    that change as a function of model time.
+    the model grid with ``status != 0`` (i.e., all not-core nodes). The 
+    elevation change is defined by a generic function of the x and y position 
+    across the grid and the model time, t. Thus a user is able to use this 
+    single BaselevelHandler object to make many different uplift patterns, 
+    including uplift patterns that change as a function of model time.
 
     Through the parameter ``modify_core_nodes`` the user can determine if the
     core nodes should be moved in the direction (up or down) specified by the
