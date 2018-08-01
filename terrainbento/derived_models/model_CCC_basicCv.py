@@ -31,9 +31,10 @@ class BasicCv(ErosionModel):
         \\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + D\\nabla^2 \eta
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    and :math:`m` and :math:`n` are the drainage area and slope exponent
-    parameters.
+    where :math:`K` is the fluviel erodability coefficient, :math:`A` is the 
+    local drainage area, :math:`S` is the local slope, :math:`m` and :math:`n` 
+    are the drainage area and slope exponent parameters, and :math:`D` is the 
+    regolith transport parameter.
 
     This model also has a basic parameterization of climate change such that
     :math:`K` varies through time. Between model run onset and a time at
