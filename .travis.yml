@@ -54,7 +54,7 @@ install:
 - conda config --add channels landlab
 - conda install --file=requirements.txt
 - conda build -q .conda-recipe --old-build-string --build-only
-- conda install -q terrainbento --use-local --python=$TRAVIS_PYTHON_VERSION
+- conda install -q terrainbento --use-local --python $TRAVIS_PYTHON_VERSION
 
 script:
 - pytest --cov --cov-report=xml:$(pwd)/coverage.xml
