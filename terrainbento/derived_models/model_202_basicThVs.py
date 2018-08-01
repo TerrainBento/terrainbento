@@ -26,7 +26,7 @@ class BasicThVs(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K A_{eff}^{m}S^{n} - \omega_c\left(1-e^{-K_A_{eff}^{m}S^{n}/\omega_c}\\right)\\right) + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(K A_{eff}^{m}S^{n} - \omega_{c}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{c}}\\right)\\right) + D\\nabla^2 \eta
 
     where:
         
