@@ -109,6 +109,30 @@ def test_noise_all_nodes_sythetic_topo():
     rs = np.random.randn(len(em.grid.core_nodes))
 
 
+def test_synthetic_topo_noise_with_bad_std():
+    params = {
+        "add_random_noise": True,
+        "initial_elevation": 10.,
+        "initial_noise_std": -1.,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.
+    }
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
+
+def test_synthetic_topo_noise_with_zero_std():
+    params = {
+        "add_random_noise": True,
+        "initial_elevation": 10.,
+        "initial_noise_std": 0.,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.
+    }
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
+
 def test_synthetic_topo_default_seed():
     params = {
         "add_random_noise": True,
