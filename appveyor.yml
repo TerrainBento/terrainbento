@@ -60,7 +60,7 @@ install:
   - cmd: conda info -a && conda list
   - cmd: conda config --add channels landlab
   - cmd: conda install --file=requirements.txt
-  - "%WITH_COMPILER% conda build -q .conda-recipe --python %CONDA_PY% --old-build-string --build-only"
+  - "%WITH_COMPILER% conda build -q -b .conda-recipe"
   - cmd: conda install -q terrainbento --use-local
 
 build: false
