@@ -93,7 +93,7 @@ class CaptureNodeBaselevelHandler(object):
          [ 0.  0.  0.  0.  0.]]
 
         Running forward another 10 time units, we should
-        see node three lower by 30.
+        see node 3 lower by 30.
 
         >>> for _ in range(10):
         ...     bh.run_one_step(1)
@@ -106,7 +106,7 @@ class CaptureNodeBaselevelHandler(object):
         >>> bh.model_time
         20.0
 
-        Now that model time has reached 20, lowering will occur at the post
+        Now that model time has reached 20, lowering will occur at the post-
         capture incision rate. The node should lower by 1 to -31 in the next
         10 time units.
 
