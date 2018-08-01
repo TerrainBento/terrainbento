@@ -11,8 +11,8 @@ class NotCoreNodeBaselevelHandler(object):
     """Control the elevation of all nodes that are not core nodes.
 
     The **NotCoreNodeBaselevelHandler** controls the elevation of all nodes on
-    the model grid with ``status != 0`` (i.e., all not-core nodes). The 
-    elevation change at these nodes is specified either as a constant rate, or 
+    the model grid with ``status != 0`` (i.e., all not-core nodes). The
+    elevation change at these nodes is specified either as a constant rate, or
     through a text file that specifies the elevation change through time.
 
     Through the parameter ``modify_core_nodes`` the user can determine if the

@@ -34,8 +34,8 @@ class BasicSt(StochasticErosionModel):
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), :math:`S` is the local
-    slope gradient, :math:`m` and :math:`n` are the discharge and slope 
-    exponents, respectively, and :math:`D` is the regolith transport parameter. 
+    slope gradient, :math:`m` and :math:`n` are the discharge and slope
+    exponents, respectively, and :math:`D` is the regolith transport parameter.
 
     **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
     class. In addition to the parameters required by the base class, models
@@ -74,14 +74,14 @@ class BasicSt(StochasticErosionModel):
     overriding the run_for method.
 
     If the user does not request stochastic duration (indicated by setting
-    ``opt_stochastic_duration`` to ``False``), then the default 
-    (**erosion_model** base class) **run_for** method is used. Whenever 
-    **run_one_step** is called, storm intensity is generated at random from an 
-    exponential distribution with mean given by the parameter 
-    ``rainfall__mean_rate``. The stream power component is run for only a 
+    ``opt_stochastic_duration`` to ``False``), then the default
+    (**erosion_model** base class) **run_for** method is used. Whenever
+    **run_one_step** is called, storm intensity is generated at random from an
+    exponential distribution with mean given by the parameter
+    ``rainfall__mean_rate``. The stream power component is run for only a
     fraction of the time step duration dt, as specified by the parameter
-    ``rainfall_intermittency_factor``. For example, if ``dt`` is 10 years and 
-    the intermittency factor is 0.25, then the stream power component is run 
+    ``rainfall_intermittency_factor``. For example, if ``dt`` is 10 years and
+    the intermittency factor is 0.25, then the stream power component is run
     for only 2.5 years.
 
     In either case, given a storm precipitation intensity :math:`P`, the runoff
@@ -94,7 +94,7 @@ class BasicSt(StochasticErosionModel):
     infiltration capacity is assumed to have an exponential distribution of which
     $I$ is the mean. Hence, there are always some spots within any given grid cell
     that will generate runoff. This approach yields a smooth transition from
-    near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P` 
+    near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P`
     (when :math`P>>I`), without a "hard threshold."
 
     """
