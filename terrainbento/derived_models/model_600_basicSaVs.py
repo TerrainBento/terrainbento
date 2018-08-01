@@ -25,10 +25,11 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicSaVs(ErosionModel):
-    """**BasicVs** model program.
+    """**BasicSaVs** model program.
 
-    **BasicVs** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equations:
+    Given a spatially varying soil thickness :math:`H` and a spatially varying
+    bedrock elevation :math:`\eta_b`, model **BasicSaVs** evolves a topographic
+    surface described by :math:`\eta` with the following governing equations:
 
 
     .. math::
@@ -51,7 +52,7 @@ class BasicSaVs(ErosionModel):
     :math:`K` is the erodability by water, :math:`D` is the regolith transport
     parameter :math:`H_s` is the sediment production decay depth, :math:`H_s`
     is the sediment production decay depth, :math:`P_0` is the maximum sediment
-    production rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_s`
+    production rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_h`
     represents the hillslope sediment flux per unit width.
 
     :math:`\\alpha` is the saturation area scale used for transforming area into
@@ -59,7 +60,7 @@ class BasicSaVs(ErosionModel):
     hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
     the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
-    The **BasicVs** program inherits from the terrainbento **ErosionModel** base
+    The **BasicSaVs** program inherits from the terrainbento **ErosionModel** base
     class. In addition to the parameters required by the base class, models
     built with this program require the following parameters.
 
