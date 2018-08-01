@@ -122,8 +122,9 @@ initial_noise_std : float, optional
     to initial node elevations. Default value is 0.
 add_noise_to_all_nodes : bool, optional
     When False, noise is added to core nodes only. Default value is False.
-add_initial_elevation_to_all_nodes:
-    When
+add_initial_elevation_to_all_nodes : boolean, optional
+    When False, initial elevation is added to core nodes only. Default value is
+    True.
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
