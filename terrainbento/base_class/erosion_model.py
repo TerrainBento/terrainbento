@@ -122,6 +122,8 @@ initial_noise_std : float, optional
     to initial node elevations. Default value is 0.
 add_noise_to_all_nodes : bool, optional
     When False, noise is added to core nodes only. Default value is False.
+add_initial_elevation_to_all_nodes:
+    When
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -260,7 +262,7 @@ class ErosionModel(object):
 
         Returns
         -------
-        ErosionModel : object
+        ErosionModel: object
 
         Examples
         --------
@@ -712,16 +714,24 @@ class ErosionModel(object):
         seed = self.params.get("random_seed", 0)
         self.z = self.grid.add_zeros("node", "topographic__elevation")
         noise_location = self.params.get("add_noise_to_all_nodes", False)
-        np.random.seed(seed)
+        init_z_location = self.params.get("add_initial_elevation_to_all_nodes", True)
+
+        if init_z != 0.0:
+            if init_z_location:
+                init_z_nodes = np.arange(self.grid.size("node"))
+            else:
+                init_z_nodes = self.grid.core_nodes
+            self.z[init_z_nodes] += init_z
 
         if add_noise:
+            np.random.seed(seed)
             if noise_location:
                 noise_nodes = np.arange(self.grid.size("node"))
             else:
                 noise_nodes = self.grid.core_nodes
 
             rs = np.random.randn(noise_nodes.size)
-            self.z[noise_nodes] += init_z + (init_sigma * rs)
+            self.z[noise_nodes] += (init_sigma * rs)
         else:
             if noise_location:
                 msg = (
@@ -730,7 +740,6 @@ class ErosionModel(object):
                     "parameter has no effect."
                 )
                 raise ValueError(msg)
-            self.z += init_z
 
     def _setup_synthetic_boundary_conditions(self):
         """Set up boundary conditions for synthetic grids."""
