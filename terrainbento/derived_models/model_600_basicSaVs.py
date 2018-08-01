@@ -50,10 +50,10 @@ class BasicSaVs(ErosionModel):
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`K` is the erodability by water, :math:`D` is the regolith transport
-    parameter :math:`H_s` is the sediment production decay depth, :math:`H_s`
-    is the sediment production decay depth, :math:`P_0` is the maximum sediment
-    production rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_h`
-    represents the hillslope sediment flux per unit width.
+    parameter, :math:`H_s` is the sediment production decay depth, :math:`H_0`
+    is the sediment transport decay depth, :math:`P_0` is the maximum sediment
+    production rate, and :math:`H_0` is the sediment transport decay depth.
+    :math:`q_h` is the hillslope sediment flux per unit width.
 
     :math:`\\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated

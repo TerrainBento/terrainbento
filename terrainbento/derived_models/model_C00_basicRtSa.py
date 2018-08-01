@@ -59,7 +59,11 @@ class BasicRtSa(TwoLithologyErosionModel):
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone.
+    contact zone and the width of the contact zone. :math:`H_s` is the sediment
+    production decay depth, :math:`H_0` is the sediment transport decay depth,
+    :math:`P_0` is the maximum sediment production rate, and :math:`H_0` is the
+    sediment transport decay depth. :math:`q_h` is the hillslope sediment flux
+    per unit width.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is
