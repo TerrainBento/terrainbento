@@ -139,8 +139,7 @@ class GenericFuncBaselevelHandler(object):
         self._grid = grid
 
         # test the function behaves well
-        function_args = function.__code__.co_varnames
-        if len(function_args) != 2:
+        if function.__code__.co_argcount != 2:
             msg = "GenericFuncBaselevelHandler: function must take only two arguments, grid and t."
             raise ValueError(msg)
 

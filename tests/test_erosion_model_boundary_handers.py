@@ -160,7 +160,6 @@ def test_pass_two_boundary_handlers():
     assert_array_equal(model.z, truth)
 
 def test_generic_bch():
-    U = 0.0001
     K = 0.001
     m = 1. / 3.
     n = 2. / 3.
@@ -198,7 +197,6 @@ def test_generic_bch():
     assert_array_equal(model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes])
 
 def test_capture_node():
-    U = 0.0001
     K = 0.001
     m = 1. / 3.
     n = 2. / 3.
@@ -227,8 +225,6 @@ def test_capture_node():
     }
 
     model = Basic(params=params)
-    bh = model.boundary_handler["CaptureNodeBaselevelHandler"]
-
     # assertion tests
     assert "CaptureNodeBaselevelHandler" in model.boundary_handler
     assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == 0
