@@ -27,3 +27,12 @@ def test_function_that_returns_wrong_size():
         GenericFuncBaselevelHandler(
             mg, function=lambda mg, t: np.mean(10 * mg.x_of_node + 10 * mg.y_of_node + 10 * t)
         )
+
+def test_function_that_returns_float():
+    mg = HexModelGrid(5, 5)
+    _ = mg.add_zeros("node", "topographic__elevation")
+
+    with pytest.raises(ValueError):
+        GenericFuncBaselevelHandler(
+            mg, function=lambda mg, t: 1.0
+        )
