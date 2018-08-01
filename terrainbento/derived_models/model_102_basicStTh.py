@@ -27,7 +27,7 @@ class BasicStTh(StochasticErosionModel):
 
     **BasicStTh** is a model program that uses a stochastic treatment of runoff
     and discharge, and includes an erosion threshold in the water erosion law.
-    THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
+    The model evolves a topographic surface, :math:`\eta (x,y,t)`,
     with the following governing equation:
 
     .. math::
@@ -36,7 +36,10 @@ class BasicStTh(StochasticErosionModel):
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable) and :math:`S` is the local
-    slope gradient. Refer to the terrainbento manuscript Table XX (URL here)
+    slope gradient. :math:`m` and :math:`n` are the discharge and slope
+    exponent, respectively, :math:`\omega_c` is the critical stream power
+    required for erosion to occur, and :math:`D` is the regolith transport
+    parameter. Refer to the terrainbento manuscript Table XX (URL here)
     for parameter symbols, names, and dimensions.
 
     **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
