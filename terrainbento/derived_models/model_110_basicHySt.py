@@ -167,8 +167,7 @@ class BasicHySt(StochasticErosionModel):
 
         # Get the infiltration-capacity parameter
         # has units length per time
-        self.infilt = (self._length_factor) * self.params[
-            "infiltration_capacity"]
+        self.infilt = (self._length_factor) * self.params["infiltration_capacity"]
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
