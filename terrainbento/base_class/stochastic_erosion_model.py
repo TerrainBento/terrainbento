@@ -183,7 +183,7 @@ class StochasticErosionModel(ErosionModel):
                 self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
             )
             if runoff <= 0:
-                runoff = 0
+                runoff = 0 # pragma: no cover
         else:
             runoff = self.rain_rate
         self.discharge[:] = runoff * self.area
