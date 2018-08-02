@@ -182,7 +182,7 @@ class StochasticErosionModel(ErosionModel):
             runoff = self.rain_rate - (
                 self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
             )
-            if runoff < 0:
+            if runoff <= 0:
                 runoff = 0
         else:
             runoff = self.rain_rate
