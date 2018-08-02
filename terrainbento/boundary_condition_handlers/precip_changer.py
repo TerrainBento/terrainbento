@@ -291,12 +291,12 @@ class PrecipChanger(object):
         Parameters
         ----------
         grid : landlab model grid
-        rainfall_intermittency_factor : float, optional
-            Starting value of the rainfall rainfall_intermittency_factor :math:`F`. This
+        daily_rainfall_intermittency_factor : float, optional
+            Starting value of the daily rainfall intermittency factor :math:`F`. This
             value is a proportion and ranges from 0 (no rain ever) to 1 (rains
             every day).
-        rainfall_intermittency_factor__time_rate_of_change : float, optional
-            Time rate of change of the rainfall rainfall_intermittency_factor :math:`F`.
+        daily_rainfall_intermittency_factor__time_rate_of_change : float, optional
+            Time rate of change of the daily rainfall intermittency factor :math:`F`.
             Units are implied by the ``time_unit`` argument. Note that this
             factor must always be between 0 and 1.
         rainfall__mean_rate : float, optional
@@ -317,7 +317,7 @@ class PrecipChanger(object):
             Model time at which changing the precipitation should start. Default
             is at the onset of the model run.
         precipchanger_stop_time : float, optional
-            Model Time at which changing the precipitation statistics should end.
+            Model time at which changing the precipitation statistics should end.
             Default is no end time.
         length_factor : float, optional
             terrainbento model internal length factor conversion related to
@@ -330,7 +330,7 @@ class PrecipChanger(object):
         ``rainfall__mean_rate_time_rate_of_change``, and
         ``infiltration_capacity`` are all assumed to be the same.
 
-        The value passed by ``time_unit`` **IS** assumed to be consistent with
+        The value passed by ``time_unit`` is assumed to be consistent with
         the time units of `dt`.
 
         The length units are assumed to be consistent with the model grid

@@ -32,9 +32,9 @@ class BasicHyRt(TwoLithologyErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = \\frac{V Q_s}{A} - K A^{m}S^{n} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = \\frac{V Q_s}{Q} - K A^{m}S^{n} + D\\nabla^2 \eta
 
-        Q_s = \int_0^A \left(KA^{m}S^{n} - \\frac{V Q_s}{A} \\right) dA
+        Q_s = \int_0^A \left(KA^{m}S^{n} - \\frac{V Q_s}{Q} \\right) dA
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -46,10 +46,10 @@ class BasicHyRt(TwoLithologyErosionModel):
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`Q_s` is the volumetric sediment
-    discharge and :math:`V` is the effective settling velocity of the sediment
-    :math:`w` is a weight used to calculate the effective erodability
-    :math:`K(\eta, \eta_C)` based on the depth to the contact zone and the width
-    of the contact zone.
+    discharge, :math:`Q` is the volumetric water discharge, and :math:`V` is
+    the effective settling velocity of the sediment. :math:`w` is a weight used
+    to calculate the effective erodability :math:`K(\eta, \eta_C)` based on the
+    depth to the contact zone and the width of the contact zone.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the

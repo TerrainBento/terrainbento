@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""Base class for common functions of all terrainbentoerosion models.
+"""Base class for common functions of all terrainbento erosion models.
 
 The **ErosionModel** is a base class that contains all of the functionality
 shared by the terrainbento models.
@@ -84,7 +84,7 @@ Parameters that control creation of a synthetic RasterModelGrid
 These parameters control the size, shape, and model boundary conditions of a
 synthetic ``RasterModelGrid``.  These parameters are used if neither
 ``DEM_filename`` nor ``'model_grid'`` is specified or if
-`model_grid == 'RasterModelGrid'``.
+``model_grid == 'RasterModelGrid'``.
 
 number_of_node_rows : int, optional
     Number of node rows. Default is 4.
@@ -128,7 +128,7 @@ add_initial_elevation_to_all_nodes : boolean, optional
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-terrainbentoprovides the ability for an arbitrary number of boundary
+terrainbento provides the ability for an arbitrary number of boundary
 condition handler classes to operate on the model grid each time step in order
 to handle time-variable boundary conditions such as: changing a watershed outlet
 elevation, modifying precipitation parameters through time, or simulating
@@ -166,7 +166,7 @@ feet_to_meters : boolean, optional
 
 Parameters that control surface hydrology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-terrainbentouses the Landlab FlowAccumulator component to manage surface
+terrainbento uses the Landlab FlowAccumulator component to manage surface
 hydrology. These parameters control options associated with this component.
 
 flow_director : str, optional
@@ -258,7 +258,7 @@ class ErosionModel(object):
             Dictionary containing the input file. One of input_file or params
             is required.
         OutputWriters : class, function, or list of classes and/or functions,
-            optional Classes or functions used to write incremental output
+            Optional classes or functions used to write incremental output
             (e.g. make a diagnostic plot).
 
         Returns
@@ -444,7 +444,7 @@ class ErosionModel(object):
     def setup_boundary_handler(self, name):
         """ Setup BoundaryHandlers for use by a terrainbento model.
 
-        A boundary condition handler is a class with a run_one_step method that
+        A boundary condition handler is a class with a **run_one_step** method that
         takes the parameter ``dt``. Permitted boundary condition handlers
         include the Landlab Component ``NormalFault`` as well as the following
         options from terrainbento: **PrecipChanger**,
@@ -503,7 +503,7 @@ class ErosionModel(object):
         output, calculate a loss function, or do some other task that is not
         inherent to running a terrainbento model but is desired by the
         user. An example might be making a plot of topography while the model
-        is running. terrainbentosaves output to NetCDF format at each
+        is running. terrainbento saves output to NetCDF format at each
         interval defined by the parameter ``'output_interval'``.
 
         If a class, an OutputWriter will be instantiated with only one passed
@@ -822,7 +822,7 @@ class ErosionModel(object):
         ----------
         parameter_name : str
         raise_error : boolean
-            Raise an error if parameter doesn not exist. Default is True.
+            Raise an error if parameter does not exist. Default is True.
 
         Returns
         -------
@@ -834,7 +834,7 @@ class ErosionModel(object):
         >>> from landlab import HexModelGrid
         >>> from terrainbento import ErosionModel
 
-        Sometimes in makes sense to provide a parameter as an exponent (base 10).
+        Sometimes it makes sense to provide a parameter as an exponent (base 10).
         If the string `'_exp'` is attached to the end of the name in the input
         dictionary, this function can help.
 
