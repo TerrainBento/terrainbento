@@ -78,6 +78,10 @@ class BasicStVs(StochasticErosionModel):
     For information about the stochastic precipitation and runoff model used,
     see the documentation for **BasicSt** and the base class
     **StochasticErosionModel**.
+
+    Note that there is no unique single runoff rate in this model, because
+    runoff rate varies in space. Therefore, the class variable
+    runoff_rate (which contains a single value per event) should be ignored.
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -228,6 +232,8 @@ class BasicStVs(StochasticErosionModel):
         # value when qss and pa are close; make sure these are set to 0
         self.discharge[:] = pa - self.qss
         self.discharge[self.discharge < 0.0] = 0.0
+        
+        return np.nan
 
     def run_one_step(self, dt):
         """
