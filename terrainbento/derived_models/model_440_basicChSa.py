@@ -29,11 +29,11 @@ class BasicChSa(ErosionModel):
     """ **BasicChSa** model program.
 
 
-    **BasicSa** is a model program that explicitly resolves a soil layer. This
+    **BasicChSa** is a model program that explicitly resolves a soil layer. This
     soil layer is produced by weathering that decays exponentially with soil
     thickness and hillslope transport is soil-depth dependent. Given a spatially
     varying soil thickness :math:`H` and a spatially varying bedrock elevation
-    :math:`\eta_b`, model **BasicSa** evolves a topographic surface described by
+    :math:`\eta_b`, model **BasicChSa** evolves a topographic surface described by
     :math:`\eta` with the following governing equations:
 
     .. math::
@@ -52,7 +52,7 @@ class BasicChSa(ErosionModel):
     parameter, :math:`H_s` is the sediment production decay depth, :math:`H_s`
     is the sediment production decay depth, :math:`P_0` is the maximum sediment
     production rate, and :math:`H_0` is the sediment transport decay depth.
-    :math:`q_s` represents the hillslope sediment flux per unit width. :math:`S_c`
+    :math:`q_h` is the hillslope sediment flux per unit width. :math:`S_c`
     is the critical slope parameter and :math:`N` is the number of terms in the
     Taylor Series expansion. Presently :math:`N` is set at 11 and is not a user
     defined parameter.

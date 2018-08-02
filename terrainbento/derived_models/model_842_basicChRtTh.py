@@ -51,8 +51,11 @@ class BasicChRtTh(TwoLithologyErosionModel):
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and dimensions.
+    contact zone and the width of the contact zone. :math:`N` is the number of
+    terms in the Taylor Series expansion. Presently :math:`N` is set at 11 and
+    is not a user defined parameter. Refer to the terrainbento manuscript
+    Table XX (URL here) for parameter symbols, names, and dimensions.
+    
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the

@@ -1,7 +1,7 @@
 # coding: utf8
 #! /usr/env/python
 """
-Base class for common functions of terrainbentostochastic erosion models.
+Base class for common functions of terrainbento stochastic erosion models.
 
 The **StochasticErosionModel** is a base class that contains all of the
 functionality shared by the terrainbento models that use stochastic
@@ -89,9 +89,9 @@ class StochasticErosionModel(ErosionModel):
     This is a base class that handles processes related to the generation of
     preciptiation events.
 
-    It is expected that a derived model will define an ``__init__`` and a
+    It is expected that a derived model will define an **__init__** and a
      **run_one_step** method. If desired, the derived model can overwrite the
-     existing ``run_for``, **run**, and **finalize** methods.
+     existing **run_for**, **run**, and **finalize** methods.
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -190,12 +190,12 @@ class StochasticErosionModel(ErosionModel):
         return runoff
 
     def run_for_stochastic(self, dt, runtime):
-        """Run_for with stochastic duration.
+        """**Run_for** with stochastic duration.
 
         Run model without interruption for a specified time period, using
         random storm/interstorm sequence.
 
-        ``run_for_stochastic`` runs the model for the duration ``runtime`` with
+        **run_for_stochastic** runs the model for the duration ``runtime`` with
         model time steps given by the PrecipitationDistribution component.
         Model run steps will not exceed the duration given by ``dt``.
 

@@ -24,10 +24,9 @@ class BasicThVs(ErosionModel):
     **BasicThVs** is a model program that evolves a topographic surface described
     by :math:`\eta` with the following governing equations:
 
-
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K A_{eff}^{m}S^{n} - \omega_c\left(1-e^{-K_A_{eff}^{m}S^{n}/\omega_c}\\right)\\right) + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(K A_{eff}^{m}S^{n} - \omega_{c}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{c}}\\right)\\right) + D\\nabla^2 \eta
 
         A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
 
@@ -139,7 +138,7 @@ class BasicThVs(ErosionModel):
         )
 
         if float(self.params["n_sp"]) != 1.0:
-            raise ValueError("Model BasicThVs only supports n = 1.")
+            raise ValueError("Model BasicThVs only supports n = 1.")
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
