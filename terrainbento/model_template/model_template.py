@@ -18,6 +18,27 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     """ModelTemplate is a template for making your own terrainbento models.
 
     This is where you will put introductory information about the model.
+
+    You should probably define the governing equation of your model here.
+
+    The **ModelTemplate** program inherits from the terrainbento
+    **ErosionModel** base class. In addition to the parameters required by
+    the base class, models built with this program require the following parameters.
+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability``            |
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+
+    Expand on this table to include all required parameters.
+
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -33,38 +54,6 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
-
-        The **ModelTemplate** program inherits from the terrainbento
-        **ErosionModel** base class. In addition to the parameters required by
-        the base class, models built with this program require the following parameters.
-
-        +------------------+----------------------------------+
-        | Parameter Symbol | Input File Parameter Name        |
-        +==================+==================================+
-        |:math:`m`         | ``m_sp``                         |
-        +------------------+----------------------------------+
-        |:math:`n`         | ``n_sp``                         |
-        +------------------+----------------------------------+
-        |:math:`K`         | ``water_erodability``            |
-        +------------------+----------------------------------+
-        |:math:`D`         | ``regolith_transport_parameter`` |
-        +------------------+----------------------------------+
-
-        Expand on this table to include all required parameters.
-
-        See also
-        --------
-        function_a : description of related function a.
-
-        Notes
-        -----
-        If there are other things you'd like users to know about, consider putting
-        them here.
-
-        References
-        ----------
-        If there are references associated with your model, consider putting them
-        here.
 
         Examples
         --------
