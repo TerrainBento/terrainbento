@@ -139,8 +139,7 @@ class GenericFuncBaselevelHandler(object):
         self._grid = grid
 
         # test the function behaves well
-        function_args = function.__code__.co_varnames
-        if len(function_args) != 2:
+        if function.__code__.co_argcount != 2:
             msg = "GenericFuncBaselevelHandler: function must take only two arguments, grid and t."
             raise ValueError(msg)
 
@@ -148,7 +147,11 @@ class GenericFuncBaselevelHandler(object):
             self._grid, self.model_time
         )
 
-        if test_dzdt.shape != self._grid.x_of_node.shape:
+        if hasattr(test_dzdt, 'shape'):
+            if (test_dzdt.shape != self._grid.x_of_node.shape):
+                msg = "GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)"
+                raise ValueError(msg)
+        else:
             msg = "GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)"
             raise ValueError(msg)
 
