@@ -228,7 +228,7 @@ class BasicStVs(StochasticErosionModel):
         # value when qss and pa are close; make sure these are set to 0
         self.discharge[:] = pa - self.qss
         self.discharge[self.discharge < 0.0] = 0.0
-        
+
         return np.nan
 
     def run_one_step(self, dt):
