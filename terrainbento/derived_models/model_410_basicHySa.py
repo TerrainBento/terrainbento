@@ -38,8 +38,7 @@ class BasicHySa(ErosionModel):
     respectively, :math:`A` is the local drainage area, :math:`S` is the local
     slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`H` is soil depth, :math:`H_*` is the bedrock roughness
-    length scale, :math:`\omega_c` is the critical stream power needed for
-    erosion to occur, :math:`V` is effective sediment settling velocity,
+    length scale, :math:`V` is effective sediment settling velocity,
     :math:`Q_s` is volumetric fluvial sediment flux, :math:`Q` is volumetric
     water discharge, and :math:`\phi` is sediment porosity. Hillslope sediment
     flux per unit width :math:`q_h` is given by:

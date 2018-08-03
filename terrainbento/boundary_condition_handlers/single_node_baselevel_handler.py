@@ -11,12 +11,12 @@ class SingleNodeBaselevelHandler(object):
 
     The **SingleNodeBaselevelHandler** controls the elevation of a single open
     boundary node, referred to here as the *outlet*. The outlet lowering rate is
-    specified either as a constant or through a time or through a textfile that
-    specifies the elevation change through time.
+    specified either as a constant or through a time or through a text file
+    that specifies the elevation change through time.
 
     The **SingleNodeBaselevelHandler** expects that ``topographic__elevation``
-    is a at-node model grid field. It will modify this field and, if it exists,
-    the field ``bedrock__elevation``.
+    is an at-node model grid field. It will modify this field and, if it
+    exists, the field ``bedrock__elevation``.
 
     Note that **SingleNodeBaselevelHandler** increments time at the end of the
     **run_one_step** method.

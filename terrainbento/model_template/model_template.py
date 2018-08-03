@@ -3,6 +3,9 @@ A template for making a derived terrainbento model.
 
 This template shows all of the required parts of a new terrainbento model,
 designed and created by **you**
+
+In this part of the documentation, we make sure to include hyperlinks to all
+landlab components used.
 """
 
 # import any major python libraries needed
@@ -32,6 +35,21 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     3. Description of the governing equation of the model.
 
     4. A table listing the required parameters.
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+
+    |:math:`m`         | ``m_sp``                         |
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    +------------------+----------------------------------+
+    |:math:`K`         | ``water_erodability``            |
+    +------------------+----------------------------------+
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+
+    Expand on this table to include all required parameters.
+
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -48,18 +66,37 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
 
-
         Examples
         --------
-        This is where you can make code examples showing how to use the model you
-        created.
+        This is where you can make code examples showing how to use the model
+        you created. Here we typically put a very short example that shows a
+        minimally complete parameter dictionary for creating an instance of the
+        model.
+
+        Then in unit tests we include all possible analytical solutions and
+        assertion tests needed to verify the model program is working as
+        expected.
+
+        *For example*: This is a minimal example to demonstrate how to
+        construct an instance of model **ModelTemplate**. Note that a YAML input
+        file can be used instead of a parameter dictionary. For more detailed
+        examples, including steady-state test examples, see the terrainbento
+        tutorials.
+
+        To begin, import the model class.
 
         >>> from terrainbento.model_template import ModelTemplate
-        >>> # this is where you'd show how to import and use your model.
-        >>> # these statements get evaluated in testing so its also a way to
-        >>> # show that the model does what you say it will do.
-        >>> # its important to make sure that all lines of your model are tested
-        >>> # either in these docstring tests or in unit test files.
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.}
+
+        Construct the model.
+
+        >>> model = ModelTemplate(params=params)
 
         """
         super(ModelTemplate, self).__init__(

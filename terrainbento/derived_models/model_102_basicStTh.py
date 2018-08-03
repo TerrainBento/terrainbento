@@ -1,36 +1,18 @@
 # coding: utf8
 #! /usr/env/python
 """
-model_102_basicStTh.py: erosion model using a thresholded stream
-power with stochastic rainfall.
+terrainbento **BasicStTh** model program.
 
-Model 102 BasicStTh
+Erosion model program using linear diffusion, smoothly thresholded stream
+power, and stochastic discharge with a smoothed infiltration capacity
+threshold.
 
-The hydrology aspect models discharge and erosion across a topographic
-surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
-flow routing, and (3) Hortonian infiltration model. Includes stream-power
-erosion plus linear diffusion.
-
-The hydrology uses calculation of drainage area using the standard "D8"
-approach (assuming the input grid is a raster; "DN" if not), then modifies it
-by running a lake-filling component. It then iterates through a sequence of
-storm and interstorm periods. Storm depth is drawn at random from a gamma
-distribution, and storm duration from an exponential distribution; storm
-intensity is then depth divided by duration. Given a storm precipitation
-intensity $P$, the runoff production rate $R$ [L/T] is calculated using:
-
-$R = P - I (1 - \exp ( -P / I ))$
-
-where $I$ is the soil infiltration capacity. At the sub-grid scale, soil
-infiltration capacity is assumed to have an exponential distribution of which
-$I$ is the mean. Hence, there are always some spots within any given grid cell
-that will generate runoff. This approach yields a smooth transition from
-near-zero runoff (when $I>>P$) to $R \approx P$ (when $P>>I$), without a
-"hard threshold."
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder`
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    5. `PrecipitationDistribution <http://landlab.readthedocs.io/en/latest/landlab.components.html#landlab.components.PrecipitationDistribution>`_
 """
 
 import numpy as np
@@ -41,12 +23,48 @@ from terrainbento.base_class import StochasticErosionModel
 
 class BasicStTh(StochasticErosionModel):
     """
-    A BasicStTh computes erosion using (1) unit stream
-    power with a threshold, (2) linear nhillslope diffusion, and
-    (3) generation of a random sequence of runoff events across a topographic
-    surface.
+    **BasicStTh** model program.
 
+    **BasicStTh** is a model program that uses a stochastic treatment of runoff
+    and discharge, and includes an erosion threshold in the water erosion law.
+    The model evolves a topographic surface, :math:`\eta (x,y,t)`,
+    with the following governing equation:
 
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -(K_{q}\hat{Q}^{m}S^{n} - \omega_c) + D\\nabla^2 \eta
+
+    where :math:`\hat{Q}` is the local stream discharge (the hat symbol
+    indicates that it is a random-in-time variable) and :math:`S` is the local
+    slope gradient. :math:`m` and :math:`n` are the discharge and slope
+    exponent, respectively, :math:`\omega_c` is the critical stream power
+    required for erosion to occur, and :math:`D` is the regolith transport
+    parameter. Refer to the terrainbento manuscript Table XX (URL here)
+    for parameter symbols, names, and dimensions.
+
+    **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters.
+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_q`       | ``water_erodability~stochastic`` |
+    +------------------+----------------------------------+
+    |:math:`\omega_c`  | ``water_erosion_rule__threshold``|
+    +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
+    |:math:`I_m`       | ``infiltration_capacity``        |
+    +------------------+----------------------------------+
+
+    For information about the stochastic precipitation and runoff model used,
+    see the documentation for **BasicSt** and the base class
+    **StochasticErosionModel**.
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):

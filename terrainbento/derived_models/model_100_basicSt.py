@@ -33,9 +33,9 @@ class BasicSt(StochasticErosionModel):
         \\frac{\partial \eta}{\partial t} = -K_{q}\hat{Q}^{m}S^{n} + D\\nabla^2 \eta
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
-    indicates that it is a random-in-time variable) and :math:`S` is the local
-    slope gradient. Refer to the terrainbento manuscript Table XX (URL here)
-    for parameter symbols, names, and dimensions.
+    indicates that it is a random-in-time variable), :math:`S` is the local
+    slope gradient, :math:`m` and :math:`n` are the discharge and slope
+    exponents, respectively, and :math:`D` is the regolith transport parameter.
 
     **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
     class. In addition to the parameters required by the base class, models
@@ -58,7 +58,7 @@ class BasicSt(StochasticErosionModel):
     Refer to the terrainbento manuscript Table XX (URL here) for full list of
     parameter symbols, names, and dimensions.
 
-    Model BasicSt models discharge and erosion across a topographic
+    Model **BasicSt** models discharge and erosion across a topographic
     surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
     flow routing, and (3) Hortonian infiltration model. Includes stream-power
     erosion plus linear diffusion.
@@ -74,14 +74,15 @@ class BasicSt(StochasticErosionModel):
     overriding the run_for method.
 
     If the user does not request stochastic duration (indicated by setting
-    opt_stochastic_duration to False), then the default (erosion_model base class)
-    run_for method is used. Whenever run_one_step is called, storm intensity is
-    generated at random from an exponential distribution with mean given by the
-    parameter rainfall__mean_rate. The stream power component is run for
-    only a fraction of the time step duration dt, as specified by the parameter
-    rainfall_intermittency_factor. For example, if dt is 10 years and the
-    intermittency factor is 0.25, then the stream power component is run for only
-    2.5 years.
+    ``opt_stochastic_duration`` to ``False``), then the default
+    (**erosion_model** base class) **run_for** method is used. Whenever
+    **run_one_step** is called, storm intensity is generated at random from an
+    exponential distribution with mean given by the parameter
+    ``rainfall__mean_rate``. The stream power component is run for only a
+    fraction of the time step duration dt, as specified by the parameter
+    ``rainfall_intermittency_factor``. For example, if ``dt`` is 10 years and
+    the intermittency factor is 0.25, then the stream power component is run
+    for only 2.5 years.
 
     In either case, given a storm precipitation intensity :math:`P`, the runoff
     production rate :math:`R` [L/T] is calculated using:
@@ -93,8 +94,8 @@ class BasicSt(StochasticErosionModel):
     infiltration capacity is assumed to have an exponential distribution of which
     $I$ is the mean. Hence, there are always some spots within any given grid cell
     that will generate runoff. This approach yields a smooth transition from
-    near-zero runoff (when :math:`I>>P`) to :math:`R \approx P` (when :math`P>>I`),
-    without a "hard threshold."
+    near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P`
+    (when :math`P>>I`), without a "hard threshold."
 
     """
 

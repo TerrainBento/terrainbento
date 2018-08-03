@@ -37,7 +37,7 @@ class BasicCh(ErosionModel):
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`K` is the erodability by water, :math:`D` is the regolith
-    transport efficiency, and :math:`S_c` is the critical slope. :math:`q_s`
+    transport efficiency, and :math:`S_c` is the critical slope. :math:`q_h`
     represents the hillslope sediment flux per unit width. :math:`N` is the
     number of terms in the Taylor Expansion and is set at 11.
 
