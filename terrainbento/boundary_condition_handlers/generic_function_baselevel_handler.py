@@ -7,11 +7,11 @@ class GenericFuncBaselevelHandler(object):
     """Control the elevation of all nodes that are not core nodes.
 
     The **GenericFuncBaselevelHandler** controls the elevation of all nodes on
-    the model grid with ``status != 0`` (core nodes). The elevation change is
-    defined by a generic function of the x and y position across the grid and
-    the model time, t. Thus a user is able to use this single BaselevelHandler
-    object to make many different uplift patterns, including uplift patterns
-    that change as a function of model time.
+    the model grid with ``status != 0`` (i.e., all not-core nodes). The
+    elevation change is defined by a generic function of the x and y position
+    across the grid and the model time, t. Thus a user is able to use this
+    single BaselevelHandler object to make many different uplift patterns,
+    including uplift patterns that change as a function of model time.
 
     Through the parameter ``modify_core_nodes`` the user can determine if the
     core nodes should be moved in the direction (up or down) specified by the
@@ -139,16 +139,17 @@ class GenericFuncBaselevelHandler(object):
         self._grid = grid
 
         # test the function behaves well
-        function_args = function.__code__.co_varnames
-        if len(function_args) != 2:
+        if function.__code__.co_argcount != 2:
             msg = "GenericFuncBaselevelHandler: function must take only two arguments, grid and t."
             raise ValueError(msg)
 
-        test_dzdt = function(
-            self._grid, self.model_time
-        )
+        test_dzdt = function(self._grid, self.model_time)
 
-        if test_dzdt.shape != self._grid.x_of_node.shape:
+        if hasattr(test_dzdt, 'shape'):
+            if (test_dzdt.shape != self._grid.x_of_node.shape):
+                msg = "GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)"
+                raise ValueError(msg)
+        else:
             msg = "GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)"
             raise ValueError(msg)
 
@@ -184,9 +185,7 @@ class GenericFuncBaselevelHandler(object):
             Duration of model time to advance forward.
 
         """
-        self.dzdt = self.function(
-            self._grid, self.model_time
-        )
+        self.dzdt = self.function(self._grid, self.model_time)
 
         # calculate lowering amount and subtract
         self.z[self.nodes_to_lower] += (

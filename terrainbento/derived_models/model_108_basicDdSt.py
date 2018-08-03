@@ -36,14 +36,31 @@ class BasicDdSt(StochasticErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -[K_{q}\hat{Q}^{m}S^{n} - \omega_c(x, y, t)] + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -[K_{q}\hat{Q}^{m}S^{n} - \omega_{ct}\left(1-e^{-K_{q}\hat{Q}^{m}S^{n}/\omega_{ct}}\\right)\\right)] + D\\nabla^2 \eta
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable) and :math:`S` is the local
-    slope gradient. Refer to the terrainbento manuscript Table XX (URL here)
+    slope gradient. :math:`m` and :math:`n` are the discharge and slope
+    exponent, respectively, :math:`\omega_c` is the critical stream power
+    required for erosion to occur, and :math:`D` is the regolith transport
+    parameter.
+
+    :math:`\omega_{ct}` may change through time as it increases with cumulative
+    incision depth:
+
+    .. math::
+
+        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + b D_I\left(x, y, t\\right), \omega_c \\right)
+
+    where :math:`\omega_c` is the threshold when no incision has taken place,
+    :math:`b` is the rate at which the threshold increases with incision depth,
+    and :math:`D_I` is the cumulative incision depth at location
+    :math:`\left(x,y\\right)` and time :math:`t`.
+
+    Refer to the terrainbento manuscript Table XX (URL here)
     for parameter symbols, names, and dimensions.
 
-    **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
+    **BasicDdSt** inherits from the terrainbento **StochasticErosionModel** base
     class. In addition to the parameters required by the base class, models
     built with this program require the following parameters:
 

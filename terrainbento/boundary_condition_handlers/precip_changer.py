@@ -226,9 +226,7 @@ def _scale_fac(pmean, c):
 
 def _check_intermittency_value(rainfall_intermittency_factor):
     """Check that rainfall_intermittency_factor is >= 0 and <=1."""
-    if (rainfall_intermittency_factor < 0.0) or (
-        rainfall_intermittency_factor > 1.0
-    ):
+    if (rainfall_intermittency_factor < 0.0) or (rainfall_intermittency_factor > 1.0):
         raise ValueError(
             (
                 "The PrecipChanger rainfall_intermittency_factor has a "
@@ -291,12 +289,12 @@ class PrecipChanger(object):
         Parameters
         ----------
         grid : landlab model grid
-        rainfall_intermittency_factor : float, optional
-            Starting value of the rainfall rainfall_intermittency_factor :math:`F`. This
+        daily_rainfall_intermittency_factor : float, optional
+            Starting value of the daily rainfall intermittency factor :math:`F`. This
             value is a proportion and ranges from 0 (no rain ever) to 1 (rains
             every day).
-        rainfall_intermittency_factor__time_rate_of_change : float, optional
-            Time rate of change of the rainfall rainfall_intermittency_factor :math:`F`.
+        daily_rainfall_intermittency_factor__time_rate_of_change : float, optional
+            Time rate of change of the daily rainfall intermittency factor :math:`F`.
             Units are implied by the ``time_unit`` argument. Note that this
             factor must always be between 0 and 1.
         rainfall__mean_rate : float, optional
@@ -317,7 +315,7 @@ class PrecipChanger(object):
             Model time at which changing the precipitation should start. Default
             is at the onset of the model run.
         precipchanger_stop_time : float, optional
-            Model Time at which changing the precipitation statistics should end.
+            Model time at which changing the precipitation statistics should end.
             Default is no end time.
         length_factor : float, optional
             terrainbento model internal length factor conversion related to
@@ -330,7 +328,7 @@ class PrecipChanger(object):
         ``rainfall__mean_rate_time_rate_of_change``, and
         ``infiltration_capacity`` are all assumed to be the same.
 
-        The value passed by ``time_unit`` **IS** assumed to be consistent with
+        The value passed by ``time_unit`` is assumed to be consistent with
         the time units of `dt`.
 
         The length units are assumed to be consistent with the model grid
@@ -386,27 +384,29 @@ class PrecipChanger(object):
         1.721
         """
         if daily_rainfall__intermittency_factor is None:
-            msg = 'terrainbento PrecipChanger requires the parameter daily_rainfall__intermittency_factor'
+            msg = "terrainbento PrecipChanger requires the parameter daily_rainfall__intermittency_factor"
             raise ValueError(msg)
 
         if daily_rainfall__intermittency_factor_time_rate_of_change is None:
-            msg = 'terrainbento PrecipChanger requires the parameter daily_rainfall__intermittency_factor_time_rate_of_change'
+            msg = "terrainbento PrecipChanger requires the parameter daily_rainfall__intermittency_factor_time_rate_of_change"
             raise ValueError(msg)
 
         if rainfall__mean_rate is None:
-            msg = 'terrainbento PrecipChanger requires the parameter rainfall__mean_rate'
+            msg = (
+                "terrainbento PrecipChanger requires the parameter rainfall__mean_rate"
+            )
             raise ValueError(msg)
 
         if rainfall__mean_rate_time_rate_of_change is None:
-            msg = 'terrainbento PrecipChanger requires the parameter rainfall__mean_rate_time_rate_of_change'
+            msg = "terrainbento PrecipChanger requires the parameter rainfall__mean_rate_time_rate_of_change"
             raise ValueError(msg)
 
         if rainfall__shape_factor is None:
-            msg = 'terrainbento PrecipChanger requires the parameter rainfall__shape_factor'
+            msg = "terrainbento PrecipChanger requires the parameter rainfall__shape_factor"
             raise ValueError(msg)
 
         if infiltration_capacity is None:
-            msg = 'terrainbento PrecipChanger requires the parameter infiltration_capacity'
+            msg = "terrainbento PrecipChanger requires the parameter infiltration_capacity"
             raise ValueError(msg)
 
         self.model_time = 0.0
@@ -420,22 +420,17 @@ class PrecipChanger(object):
         self.start_time = precipchanger_start_time
 
         self.starting_frac_wet_days = daily_rainfall__intermittency_factor
-        self.frac_wet_days_rate_of_change = daily_rainfall__intermittency_factor_time_rate_of_change
-
-        self.starting_daily_mean_depth = (
-            rainfall__mean_rate * self._length_factor
+        self.frac_wet_days_rate_of_change = (
+            daily_rainfall__intermittency_factor_time_rate_of_change
         )
+
+        self.starting_daily_mean_depth = rainfall__mean_rate * self._length_factor
         self.mean_depth_rate_of_change = (
-            rainfall__mean_rate_time_rate_of_change
-            * self._length_factor
+            rainfall__mean_rate_time_rate_of_change * self._length_factor
         )
 
-        self.rainfall__shape_factor = (
-            rainfall__shape_factor
-        )
-        self.infilt_cap = (
-            infiltration_capacity * self._length_factor
-        )
+        self.rainfall__shape_factor = rainfall__shape_factor
+        self.infilt_cap = infiltration_capacity * self._length_factor
 
         self.m = m_sp
 
@@ -465,20 +460,12 @@ class PrecipChanger(object):
         distribution of daily precipitation intensity at model run onset.
 
         """
-        lam = _scale_fac(
-            self.starting_daily_mean_depth,
-            self.rainfall__shape_factor,
-        )
+        lam = _scale_fac(self.starting_daily_mean_depth, self.rainfall__shape_factor)
         psi, abserror = quad(
             _integrand,
             self.infilt_cap,
             np.inf,
-            args=(
-                self.infilt_cap,
-                lam,
-                self.rainfall__shape_factor,
-                self.m,
-            ),
+            args=(self.infilt_cap, lam, self.rainfall__shape_factor, self.m),
         )
         return psi
 
@@ -541,21 +528,14 @@ class PrecipChanger(object):
             frac_wet, mean_depth = self.get_current_precip_params()
 
             # calculate the mean intensity and the scale factor
-            lam = _scale_fac(
-                mean_depth, self.rainfall__shape_factor
-            )
+            lam = _scale_fac(mean_depth, self.rainfall__shape_factor)
 
             # calculate current value of Psi
             psi, err = quad(
                 _integrand,
                 self.infilt_cap,
                 np.inf,
-                args=(
-                    self.infilt_cap,
-                    lam,
-                    self.rainfall__shape_factor,
-                    self.m,
-                ),
+                args=(self.infilt_cap, lam, self.rainfall__shape_factor, self.m),
             )
 
             # calculate the adjustment factor

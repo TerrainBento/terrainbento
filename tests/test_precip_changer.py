@@ -13,11 +13,11 @@ def test_not_passing_daily_rainfall__intermittency_factor():
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
-            daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            rainfall__mean_rate=3.0 ,
-            rainfall__mean_rate_time_rate_of_change=0.2 ,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.001,
+            rainfall__mean_rate=3.0,
+            rainfall__mean_rate_time_rate_of_change=0.2,
             rainfall__shape_factor=0.65,
-            infiltration_capacity=2.0 ,
+            infiltration_capacity=2.0,
         )
 
 
@@ -27,10 +27,10 @@ def test_not_passing_daily_rainfall__intermittency_factor_time_rate_of_change():
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
-            rainfall__mean_rate=3.0 ,
-            rainfall__mean_rate_time_rate_of_change=0.2 ,
+            rainfall__mean_rate=3.0,
+            rainfall__mean_rate_time_rate_of_change=0.2,
             rainfall__shape_factor=0.65,
-            infiltration_capacity=2.0 ,
+            infiltration_capacity=2.0,
         )
 
 
@@ -40,10 +40,10 @@ def test_not_passing_rainfall__mean_rate():
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
-            daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            rainfall__mean_rate_time_rate_of_change=0.2 ,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.001,
+            rainfall__mean_rate_time_rate_of_change=0.2,
             rainfall__shape_factor=0.65,
-            infiltration_capacity=2.0 ,
+            infiltration_capacity=2.0,
         )
 
 
@@ -53,10 +53,10 @@ def test_not_passing_rainfall__mean_rate_time_rate_of_change():
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
-            daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            rainfall__mean_rate=3.0 ,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.001,
+            rainfall__mean_rate=3.0,
             rainfall__shape_factor=0.65,
-            infiltration_capacity=2.0 ,
+            infiltration_capacity=2.0,
         )
 
 
@@ -66,10 +66,10 @@ def test_not_passing_rainfall__shape_factor():
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
-            daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            rainfall__mean_rate=3.0 ,
-            rainfall__mean_rate_time_rate_of_change=0.2 ,
-            infiltration_capacity=2.0 ,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.001,
+            rainfall__mean_rate=3.0,
+            rainfall__mean_rate_time_rate_of_change=0.2,
+            infiltration_capacity=2.0,
         )
 
 
@@ -79,9 +79,9 @@ def test_not_passing_infiltration_capacity():
         PrecipChanger(
             mg,
             daily_rainfall__intermittency_factor=0.3,
-            daily_rainfall__intermittency_factor_time_rate_of_change=0.001 ,
-            rainfall__mean_rate=3.0 ,
-            rainfall__mean_rate_time_rate_of_change=0.2 ,
+            daily_rainfall__intermittency_factor_time_rate_of_change=0.001,
+            rainfall__mean_rate=3.0,
+            rainfall__mean_rate_time_rate_of_change=0.2,
             rainfall__shape_factor=0.65,
         )
 

@@ -50,7 +50,7 @@ class BasicSa(ErosionModel):
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`K` is the erodability by water, :math:`D` is the regolith transport
-    parameter, :math:`H_s` is the sediment production decay depth, :math:`H_s`
+    parameter, :math:`H` is the regolith thickness, :math:`H_s`
     is the sediment production decay depth, :math:`P_0` is the maximum sediment
     production rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_s`
     represents the hillslope sediment flux per unit width.

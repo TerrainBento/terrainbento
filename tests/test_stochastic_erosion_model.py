@@ -61,7 +61,7 @@ def test_run_stochastic_opt_true():
 
     model = BasicSt(params=params)
     assert model.opt_stochastic_duration == True
-    model.run_for(params['dt'], params['run_duration'])
+    model.run_for(params["dt"], params["run_duration"])
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(decimals=5)
     event_duration = np.asarray(model.rain_record["event_duration"]).round(decimals=5)
@@ -70,10 +70,14 @@ def test_run_stochastic_opt_true():
     wet_times = event_duration[rainfall_rate > 0]
 
     np.testing.assert_almost_equal(
-        np.round(np.mean(dry_times), decimals=1), params["mean_interstorm_duration"], decimal=1
+        np.round(np.mean(dry_times), decimals=1),
+        params["mean_interstorm_duration"],
+        decimal=1,
     )
     np.testing.assert_almost_equal(
-        np.round(np.mean(wet_times), decimals=1), params["mean_storm_duration"], decimal=1
+        np.round(np.mean(wet_times), decimals=1),
+        params["mean_storm_duration"],
+        decimal=1,
     )
 
     avg_storm_depth = np.sum((rainfall_rate * event_duration)) / len(wet_times)
@@ -114,8 +118,7 @@ def test_run_stochastic_opt_false():
 
     assert (
         np.array_equiv(
-            dry_times,
-            params["dt"] * (1. - params["rainfall_intermittency_factor"]),
+            dry_times, params["dt"] * (1. - params["rainfall_intermittency_factor"])
         )
         == True
     )
@@ -285,15 +288,18 @@ def test_run_opt_false_with_changer():
     model.run_for(params["dt"], params["run_duration"])
     assert "PrecipChanger" in model.boundary_handler
 
-    predicted_intermittency = (params["rainfall_intermittency_factor"] +
-                               params["PrecipChanger"]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+    predicted_intermittency = params["rainfall_intermittency_factor"] + params[
+        "PrecipChanger"
+    ]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (
+        params["run_duration"] - params["dt"]
+    )
 
-    predicted_intensity = (params["rainfall__mean_rate"] +
-                               params["PrecipChanger"]["rainfall__mean_rate_time_rate_of_change"] * (params['run_duration']-params["dt"]))
+    predicted_intensity = params["rainfall__mean_rate"] + params["PrecipChanger"][
+        "rainfall__mean_rate_time_rate_of_change"
+    ] * (params["run_duration"] - params["dt"])
 
     assert model.rainfall_intermittency_factor == predicted_intermittency
     assert model.rainfall__mean_rate == predicted_intensity
-
 
 
 def test_opt_dur_true_with_changer():
@@ -303,7 +309,8 @@ def test_opt_dur_true_with_changer():
         "output_interval": 2.,
         "run_duration": 1000.,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults}
+        "PrecipChanger": precip_defaults,
+    }
 
     with pytest.raises(ValueError):
         StochasticErosionModel(params=params)
@@ -453,6 +460,7 @@ def test_finalize_opt_duration_stochastic_true():
     assert filecmp("storm_sequence.txt", truth_file) == True
 
     os.remove("storm_sequence.txt")
+
 
 def test_runoff_equals_zero():
     params = {

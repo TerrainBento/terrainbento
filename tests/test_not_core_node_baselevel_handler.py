@@ -27,7 +27,7 @@ def test_hex():
     not_closed = mg.status_at_node == 0
 
     # closed should have been downdropped 10*0.1
-    assert_array_equal(z[closed], -1.* np.ones(np.sum(closed)))
+    assert_array_equal(z[closed], -1. * np.ones(np.sum(closed)))
 
     # not closed should have stayed the same
     assert_array_equal(z[not_closed], np.zeros(np.sum(not_closed)))

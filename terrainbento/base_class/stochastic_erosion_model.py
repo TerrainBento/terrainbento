@@ -1,7 +1,7 @@
 # coding: utf8
 #! /usr/env/python
 """
-Base class for common functions of terrainbentostochastic erosion models.
+Base class for common functions of terrainbento stochastic erosion models.
 
 The **StochasticErosionModel** is a base class that contains all of the
 functionality shared by the terrainbento models that use stochastic
@@ -89,9 +89,9 @@ class StochasticErosionModel(ErosionModel):
     This is a base class that handles processes related to the generation of
     preciptiation events.
 
-    It is expected that a derived model will define an ``__init__`` and a
+    It is expected that a derived model will define an **__init__** and a
      **run_one_step** method. If desired, the derived model can overwrite the
-     existing ``run_for``, **run**, and **finalize** methods.
+     existing **run_for**, **run**, and **finalize** methods.
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -127,9 +127,11 @@ class StochasticErosionModel(ErosionModel):
 
         # verify that opt_stochastic_duration and PrecipChanger are consistent
         if self.opt_stochastic_duration and ("PrecipChanger" in self.boundary_handler):
-            msg = ("terrainbento StochasticErosionModel: setting "
-                   "opt_stochastic_duration=True and using the PrecipChanger "
-                   "boundary condition handler are not compatible.")
+            msg = (
+                "terrainbento StochasticErosionModel: setting "
+                "opt_stochastic_duration=True and using the PrecipChanger "
+                "boundary condition handler are not compatible."
+            )
             raise ValueError(msg)
 
         self.seed = int(self.params.get("random_seed", 0))
@@ -190,12 +192,12 @@ class StochasticErosionModel(ErosionModel):
         return runoff
 
     def run_for_stochastic(self, dt, runtime):
-        """Run_for with stochastic duration.
+        """**Run_for** with stochastic duration.
 
         Run model without interruption for a specified time period, using
         random storm/interstorm sequence.
 
-        ``run_for_stochastic`` runs the model for the duration ``runtime`` with
+        **run_for_stochastic** runs the model for the duration ``runtime`` with
         model time steps given by the PrecipitationDistribution component.
         Model run steps will not exceed the duration given by ``dt``.
 
@@ -231,9 +233,7 @@ class StochasticErosionModel(ErosionModel):
             rainfall__mean_rate = (self._length_factor) * self.params[
                 "rainfall__mean_rate"
             ]  # has units length per time
-            rainfall_intermittency_factor = self.params[
-                "rainfall_intermittency_factor"
-            ]
+            rainfall_intermittency_factor = self.params["rainfall_intermittency_factor"]
 
             self.rain_generator = PrecipitationDistribution(
                 mean_storm_duration=1.0,
@@ -241,13 +241,9 @@ class StochasticErosionModel(ErosionModel):
                 mean_storm_depth=1.0,
                 random_seed=self.seed,
             )
-            self.rainfall_intermittency_factor = (
-                rainfall_intermittency_factor
-            )
+            self.rainfall_intermittency_factor = rainfall_intermittency_factor
             self.rainfall__mean_rate = rainfall__mean_rate
-            self.shape_factor = self.params[
-                "rainfall__shape_factor"
-            ]
+            self.shape_factor = self.params["rainfall__shape_factor"]
             self.scale_factor = self.rainfall__mean_rate / gamma(
                 1.0 + (1.0 / self.shape_factor)
             )
@@ -509,11 +505,7 @@ class StochasticErosionModel(ErosionModel):
             exceedance_file.write("\n")
 
             exceedance_file.write(
-                (
-                    "This provided value was:\n"
-                    + str(self.rainfall__mean_rate)
-                    + "\n"
-                )
+                ("This provided value was:\n" + str(self.rainfall__mean_rate) + "\n")
             )
 
             # calculate the predictions for 10, 25, and 100 year event based on
