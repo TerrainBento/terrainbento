@@ -5,7 +5,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicCv
-from terrainbento.utilities import precip_defaults#, precip_testing_factor
+from terrainbento.utilities import precip_defaults  # , precip_testing_factor
 
 
 def test_steady_Ksp_with_depression_finding():
@@ -122,7 +122,7 @@ def test_with_precip_changer():
         "n_sp": 1.0,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults
+        "PrecipChanger": precip_defaults,
     }
 
     model = BasicCv(params=params)

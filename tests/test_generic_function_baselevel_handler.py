@@ -25,7 +25,10 @@ def test_function_that_returns_wrong_size():
 
     with pytest.raises(ValueError):
         GenericFuncBaselevelHandler(
-            mg, function=lambda mg, t: np.mean(10 * mg.x_of_node + 10 * mg.y_of_node + 10 * t)
+            mg,
+            function=lambda mg, t: np.mean(
+                10 * mg.x_of_node + 10 * mg.y_of_node + 10 * t
+            ),
         )
 
 def test_function_that_returns_float():

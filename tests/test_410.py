@@ -197,7 +197,7 @@ def test_with_precip_changer():
         "soil_production__decay_depth": soil_production__decay_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults
+        "PrecipChanger": precip_defaults,
     }
 
     model = BasicHySa(params=params)
@@ -208,6 +208,7 @@ def test_with_precip_changer():
     model.run_one_step(1.0)
     assert round(model.eroder.K_sed, 5) == round(K_sed_sp * precip_testing_factor, 5)
     assert round(model.eroder.K_br, 5) == round(K_rock_sp * precip_testing_factor, 5)
+
 
 def test_stability_checker():
     U = 0.0001

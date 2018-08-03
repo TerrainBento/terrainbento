@@ -1,4 +1,5 @@
-"""A template for making a derived terrainbento model.
+"""
+A template for making a derived terrainbento model.
 
 This template shows all of the required parts of a new terrainbento model,
 designed and created by **you**
@@ -17,28 +18,35 @@ from terrainbento.base_class import ErosionModel
 
 
 class ModelTemplate(ErosionModel):  # The model must inherit from either
-    # ErosionModel or StochasticErosionModel
-    """ModelTemplate is a template for making your own terrainbento models.
+    # ErosionModel, StochasticErosionModel, or TwoLithologyErosionModel
+    """
+    ModelTemplate is a template for making your own terrainbento models.
 
-    This is where you will put introductory information about the model.
+    This is where you will put introductory information about the model. We
+    recommend that you start from an existing terrainbento model's docstring
+    and modify to preserve a somewhat standard style.
 
-    You should probably define the governing equation of your model here.
+    The docstring should have:
 
-    The **ModelTemplate** program inherits from the terrainbento
-    **ErosionModel** base class. In addition to the parameters required by
-    the base class, models built with this program require the following parameters.
+    1. A brief description of the model.
 
+    2. Links to all landlab components used.
+
+    3. Description of the governing equation of the model.
+
+    4. A table listing the required parameters.
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |
     +==================+==================================+
+
     |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
     |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
     +------------------+----------------------------------+
     |:math:`K`         | ``water_erodability``            |
     +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
     +------------------+----------------------------------+
+    |:math:`D`         | ``regolith_transport_parameter`` |
 
     Expand on this table to include all required parameters.
 
