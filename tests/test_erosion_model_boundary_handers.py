@@ -18,9 +18,15 @@ from terrainbento.boundary_condition_handlers import (
 
 
 def test_bad_boundary_condition_string():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10., 'BoundaryHandlers':"spam"}
+    params = {
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+        "BoundaryHandlers": "spam",
+    }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
+
 
 def test_boundary_condition_handler_with_special_part_of_params():
     U = 0.0001
@@ -54,6 +60,7 @@ def test_boundary_condition_handler_with_special_part_of_params():
     assert bh.lowering_rate == -U
     assert bh.prefactor == -1
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
+
 
 def test_boundary_condition_handler_with_bad_special_part_of_params():
     params = {
@@ -159,6 +166,7 @@ def test_pass_two_boundary_handlers():
     truth[model.grid.core_nodes] += U
     assert_array_equal(model.z, truth)
 
+
 def test_generic_bch():
     K = 0.001
     m = 1. / 3.
@@ -180,7 +188,10 @@ def test_generic_bch():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "GenericFuncBaselevelHandler",
-        "GenericFuncBaselevelHandler": {"modify_core_nodes": True, "function": lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0*t))} , # returns a rate in meters/year
+        "GenericFuncBaselevelHandler": {
+            "modify_core_nodes": True,
+            "function": lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0 * t)),
+        },  # returns a rate in meters/year
     }
     model = Basic(params=params)
     bh = model.boundary_handler["GenericFuncBaselevelHandler"]
@@ -195,6 +206,7 @@ def test_generic_bch():
     dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
     truth_z = -1. * dzdt * dt
     assert_array_equal(model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes])
+
 
 def test_capture_node():
     K = 0.001
@@ -217,11 +229,13 @@ def test_capture_node():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "CaptureNodeBaselevelHandler",
-        "CaptureNodeBaselevelHandler": {"capture_node": 1,
-                                        "capture_incision_rate": -3.0,
-                                        "capture_start_time": 10,
-                                        "capture_stop_time": 20,
-                                        "post_capture_incision_rate":-0.1} , # returns a rate in meters/year
+        "CaptureNodeBaselevelHandler": {
+            "capture_node": 1,
+            "capture_incision_rate": -3.0,
+            "capture_start_time": 10,
+            "capture_stop_time": 20,
+            "post_capture_incision_rate": -0.1,
+        },  # returns a rate in meters/year
     }
 
     model = Basic(params=params)

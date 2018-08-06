@@ -44,8 +44,8 @@ class BasicDdSt(StochasticErosionModel):
     exponent, respectively, :math:`\omega_c` is the critical stream power
     required for erosion to occur, and :math:`D` is the regolith transport
     parameter.
-    
-        :math:`\omega_{ct}` may change through time as it increases with cumulative
+
+    :math:`\omega_{ct}` may change through time as it increases with cumulative
     incision depth:
 
     .. math::
@@ -56,7 +56,7 @@ class BasicDdSt(StochasticErosionModel):
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
-    
+
     Refer to the terrainbento manuscript Table XX (URL here)
     for parameter symbols, names, and dimensions.
 

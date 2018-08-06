@@ -2,20 +2,58 @@ import os
 import numpy as np
 import glob
 
+import pytest
+
 from numpy.testing import assert_equal, assert_array_almost_equal
 
-from terrainbento import BasicHySt
+from terrainbento import BasicStVs
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
+
+def test_bad_transmiss():
+    """Test steady profile solution with fixed duration.
+    """
+    K = 0.001
+    H0 = 0.0
+    Ks = 0.0
+    m = 1.0
+    n = 1.0
+
+    # construct dictionary. note that D is turned off here
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 6,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability~stochastic": K,
+        "m_sp": m,
+        "n_sp": n,
+        "soil__initial_thickness": H0,
+        "hydraulic_conductivity": Ks,
+        "number_of_sub_time_steps": 100,
+        "rainfall_intermittency_factor": 1.0,
+        "rainfall__mean_rate": 1.0,
+        "rainfall__shape_factor": 1.0,
+    }
+
+    with pytest.raises(ValueError):
+        BasicStVs(params=params)
 
 def test_steady_without_stochastic_duration():
     """Test steady profile solution with fixed duration.
     """
     U = 0.0001
     K = 0.001
-    vs = 1.0e-9
+    H0 = 1.0e-9
+    Ks = 1.0e-9
     m = 1.0
     n = 1.0
     dt = 1.0
@@ -33,13 +71,11 @@ def test_steady_without_stochastic_duration():
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
         "water_erodability~stochastic": K,
-        "v_s": vs,
-        "fraction_fines": 1.0,
-        "sediment_porosity": 0.0,
         "m_sp": m,
         "n_sp": n,
+        "soil__initial_thickness": H0,
+        "hydraulic_conductivity": Ks,
         "number_of_sub_time_steps": 100,
-        "infiltration_capacity": 1.0,
         "rainfall_intermittency_factor": 1.0,
         "rainfall__mean_rate": 1.0,
         "rainfall__shape_factor": 1.0,
@@ -49,7 +85,7 @@ def test_steady_without_stochastic_duration():
     }
 
     # construct and run model
-    model = BasicHySt(params=params)
+    model = BasicStVs(params=params)
     for _ in range(100):
         model.run_one_step(dt)
 
@@ -57,7 +93,7 @@ def test_steady_without_stochastic_duration():
     ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"][ic]
     actual_areas = model.grid.at_node["drainage_area"][ic]
-    predicted_slopes = (2 * U / (K * (actual_areas ** m))) ** (1. / n)
+    predicted_slopes = (U / (K * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(actual_slopes, predicted_slopes)
@@ -70,7 +106,8 @@ def test_stochastic_duration_rainfall_means():
     """
     U = 0.0001
     K = 0.0001
-    vs = 1.0e-9
+    H0 = 0.01
+    Ks = 1.0e-9
     m = 1.0
     n = 1.0
     dt = 200.0
@@ -88,16 +125,14 @@ def test_stochastic_duration_rainfall_means():
         "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
         "water_erodability~stochastic": K,
-        "v_s": vs,
-        "fraction_fines": 1.0,
-        "sediment_porosity": 0.0,
+        "soil__initial_thickness": H0,
+        "hydraulic_conductivity": Ks,
         "m_sp": m,
         "n_sp": n,
         "opt_stochastic_duration": True,
         "record_rain": True,
         "mean_storm_duration": 1.0,
         "mean_interstorm_duration": 1.0,
-        "infiltration_capacity": 1.0,
         "random_seed": 3141,
         "mean_storm_depth": 1.0,
         "depression_finder": "DepressionFinderAndRouter",
@@ -106,7 +141,7 @@ def test_stochastic_duration_rainfall_means():
     }
 
     # construct and run model
-    model = BasicHySt(params=params)
+    model = BasicStVs(params=params)
     model.run()
 
     cum_rain_depth = np.sum(
@@ -125,7 +160,8 @@ def test_diffusion_only():
     total_time = 5.0e6
     U = 0.001
     D = 1
-    vs = 1.0e-9
+    H0 = 0.01
+    Ks = 1.0e-9
     m = 0.75
     n = 1.0
     dt = 1000
@@ -144,13 +180,11 @@ def test_diffusion_only():
         "south_boundary_closed": True,
         "regolith_transport_parameter": D,
         "water_erodability~stochastic": 0.0,
-        "v_s": vs,
-        "fraction_fines": 1.0,
-        "sediment_porosity": 0.5,
+        "soil__initial_thickness": H0,
+        "hydraulic_conductivity": Ks,
         "m_sp": m,
         "n_sp": n,
         "number_of_sub_time_steps": 100,
-        "infiltration_capacity": 1.0,
         "rainfall_intermittency_factor": 1.0,
         "rainfall__mean_rate": 1.0,
         "rainfall__shape_factor": 1.0,
@@ -162,7 +196,7 @@ def test_diffusion_only():
 
     reference_node = 9
     # construct and run model
-    model = BasicHySt(params=params)
+    model = BasicStVs(params=params)
     for _ in range(nts):
         model.run_one_step(dt)
 

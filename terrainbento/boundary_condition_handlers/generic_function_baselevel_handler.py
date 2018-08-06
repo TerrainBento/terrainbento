@@ -143,12 +143,10 @@ class GenericFuncBaselevelHandler(object):
             msg = "GenericFuncBaselevelHandler: function must take only two arguments, grid and t."
             raise ValueError(msg)
 
-        test_dzdt = function(
-            self._grid, self.model_time
-        )
+        test_dzdt = function(self._grid, self.model_time)
 
-        if hasattr(test_dzdt, 'shape'):
-            if (test_dzdt.shape != self._grid.x_of_node.shape):
+        if hasattr(test_dzdt, "shape"):
+            if test_dzdt.shape != self._grid.x_of_node.shape:
                 msg = "GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)"
                 raise ValueError(msg)
         else:
@@ -187,9 +185,7 @@ class GenericFuncBaselevelHandler(object):
             Duration of model time to advance forward.
 
         """
-        self.dzdt = self.function(
-            self._grid, self.model_time
-        )
+        self.dzdt = self.function(self._grid, self.model_time)
 
         # calculate lowering amount and subtract
         self.z[self.nodes_to_lower] += (

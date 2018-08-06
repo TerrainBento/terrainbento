@@ -1,7 +1,7 @@
 # coding: utf8
 #! /usr/env/python
 """
-Base class for common functions of terrainbentostochastic erosion models.
+Base class for common functions of terrainbento models with two lithologies.
 
 The **TwoLithologyErosionModel** is a base class that contains all of the
 functionality shared by the terrainbento models that have two lithologies.
@@ -20,6 +20,18 @@ class TwoLithologyErosionModel(ErosionModel):
 
     This is a base class that handles setting up common parameters and the
     contact zone elevation.
+
+    *Specifying the Lithology Contact*
+
+    In all two-lithology models the spatially variable elevation of the contact
+    elevation must be given as the file path to an ESRII ASCII format file using
+    the parameter ``lithology_contact_elevation__file_name``. If topography was
+    created using an input DEM, then the shape of the field contained in the
+    file must be the same as the input DEM. If synthetic topography is used then
+    the shape of the field must be ``number_of_node_rows-2`` by
+    ``number_of_node_columns-2``. This is because the read-in DEM will be padded
+    by a halo of size 1.
+
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
