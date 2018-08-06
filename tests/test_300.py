@@ -15,13 +15,11 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 def test_bad_transmiss():
     """Test steady profile solution with fixed duration.
     """
-    U = 0.0001
     K = 0.001
     H0 = 0.0
     Ks = 0.0
     m = 1.0
     n = 1.0
-    dt = 1.0
 
     # construct dictionary. note that D is turned off here
     params = {
