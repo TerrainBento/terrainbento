@@ -42,13 +42,13 @@ class BasicStVs(StochasticErosionModel):
     indicates that it is a random-in-time variable) and :math:`S` is the local
     slope gradient. Refer to the terrainbento manuscript Table XX (URL here)
     for parameter symbols, names, and dimensions.
-    
+
     This model iterates through a sequence of storm and interstorm periods.
     Given a storm precipitation intensity $P$, the discharge $Q$ [L$^3$/T]
     is calculated using:
 
     .. math::
-        
+
         Q = PA - T\lambda S [1 - \exp (-PA/T\lambda S) ]
 
     where :math:`T = K_sH` is the soil transmissivity, :math:`H` is soil
