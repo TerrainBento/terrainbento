@@ -2,6 +2,8 @@ import os
 import numpy as np
 import glob
 
+import pytest
+
 from numpy.testing import assert_equal, assert_array_almost_equal
 
 from terrainbento import BasicStVs
@@ -9,6 +11,43 @@ from terrainbento import BasicStVs
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
+
+def test_bad_transmiss():
+    """Test steady profile solution with fixed duration.
+    """
+    U = 0.0001
+    K = 0.001
+    H0 = 0.0
+    Ks = 0.0
+    m = 1.0
+    n = 1.0
+    dt = 1.0
+
+    # construct dictionary. note that D is turned off here
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 6,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability~stochastic": K,
+        "m_sp": m,
+        "n_sp": n,
+        "soil__initial_thickness": H0,
+        "hydraulic_conductivity": Ks,
+        "number_of_sub_time_steps": 100,
+        "rainfall_intermittency_factor": 1.0,
+        "rainfall__mean_rate": 1.0,
+        "rainfall__shape_factor": 1.0,
+    }
+
+    with pytest.raises(ValueError):
+        BasicStVs(params=params)
 
 def test_steady_without_stochastic_duration():
     """Test steady profile solution with fixed duration.
