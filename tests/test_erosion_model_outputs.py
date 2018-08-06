@@ -50,6 +50,7 @@ def test_write_synthesis_netcdf():
     fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs_for_nc.txt")
     truth = os.path.join(_TEST_DATA_DIR, "truth.nc" )
     model = Basic(input_file=fp)
+    model._out_file_name = "tb_synth_output"
     model.run()
 
     ds = model.to_xarray_dataset(time_unit='years', space_unit='meter')
@@ -77,6 +78,7 @@ def test_write_synthesis_netcdf_one_field():
     fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
     truth = os.path.join(_TEST_DATA_DIR, "truth_one_field.nc" )
     model = Basic(input_file=fp)
+    model._out_file_name = "tb_synth_output_one_field"
     model.run(output_fields="topographic__elevation")
 
     ds = model.to_xarray_dataset(time_unit='years', space_unit='meter')
