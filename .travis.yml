@@ -41,14 +41,16 @@ install:
 - curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
 - bash $HOME/minconda.sh -b -p $CONDA_PREFIX
 - export PATH="$CONDA_PREFIX/bin:$PATH"
-- conda update --yes -n base conda
-- pip install --upgrade pip
-- pip install pytest
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
-- conda create -n _testing python=$TRAVIS_PYTHON_VERSION
-- source activate _testing
+- conda update -q conda
+  # Useful for debugging any issues with conda
+- conda info -a
+- conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
+- source activate test-environment
 - conda install -q conda-build=3.0 anaconda-client coverage coveralls sphinx pytest pytest-cov
+- pip install --upgrade pip
+- pip install pytest
 - pip install codacy-coverage
 - conda info -a && conda list
 - conda config --add channels landlab
