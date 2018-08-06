@@ -66,6 +66,9 @@ def test_write_synthesis_netcdf():
     assert truth.equals(output) == True
     assert truth.equals(ds) == True
 
+    output.close()
+    truth.close()
+
     model.remove_output_netcdfs()
     os.remove(out_fn)
 
@@ -89,6 +92,9 @@ def test_write_synthesis_netcdf_one_field():
 
     assert truth.equals(output) == True
     assert truth.equals(ds) == True
+
+    output.close()
+    truth.close()
 
     model.remove_output_netcdfs()
     os.remove(out_fn)
