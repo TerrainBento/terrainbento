@@ -42,13 +42,20 @@ install:
 - bash $HOME/minconda.sh -b -p $CONDA_PREFIX
 - export PATH="$CONDA_PREFIX/bin:$PATH"
 - hash -r
+- conda info
 - conda config --set always_yes yes --set changeps1 no
 - conda update -q conda
   # Useful for debugging any issues with conda
-- conda info -a
 - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
 - source activate test-environment
-- conda install -q conda-build=3.0 anaconda-client coverage coveralls sphinx pytest pytest-cov
+- conda install -q conda-build=3.0
+- conda install -q anaconda-client
+- conda install -q numpy=1.11
+- conda install -q coverage
+- conda install -q coveralls
+- conda install -q sphinx
+- conda install -q pytest
+- conda install -q pytest-cov
 - pip install --upgrade pip
 - pip install pytest
 - pip install codacy-coverage
