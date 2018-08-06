@@ -70,7 +70,7 @@ def test_write_synthesis_netcdf():
     os.remove(out_fn)
 
 
-def test_write_synthesis_netcdf():
+def test_write_synthesis_netcdf_one_field():
     fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
     truth = os.path.join(_TEST_DATA_DIR, "truth_one_field.nc" )
     model = Basic(input_file=fp)
