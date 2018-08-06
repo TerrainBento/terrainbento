@@ -41,6 +41,7 @@ os: Previous Visual Studio 2015
 init:
   - "ECHO %CONDA_INSTALL_LOCN% %CONDA_PY% %HOME% %PLATFORM%"
   - "ECHO %APPVEYOR_REPO_BRANCH%"
+  - "ECHO %WITH_COMPILER%"
 
 
 install:
