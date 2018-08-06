@@ -83,7 +83,6 @@ MOCK_MODULES = [
 ]
 
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-sys.modules.update((mod_name, MockTest()) for mod_name in TEST_MOCK_MODULES)
 
 import terrainbento
 
