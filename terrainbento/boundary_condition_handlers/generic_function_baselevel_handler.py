@@ -145,8 +145,8 @@ class GenericFuncBaselevelHandler(object):
 
         test_dzdt = function(self._grid, self.model_time)
 
-        if hasattr(test_dzdt, 'shape'):
-            if (test_dzdt.shape != self._grid.x_of_node.shape):
+        if hasattr(test_dzdt, "shape"):
+            if test_dzdt.shape != self._grid.x_of_node.shape:
                 msg = "GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)"
                 raise ValueError(msg)
         else:

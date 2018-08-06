@@ -7,7 +7,7 @@ from numpy.testing import assert_equal, assert_array_almost_equal
 from terrainbento import BasicStTh
 
 
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_steady_without_stochastic_duration():
@@ -69,29 +69,30 @@ def test_steady_without_stochastic_duration():
     dt = 1.0
 
     # construct dictionary. note that D is turned off here
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              'number_of_node_rows' : 3,
-              'number_of_node_columns' : 6,
-              'node_spacing' : 100.0,
-              'north_boundary_closed': True,
-              'south_boundary_closed': True,
-              'regolith_transport_parameter': 0.,
-              'water_erodability~stochastic': K,
-              'water_erosion_rule__threshold': thresh,
-              'm_sp': m,
-              'n_sp': n,
-              'number_of_sub_time_steps': 100,
-              'infiltration_capacity': 1.0,
-              'rainfall_intermittency_factor': 1.0,
-              'rainfall__mean_rate': 1.0,
-              'rainfall__shape_factor': 1.0,
-              'random_seed': 3141,
-              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-                                              'lowering_rate': -U}}
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 6,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability~stochastic": K,
+        "water_erosion_rule__threshold": thresh,
+        "m_sp": m,
+        "n_sp": n,
+        "number_of_sub_time_steps": 100,
+        "infiltration_capacity": 1.0,
+        "rainfall_intermittency_factor": 1.0,
+        "rainfall__mean_rate": 1.0,
+        "rainfall__shape_factor": 1.0,
+        "random_seed": 3141,
+        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+    }
 
     # construct and run model
     model = BasicStTh(params=params)
@@ -100,9 +101,9 @@ def test_steady_without_stochastic_duration():
 
     # construct actual and predicted slopes
     ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
-    actual_slopes = model.grid.at_node['topographic__steepest_slope'][ic]
-    actual_areas = model.grid.at_node['drainage_area'][ic]
-    predicted_slopes = (2 * U/(K * (actual_areas**m))) ** (1./n)
+    actual_slopes = model.grid.at_node["topographic__steepest_slope"][ic]
+    actual_areas = model.grid.at_node["drainage_area"][ic]
+    predicted_slopes = (2 * U / (K * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(actual_slopes, predicted_slopes)
@@ -121,38 +122,41 @@ def test_stochastic_duration_rainfall_means():
     dt = 200.0
 
     # construct dictionary. note that D is turned off here
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': dt,
-              'output_interval': 401.,
-              'run_duration': 400.,
-              'number_of_node_rows' : 3,
-              'number_of_node_columns' : 6,
-              'node_spacing' : 100.0,
-              'north_boundary_closed': True,
-              'south_boundary_closed': True,
-              'regolith_transport_parameter': 0.,
-              'water_erodability~stochastic': K,
-              'water_erosion_rule__threshold': thresh,
-              'm_sp': m,
-              'n_sp': n,
-              'opt_stochastic_duration': True,
-              'record_rain': True,
-              'mean_storm_duration': 1.0,
-              'mean_interstorm_duration': 1.0,
-              'infiltration_capacity': 1.0,
-              'random_seed': 3141,
-              'mean_storm_depth': 1.0,
-              'depression_finder': 'DepressionFinderAndRouter',
-              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-                                              'lowering_rate': -U}}
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": dt,
+        "output_interval": 401.,
+        "run_duration": 400.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 6,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": 0.,
+        "water_erodability~stochastic": K,
+        "water_erosion_rule__threshold": thresh,
+        "m_sp": m,
+        "n_sp": n,
+        "opt_stochastic_duration": True,
+        "record_rain": True,
+        "mean_storm_duration": 1.0,
+        "mean_interstorm_duration": 1.0,
+        "infiltration_capacity": 1.0,
+        "random_seed": 3141,
+        "mean_storm_depth": 1.0,
+        "depression_finder": "DepressionFinderAndRouter",
+        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+    }
 
     # construct and run model
     model = BasicStTh(params=params)
     model.run()
 
-    cum_rain_depth =  np.sum(np.array(model.rain_record['event_duration'])
-                             * np.array( model.rain_record['rainfall_rate']))
+    cum_rain_depth = np.sum(
+        np.array(model.rain_record["event_duration"])
+        * np.array(model.rain_record["rainfall_rate"])
+    )
     assert_equal(np.round(cum_rain_depth), 200.0)
 
     os.remove("storm_sequence.txt")
@@ -170,31 +174,32 @@ def test_diffusion_only():
     dt = 1000
 
     # construct dictionary. note that D is turned off here
-    params = {'model_grid': 'RasterModelGrid',
-              'dt': 1,
-              'output_interval': 2.,
-              'run_duration': 200.,
-              'number_of_node_rows' : 3,
-              'number_of_node_columns' : 21,
-              'node_spacing' : 100.0,
-              'north_boundary_closed': True,
-              'west_boundary_closed': False,
-              'south_boundary_closed': True,
-              'regolith_transport_parameter': D,
-              'water_erodability~stochastic': 0.0,
-              'water_erosion_rule__threshold': 1.0e-9,
-              'm_sp': m,
-              'n_sp': n,
-              'number_of_sub_time_steps': 100,
-              'infiltration_capacity': 1.0,
-              'rainfall_intermittency_factor': 1.0,
-              'rainfall__mean_rate': 1.0,
-              'rainfall__shape_factor': 1.0,
-              'random_seed': 3141,
-              'BoundaryHandlers': 'NotCoreNodeBaselevelHandler',
-              'NotCoreNodeBaselevelHandler': {'modify_core_nodes': True,
-                                              'lowering_rate': -U}}
-    nts = int(total_time/dt)
+    params = {
+        "model_grid": "RasterModelGrid",
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 200.,
+        "number_of_node_rows": 3,
+        "number_of_node_columns": 21,
+        "node_spacing": 100.0,
+        "north_boundary_closed": True,
+        "west_boundary_closed": False,
+        "south_boundary_closed": True,
+        "regolith_transport_parameter": D,
+        "water_erodability~stochastic": 0.0,
+        "water_erosion_rule__threshold": 1.0e-9,
+        "m_sp": m,
+        "n_sp": n,
+        "number_of_sub_time_steps": 100,
+        "infiltration_capacity": 1.0,
+        "rainfall_intermittency_factor": 1.0,
+        "rainfall__mean_rate": 1.0,
+        "rainfall__shape_factor": 1.0,
+        "random_seed": 3141,
+        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+    }
+    nts = int(total_time / dt)
 
     reference_node = 9
     # construct and run model
@@ -202,11 +207,15 @@ def test_diffusion_only():
     for _ in range(nts):
         model.run_one_step(dt)
 
-
-    predicted_z = (model.z[model.grid.core_nodes[reference_node]]-(U / (2. * D)) *
-               ((model.grid.x_of_node - model.grid.x_of_node[model.grid.core_nodes[reference_node]])**2))
+    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
+        (
+            model.grid.x_of_node
+            - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
+        )
+        ** 2
+    )
 
     # assert actual and predicted elevations are the same.
-    assert_array_almost_equal(predicted_z[model.grid.core_nodes],
-                              model.z[model.grid.core_nodes],
-                              decimal=2)
+    assert_array_almost_equal(
+        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+    )
