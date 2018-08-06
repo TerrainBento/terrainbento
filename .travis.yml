@@ -48,6 +48,7 @@ install:
   # Useful for debugging any issues with conda
 - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
 - source activate test-environment
+- conda install -q conda-build
 - conda install -q anaconda-client
 - conda install -q numpy=1.11
 - conda install -q coverage
