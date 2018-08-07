@@ -1,25 +1,18 @@
 # coding: utf8
 #! /usr/env/python
 """
-model_300_basicStVs.py: models discharge and erosion across a topographic
-surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
-flow routing, and (3) a variable-source-area (VSA) runoff-generation model.
+terrainbento Model **BasicStVs** program.
 
-Model 300 BasicStVs
+Erosion model program using linear diffusion and stream power. Precipitation is
+modeled as a stochastic process. Discharge is calculated from precipitation
+using a simple variable source-area formulation.
 
-This model combines linear diffusion and basic stream power with stochastic
-variable source area (VSA) hydrology. It inherits from the ErosionModel
-class. It calculates drainage area using the standard "D8" approach (assuming
-the input grid is a raster; "DN" if not), then modifies it by running a
-lake-filling component. It then iterates through a sequence of storm and
-interstorm periods. Storm depth is drawn at random from a gamma distribution,
-and storm duration from an exponential distribution; storm intensity is then
-depth divided by duration. Given a storm precipitation intensity $P$, the
-discharge $Q$ [L$^3$/T] is calculated using:
-
-$Q = PA - T\lambda S [1 - \exp (-PA/T\lambda S) ]$
-
-where $T$ is the soil transmissivity and $\lambda$ is cell width.
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    5. `PrecipitationDistribution <http://landlab.readthedocs.io/en/latest/landlab.components.html#landlab.components.PrecipitationDistribution>`_
 
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
 PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
@@ -34,25 +27,137 @@ from terrainbento.base_class import StochasticErosionModel
 
 class BasicStVs(StochasticErosionModel):
     """
-    A BasicStVs generates a random sequency of
-    runoff events across a topographic surface, calculating the resulting
-    water discharge at each node.
+    **BasicStVs** model program.
+
+    **BasicStVs** is a model program that uses a stochastic treatment of runoff
+    and discharge, using a variable source area runoff generation model.
+    THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
+    with the following governing equation:
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -K_{q}\hat{Q}^{m}S^{n} + D\\nabla^2 \eta
+
+    where :math:`\hat{Q}` is the local stream discharge (the hat symbol
+    indicates that it is a random-in-time variable) and :math:`S` is the local
+    slope gradient. Refer to the terrainbento manuscript Table XX (URL here)
+    for parameter symbols, names, and dimensions.
+
+    This model iterates through a sequence of storm and interstorm periods.
+    Given a storm precipitation intensity $P$, the discharge $Q$ [L$^3$/T]
+    is calculated using:
+
+    .. math::
+
+        Q = PA - T\lambda S [1 - \exp (-PA/T\lambda S) ]
+
+    where :math:`T = K_sH` is the soil transmissivity, :math:`H` is soil
+    thickness, :math:`K_s` is hydraulic conductivity, and :math:`\lambda` is
+    cell width.
+
+    **BasicStVs** inherits from the terrainbento **StochasticErosionModel**
+    base class. In addition to the parameters required by the base class,
+    models built with this program require the following parameters:
+
+    +------------------+----------------------------------+
+    | Parameter Symbol | Input File Parameter Name        |
+    +==================+==================================+
+    |:math:`m`         | ``m_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
+    +------------------+----------------------------------+
+    |:math:`K_q`       | ``water_erodability~stochastic`` |
+    +------------------+----------------------------------+
+    |:math:`H`         | ``soil__initial_thickness``      |
+    +------------------+----------------------------------+
+    |:math:`H`         | ``soil__initial_thickness``      |
+    +------------------+----------------------------------+
+    |:math:`K_s`       | ``hydraulic_conductivity``       |
+    +------------------+----------------------------------+
+
+    For information about the stochastic precipitation and runoff model used,
+    see the documentation for **BasicSt** and the base class
+    **StochasticErosionModel**.
+
+    Note that there is no unique single runoff rate in this model, because
+    runoff rate varies in space. Therefore, the class variable
+    runoff_rate (which contains a single value per event) should be ignored.
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
-        """Initialize the StochasticDischargeHortonianModel."""
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
 
+        Returns
+        -------
+        BasicStVs : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicStVs**. Note that a YAML input file can be used instead
+        of a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicStVs
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability~stochastic': 0.001,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'opt_stochastic_duration': False,
+        ...           'number_of_sub_time_steps': 1,
+        ...           'rainfall_intermittency_factor': 0.5,
+        ...           'rainfall__mean_rate': 1.0,
+        ...           'rainfall__shape_factor': 1.0,
+        ...           'infiltration_capacity': 1.0,
+        ...           'random_seed': 0,
+        ...           'soil__initial_thickness': 2.0,
+        ...           'hydraulic_conductivity': 0.1}
+
+        Construct the model.
+
+        >>> model = BasicStVs(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
         # Call ErosionModel's init
         super(BasicStVs, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+            self._length_factor ** ((3. * self.m) - 1)
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -94,11 +199,7 @@ class BasicStVs(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid,
-            use_Q=self.discharge,
-            K_sp=K_sp,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
+            self.grid, use_Q=self.discharge, K_sp=self.K, m_sp=self.m, n_sp=self.m
         )
 
         # Instantiate a LinearDiffuser component
@@ -127,6 +228,8 @@ class BasicStVs(StochasticErosionModel):
         # value when qss and pa are close; make sure these are set to 0
         self.discharge[:] = pa - self.qss
         self.discharge[self.discharge < 0.0] = 0.0
+
+        return np.nan
 
     def run_one_step(self, dt):
         """

@@ -25,10 +25,11 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicSaVs(ErosionModel):
-    """**BasicVs** model program.
+    """**BasicSaVs** model program.
 
-    **BasicVs** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equations:
+    Given a spatially varying soil thickness :math:`H` and a spatially varying
+    bedrock elevation :math:`\eta_b`, model **BasicSaVs** evolves a topographic
+    surface described by :math:`\eta` with the following governing equations:
 
 
     .. math::
@@ -49,17 +50,17 @@ class BasicSaVs(ErosionModel):
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`K` is the erodability by water, :math:`D` is the regolith transport
-    parameter :math:`H_s` is the sediment production decay depth, :math:`H_s`
-    is the sediment production decay depth, :math:`P_0` is the maximum sediment
-    production rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_s`
-    represents the hillslope sediment flux per unit width.
+    parameter, :math:`H_s` is the sediment production decay depth, :math:`H_0`
+    is the sediment transport decay depth, :math:`P_0` is the maximum sediment
+    production rate, and :math:`H_0` is the sediment transport decay depth.
+    :math:`q_h` is the hillslope sediment flux per unit width.
 
     :math:`\\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
     hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
     the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
-    The **BasicVs** program inherits from the terrainbento **ErosionModel** base
+    The **BasicSaVs** program inherits from the terrainbento **ErosionModel** base
     class. In addition to the parameters required by the base class, models
     built with this program require the following parameters.
 
@@ -94,9 +95,7 @@ class BasicSaVs(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -106,9 +105,6 @@ class BasicSaVs(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -163,10 +159,7 @@ class BasicSaVs(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicSaVs, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters and convert units if necessary:
@@ -327,7 +320,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    vssa = BasicVsSa(input_file=infile)
+    vssa = BasicSaVs(input_file=infile)
     vssa.run()
 
 

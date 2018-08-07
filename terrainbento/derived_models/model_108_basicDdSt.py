@@ -1,37 +1,19 @@
 # coding: utf8
 #! /usr/env/python
 """
-model_108_basicDdSt.py: erosion model with stochastic
-rainfall, and water erosion proportional to stream power in excess of a
-threshold that increases progressively with incision depth.
+terrainbento **BasicDdSt** model program.
 
-Model 108 BasicDdSt
+Erosion model program using linear diffusion, smoothly thresholded stream
+power, and stochastic discharge with a smoothed infiltration capacity
+threshold. The program differs from BasicStTh in that the threshold value
+depends on cumulative incision depth, and so can vary in space and time.
 
-The hydrology aspect models discharge and erosion across a topographic
-surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction
-flow routing, and (3) Hortonian infiltration model. Includes stream-power
-erosion plus linear diffusion.
-
-The hydrology uses calculation of drainage area using the standard "D8"
-approach (assuming the input grid is a raster; "DN" if not), then modifies it
-by running a lake-filling component. It then iterates through a sequence of
-storm and interstorm periods. Storm depth is drawn at random from a gamma
-distribution, and storm duration from an exponential distribution; storm
-intensity is then depth divided by duration. Given a storm precipitation
-intensity $P$, the runoff production rate $R$ [L/T] is calculated using:
-
-$R = P - I (1 - \exp ( -P / I ))$
-
-where $I$ is the soil infiltration capacity. At the sub-grid scale, soil
-infiltration capacity is assumed to have an exponential distribution of which
-$I$ is the mean. Hence, there are always some spots within any given grid cell
-that will generate runoff. This approach yields a smooth transition from
-near-zero runoff (when $I>>P$) to $R \approx P$ (when $P>>I$), without a
-"hard threshold."
-
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-PrecipitationDistribution, LinearDiffuser, StreamPowerSmoothThresholdEroder
-
+Landlab components used:
+    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
+    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder`
+    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    5. `PrecipitationDistribution <http://landlab.readthedocs.io/en/latest/landlab.components.html#landlab.components.PrecipitationDistribution>`_
 """
 
 import numpy as np
@@ -42,49 +24,143 @@ from terrainbento.base_class import StochasticErosionModel
 
 class BasicDdSt(StochasticErosionModel):
     """
-    A BasicDdSt computes erosion using (1) unit
-    stream power with a threshold, (2) linear nhillslope diffusion, and
-    (3) generation of a random sequence of runoff events across a topographic
-    surface.
+    **BasicDdSt** model program.
 
-    Examples
-    --------
-    >>> from terrainbento import BasicDdSt
-    >>> my_pars = {}
-    >>> my_pars['dt'] = 1.0
-    >>> my_pars['run_duration'] = 1.0
-    >>> my_pars['output_interval'] = 2.0
-    >>> my_pars['infiltration_capacity'] = 1.0
-    >>> my_pars["water_erodability~stochastic"] = 1.0
-    >>> my_pars['m_sp'] = 0.5
-    >>> my_pars['n_sp'] = 1.0
-    >>> my_pars["water_erosion_rule__threshold"] = 1.0
-    >>> my_pars['thresh_change_per_depth'] = 0.1
-    >>> my_pars['regolith_transport_parameter'] = 0.01
-    >>> my_pars['daily_rainfall__mean_intensity'] = 0.002
-    >>> my_pars['daily_rainfall_intermittency_factor'] = 0.008
-    >>> my_pars['mean_storm_depth'] = 0.025
-    >>> my_pars['random_seed'] = 907
-    >>> my_pars['daily_rainfall__precipitation_shape_factor'] = 0.65
-    >>> my_pars['number_of_sub_time_steps'] = 10
-    >>> srt = BasicDdSt(params=my_pars)
+    **BasicDdSt** is a model program that uses a stochastic treatment of runoff
+    and discharge, and includes an erosion threshold in the water erosion law.
+    The threshold depends on cumulative incision depth, and therefore can vary
+    in space and time.
+
+    THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
+    with the following governing equation:
+
+    .. math::
+
+        \\frac{\partial \eta}{\partial t} = -[K_{q}\hat{Q}^{m}S^{n} - \omega_{ct}\left(1-e^{-K_{q}\hat{Q}^{m}S^{n}/\omega_{ct}}\\right)\\right)] + D\\nabla^2 \eta
+
+    where :math:`\hat{Q}` is the local stream discharge (the hat symbol
+    indicates that it is a random-in-time variable) and :math:`S` is the local
+    slope gradient. :math:`m` and :math:`n` are the discharge and slope
+    exponent, respectively, :math:`\omega_c` is the critical stream power
+    required for erosion to occur, and :math:`D` is the regolith transport
+    parameter.
+
+    :math:`\omega_{ct}` may change through time as it increases with cumulative
+    incision depth:
+
+    .. math::
+
+        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + b D_I\left(x, y, t\\right), \omega_c \\right)
+
+    where :math:`\omega_c` is the threshold when no incision has taken place,
+    :math:`b` is the rate at which the threshold increases with incision depth,
+    and :math:`D_I` is the cumulative incision depth at location
+    :math:`\left(x,y\\right)` and time :math:`t`.
+
+    Refer to the terrainbento manuscript Table XX (URL here)
+    for parameter symbols, names, and dimensions.
+
+    **BasicDdSt** inherits from the terrainbento **StochasticErosionModel** base
+    class. In addition to the parameters required by the base class, models
+    built with this program require the following parameters:
+
+    +--------------------+----------------------------------+
+    | Parameter Symbol   | Input File Parameter Name        |
+    +====================+==================================+
+    |:math:`m`           | ``m_sp``                         |
+    +--------------------+----------------------------------+
+    |:math:`n`           | ``n_sp``                         |
+    +--------------------+----------------------------------+
+    |:math:`K_q`         | ``water_erodability~stochastic`` |
+    +--------------------+----------------------------------+
+    |:math:`\omega_{c0}` | ``water_erosion_rule__threshold``|
+    +--------------------+----------------------------------+
+    |:math:`D`           | ``regolith_transport_parameter`` |
+    +--------------------+----------------------------------+
+    |:math:`I_m`         | ``infiltration_capacity``        |
+    +--------------------+----------------------------------+
+
+    For information about the stochastic precipitation and runoff model used,
+    see the documentation for **BasicSt** and the base class
+    **StochasticErosionModel**.
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
-        """Initialize the BasicDdSt."""
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
+        """
+        Parameters
+        ----------
+        input_file : str
+            Path to model input file. See wiki for discussion of input file
+            formatting. One of input_file or params is required.
+        params : dict
+            Dictionary containing the input file. One of input_file or params is
+            required.
+        OutputWriters : class, function, or list of classes and/or functions, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
 
+        Returns
+        -------
+        BasicDdSt : model object
+
+        Examples
+        --------
+        This is a minimal example to demonstrate how to construct an instance
+        of model **BasicDdSt**. Note that a YAML input file can be used instead
+        of a parameter dictionary. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
+
+        To begin, import the model class.
+
+        >>> from terrainbento import BasicDdSt
+
+        Set up a parameters variable.
+
+        >>> params = {'model_grid': 'RasterModelGrid',
+        ...           'dt': 1,
+        ...           'output_interval': 2.,
+        ...           'run_duration': 200.,
+        ...           'number_of_node_rows' : 6,
+        ...           'number_of_node_columns' : 9,
+        ...           'node_spacing' : 10.0,
+        ...           'regolith_transport_parameter': 0.001,
+        ...           'water_erodability~stochastic': 0.001,
+        ...           'water_erosion_rule__threshold': 1.0,
+        ...           'thresh_change_per_depth': 0.1,
+        ...           'm_sp': 0.5,
+        ...           'n_sp': 1.0,
+        ...           'opt_stochastic_duration': False,
+        ...           'number_of_sub_time_steps': 1,
+        ...           'rainfall_intermittency_factor': 0.5,
+        ...           'rainfall__mean_rate': 1.0,
+        ...           'rainfall__shape_factor': 1.0,
+        ...           'infiltration_capacity': 1.0,
+        ...           'random_seed': 0}
+
+        Construct the model.
+
+        >>> model = BasicDdSt(params=params)
+
+        Running the model with ``model.run()`` would create output, so here we
+        will just run it one step.
+
+        >>> model.run_one_step(1.)
+        >>> model.model_time
+        1.0
+
+        """
         # Call ErosionModel's init
         super(BasicDdSt, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Get Parameters:
-        K_sp = self.get_parameter_from_exponent("water_erodability~stochastic")
+        # Get Parameters:
+        self.m = self.params["m_sp"]
+        self.n = self.params["n_sp"]
+        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+            self._length_factor ** ((3. * self.m) - 1)
+        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self.get_parameter_from_exponent(
@@ -107,10 +183,8 @@ class BasicDdSt(StochasticErosionModel):
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        infiltration_capacity = (self._length_factor) * self.params[
-            "infiltration_capacity"
-        ]  # has units length per time
-        self.infilt = infiltration_capacity
+        # has units length per time
+        self.infilt = (self._length_factor) * self.params["infiltration_capacity"]
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
@@ -128,9 +202,9 @@ class BasicDdSt(StochasticErosionModel):
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
-            m_sp=self.params["m_sp"],
-            n_sp=self.params["n_sp"],
-            K_sp=K_sp,
+            m_sp=self.m,
+            n_sp=self.n,
+            K_sp=self.K,
             use_Q=self.discharge,
             threshold_sp=self.threshold,
         )
@@ -140,22 +214,9 @@ class BasicDdSt(StochasticErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def calc_runoff_and_discharge(self):
-        """Calculate runoff rate and discharge; return runoff."""
-        if self.rain_rate > 0.0 and self.infilt > 0.0:
-            runoff = self.rain_rate - (
-                self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
-            )
-            if runoff < 0:
-                runoff = 0
-        else:
-            runoff = self.rain_rate
-        self.discharge[:] = runoff * self.area
-        return runoff
-
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
-        cum_ero = self.grid.at_node["cumulative_erosion__depth"]
+        cum_ero = self.grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero

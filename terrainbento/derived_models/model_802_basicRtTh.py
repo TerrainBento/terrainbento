@@ -120,9 +120,7 @@ class BasicRtTh(TwoLithologyErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -132,9 +130,6 @@ class BasicRtTh(TwoLithologyErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -169,7 +164,7 @@ class BasicRtTh(TwoLithologyErosionModel):
         ...           'water_erosion_rule~upper__threshold': 0.1,
         ...           'water_erosion_rule~lower__threshold': 0.2,
         ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0}
 
@@ -187,10 +182,7 @@ class BasicRtTh(TwoLithologyErosionModel):
         """
         # Call ErosionModel's init
         super(BasicRtTh, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Save the threshold values for rock and till

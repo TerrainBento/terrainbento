@@ -32,9 +32,9 @@ class BasicHyRt(TwoLithologyErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = \\frac{V Q_s}{A} - K A^{m}S^{n} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = \\frac{V Q_s}{Q} - K A^{m}S^{n} + D\\nabla^2 \eta
 
-        Q_s = \int_0^A \left(KA^{m}S^{n} - \\frac{V Q_s}{A} \\right) dA
+        Q_s = \int_0^A \left(KA^{m}S^{n} - \\frac{V Q_s}{Q} \\right) dA
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -46,10 +46,10 @@ class BasicHyRt(TwoLithologyErosionModel):
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`Q_s` is the volumetric sediment
-    discharge and :math:`V` is the effective settling velocity of the sediment
-    :math:`w` is a weight used to calculate the effective erodability
-    :math:`K(\eta, \eta_C)` based on the depth to the contact zone and the width
-    of the contact zone.
+    discharge, :math:`Q` is the volumetric water discharge, and :math:`V` is
+    the effective settling velocity of the sediment. :math:`w` is a weight used
+    to calculate the effective erodability :math:`K(\eta, \eta_C)` based on the
+    depth to the contact zone and the width of the contact zone.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -85,7 +85,7 @@ class BasicHyRt(TwoLithologyErosionModel):
     |:math:`\phi`      | ``sediment_porosity``            |
     +------------------+----------------------------------+
 
-    A value for the paramter ``solver`` can also be used to indicate if the
+    A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **ErosionDeposition**
     component or if an adaptive internal timestep is used. Refer to the
     **ErosionDeposition** documentation for details.
@@ -124,9 +124,7 @@ class BasicHyRt(TwoLithologyErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -136,9 +134,6 @@ class BasicHyRt(TwoLithologyErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -171,7 +166,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         ...           'water_erodability~lower': 0.001,
         ...           'water_erodability~upper': 0.01,
         ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'settling_velocity': 0.1,
@@ -192,16 +187,12 @@ class BasicHyRt(TwoLithologyErosionModel):
         """
         # Call ErosionModel's init
         super(BasicHyRt, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         settling_velocity = self.get_parameter_from_exponent(
             "settling_velocity"
         )  # normalized settling velocity. Unitless.
-
 
         # Save the threshold values for rock and till
         self.rock_thresh = 0.

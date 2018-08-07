@@ -59,7 +59,11 @@ class BasicRtSa(TwoLithologyErosionModel):
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`w` is a weight used to calculate the
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone.
+    contact zone and the width of the contact zone. :math:`H_s` is the sediment
+    production decay depth, :math:`H_0` is the sediment transport decay depth,
+    :math:`P_0` is the maximum sediment production rate, and :math:`H_0` is the
+    sediment transport decay depth. :math:`q_h` is the hillslope sediment flux
+    per unit width.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is
@@ -140,9 +144,7 @@ class BasicRtSa(TwoLithologyErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -152,9 +154,6 @@ class BasicRtSa(TwoLithologyErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -187,7 +186,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         ...           'water_erodability~lower': 0.001,
         ...           'water_erodability~upper': 0.01,
         ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.txt',
+        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
         ...           'm_sp': 0.5,
         ...           'n_sp': 1.0,
         ...           'soil__initial_thickness': 2,
@@ -209,10 +208,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         """
         # Call ErosionModel's init
         super(BasicRtSa, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         # Set up rock-till boundary and associated grid fields.

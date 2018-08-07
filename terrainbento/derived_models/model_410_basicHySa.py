@@ -38,8 +38,7 @@ class BasicHySa(ErosionModel):
     respectively, :math:`A` is the local drainage area, :math:`S` is the local
     slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`H` is soil depth, :math:`H_*` is the bedrock roughness
-    length scale, :math:`\omega_c` is the critical stream power needed for
-    erosion to occur, :math:`V` is effective sediment settling velocity,
+    length scale, :math:`V` is effective sediment settling velocity,
     :math:`Q_s` is volumetric fluvial sediment flux, :math:`Q` is volumetric
     water discharge, and :math:`\phi` is sediment porosity. Hillslope sediment
     flux per unit width :math:`q_h` is given by:
@@ -90,7 +89,7 @@ class BasicHySa(ErosionModel):
 
     TODO XXX add threshold
 
-    A value for the paramter ``solver`` can also be used to indicate if the
+    A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **Space** component or if an
     adaptive internal timestep is used. Refer to the **Space** documentation for
     details.
@@ -100,9 +99,7 @@ class BasicHySa(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -112,9 +109,6 @@ class BasicHySa(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -174,10 +168,7 @@ class BasicHySa(ErosionModel):
         """
         # Call ErosionModel's init
         super(BasicHySa, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         self.m = self.params["m_sp"]

@@ -20,7 +20,8 @@ def test_length_conversion_raises_error():
         "output_interval": 2.,
         "run_duration": 10.,
     }
-    pytest.raises(ValueError, ErosionModel, params=params)
+    with pytest.raises(ValueError):
+        ErosionModel(params=params)
 
 
 def test_meters_to_feet_correct():
@@ -70,7 +71,7 @@ def test_calc_cumulative_erosion():
     assert np.array_equiv(em.z, 0.) == True
     em.z += 1.
     em.calculate_cumulative_change()
-    assert np.array_equiv(em.grid.at_node["cumulative_erosion__depth"], 1.) == True
+    assert np.array_equiv(em.grid.at_node["cumulative_elevation_change"], 1.) == True
 
 
 def test_parameter_exponent_both_provided():
@@ -84,7 +85,8 @@ def test_parameter_exponent_both_provided():
         "run_duration": 10.,
     }
     em = ErosionModel(params=params)
-    pytest.raises(ValueError, em.get_parameter_from_exponent, "water_erodability")
+    with pytest.raises(ValueError):
+        em.get_parameter_from_exponent("water_erodability")
 
 
 def test_parameter_exponent_neither_provided():
@@ -96,6 +98,7 @@ def test_parameter_exponent_neither_provided():
         "run_duration": 10.,
     }
     em = ErosionModel(params=params)
-    pytest.raises(ValueError, em.get_parameter_from_exponent, "water_erodability")
+    with pytest.raises(ValueError):
+        em.get_parameter_from_exponent("water_erodability")
     val = em.get_parameter_from_exponent("water_erodability", raise_error=False)
     assert val is None

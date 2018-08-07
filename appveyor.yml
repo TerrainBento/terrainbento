@@ -41,6 +41,7 @@ os: Previous Visual Studio 2015
 init:
   - "ECHO %CONDA_INSTALL_LOCN% %CONDA_PY% %HOME% %PLATFORM%"
   - "ECHO %APPVEYOR_REPO_BRANCH%"
+  - "ECHO %WITH_COMPILER%"
 
 
 install:
@@ -51,18 +52,20 @@ install:
   - cmd: conda config --set always_yes yes
   - cmd: conda update conda
   - cmd: conda install -q --force --no-deps psutil ruamel_yaml requests
-  - cmd: conda install -q conda-build=3.0
+  - cmd: conda install -q conda-build
+  - cmd: conda install -q conda-verify
   - cmd: conda install -q anaconda-client
   - cmd: conda install -q numpy=1.11
   - cmd: pip install twine
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
-  - cmd: conda config --add channels landlab
   - cmd: conda info -a && conda list
+  - cmd: conda config --add channels landlab
+  - cmd: conda install --file=requirements.txt
+  - "%WITH_COMPILER% conda build -q .conda-recipe --old-build-string"
+  - cmd: conda install -q terrainbento --use-local
 
 build: false
 
 test_script:
-  - "%WITH_COMPILER% conda build -q .conda-recipe --old-build-string"
-  - cmd: conda install -q terrainbento --use-local
   - cmd: pytest
