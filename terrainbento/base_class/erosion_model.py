@@ -193,9 +193,15 @@ is a list of model grid fields to write as output.
 """
 
 import sys
+import os
+
+import six
 import time as tm
 import numpy as np
 from types import FunctionType
+
+import xarray as xr
+import dask
 
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
@@ -322,6 +328,7 @@ class ErosionModel(object):
         # default behavior is to not save the first timestep
         self.save_first_timestep = self.params.get("save_first_timestep", True)
         self._out_file_name = self.params.get("output_filename", "terrainbento_output")
+        self._output_files = []
         # instantiate model time.
         self._model_time = 0.
 
@@ -890,24 +897,19 @@ class ErosionModel(object):
             - self.grid.at_node["initial_topographic__elevation"]
         )
 
-    def write_output(self, field_names=None):
+    def write_output(self):
         """Write output to file as a netCDF.
 
         Filenames will have the value of ``'output_filename'`` from the input
         file or parameter dictionary as the first part of the file name and the
         model run iteration as the second part of the filename.
-
-        Parameters
-        ----------
-        output_fields : list of str, optional
-            List of model grid fields to write as output. Default is to write
-            out all fields.
         """
         self.calculate_cumulative_change()
         filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
+        self._output_files.append(filename)
         try:
             write_raster_netcdf(
-                filename, self.grid, names=field_names, format="NETCDF4"
+                filename, self.grid, names=self.output_fields, format="NETCDF4"
             )
         except NotImplementedError:
             graph = Graph.from_dict(
@@ -918,10 +920,7 @@ class ErosionModel(object):
                 }
             )
 
-            if field_names is None:
-                field_names = self.grid.at_node.keys()
-
-            for field_name in field_names:
+            for field_name in self.output_fields:
 
                 graph._ds.__setitem__(
                     field_name, ("node", self.grid.at_node[field_name])
@@ -981,19 +980,29 @@ class ErosionModel(object):
             List of model grid fields to write as output. Default is to write
             out all fields.
         """
+        self._itters = []
+        if output_fields is None:
+            output_fields = self.grid.at_node.keys()
+        if isinstance(output_fields, six.string_types):
+            output_fields = [output_fields]
+        self.output_fields = output_fields
+
         if self.save_first_timestep:
             self.iteration = 0
-            self.write_output(field_names=output_fields)
+            self._itters.append(0)
+            self.write_output()
         total_run_duration = self.params["run_duration"]
         output_interval = self.params["output_interval"]
         self.iteration = 1
+        self._itters.append(1)
         time_now = self._model_time
         while time_now < total_run_duration:
             next_run_pause = min(time_now + output_interval, total_run_duration)
             self.run_for(self.params["dt"], next_run_pause - time_now)
             time_now = next_run_pause
-            self.write_output(field_names=output_fields)
+            self.write_output()
             self.iteration += 1
+            self._itters.append(self.iteration)
 
         # now that the model is finished running, execute finalize.
         self.finalize()
@@ -1019,6 +1028,84 @@ class ErosionModel(object):
             for handler_name in self.boundary_handler:
                 self.boundary_handler[handler_name].run_one_step(dt)
 
+    def to_xarray_dataset(self, time_unit='time units', reference_time='model start', space_unit='space units'):
+        """Convert model output to an xarray dataset.
+
+        If you would like to have CF compliant NetCDF make sure that your time
+        and space units and reference times will work with standard decoding.
+
+        The default time unit and reference time will give the time dimention a
+        value of "time units since model start". The default space unit will
+        give a value of "space unit".
+
+        Parameters
+        ----------
+        time_unit: str, optional
+            Name of time unit. Default is "time units".
+        reference time: str, optional
+            Reference tim. Default is "model start".
+        space_unit: str, optional
+            Name of space unit. Default is "space unit".
+        """
+
+        # open all files as a xarray dataset
+        ds = xr.open_mfdataset(self._output_files,
+                           concat_dim='nt',
+                           engine='netcdf4',
+                           data_vars=self.output_fields)
+
+        # add a time dimension
+        time_array = np.asarray(self._itters[:-1]) * self.params["output_interval"]
+        time = xr.DataArray(time_array,
+                            dims=('nt'),
+                            attrs={'units': time_unit + ' since ' + reference_time,
+                                   'standard_name' : 'time'})
+
+        ds['time'] = time
+
+        # set x and y to coordinates
+        ds.set_coords(['x', 'y','time'], inplace=True)
+
+        # rename dimensions
+        ds.rename(name_dict={'ni': 'x', 'nj': 'y', 'nt':'time'}, inplace=True)
+
+        # set x and y units
+        ds['x'] = xr.DataArray(ds.x, dims=('x'), attrs={'units': space_unit})
+        ds['y'] = xr.DataArray(ds.y, dims=('y'), attrs={'units': space_unit})
+
+        return ds
+
+    def save_to_xarray_dataset(self, filename="terrainbento.nc", time_unit='time units', reference_time='model start', space_unit='space units'):
+        """Save model output to xarray dataset.
+
+        If you would like to have CF compliant NetCDF make sure that your time
+        and space units and reference times will work with standard decoding.
+
+        The default time unit and reference time will give the time dimention a
+        value of "time units since model start". The default space unit will
+        give a value of "space unit".
+
+        Parameters
+        ----------
+        filename: str, optional
+            The file path where the file should be saved. The default value is
+            "terrainbento.nc".
+        time_unit: str, optional
+            Name of time unit. Default is "time units".
+        reference time: str, optional
+            Reference tim. Default is "model start".
+        space_unit: str, optional
+            Name of space unit. Default is "space unit".
+        """
+        ds = self.to_xarray_dataset(time_unit=time_unit, space_unit=space_unit)
+        ds.to_netcdf(filename, engine='netcdf4', format='NETCDF4')
+        ds.close()
+
+    def remove_output_netcdfs(self):
+        """
+        """
+        for f in self._output_files:
+            os.remove(f)
 
 def main():  # pragma: no cover
     """Executes model."""

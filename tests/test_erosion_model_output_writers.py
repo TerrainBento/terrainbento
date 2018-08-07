@@ -77,8 +77,8 @@ def test_one_function_writer():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_a.20.0.txt")
     assert filecmp("ow_func_a.20.0.txt", truth_file) == True
 
-    cleanup_files("terrainbento_output*.nc")
-    cleanup_files("ow_func_a.*.txt")
+    model.remove_output_netcdfs()
+    cleanup_files('ow_func_a.*.txt')
 
 
 def test_one_class_writer():
@@ -103,8 +103,8 @@ def test_one_class_writer():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_a.20.0.txt")
     assert filecmp("ow_class_a.20.0.txt", truth_file) == True
 
-    cleanup_files("terrainbento_output*.nc")
-    cleanup_files("ow_class_a.*.txt")
+    model.remove_output_netcdfs()
+    cleanup_files('ow_class_a.*.txt')
 
 
 def test_two_function_writers():
@@ -135,8 +135,8 @@ def test_two_function_writers():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_b.20.0.txt")
     assert filecmp("ow_func_b.20.0.txt", truth_file) == True
 
-    cleanup_files("terrainbento_output*.nc")
-    cleanup_files("ow_func_*.txt")
+    model.remove_output_netcdfs()
+    cleanup_files('ow_func_*.txt')
 
 
 def test_two_class_writers():
@@ -166,8 +166,8 @@ def test_two_class_writers():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_b.20.0.txt")
     assert filecmp("ow_class_b.20.0.txt", truth_file) == True
 
-    cleanup_files("terrainbento_output*.nc")
-    cleanup_files("ow_class_*.txt")
+    model.remove_output_netcdfs()
+    cleanup_files('ow_class_*.txt')
 
 
 def test_all_four_writers():
@@ -209,6 +209,6 @@ def test_all_four_writers():
     truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_b.20.0.txt")
     assert filecmp("ow_class_b.20.0.txt", truth_file) == True
 
-    cleanup_files("terrainbento_output*.nc")
-    cleanup_files("ow_func_*.txt")
-    cleanup_files("ow_class_*.txt")
+    model.remove_output_netcdfs()
+    cleanup_files('ow_func_*.txt')
+    cleanup_files('ow_class_*.txt')

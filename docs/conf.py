@@ -77,12 +77,12 @@ MOCK_MODULES = [
     "doctests.Doctest",
     "test",
     "bench",
+    "xarray",
+    "dask",
+    "glob",
 ]
 
-TEST_MOCK_MODULES = ["TerrainBentoTester"]
-
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-sys.modules.update((mod_name, MockTest()) for mod_name in TEST_MOCK_MODULES)
 
 import terrainbento
 
