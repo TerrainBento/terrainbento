@@ -1099,6 +1099,7 @@ class ErosionModel(object):
         """
         ds = self.to_xarray_dataset(time_unit=time_unit, space_unit=space_unit)
         ds.to_netcdf(filename, engine='netcdf4', format='NETCDF4')
+        ds.close()
 
     def remove_output_netcdfs(self):
         """

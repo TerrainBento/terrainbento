@@ -69,6 +69,7 @@ def test_write_synthesis_netcdf():
 
     output.close()
     truth.close()
+    ds.close()
 
     model.remove_output_netcdfs()
     os.remove(out_fn)
@@ -97,6 +98,7 @@ def test_write_synthesis_netcdf_one_field():
 
     output.close()
     truth.close()
+    ds.close()
 
     model.remove_output_netcdfs()
     os.remove(out_fn)
