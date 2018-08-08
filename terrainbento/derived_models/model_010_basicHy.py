@@ -27,13 +27,12 @@ class BasicHy(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\\right)\\right) + \\frac{V Q_s}{rA \left(1-\phi\\right)} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \\frac{V Q_s}{rA \left(1-\phi\\right)} + D\\nabla^2 \eta
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
-    stream power needed for erosion to occur, :math:`V` is effective sediment
+    :math:`K` is the erodability by water, :math:`V` is effective sediment
     settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`r` is
     a runoff rate which presently can only be 1.0, :math:`\phi` is sediment
     porosity, :math:`D` is the regolith transport efficiency, :math:`H` is soil
