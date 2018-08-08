@@ -1000,7 +1000,7 @@ class ErosionModel(object):
         while time_now < self.total_run_duration:
             next_run_pause = min(time_now + self.output_interval, self.total_run_duration)
             self.run_for(self.params["dt"], next_run_pause - time_now)
-            time_now = next_run_pause
+            time_now = self._model_time
             self.iteration += 1
             self._itters.append(self.iteration)
             self.write_output()
