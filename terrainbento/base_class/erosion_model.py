@@ -324,6 +324,10 @@ class ErosionModel(object):
 
                 raise ValueError(msg)
 
+        # save total run druation and output interval
+        self.total_run_duration = self.params["run_duration"]
+        self.output_interval = self.params["output_interval"]
+
         # identify if initial conditions should be saved.
         # default behavior is to not save the first timestep
         self.save_first_timestep = self.params.get("save_first_timestep", True)
@@ -991,18 +995,16 @@ class ErosionModel(object):
             self.iteration = 0
             self._itters.append(0)
             self.write_output()
-        total_run_duration = self.params["run_duration"]
-        output_interval = self.params["output_interval"]
         self.iteration = 1
-        self._itters.append(1)
         time_now = self._model_time
-        while time_now < total_run_duration:
-            next_run_pause = min(time_now + output_interval, total_run_duration)
+        while time_now < self.total_run_duration:
+            next_run_pause = min(time_now + self.output_interval, self.total_run_duration)
             self.run_for(self.params["dt"], next_run_pause - time_now)
-            time_now = next_run_pause
-            self.write_output()
+            time_now = self._model_time
             self.iteration += 1
             self._itters.append(self.iteration)
+            self.write_output()
+
 
         # now that the model is finished running, execute finalize.
         self.finalize()
@@ -1055,7 +1057,7 @@ class ErosionModel(object):
                            data_vars=self.output_fields)
 
         # add a time dimension
-        time_array = np.asarray(self._itters[:-1]) * self.params["output_interval"]
+        time_array = np.asarray(self._itters) * self.params["output_interval"]
         time = xr.DataArray(time_array,
                             dims=('nt'),
                             attrs={'units': time_unit + ' since ' + reference_time,
