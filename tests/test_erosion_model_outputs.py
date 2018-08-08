@@ -48,15 +48,15 @@ def test_write_output_hex():
 
 def test_write_synthesis_netcdf():
     fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs_for_nc.txt")
-    truth = os.path.join(_TEST_DATA_DIR, "truth.nc" )
+    truth = os.path.join(_TEST_DATA_DIR, "truth.nc")
     model = Basic(input_file=fp)
     model._out_file_name = "tb_synth_output"
     model.run()
 
-    ds = model.to_xarray_dataset(time_unit='years', space_unit='meter')
+    ds = model.to_xarray_dataset(time_unit="years", space_unit="meter")
 
     out_fn = "tb_output.nc"
-    model.save_to_xarray_dataset(filename=out_fn, time_unit='years', space_unit='meter')
+    model.save_to_xarray_dataset(filename=out_fn, time_unit="years", space_unit="meter")
 
     output = xr.open_dataset(out_fn, decode_times=False)
     truth = xr.open_dataset(truth, decode_times=False)
@@ -77,15 +77,15 @@ def test_write_synthesis_netcdf():
 
 def test_write_synthesis_netcdf_one_field():
     fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
-    truth = os.path.join(_TEST_DATA_DIR, "truth_one_field.nc" )
+    truth = os.path.join(_TEST_DATA_DIR, "truth_one_field.nc")
     model = Basic(input_file=fp)
     model._out_file_name = "tb_synth_output_one_field"
     model.run(output_fields="topographic__elevation")
 
-    ds = model.to_xarray_dataset(time_unit='years', space_unit='meter')
+    ds = model.to_xarray_dataset(time_unit="years", space_unit="meter")
 
     out_fn = "tb_output_one_field.nc"
-    model.save_to_xarray_dataset(filename=out_fn, time_unit='years', space_unit='meter')
+    model.save_to_xarray_dataset(filename=out_fn, time_unit="years", space_unit="meter")
 
     output = xr.open_dataset(out_fn, decode_times=False)
     truth = xr.open_dataset(truth, decode_times=False)
@@ -106,16 +106,16 @@ def test_write_synthesis_netcdf_one_field():
 
 def test_write_synthesis_netcdf_one_field_first_timestep_false():
     fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
-    truth = os.path.join(_TEST_DATA_DIR, "truth_one_field_first_ts.nc" )
+    truth = os.path.join(_TEST_DATA_DIR, "truth_one_field_first_ts.nc")
     model = Basic(input_file=fp)
     model.save_first_timestep = False
     model._out_file_name = "tb_synth_output_one_field_first_ts"
     model.run(output_fields="topographic__elevation")
 
-    ds = model.to_xarray_dataset(time_unit='years', space_unit='meter')
+    ds = model.to_xarray_dataset(time_unit="years", space_unit="meter")
 
     out_fn = "tb_output_one_field_first_ts.nc"
-    model.save_to_xarray_dataset(filename=out_fn, time_unit='years', space_unit='meter')
+    model.save_to_xarray_dataset(filename=out_fn, time_unit="years", space_unit="meter")
 
     output = xr.open_dataset(out_fn, decode_times=False)
     truth = xr.open_dataset(truth, decode_times=False)

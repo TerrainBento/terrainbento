@@ -47,6 +47,7 @@ def test_bad_transmiss():
     with pytest.raises(ValueError):
         BasicStVs(params=params)
 
+
 def test_steady_without_stochastic_duration():
     """Test steady profile solution with fixed duration.
     """

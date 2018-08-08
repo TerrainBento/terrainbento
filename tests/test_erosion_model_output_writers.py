@@ -78,7 +78,7 @@ def test_one_function_writer():
     assert filecmp("ow_func_a.20.0.txt", truth_file) == True
 
     model.remove_output_netcdfs()
-    cleanup_files('ow_func_a.*.txt')
+    cleanup_files("ow_func_a.*.txt")
 
 
 def test_one_class_writer():
@@ -104,7 +104,7 @@ def test_one_class_writer():
     assert filecmp("ow_class_a.20.0.txt", truth_file) == True
 
     model.remove_output_netcdfs()
-    cleanup_files('ow_class_a.*.txt')
+    cleanup_files("ow_class_a.*.txt")
 
 
 def test_two_function_writers():
@@ -136,7 +136,7 @@ def test_two_function_writers():
     assert filecmp("ow_func_b.20.0.txt", truth_file) == True
 
     model.remove_output_netcdfs()
-    cleanup_files('ow_func_*.txt')
+    cleanup_files("ow_func_*.txt")
 
 
 def test_two_class_writers():
@@ -167,7 +167,7 @@ def test_two_class_writers():
     assert filecmp("ow_class_b.20.0.txt", truth_file) == True
 
     model.remove_output_netcdfs()
-    cleanup_files('ow_class_*.txt')
+    cleanup_files("ow_class_*.txt")
 
 
 def test_all_four_writers():
@@ -210,5 +210,5 @@ def test_all_four_writers():
     assert filecmp("ow_class_b.20.0.txt", truth_file) == True
 
     model.remove_output_netcdfs()
-    cleanup_files('ow_func_*.txt')
-    cleanup_files('ow_class_*.txt')
+    cleanup_files("ow_func_*.txt")
+    cleanup_files("ow_class_*.txt")

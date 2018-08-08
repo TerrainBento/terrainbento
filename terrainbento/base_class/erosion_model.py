@@ -1002,13 +1002,14 @@ class ErosionModel(object):
         self.iteration = 1
         time_now = self._model_time
         while time_now < self.total_run_duration:
-            next_run_pause = min(time_now + self.output_interval, self.total_run_duration)
+            next_run_pause = min(
+                time_now + self.output_interval, self.total_run_duration
+            )
             self.run_for(self.params["dt"], next_run_pause - time_now)
             time_now = self._model_time
             self.iteration += 1
             self._itters.append(self.iteration)
             self.write_output()
-
 
         # now that the model is finished running, execute finalize.
         self.finalize()
@@ -1034,7 +1035,12 @@ class ErosionModel(object):
             for handler_name in self.boundary_handler:
                 self.boundary_handler[handler_name].run_one_step(dt)
 
-    def to_xarray_dataset(self, time_unit='time units', reference_time='model start', space_unit='space units'):
+    def to_xarray_dataset(
+        self,
+        time_unit="time units",
+        reference_time="model start",
+        space_unit="space units",
+    ):
         """Convert model output to an xarray dataset.
 
         If you would like to have CF compliant NetCDF make sure that your time
@@ -1055,33 +1061,45 @@ class ErosionModel(object):
         """
 
         # open all files as a xarray dataset
-        ds = xr.open_mfdataset(self._output_files,
-                           concat_dim='nt',
-                           engine='netcdf4',
-                           data_vars=self.output_fields)
+        ds = xr.open_mfdataset(
+            self._output_files,
+            concat_dim="nt",
+            engine="netcdf4",
+            data_vars=self.output_fields,
+        )
 
         # add a time dimension
         time_array = np.asarray(self._itters) * self.params["output_interval"]
-        time = xr.DataArray(time_array,
-                            dims=('nt'),
-                            attrs={'units': time_unit + ' since ' + reference_time,
-                                   'standard_name' : 'time'})
+        time = xr.DataArray(
+            time_array,
+            dims=("nt"),
+            attrs={
+                "units": time_unit + " since " + reference_time,
+                "standard_name": "time",
+            },
+        )
 
-        ds['time'] = time
+        ds["time"] = time
 
         # set x and y to coordinates
-        ds.set_coords(['x', 'y','time'], inplace=True)
+        ds.set_coords(["x", "y", "time"], inplace=True)
 
         # rename dimensions
-        ds.rename(name_dict={'ni': 'x', 'nj': 'y', 'nt':'time'}, inplace=True)
+        ds.rename(name_dict={"ni": "x", "nj": "y", "nt": "time"}, inplace=True)
 
         # set x and y units
-        ds['x'] = xr.DataArray(ds.x, dims=('x'), attrs={'units': space_unit})
-        ds['y'] = xr.DataArray(ds.y, dims=('y'), attrs={'units': space_unit})
+        ds["x"] = xr.DataArray(ds.x, dims=("x"), attrs={"units": space_unit})
+        ds["y"] = xr.DataArray(ds.y, dims=("y"), attrs={"units": space_unit})
 
         return ds
 
-    def save_to_xarray_dataset(self, filename="terrainbento.nc", time_unit='time units', reference_time='model start', space_unit='space units'):
+    def save_to_xarray_dataset(
+        self,
+        filename="terrainbento.nc",
+        time_unit="time units",
+        reference_time="model start",
+        space_unit="space units",
+    ):
         """Save model output to xarray dataset.
 
         If you would like to have CF compliant NetCDF make sure that your time
@@ -1104,7 +1122,7 @@ class ErosionModel(object):
             Name of space unit. Default is "space unit".
         """
         ds = self.to_xarray_dataset(time_unit=time_unit, space_unit=space_unit)
-        ds.to_netcdf(filename, engine='netcdf4', format='NETCDF4')
+        ds.to_netcdf(filename, engine="netcdf4", format="NETCDF4")
         ds.close()
 
     def remove_output_netcdfs(self):
@@ -1112,6 +1130,7 @@ class ErosionModel(object):
         """
         for f in self._output_files:
             os.remove(f)
+
 
 def main():  # pragma: no cover
     """Executes model."""

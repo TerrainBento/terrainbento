@@ -247,9 +247,7 @@ class NotCoreNodeBaselevelHandler(object):
             other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
             for of in other_fields:
                 if of in self._grid.at_node:
-                    self._grid.at_node[of][
-                        self.nodes_to_lower
-                    ] -= self.topo_change
+                    self._grid.at_node[of][self.nodes_to_lower] -= self.topo_change
 
             # lower topography
             self.z[self.nodes_to_lower] -= self.topo_change
