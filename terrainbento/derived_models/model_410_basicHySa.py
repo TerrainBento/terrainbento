@@ -29,24 +29,30 @@ class BasicHySa(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{r}A^{m}S^{n}\left(e^{-H/H_*}\\right) \\
-        -K_{s}A^{m}S^{n}\left(1-e^{-H/H_*}\\right) \\
-        + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + \\nabla q_h
+        \eta = \eta_b + H
+
+        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) + \\frac{V_s Q_s}{Ar\left(1 - \phi \\right)} - K_s A^{m}S^{n} (1 - e^{-H/H_*}) -\\nabla q_h
+
+        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - K_r A^{m}S^{n} e^{-H/H_*}
+
+        Q_s = \int_0^A \left(K_s A^{m}S^{n} (1-e^{-H/H_*}) + K_r (1-F_f) A^{m}S^{n} e^{-H/H_*} - \\frac{V_s Q_s}{Ar\left(1 - \phi \\right)}\\right) dA
 
 
-    where :math:`K_r` and :math:`K_s` are rock and sediment erodibility
-    respectively, :math:`A` is the local drainage area, :math:`S` is the local
-    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
-    parameters, :math:`H` is soil depth, :math:`H_*` is the bedrock roughness
-    length scale, :math:`V` is effective sediment settling velocity,
-    :math:`Q_s` is volumetric fluvial sediment flux, :math:`Q` is volumetric
-    water discharge, and :math:`\phi` is sediment porosity. Hillslope sediment
-    flux per unit width :math:`q_h` is given by:
+    where :math:`\eta_b` is the bedrock elevation, :math:`H` is the soil depth,
+    :math:`P_0` is the maximum soil production rate, :math:`H_s` is the soil
+    production decay depth, :math:`V_s` is effective sediment settling velocity,
+    :math:`Q_s` is volumetric fluvial sediment flux, :math:`A` is the local
+    drainage area, :math:`S` is the local slope, :math:`\phi` is sediment
+    porosity, :math:`F_f` is the fraction of fine sediment, :math:`K_r` and :math:`K_s`
+    are rock and sediment erodibility respectively, :math:`m` and :math:`n` are
+    the drainage area and slope exponent parameters, :math:`H_*` is the bedrock roughness
+    length scale, and :math:`r` is a runoff rate which presently can only be 1.0.
+    Hillslope sediment flux per unit width :math:`q_h` is given by:
 
 
     .. math::
 
-        q_h=-DS\left(1-e^{-H/H_0}\\right)
+        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta.
 
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
@@ -88,7 +94,6 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{*}`     | ``roughness__length_scale``       |
     +------------------+-----------------------------------+
-    TODO XXX add threshold
 
     A value for the parameter ``solver`` can also be used to indicate if the
     default internal timestepping is used for the **Space** component or if an
