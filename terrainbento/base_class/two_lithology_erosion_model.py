@@ -92,9 +92,9 @@ class TwoLithologyErosionModel(ErosionModel):
 
         # Read input data on rock-till contact elevation
         read_esri_ascii(
-            file_name, grid=self.grid, halo=1, name="rock_till_contact__elevation"
+            file_name, grid=self.grid, halo=1, name="lithology_contact__elevation"
         )
-        self.rock_till_contact = self.grid.at_node["rock_till_contact__elevation"]
+        self.rock_till_contact = self.grid.at_node["lithology_contact__elevation"]
 
     def _setup_rock_and_till(self):
         """Set up fields to handle for two layers with different erodability."""

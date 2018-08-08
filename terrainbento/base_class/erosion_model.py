@@ -159,6 +159,10 @@ in one type of units (e.g. feet) but the scientific literature  provides
 information about parameter values in a different unit (e.g. meters). If both
 are set to ``True`` a ``ValueError`` will be raised.
 
+Using these parameters **ONLY** impacts the units of model parameters like
+``water_erodability`` or ``water_erosion_rule__threshold``. These parameters do
+not impact the rates or elevations used in boundary condition handlers.
+
 meters_to_feet : boolean, optional
     Default value is False.
 feet_to_meters : boolean, optional
@@ -323,6 +327,10 @@ class ErosionModel(object):
                 msg = ("Required parameter {0} was not provided.".format(req),)
 
                 raise ValueError(msg)
+
+        # save total run druation and output interval
+        self.total_run_duration = self.params["run_duration"]
+        self.output_interval = self.params["output_interval"]
 
         # identify if initial conditions should be saved.
         # default behavior is to not save the first timestep
@@ -991,14 +999,12 @@ class ErosionModel(object):
             self.iteration = 0
             self._itters.append(0)
             self.write_output()
-        total_run_duration = self.params["run_duration"]
-        output_interval = self.params["output_interval"]
         self.iteration = 1
         time_now = self._model_time
-        while time_now < total_run_duration:
-            next_run_pause = min(time_now + output_interval, total_run_duration)
+        while time_now < self.total_run_duration:
+            next_run_pause = min(time_now + self.output_interval, self.total_run_duration)
             self.run_for(self.params["dt"], next_run_pause - time_now)
-            time_now = next_run_pause
+            time_now = self._model_time
             self.iteration += 1
             self._itters.append(self.iteration)
             self.write_output()

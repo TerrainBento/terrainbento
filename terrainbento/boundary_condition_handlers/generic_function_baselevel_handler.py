@@ -193,10 +193,12 @@ class GenericFuncBaselevelHandler(object):
         )
 
         # if bedrock__elevation exists as a field, lower it also
-        if "bedrock__elevation" in self._grid.at_node:
-            self._grid.at_node["bedrock__elevation"][self.nodes_to_lower] += (
-                self.prefactor * self.dzdt[self.nodes_to_lower] * dt
-            )
+        other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
+        for of in other_fields:
+            if of in self._grid.at_node:
+                self._grid.at_node[of][self.nodes_to_lower] += (
+                    self.prefactor * self.dzdt[self.nodes_to_lower] * dt
+                )
 
         # increment model time
         self.model_time += dt
