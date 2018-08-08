@@ -86,7 +86,8 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
-
+    |:math:`H_{*}`     | ``roughness__length_scale``       |
+    +------------------+-----------------------------------+
     TODO XXX add threshold
 
     A value for the parameter ``solver`` can also be used to indicate if the
@@ -147,7 +148,7 @@ class BasicHySa(ErosionModel):
         ...           'v_sc': 0.01,
         ...           'sediment_porosity': 0,
         ...           'fraction_fines': 0,
-        ...           'H_star': 0.1,
+        ...           'roughness__length_scale': 0.1,
         ...           'solver': 'basic',
         ...           'soil_transport_decay_depth': 1,
         ...           'soil_production__maximum_rate': 0.0001,
@@ -220,7 +221,7 @@ class BasicHySa(ErosionModel):
             sp_crit_sed=self.params["sp_crit_sed"],
             F_f=self.params["fraction_fines"],
             phi=self.params["sediment_porosity"],
-            H_star=self.params["H_star"],
+            H_star=self.params["roughness__length_scale"],
             v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,
