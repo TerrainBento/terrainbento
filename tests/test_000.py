@@ -47,12 +47,12 @@ def test_steady_Kss_no_precip_changer():
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = (U / (K * (actual_areas ** m))) ** (1. / n)
+    predicted_slopes = (U / (K * (actual_areas[model.grid.core_nodes[1:-1]] ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(
         actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
+        predicted_slopes,
     )
 
 
