@@ -159,6 +159,10 @@ in one type of units (e.g. feet) but the scientific literature  provides
 information about parameter values in a different unit (e.g. meters). If both
 are set to ``True`` a ``ValueError`` will be raised.
 
+Using these parameters **ONLY** impacts the units of model parameters like
+``water_erodability`` or ``water_erosion_rule__threshold``. These parameters do
+not impact the rates or elevations used in boundary condition handlers.
+
 meters_to_feet : boolean, optional
     Default value is False.
 feet_to_meters : boolean, optional
