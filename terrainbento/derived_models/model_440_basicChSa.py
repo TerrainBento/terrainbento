@@ -29,11 +29,11 @@ class BasicChSa(ErosionModel):
     """ **BasicChSa** model program.
 
 
-    **BasicSa** is a model program that explicitly resolves a soil layer. This
+    **BasicChSa** is a model program that explicitly resolves a soil layer. This
     soil layer is produced by weathering that decays exponentially with soil
     thickness and hillslope transport is soil-depth dependent. Given a spatially
     varying soil thickness :math:`H` and a spatially varying bedrock elevation
-    :math:`\eta_b`, model **BasicSa** evolves a topographic surface described by
+    :math:`\eta_b`, model **BasicChSa** evolves a topographic surface described by
     :math:`\eta` with the following governing equations:
 
     .. math::
@@ -52,7 +52,7 @@ class BasicChSa(ErosionModel):
     parameter, :math:`H_s` is the sediment production decay depth, :math:`H_s`
     is the sediment production decay depth, :math:`P_0` is the maximum sediment
     production rate, and :math:`H_0` is the sediment transport decay depth.
-    :math:`q_s` represents the hillslope sediment flux per unit width. :math:`S_c`
+    :math:`q_h` is the hillslope sediment flux per unit width. :math:`S_c`
     is the critical slope parameter and :math:`N` is the number of terms in the
     Taylor Series expansion. Presently :math:`N` is set at 11 and is not a user
     defined parameter.
@@ -94,9 +94,7 @@ class BasicChSa(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -106,9 +104,6 @@ class BasicChSa(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -163,10 +158,7 @@ class BasicChSa(ErosionModel):
 
         # Call ErosionModel's init
         super(BasicChSa, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         self.m = self.params["m_sp"]

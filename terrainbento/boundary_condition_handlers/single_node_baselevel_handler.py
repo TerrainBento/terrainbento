@@ -11,12 +11,12 @@ class SingleNodeBaselevelHandler(object):
 
     The **SingleNodeBaselevelHandler** controls the elevation of a single open
     boundary node, referred to here as the *outlet*. The outlet lowering rate is
-    specified either as a constant or through a time or through a textfile that
-    specifies the elevation change through time.
+    specified either as a constant or through a time or through a text file
+    that specifies the elevation change through time.
 
     The **SingleNodeBaselevelHandler** expects that ``topographic__elevation``
-    is a at-node model grid field. It will modify this field and, if it exists,
-    the field ``bedrock__elevation``.
+    is an at-node model grid field. It will modify this field and, if it
+    exists, the field ``bedrock__elevation``.
 
     Note that **SingleNodeBaselevelHandler** increments time at the end of the
     **run_one_step** method.
@@ -25,7 +25,7 @@ class SingleNodeBaselevelHandler(object):
     def __init__(
         self,
         grid,
-        outlet_node,
+        outlet_node=0,
         lowering_rate=None,
         lowering_file_path=None,
         model_end_elevation=None,
@@ -35,8 +35,8 @@ class SingleNodeBaselevelHandler(object):
         Parameters
         ----------
         grid : landlab model grid
-        outlet_node : int
-            Node ID of the outlet node.
+        outlet_node : int, optional
+            Node ID of the outlet node. Default value is 0.
         lowering_rate : float, optional
             Lowering rate of the outlet node. One of ``lowering_rate`` and
             ``lowering_file_path`` is required. Units are implied by the
@@ -175,10 +175,12 @@ class SingleNodeBaselevelHandler(object):
             self.z[self.outlet_node] += self.lowering_rate * dt
 
             # if bedrock__elevation exists as a field, lower it also
-            if "bedrock__elevation" in self._grid.at_node:
-                self._grid.at_node["bedrock__elevation"][self.outlet_node] += (
-                    self.lowering_rate * dt
-                )
+            other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
+            for of in other_fields:
+                if of in self._grid.at_node:
+                    self._grid.at_node[of][self.outlet_node] += (
+                        self.lowering_rate * dt
+                    )
 
         # if there is an outlet elevation object
         else:
@@ -190,10 +192,12 @@ class SingleNodeBaselevelHandler(object):
                 self.model_time
             )
 
-            if "bedrock__elevation" in self._grid.at_node:
-                self._grid.at_node["bedrock__elevation"][
-                    self.outlet_node
-                ] -= topo_change
+            other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
+            for of in other_fields:
+                if of in self._grid.at_node:
+                    self._grid.at_node[of][
+                        self.outlet_node
+                    ] -= topo_change
 
             # lower topography
             self.z[self.outlet_node] -= topo_change

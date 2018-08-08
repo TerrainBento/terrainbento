@@ -17,6 +17,8 @@ requirements:
     - python
     - numpy
     - scipy
+    - xarray
+    - dask
     - sympy
     - six
     - pyyaml
@@ -30,7 +32,9 @@ test:
     - pytest-cov
     - pytest-runner
   commands:
-    - pytest --pyargs landlab --doctest-modules -o doctest_optionflags="NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ALLOW_UNICODE"
+      - pytest --pyargs terrainbento --doctest-modules -o doctest_optionflags="NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ALLOW_UNICODE"
+  source_files:
+      - tests/data/*
 
 build:
   number: 0

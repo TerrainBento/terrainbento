@@ -164,10 +164,6 @@ import numpy as np
 from scipy.special import gamma
 from scipy.integrate import quad
 
-DAYS_PER_YEAR = 365.25
-DAYS_PER_DAY = 1.0
-DAYS_PER_SECOND = 1.0 / (60. * 60. * 24.)
-
 
 def _integrand(p, Ic, lam, c, m):
     """Calculate the integrand for numerical integration.
@@ -228,16 +224,12 @@ def _scale_fac(pmean, c):
     return pmean * (1.0 / gamma(1.0 + 1.0 / c))
 
 
-def _check_intermittency_value(daily_rainfall_intermittency_factor):
-    """Check that daily_rainfall_intermittency_factor is >= 0 and <=1."""
-    if (daily_rainfall_intermittency_factor >= 0.0) and (
-        daily_rainfall_intermittency_factor <= 1.0
-    ):
-        pass
-    else:
+def _check_intermittency_value(rainfall_intermittency_factor):
+    """Check that rainfall_intermittency_factor is >= 0 and <=1."""
+    if (rainfall_intermittency_factor < 0.0) or (rainfall_intermittency_factor > 1.0):
         raise ValueError(
             (
-                "The PrecipChanger daily_rainfall_intermittency_factor has a "
+                "The PrecipChanger rainfall_intermittency_factor has a "
                 "value of less than zero or greater than one. "
                 "This is invalid."
             )
@@ -266,14 +258,13 @@ def _check_infiltration_capacity(infiltration_capacity):
         )
 
 
-
 class PrecipChanger(object):
     """Handle time varying precipitation.
 
     The **PrecipChanger** handles time-varying precipitation by changing the
-    proportion of time rain occurs (``daily_rainfall_daily_rainfall_intermittency_factor``)
+    proportion of time rain occurs (``daily_rainfall_rainfall_intermittency_factor``)
     and the mean of the daily rainfall Weibull distribution
-    (``daily_rainfall__mean_intensity``).
+    (``rainfall__mean_rate``).
 
     Note that **PrecipChanger** increments time at the end of the
     **run_one_step** method.
@@ -282,43 +273,41 @@ class PrecipChanger(object):
     def __init__(
         self,
         grid,
-        daily_rainfall__intermittency_factor,
-        daily_rainfall__intermittency_factor_time_rate_of_change,
-        daily_rainfall__mean_intensity,
-        daily_rainfall__mean_intensity_time_rate_of_change,
-        daily_rainfall__precipitation_shape_factor=0.65,
-        time_unit="year",
-        infiltration_capacity=0,
+        daily_rainfall__intermittency_factor=None,
+        daily_rainfall__intermittency_factor_time_rate_of_change=None,
+        rainfall__mean_rate=None,
+        rainfall__mean_rate_time_rate_of_change=None,
+        rainfall__shape_factor=None,
+        infiltration_capacity=None,
         m_sp=0.5,
         precipchanger_start_time=0,
         precipchanger_stop_time=None,
         length_factor=1.0,
         **kwargs
     ):
-
         """
         Parameters
         ----------
         grid : landlab model grid
-        daily_rainfall_daily_rainfall_intermittency_factor : float
-            Starting value of the rainfall daily_rainfall_intermittency_factor :math:`F`. This
+        daily_rainfall_intermittency_factor : float, optional
+            Starting value of the daily rainfall intermittency factor :math:`F`. This
             value is a proportion and ranges from 0 (no rain ever) to 1 (rains
             every day).
-        daily_rainfall_daily_rainfall_intermittency_factor__time_rate_of_change : float
-            Time rate of change of the rainfall daily_rainfall_intermittency_factor :math:`F`.
+        daily_rainfall_intermittency_factor__time_rate_of_change : float, optional
+            Time rate of change of the daily rainfall intermittency factor :math:`F`.
             Units are implied by the ``time_unit`` argument. Note that this
             factor must always be between 0 and 1.
-        daily_rainfall__mean_intensity : float
+        rainfall__mean_rate : float, optional
             Starting value of the mean daily rainfall intensity :math:`p_d`.
             Units are implied by the ``time_unit`` argument.
-        daily_rainfall__mean_intensity__time_rate_of_change : float
+        rainfall__mean_rate__time_rate_of_change : float, optional
             Time rate of change of the mean daily rainfall intensity :math:`p_d`.
             Units are implied by the ``time_unit`` argument.
-        daily_rainfall__precipitation_shape_factor : float, optional
-            Weibull distribution shape factor :math:`c`. Default value is 0.65.
+        rainfall__shape_factor : float, optional
+            Weibull distribution shape factor :math:`c`.
         infiltration_capacity : float, optional
             Infiltration capacity. Time units are implied by the ``time_unit``
-            argument. Default value is 0.
+            argument.
         m_sp : float, optional
             Drainage area exponent in erosion rule, :math:`m`.  Default value is
             0.5.
@@ -326,11 +315,8 @@ class PrecipChanger(object):
             Model time at which changing the precipitation should start. Default
             is at the onset of the model run.
         precipchanger_stop_time : float, optional
-            Model Time at which changing the precipitation statistics should end.
+            Model time at which changing the precipitation statistics should end.
             Default is no end time.
-        time_unit : str, optional
-            Time unit of input parameters. Currently only 'second', 'day', and
-            'year' are supported. Default value is 'year'.
         length_factor : float, optional
             terrainbento model internal length factor conversion related to
             ``meters_to_feet`` and ``feet_to_meters`` input parameters. Default
@@ -338,11 +324,11 @@ class PrecipChanger(object):
 
         Notes
         -----
-        The time units of ``daily_rainfall__mean_intensity``,
-        ``daily_rainfall__mean_intensity_time_rate_of_change``, and
+        The time units of ``rainfall__mean_rate``,
+        ``rainfall__mean_rate_time_rate_of_change``, and
         ``infiltration_capacity`` are all assumed to be the same.
 
-        The value passed by ``time_unit`` **IS** assumed to be consistent with
+        The value passed by ``time_unit`` is assumed to be consistent with
         the time units of `dt`.
 
         The length units are assumed to be consistent with the model grid
@@ -361,11 +347,10 @@ class PrecipChanger(object):
         >>> bh = PrecipChanger(mg,
         ...                    daily_rainfall__intermittency_factor = 0.3,
         ...                    daily_rainfall__intermittency_factor_time_rate_of_change = 0.01,
-        ...                    daily_rainfall__mean_intensity = 3.0,
-        ...                    daily_rainfall__mean_intensity_time_rate_of_change = 0.2,
-        ...                    daily_rainfall__precipitation_shape_factor = 0.65,
-        ...                    infiltration_capacity = 0,
-        ...                    time_unit = 'day')
+        ...                    rainfall__mean_rate = 3.0,
+        ...                    rainfall__mean_rate_time_rate_of_change = 0.2,
+        ...                    rainfall__shape_factor = 0.65,
+        ...                    infiltration_capacity = 0)
 
         We can get the current precipitation parameters
 
@@ -373,8 +358,8 @@ class PrecipChanger(object):
         >>> print(I)
         0.3
 
-        Note that ``daily_rainfall__mean_intensity`` is provided in units of
-        length per year, but is used by the
+        Note that ``rainfall__mean_rate`` is provided in units of
+        length per year.
 
         >>> print(pd)
         3.0
@@ -398,22 +383,34 @@ class PrecipChanger(object):
         >>> print(round(fw, 3))
         1.721
         """
+        if daily_rainfall__intermittency_factor is None:
+            msg = "terrainbento PrecipChanger requires the parameter daily_rainfall__intermittency_factor"
+            raise ValueError(msg)
+
+        if daily_rainfall__intermittency_factor_time_rate_of_change is None:
+            msg = "terrainbento PrecipChanger requires the parameter daily_rainfall__intermittency_factor_time_rate_of_change"
+            raise ValueError(msg)
+
+        if rainfall__mean_rate is None:
+            msg = (
+                "terrainbento PrecipChanger requires the parameter rainfall__mean_rate"
+            )
+            raise ValueError(msg)
+
+        if rainfall__mean_rate_time_rate_of_change is None:
+            msg = "terrainbento PrecipChanger requires the parameter rainfall__mean_rate_time_rate_of_change"
+            raise ValueError(msg)
+
+        if rainfall__shape_factor is None:
+            msg = "terrainbento PrecipChanger requires the parameter rainfall__shape_factor"
+            raise ValueError(msg)
+
+        if infiltration_capacity is None:
+            msg = "terrainbento PrecipChanger requires the parameter infiltration_capacity"
+            raise ValueError(msg)
+
         self.model_time = 0.0
         self._length_factor = length_factor
-
-        if time_unit == "year":
-            self._time_conversion = DAYS_PER_YEAR
-        elif time_unit == "day":
-            self._time_conversion = DAYS_PER_DAY
-        elif time_unit == "second":
-            self._time_conversion = DAYS_PER_SECOND
-        else:
-            raise ValueError(
-                (
-                    "time_unit provided is invalid. Valid options "
-                    'are "second", "day" and "year".'
-                )
-            )
 
         if precipchanger_stop_time is None:
             self.no_stop_time = True
@@ -425,25 +422,15 @@ class PrecipChanger(object):
         self.starting_frac_wet_days = daily_rainfall__intermittency_factor
         self.frac_wet_days_rate_of_change = (
             daily_rainfall__intermittency_factor_time_rate_of_change
-            / self._time_conversion
         )
 
-        self.starting_daily_mean_depth = (
-            daily_rainfall__mean_intensity / self._time_conversion * self._length_factor
-        )
+        self.starting_daily_mean_depth = rainfall__mean_rate * self._length_factor
         self.mean_depth_rate_of_change = (
-            daily_rainfall__mean_intensity_time_rate_of_change
-            / self._time_conversion
-            * self._length_factor
+            rainfall__mean_rate_time_rate_of_change * self._length_factor
         )
 
-        self.daily_rainfall__precipitation_shape_factor = (
-            daily_rainfall__precipitation_shape_factor
-        )
-        self.time_unit = time_unit
-        self.infilt_cap = (
-            infiltration_capacity / self._time_conversion * self._length_factor
-        )
+        self.rainfall__shape_factor = rainfall__shape_factor
+        self.infilt_cap = infiltration_capacity * self._length_factor
 
         self.m = m_sp
 
@@ -473,20 +460,12 @@ class PrecipChanger(object):
         distribution of daily precipitation intensity at model run onset.
 
         """
-        lam = _scale_fac(
-            self.starting_daily_mean_depth,
-            self.daily_rainfall__precipitation_shape_factor,
-        )
+        lam = _scale_fac(self.starting_daily_mean_depth, self.rainfall__shape_factor)
         psi, abserror = quad(
             _integrand,
             self.infilt_cap,
             np.inf,
-            args=(
-                self.infilt_cap,
-                lam,
-                self.daily_rainfall__precipitation_shape_factor,
-                self.m,
-            ),
+            args=(self.infilt_cap, lam, self.rainfall__shape_factor, self.m),
         )
         return psi
 
@@ -495,8 +474,8 @@ class PrecipChanger(object):
 
         Returns
         -------
-        daily_rainfall_daily_rainfall_intermittency_factor : float
-        daily_rainfall__mean_intensity : float
+        daily_rainfall_rainfall_intermittency_factor : float
+        rainfall__mean_rate : float
 
         """
         # if after start time
@@ -504,12 +483,12 @@ class PrecipChanger(object):
 
             # get current evaluation time
             if self.no_stop_time:
-                time = self.model_time * self._time_conversion
+                time = self.model_time
             else:
                 if self.model_time > self.stop_time:
-                    time = self.stop_time * self._time_conversion
+                    time = self.stop_time
                 else:
-                    time = self.model_time * self._time_conversion
+                    time = self.model_time
 
             # calculate and return updated values
             frac_wet_days = (
@@ -549,21 +528,14 @@ class PrecipChanger(object):
             frac_wet, mean_depth = self.get_current_precip_params()
 
             # calculate the mean intensity and the scale factor
-            lam = _scale_fac(
-                mean_depth, self.daily_rainfall__precipitation_shape_factor
-            )
+            lam = _scale_fac(mean_depth, self.rainfall__shape_factor)
 
             # calculate current value of Psi
             psi, err = quad(
                 _integrand,
                 self.infilt_cap,
                 np.inf,
-                args=(
-                    self.infilt_cap,
-                    lam,
-                    self.daily_rainfall__precipitation_shape_factor,
-                    self.m,
-                ),
+                args=(self.infilt_cap, lam, self.rainfall__shape_factor, self.m),
             )
 
             # calculate the adjustment factor

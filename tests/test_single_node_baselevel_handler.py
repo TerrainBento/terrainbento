@@ -1,12 +1,7 @@
 # coding: utf8
 #! /usr/env/python
 
-import sys
 import os
-
-import numpy as np
-
-from numpy.testing import assert_almost_equal
 import pytest
 
 from terrainbento.boundary_condition_handlers import SingleNodeBaselevelHandler
@@ -15,13 +10,13 @@ from landlab import RasterModelGrid, HexModelGrid
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def text_hex():
+def test_hex():
     "Test using a hex grid"
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
 
-    bh = SingleNodeBaselevelHandler(mg, outlet_node=0, lowering_rate=0.1)
+    bh = SingleNodeBaselevelHandler(mg, outlet_node=0, lowering_rate=-0.1)
     bh.run_one_step(10.0)
 
     assert z[1] == 0.0
@@ -31,9 +26,10 @@ def text_hex():
 def test_passing_neither_lowering_method():
     """Test passing no lowering information"""
     mg = RasterModelGrid(5, 5)
-    z = mg.add_zeros("node", "topographic__elevation")
+    _ = mg.add_zeros("node", "topographic__elevation")
 
-    pytest.raises(ValueError, SingleNodeBaselevelHandler, mg, outlet_node=0)
+    with pytest.raises(ValueError):
+        SingleNodeBaselevelHandler(mg, outlet_node=0)
 
 
 def test_passing_both_lowering_methods():
@@ -42,14 +38,10 @@ def test_passing_both_lowering_methods():
     z = mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
-    pytest.raises(
-        ValueError,
-        SingleNodeBaselevelHandler,
-        mg,
-        outlet_node=0,
-        lowering_rate=-0.1,
-        lowering_file_path=file,
-    )
+    with pytest.raises(ValueError):
+        SingleNodeBaselevelHandler(
+            mg, outlet_node=0, lowering_rate=-0.1, lowering_file_path=file
+        )
 
 
 def test_outlet_lowering_object_bad_file():
@@ -58,13 +50,8 @@ def test_outlet_lowering_object_bad_file():
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
 
-    pytest.raises(
-        ValueError,
-        SingleNodeBaselevelHandler,
-        mg,
-        outlet_node=0,
-        lowering_file_path="foo.txt",
-    )
+    with pytest.raises(ValueError):
+        SingleNodeBaselevelHandler(mg, outlet_node=0, lowering_file_path="foo.txt")
 
 
 def test_outlet_lowering_rate_no_scaling_bedrock():

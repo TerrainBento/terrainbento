@@ -40,9 +40,8 @@ class BasicHyVs(ErosionModel):
     :math:`K` is the erodability by water, :math:`\omega_c` is the critical
     stream power needed for erosion to occur, :math:`V` is effective sediment
     settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`Q` is
-    volumetric water discharge, :math:`\phi` is sediment porosity, :math:`D` is
-    the regolith transport efficiency, :math:`H` is soil depth, and :math:`H_*`
-    is the bedrock roughness length scale.
+    volumetric water discharge, :math:`\phi` is sediment porosity, and
+    :math:`D` is the regolith transport efficiency.
 
     :math:`\\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
@@ -82,9 +81,7 @@ class BasicHyVs(ErosionModel):
 
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -94,9 +91,6 @@ class BasicHyVs(ErosionModel):
         params : dict
             Dictionary containing the input file. One of input_file or params is
             required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
@@ -152,10 +146,7 @@ class BasicHyVs(ErosionModel):
 
         # Call ErosionModel's init
         super(BasicHyVs, self).__init__(
-            input_file=input_file,
-            params=params,
-            BoundaryHandlers=BoundaryHandlers,
-            OutputWriters=OutputWriters,
+            input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
         self.m = self.params["m_sp"]

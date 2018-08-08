@@ -11,9 +11,9 @@ class NotCoreNodeBaselevelHandler(object):
     """Control the elevation of all nodes that are not core nodes.
 
     The **NotCoreNodeBaselevelHandler** controls the elevation of all nodes on
-    the model grid with ``status != 0`` (core nodes). The elevation change at
-    these nodes is specified either as a constant rate, or through a
-    text file that specifies the elevation change through time.
+    the model grid with ``status != 0`` (i.e., all not-core nodes). The
+    elevation change at these nodes is specified either as a constant rate, or
+    through a text file that specifies the elevation change through time.
 
     Through the parameter ``modify_core_nodes`` the user can determine if the
     core nodes should be moved in the direction (up or down) specified by the
@@ -228,10 +228,12 @@ class NotCoreNodeBaselevelHandler(object):
             self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
 
             # if bedrock__elevation exists as a field, lower it also
-            if "bedrock__elevation" in self._grid.at_node:
-                self._grid.at_node["bedrock__elevation"][self.nodes_to_lower] += (
-                    self.prefactor * self.lowering_rate * dt
-                )
+            other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
+            for of in other_fields:
+                if of in self._grid.at_node:
+                    self._grid.at_node[of][self.nodes_to_lower] += (
+                        self.prefactor * self.lowering_rate * dt
+                    )
 
         # if there is an outlet elevation object
         else:
@@ -242,10 +244,12 @@ class NotCoreNodeBaselevelHandler(object):
             mean_z = np.mean(self.z[self.nodes_to_lower])
             self.topo_change = mean_z - self.outlet_elevation_obj(self.model_time)
 
-            if "bedrock__elevation" in self._grid.at_node:
-                self._grid.at_node["bedrock__elevation"][
-                    self.nodes_to_lower
-                ] -= self.topo_change
+            other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
+            for of in other_fields:
+                if of in self._grid.at_node:
+                    self._grid.at_node[of][
+                        self.nodes_to_lower
+                    ] -= self.topo_change
 
             # lower topography
             self.z[self.nodes_to_lower] -= self.topo_change

@@ -14,3 +14,5 @@ by all two-lithology models.
 from .erosion_model import ErosionModel
 from .stochastic_erosion_model import StochasticErosionModel
 from .two_lithology_erosion_model import TwoLithologyErosionModel
+
+__all__ = ["ErosionModel", "StochasticErosionModel", "TwoLithologyErosionModel"]

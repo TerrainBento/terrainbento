@@ -11,7 +11,7 @@ from terrainbento.base_class import TwoLithologyErosionModel
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
-file_name = os.path.join(_TEST_DATA_DIR, "example_for_weight.txt")
+file_name = os.path.join(_TEST_DATA_DIR, "example_for_weight.asc")
 
 
 def test_no_contact_zone_width():

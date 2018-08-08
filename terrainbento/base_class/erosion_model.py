@@ -1,6 +1,6 @@
 # coding: utf8
 #! /usr/env/python
-"""Base class for common functions of all terrainbentoerosion models.
+"""Base class for common functions of all terrainbento erosion models.
 
 The **ErosionModel** is a base class that contains all of the functionality
 shared by the terrainbento models.
@@ -84,7 +84,7 @@ Parameters that control creation of a synthetic RasterModelGrid
 These parameters control the size, shape, and model boundary conditions of a
 synthetic ``RasterModelGrid``.  These parameters are used if neither
 ``DEM_filename`` nor ``'model_grid'`` is specified or if
-`model_grid == 'RasterModelGrid'``.
+``model_grid == 'RasterModelGrid'``.
 
 number_of_node_rows : int, optional
     Number of node rows. Default is 4.
@@ -116,16 +116,19 @@ initial_elevation : float, optional
 random_seed : int, optional
     Default value is 0.
 add_random_noise : boolean, optional
-    Default value is True.
+    Default value is False.
 initial_noise_std : float, optional
     Standard deviation of zero-mean, normally distributed random perturbations
     to initial node elevations. Default value is 0.
 add_noise_to_all_nodes : bool, optional
     When False, noise is added to core nodes only. Default value is False.
+add_initial_elevation_to_all_nodes : boolean, optional
+    When False, initial elevation is added to core nodes only. Default value is
+    True.
 
 Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-terrainbentoprovides the ability for an arbitrary number of boundary
+terrainbento provides the ability for an arbitrary number of boundary
 condition handler classes to operate on the model grid each time step in order
 to handle time-variable boundary conditions such as: changing a watershed outlet
 elevation, modifying precipitation parameters through time, or simulating
@@ -163,7 +166,7 @@ feet_to_meters : boolean, optional
 
 Parameters that control surface hydrology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-terrainbentouses the Landlab FlowAccumulator component to manage surface
+terrainbento uses the Landlab FlowAccumulator component to manage surface
 hydrology. These parameters control options associated with this component.
 
 flow_director : str, optional
@@ -190,8 +193,15 @@ is a list of model grid fields to write as output.
 """
 
 import sys
+import os
+
+import six
 import time as tm
 import numpy as np
+from types import FunctionType
+
+import xarray as xr
+import dask
 
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
@@ -199,7 +209,7 @@ from landlab import load_params
 from landlab.io.netcdf import write_raster_netcdf
 from landlab.graph import Graph
 
-from landlab import Component, CLOSED_BOUNDARY
+from landlab import CLOSED_BOUNDARY
 from landlab.components import FlowAccumulator, NormalFault
 
 from terrainbento.boundary_condition_handlers import (
@@ -207,6 +217,7 @@ from terrainbento.boundary_condition_handlers import (
     CaptureNodeBaselevelHandler,
     NotCoreNodeBaselevelHandler,
     SingleNodeBaselevelHandler,
+    GenericFuncBaselevelHandler,
 )
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
@@ -215,6 +226,7 @@ _SUPPORTED_BOUNDARY_HANDLERS = [
     "CaptureNodeBaselevelHandler",
     "NotCoreNodeBaselevelHandler",
     "SingleNodeBaselevelHandler",
+    "GenericFuncBaselevelHandler",
 ]
 
 _HANDLER_METHODS = {
@@ -223,6 +235,7 @@ _HANDLER_METHODS = {
     "CaptureNodeBaselevelHandler": CaptureNodeBaselevelHandler,
     "NotCoreNodeBaselevelHandler": NotCoreNodeBaselevelHandler,
     "SingleNodeBaselevelHandler": SingleNodeBaselevelHandler,
+    "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
 
 
@@ -243,9 +256,7 @@ class ErosionModel(object):
     existing **run_for**, **run**, and **finalize** methods.
     """
 
-    def __init__(
-        self, input_file=None, params=None, BoundaryHandlers=None, OutputWriters=None
-    ):
+    def __init__(self, input_file=None, params=None, OutputWriters=None):
         """
         Parameters
         ----------
@@ -255,16 +266,13 @@ class ErosionModel(object):
         params : dict
             Dictionary containing the input file. One of input_file or params
             is required.
-        BoundaryHandlers : class or list of classes, optional
-            Classes used to handle boundary conditions. Alternatively can be
-            passed by input file as string. Valid options described above.
         OutputWriters : class, function, or list of classes and/or functions,
-            optional Classes or functions used to write incremental output
+            Optional classes or functions used to write incremental output
             (e.g. make a diagnostic plot).
 
         Returns
         -------
-        ErosionModel : object
+        ErosionModel: object
 
         Examples
         --------
@@ -303,7 +311,7 @@ class ErosionModel(object):
         for req in ["dt", "output_interval", "run_duration"]:
             if req in self.params:
                 try:
-                    val = float(self.params[req])
+                    _ = float(self.params[req])
                 except ValueError:
                     msg = (
                         "Required parameter {0} is not compatible with type float.".format(
@@ -320,6 +328,7 @@ class ErosionModel(object):
         # default behavior is to not save the first timestep
         self.save_first_timestep = self.params.get("save_first_timestep", True)
         self._out_file_name = self.params.get("output_filename", "terrainbento_output")
+        self._output_files = []
         # instantiate model time.
         self._model_time = 0.
 
@@ -368,7 +377,7 @@ class ErosionModel(object):
         # Add fields for initial topography and cumulative erosion depth
         z0 = self.grid.add_zeros("node", "initial_topographic__elevation")
         z0[:] = self.z  # keep a copy of starting elevation
-        self.grid.add_zeros("node", "cumulative_erosion__depth")
+        self.grid.add_zeros("node", "cumulative_elevation_change")
 
         # identify which nodes are data nodes:
         self.data_nodes = self.grid.at_node["topographic__elevation"] != -9999.
@@ -420,9 +429,6 @@ class ErosionModel(object):
         if "BoundaryHandlers" in self.params:
             BoundaryHandlers = self.params["BoundaryHandlers"]
 
-        if BoundaryHandlers is None:
-            pass
-        else:
             if isinstance(BoundaryHandlers, list):
                 for comp in BoundaryHandlers:
                     self.setup_boundary_handler(comp)
@@ -433,9 +439,7 @@ class ErosionModel(object):
         # Output Writers
         ###################################################################
         self.output_writers = {"class": {}, "function": []}
-        if OutputWriters is None:
-            pass
-        else:
+        if OutputWriters is not None:
             if isinstance(OutputWriters, list):
                 for comp in OutputWriters:
                     self.setup_output_writer(comp)
@@ -447,10 +451,10 @@ class ErosionModel(object):
         """Return current time of model integration in model time units."""
         return self._model_time
 
-    def setup_boundary_handler(self, handler):
+    def setup_boundary_handler(self, name):
         """ Setup BoundaryHandlers for use by a terrainbento model.
 
-        A boundary condition handler is a class with a run_one_step method that
+        A boundary condition handler is a class with a **run_one_step** method that
         takes the parameter ``dt``. Permitted boundary condition handlers
         include the Landlab Component ``NormalFault`` as well as the following
         options from terrainbento: **PrecipChanger**,
@@ -459,31 +463,9 @@ class ErosionModel(object):
 
         Parameters
         ----------
-        handler : str or object
-            Name of instance of a supported boundary condition handler.
+        handler : str
+            Name of a supported boundary condition handler.
         """
-        try:  # if handler is an uninstantiated component
-            name = handler._name
-
-            if isinstance(handler, Component):
-                raise ValueError(
-                    (
-                        "Object passed to terrainbento is instantiated "
-                        ". This is not permitted."
-                    )
-                )
-        except AttributeError:
-            try:  # if handler is a string
-                name = handler
-                handler = _HANDLER_METHODS[name]
-            except KeyError:
-                raise ValueError(
-                    (
-                        "Object passed to terrainbento init is not a "
-                        "valid Boundary Handler."
-                    )
-                )
-
         if name in _SUPPORTED_BOUNDARY_HANDLERS:
 
             # if unique parameters for the boundary condition handler have
@@ -492,11 +474,28 @@ class ErosionModel(object):
                 handler_params = self.params[name]
                 handler_params["length_factor"] = self._length_factor
 
+                # check that values in handler params are not different than
+                # equivalents in params, if they exist.
+                for par in handler_params:
+                    if par in self.params:
+                        if handler_params[par] != self.params[par]:
+                            msg = (
+                                "terrainbento ErosionModel: "
+                                "parameter " + par + " provided is different "
+                                "in the main parameter dictionary and the "
+                                "handler dictionary. You probably don't "
+                                "want this. If you think you can't do your "
+                                "research without this functionality, make "
+                                "a GitHub Issue that requests it. "
+                            )
+                            raise ValueError(msg)
+
             # otherwise pass all parameters
             else:
                 handler_params = self.params
 
             # Instantiate handler
+            handler = _HANDLER_METHODS[name]
             self.boundary_handler[name] = handler(self.grid, **handler_params)
 
         # Raise an error if the handler is not supported.
@@ -516,7 +515,7 @@ class ErosionModel(object):
         output, calculate a loss function, or do some other task that is not
         inherent to running a terrainbento model but is desired by the
         user. An example might be making a plot of topography while the model
-        is running. terrainbentosaves output to NetCDF format at each
+        is running. terrainbento saves output to NetCDF format at each
         interval defined by the parameter ``'output_interval'``.
 
         If a class, an OutputWriter will be instantiated with only one passed
@@ -531,11 +530,11 @@ class ErosionModel(object):
         writer : function or class
             An OutputWriter function or class
         """
-        if isinstance(writer, object):
+        if isinstance(writer, FunctionType):
+            self.output_writers["function"].append(writer)
+        else:
             name = writer.__name__
             self.output_writers["class"][name] = writer(self)
-        else:
-            self.output_writers["function"].append(writer)
 
     def setup_hexagonal_grid(self):
         """Create hexagonal grid based on input parameters.
@@ -722,24 +721,45 @@ class ErosionModel(object):
         If noise or initial elevation is added, it will only be added to the
         core nodes.
         """
-        add_noise = self.params.get("add_random_noise", True)
+        add_noise = self.params.get("add_random_noise", False)
         init_z = self.params.get("initial_elevation", 0.0)
         init_sigma = self.params.get("initial_noise_std", 0.0)
         seed = self.params.get("random_seed", 0)
         self.z = self.grid.add_zeros("node", "topographic__elevation")
         noise_location = self.params.get("add_noise_to_all_nodes", False)
-        np.random.seed(seed)
+        init_z_location = self.params.get("add_initial_elevation_to_all_nodes", True)
 
-        if noise_location:
-            noise_nodes = np.arange(self.grid.size("node"))
-        else:
-            noise_nodes = self.grid.core_nodes
+        if init_z != 0.0:
+            if init_z_location:
+                init_z_nodes = np.arange(self.grid.size("node"))
+            else:
+                init_z_nodes = self.grid.core_nodes
+            self.z[init_z_nodes] += init_z
 
         if add_noise:
+            if init_sigma <= 0:
+                msg = (
+                    "terrainbento ErosionModel: initial_noise_std is <= 0 "
+                    "and add_random_noise is True. This is an error."
+                )
+                raise ValueError(msg)
+
+            np.random.seed(seed)
+            if noise_location:
+                noise_nodes = np.arange(self.grid.size("node"))
+            else:
+                noise_nodes = self.grid.core_nodes
+
             rs = np.random.randn(noise_nodes.size)
-            self.z[noise_nodes] += init_z + (init_sigma * rs)
+            self.z[noise_nodes] += init_sigma * rs
         else:
-            self.z[noise_nodes] += init_z
+            if noise_location:
+                msg = (
+                    "terrainbento ErosionModel: `add_random_noise` is False "
+                    "but `add_noise_to_all_nodes` is set as True. This "
+                    "parameter has no effect."
+                )
+                raise ValueError(msg)
 
     def _setup_synthetic_boundary_conditions(self):
         """Set up boundary conditions for synthetic grids."""
@@ -796,8 +816,17 @@ class ErosionModel(object):
         try:
             (grid, vals) = read_esri_ascii(file_path, name=name, halo=halo)
         except:
-            grid = read_netcdf(file_path)
-            vals = grid.at_node[name]
+            try:
+                grid = read_netcdf(file_path)
+                vals = grid.at_node[name]
+            except:
+                msg = (
+                    "terrainbento ErosionModel base class: the parameter "
+                    "provided in 'DEM_filename' is not a valid ESRII ASCII file "
+                    "or NetCDF file."
+                )
+                raise ValueError(msg)
+
         return (grid, vals)
 
     def get_parameter_from_exponent(self, param_name, raise_error=True):
@@ -807,7 +836,7 @@ class ErosionModel(object):
         ----------
         parameter_name : str
         raise_error : boolean
-            Raise an error if parameter doesn not exist. Default is True.
+            Raise an error if parameter does not exist. Default is True.
 
         Returns
         -------
@@ -819,7 +848,7 @@ class ErosionModel(object):
         >>> from landlab import HexModelGrid
         >>> from terrainbento import ErosionModel
 
-        Sometimes in makes sense to provide a parameter as an exponent (base 10).
+        Sometimes it makes sense to provide a parameter as an exponent (base 10).
         If the string `'_exp'` is attached to the end of the name in the input
         dictionary, this function can help.
 
@@ -863,29 +892,24 @@ class ErosionModel(object):
 
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
-        self.grid.at_node["cumulative_erosion__depth"] = (
+        self.grid.at_node["cumulative_elevation_change"][:] = (
             self.grid.at_node["topographic__elevation"]
             - self.grid.at_node["initial_topographic__elevation"]
         )
 
-    def write_output(self, field_names=None):
+    def write_output(self):
         """Write output to file as a netCDF.
 
         Filenames will have the value of ``'output_filename'`` from the input
-        file or paramter dictionary as the first part of the file name and the
+        file or parameter dictionary as the first part of the file name and the
         model run iteration as the second part of the filename.
-
-        Parameters
-        ----------
-        output_fields : list of str, optional
-            List of model grid fields to write as output. Default is to write
-            out all fields.
         """
         self.calculate_cumulative_change()
         filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
+        self._output_files.append(filename)
         try:
             write_raster_netcdf(
-                filename, self.grid, names=field_names, format="NETCDF4"
+                filename, self.grid, names=self.output_fields, format="NETCDF4"
             )
         except NotImplementedError:
             graph = Graph.from_dict(
@@ -896,12 +920,7 @@ class ErosionModel(object):
                 }
             )
 
-            if field_names:
-                pass
-            else:
-                field_names = self.grid.at_node.keys()
-
-            for field_name in field_names:
+            for field_name in self.output_fields:
 
                 graph._ds.__setitem__(
                     field_name, ("node", self.grid.at_node[field_name])
@@ -961,19 +980,29 @@ class ErosionModel(object):
             List of model grid fields to write as output. Default is to write
             out all fields.
         """
+        self._itters = []
+        if output_fields is None:
+            output_fields = self.grid.at_node.keys()
+        if isinstance(output_fields, six.string_types):
+            output_fields = [output_fields]
+        self.output_fields = output_fields
+
         if self.save_first_timestep:
             self.iteration = 0
-            self.write_output(field_names=output_fields)
+            self._itters.append(0)
+            self.write_output()
         total_run_duration = self.params["run_duration"]
         output_interval = self.params["output_interval"]
         self.iteration = 1
+        self._itters.append(1)
         time_now = self._model_time
         while time_now < total_run_duration:
             next_run_pause = min(time_now + output_interval, total_run_duration)
             self.run_for(self.params["dt"], next_run_pause - time_now)
             time_now = next_run_pause
-            self.write_output(field_names=output_fields)
+            self.write_output()
             self.iteration += 1
+            self._itters.append(self.iteration)
 
         # now that the model is finished running, execute finalize.
         self.finalize()
@@ -982,7 +1011,7 @@ class ErosionModel(object):
         """Run all output writers."""
         if self.output_writers is not None:
             for name in self.output_writers["class"]:
-                self.output_writers[name].run_one_step()
+                self.output_writers["class"][name].run_one_step()
             for function in self.output_writers["function"]:
                 function(self)
 
@@ -999,6 +1028,84 @@ class ErosionModel(object):
             for handler_name in self.boundary_handler:
                 self.boundary_handler[handler_name].run_one_step(dt)
 
+    def to_xarray_dataset(self, time_unit='time units', reference_time='model start', space_unit='space units'):
+        """Convert model output to an xarray dataset.
+
+        If you would like to have CF compliant NetCDF make sure that your time
+        and space units and reference times will work with standard decoding.
+
+        The default time unit and reference time will give the time dimention a
+        value of "time units since model start". The default space unit will
+        give a value of "space unit".
+
+        Parameters
+        ----------
+        time_unit: str, optional
+            Name of time unit. Default is "time units".
+        reference time: str, optional
+            Reference tim. Default is "model start".
+        space_unit: str, optional
+            Name of space unit. Default is "space unit".
+        """
+
+        # open all files as a xarray dataset
+        ds = xr.open_mfdataset(self._output_files,
+                           concat_dim='nt',
+                           engine='netcdf4',
+                           data_vars=self.output_fields)
+
+        # add a time dimension
+        time_array = np.asarray(self._itters[:-1]) * self.params["output_interval"]
+        time = xr.DataArray(time_array,
+                            dims=('nt'),
+                            attrs={'units': time_unit + ' since ' + reference_time,
+                                   'standard_name' : 'time'})
+
+        ds['time'] = time
+
+        # set x and y to coordinates
+        ds.set_coords(['x', 'y','time'], inplace=True)
+
+        # rename dimensions
+        ds.rename(name_dict={'ni': 'x', 'nj': 'y', 'nt':'time'}, inplace=True)
+
+        # set x and y units
+        ds['x'] = xr.DataArray(ds.x, dims=('x'), attrs={'units': space_unit})
+        ds['y'] = xr.DataArray(ds.y, dims=('y'), attrs={'units': space_unit})
+
+        return ds
+
+    def save_to_xarray_dataset(self, filename="terrainbento.nc", time_unit='time units', reference_time='model start', space_unit='space units'):
+        """Save model output to xarray dataset.
+
+        If you would like to have CF compliant NetCDF make sure that your time
+        and space units and reference times will work with standard decoding.
+
+        The default time unit and reference time will give the time dimention a
+        value of "time units since model start". The default space unit will
+        give a value of "space unit".
+
+        Parameters
+        ----------
+        filename: str, optional
+            The file path where the file should be saved. The default value is
+            "terrainbento.nc".
+        time_unit: str, optional
+            Name of time unit. Default is "time units".
+        reference time: str, optional
+            Reference tim. Default is "model start".
+        space_unit: str, optional
+            Name of space unit. Default is "space unit".
+        """
+        ds = self.to_xarray_dataset(time_unit=time_unit, space_unit=space_unit)
+        ds.to_netcdf(filename, engine='netcdf4', format='NETCDF4')
+        ds.close()
+
+    def remove_output_netcdfs(self):
+        """
+        """
+        for f in self._output_files:
+            os.remove(f)
 
 def main():  # pragma: no cover
     """Executes model."""
