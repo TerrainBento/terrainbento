@@ -27,17 +27,20 @@ class BasicHy(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\\right)\\right) + \\frac{V\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\\nabla^2 \eta
+        \\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\\right)\\right) + \\frac{V Q_s}{rA \left(1-\phi\\right)} + D\\nabla^2 \eta
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`K` is the erodability by water, :math:`\omega_c` is the critical
     stream power needed for erosion to occur, :math:`V` is effective sediment
-    settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`Q` is
-    volumetric water discharge, :math:`\phi` is sediment porosity, :math:`D` is
-    the regolith transport efficiency, :math:`H` is soil depth, and :math:`H_*`
-    is the bedrock roughness length scale.
+    settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`r` is
+    a runoff rate which presently can only be 1.0, :math:`\phi` is sediment
+    porosity, :math:`D` is the regolith transport efficiency, :math:`H` is soil
+    depth, and :math:`H_*` is the bedrock roughness length scale.
+
+    If you have use cases for which :math:`r=1.0` is not sufficient, please make
+    an Issue on GitHub.
 
     The **BasicHy** program inherits from the terrainbento **ErosionModel** base
     class. In addition to the parameters required by the base class, models
@@ -69,8 +72,6 @@ class BasicHy(ErosionModel):
     Refer to the terrainbento manuscript Table XX (URL here) for full list of
     parameter symbols, names, and dimensions.
 
-
-    XXX todo add threshold.
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
