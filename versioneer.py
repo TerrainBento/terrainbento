@@ -312,9 +312,9 @@ def get_root():
         err = (
             "Versioneer was unable to run the project root directory. "
             "Versioneer requires setup.py to be executed from "
-            "its immediate directory (like "python setup.py COMMAND"), "
+            "its immediate directory (like 'python setup.py COMMAND'), "
             "or in a way that lets it use sys.argv[0] to find the root "
-            "(like "python path/to/setup.py COMMAND")."
+            "(like 'python path/to/setup.py COMMAND')."
         )
         raise VersioneerBadRootError(err)
     try:
