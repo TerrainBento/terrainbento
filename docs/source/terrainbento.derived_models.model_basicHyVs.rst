@@ -1,7 +1,7 @@
 Model BasicHyVs
 ===============
 
-.. automodule:: terrainbento.derived_models.model_210_basicHyVs
+.. automodule:: terrainbento.derived_models.model_basicHyVs
     :members:
     :undoc-members:
     :show-inheritance:

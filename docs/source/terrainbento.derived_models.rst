@@ -15,7 +15,7 @@ Base Model
 
 .. toctree::
 
-    terrainbento.derived_models.model_000_basic
+    terrainbento.derived_models.model_basic
 
 
 One Difference Models
@@ -23,15 +23,15 @@ One Difference Models
 
 .. toctree::
 
-    terrainbento.derived_models.model_002_basicTh
-    terrainbento.derived_models.model_008_basicDd
-    terrainbento.derived_models.model_010_basicHy
-    terrainbento.derived_models.model_040_basicCh
-    terrainbento.derived_models.model_100_basicSt
-    terrainbento.derived_models.model_200_basicVs
-    terrainbento.derived_models.model_400_basicSa
-    terrainbento.derived_models.model_800_basicRt
-    terrainbento.derived_models.model_CCC_basicCv
+    terrainbento.derived_models.model_basicTh
+    terrainbento.derived_models.model_basicDd
+    terrainbento.derived_models.model_basicHy
+    terrainbento.derived_models.model_basicCh
+    terrainbento.derived_models.model_basicSt
+    terrainbento.derived_models.model_basicVs
+    terrainbento.derived_models.model_basicSa
+    terrainbento.derived_models.model_basicRt
+    terrainbento.derived_models.model_basicCv
 
 
 Two Difference Models
@@ -39,23 +39,23 @@ Two Difference Models
 
 .. toctree::
 
-    terrainbento.derived_models.model_018_basicDdHy
-    terrainbento.derived_models.model_102_basicStTh
-    terrainbento.derived_models.model_108_basicDdSt
-    terrainbento.derived_models.model_110_basicHySt
-    terrainbento.derived_models.model_202_basicThVs
-    terrainbento.derived_models.model_208_basicDdVs
-    terrainbento.derived_models.model_210_basicHyVs
-    terrainbento.derived_models.model_300_basicStVs
-    terrainbento.derived_models.model_410_basicHySa
-    terrainbento.derived_models.model_440_basicChSa
-    terrainbento.derived_models.model_600_basicSaVs
-    terrainbento.derived_models.model_802_basicRtTh
-    terrainbento.derived_models.model_808_basicDdRt
-    terrainbento.derived_models.model_810_basicHyRt
-    terrainbento.derived_models.model_840_basicChRt
-    terrainbento.derived_models.model_A00_basicRtVs
-    terrainbento.derived_models.model_C00_basicRtSa
+    terrainbento.derived_models.model_basicDdHy
+    terrainbento.derived_models.model_basicStTh
+    terrainbento.derived_models.model_basicDdSt
+    terrainbento.derived_models.model_basicHySt
+    terrainbento.derived_models.model_basicThVs
+    terrainbento.derived_models.model_basicDdVs
+    terrainbento.derived_models.model_basicHyVs
+    terrainbento.derived_models.model_basicStVs
+    terrainbento.derived_models.model_basicHySa
+    terrainbento.derived_models.model_basicChSa
+    terrainbento.derived_models.model_basicSaVs
+    terrainbento.derived_models.model_basicRtTh
+    terrainbento.derived_models.model_basicDdRt
+    terrainbento.derived_models.model_basicHyRt
+    terrainbento.derived_models.model_basicChRt
+    terrainbento.derived_models.model_basicRtVs
+    terrainbento.derived_models.model_basicRtSa
 
 
 Three Difference Models
@@ -63,4 +63,4 @@ Three Difference Models
 
 .. toctree::
 
-    terrainbento.derived_models.model_842_basicChRtTh
+    terrainbento.derived_models.model_basicChRtTh

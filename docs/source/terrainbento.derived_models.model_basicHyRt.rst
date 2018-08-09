@@ -1,7 +1,7 @@
 Model BasicHyRt
 ===============
 
-.. automodule:: terrainbento.derived_models.model_810_basicHyRt
+.. automodule:: terrainbento.derived_models.model_basicHyRt
     :members:
     :undoc-members:
     :show-inheritance:

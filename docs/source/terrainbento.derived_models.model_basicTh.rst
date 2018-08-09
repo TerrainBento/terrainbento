@@ -1,7 +1,7 @@
 Model BasicTh
 =============
 
-.. automodule:: terrainbento.derived_models.model_002_basicTh
+.. automodule:: terrainbento.derived_models.model_basicTh
     :members:
     :undoc-members:
     :show-inheritance:

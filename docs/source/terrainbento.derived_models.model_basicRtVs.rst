@@ -1,7 +1,7 @@
 Model BasicRtVs
 ===============
 
-.. automodule:: terrainbento.derived_models.model_A00_basicRtVs
+.. automodule:: terrainbento.derived_models.model_basicRtVs
     :members:
     :undoc-members:
     :show-inheritance:

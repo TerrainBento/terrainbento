@@ -1,7 +1,7 @@
 Model BasicCv
 =============
 
-.. automodule:: terrainbento.derived_models.model_CCC_basicCv
+.. automodule:: terrainbento.derived_models.model_basicCv
     :members:
     :undoc-members:
     :show-inheritance:
