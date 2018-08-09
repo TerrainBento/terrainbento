@@ -63,9 +63,8 @@ install:
 - conda info -a && conda list
 - conda config --add channels landlab
 - conda install --file=requirements.txt
-- python setup.py install
-#- conda build -q .conda-recipe --old-build-string
-#- conda install -q terrainbento --use-local
+- conda build -q .conda-recipe --old-build-string
+- conda install -q terrainbento --use-local
 
 script:
 - pytest --cov --cov-report=xml:$(pwd)/coverage.xml
