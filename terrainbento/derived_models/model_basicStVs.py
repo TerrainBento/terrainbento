@@ -40,8 +40,7 @@ class BasicStVs(StochasticErosionModel):
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable) and :math:`S` is the local
-    slope gradient. Refer to the terrainbento manuscript Table XX (URL here)
-    for parameter symbols, names, and dimensions.
+    slope gradient.
 
     This model iterates through a sequence of storm and interstorm periods.
     Given a storm precipitation intensity $P$, the discharge $Q$ [L$^3$/T]
@@ -74,6 +73,9 @@ class BasicStVs(StochasticErosionModel):
     +------------------+----------------------------------+
     |:math:`K_s`       | ``hydraulic_conductivity``       |
     +------------------+----------------------------------+
+
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     For information about the stochastic precipitation and runoff model used,
     see the documentation for **BasicSt** and the base class

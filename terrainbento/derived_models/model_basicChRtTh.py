@@ -53,9 +53,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
     contact zone and the width of the contact zone. :math:`N` is the number of
     terms in the Taylor Series expansion. Presently :math:`N` is set at 11 and
-    is not a user defined parameter. Refer to the terrainbento manuscript
-    Table XX (URL here) for parameter symbols, names, and dimensions.
-    
+    is not a user defined parameter.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -91,8 +89,8 @@ class BasicChRtTh(TwoLithologyErosionModel):
     |:math:`S_c`         | ``critical_slope``                      |
     +--------------------+-----------------------------------------+
 
-    Refer to the terrainbento manuscript Table XX (URL here) for full list of
-    parameter symbols, names, and dimensions.
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     *Specifying the Lithology Contact*
 

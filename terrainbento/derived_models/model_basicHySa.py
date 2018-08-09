@@ -52,14 +52,11 @@ class BasicHySa(ErosionModel):
 
     .. math::
 
-        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta.
+        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \\nabla \eta.
 
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.
-
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
 
     The **BasicHySa** program inherits from the terrainbento **ErosionModel**
     base class. In addition to the parameters required by the base class, models
@@ -100,8 +97,8 @@ class BasicHySa(ErosionModel):
     adaptive internal timestep is used. Refer to the **Space** documentation for
     details.
 
-    Refer to the terrainbento manuscript Table XX (URL here) for full list of
-    parameter symbols, names, and dimensions.
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     """
 

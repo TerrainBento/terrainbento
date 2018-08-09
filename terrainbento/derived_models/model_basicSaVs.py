@@ -90,8 +90,8 @@ class BasicSaVs(ErosionModel):
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
 
-    Refer to the terrainbento manuscript Table XX (URL here) for full list of
-    parameter symbols, names, and dimensions.
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     """
 

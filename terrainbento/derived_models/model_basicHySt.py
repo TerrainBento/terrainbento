@@ -39,9 +39,7 @@ class BasicHySt(StochasticErosionModel):
     indicates that it is a random-in-time variable), :math:`E` is the bed erosion
     (entrainment) rate due to fluid entrainment, :math:`D_s` is the deposition
     rate of sediment settling out of active transport, and :math:`D` is the
-    regolith transport parameter. Refer to the terrainbento
-    manuscript Table XX (URL here) for parameter symbols, names, and
-    dimensions.
+    regolith transport parameter.
 
     **BasicHySt** inherits from the terrainbento **StochasticErosionModel**
     base class. In addition to the parameters required by the base class, models
@@ -66,6 +64,9 @@ class BasicHySt(StochasticErosionModel):
     +------------------+----------------------------------+
     |:math:`I_m`       | ``infiltration_capacity``        |
     +------------------+----------------------------------+
+
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     For information about the stochastic precipitation and runoff model used,
     see the documentation for **BasicSt** and the base class

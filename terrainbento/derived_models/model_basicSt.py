@@ -55,8 +55,8 @@ class BasicSt(StochasticErosionModel):
     |:math:`I_m`       | ``infiltration_capacity``        |
     +------------------+----------------------------------+
 
-    Refer to the terrainbento manuscript Table XX (URL here) for full list of
-    parameter symbols, names, and dimensions.
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     Model **BasicSt** models discharge and erosion across a topographic
     surface assuming (1) stochastic Poisson storm arrivals, (2) single-direction

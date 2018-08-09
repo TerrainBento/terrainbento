@@ -49,8 +49,6 @@ class BasicChRt(TwoLithologyErosionModel):
     Presently :math:`N` is set at 7 and is not a user defined parameter. :math:`w`
     is a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
     based on the depth to the contact zone and the width of the contact zone.
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -82,8 +80,8 @@ class BasicChRt(TwoLithologyErosionModel):
     |:math:`S_c`       | ``critical_slope``               |
     +------------------+----------------------------------+
 
-    Refer to the terrainbento manuscript Table XX (URL here) for full list of
-    parameter symbols, names, and dimensions.
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     *Specifying the Lithology Contact*
 

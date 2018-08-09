@@ -71,9 +71,6 @@ class BasicRtSa(TwoLithologyErosionModel):
     :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
     underlying parent material is exposed).
 
-    Refer to the terrainbento manuscript Table XX (URL here) for parameter
-    symbols, names, and dimensions.
-
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
@@ -110,8 +107,8 @@ class BasicRtSa(TwoLithologyErosionModel):
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
 
-    Refer to the terrainbento manuscript Table XX (URL here) for full list of
-    parameter symbols, names, and dimensions.
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     *Specifying the Lithology Contact*
 

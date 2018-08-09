@@ -57,9 +57,6 @@ class BasicDdSt(StochasticErosionModel):
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\\right)` and time :math:`t`.
 
-    Refer to the terrainbento manuscript Table XX (URL here)
-    for parameter symbols, names, and dimensions.
-
     **BasicDdSt** inherits from the terrainbento **StochasticErosionModel** base
     class. In addition to the parameters required by the base class, models
     built with this program require the following parameters:
@@ -79,6 +76,9 @@ class BasicDdSt(StochasticErosionModel):
     +--------------------+----------------------------------+
     |:math:`I_m`         | ``infiltration_capacity``        |
     +--------------------+----------------------------------+
+
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     For information about the stochastic precipitation and runoff model used,
     see the documentation for **BasicSt** and the base class

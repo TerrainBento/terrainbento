@@ -35,18 +35,18 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     3. Description of the governing equation of the model.
 
     4. A table listing the required parameters.
+
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |
     +==================+==================================+
-
     |:math:`m`         | ``m_sp``                         |
-    |:math:`n`         | ``n_sp``                         |
     +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
     +------------------+----------------------------------+
     |:math:`K`         | ``water_erodability``            |
     +------------------+----------------------------------+
-    +------------------+----------------------------------+
     |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
 
     Expand on this table to include all required parameters.
 

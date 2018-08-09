@@ -39,8 +39,7 @@ class BasicStTh(StochasticErosionModel):
     slope gradient. :math:`m` and :math:`n` are the discharge and slope
     exponent, respectively, :math:`\omega_c` is the critical stream power
     required for erosion to occur, and :math:`D` is the regolith transport
-    parameter. Refer to the terrainbento manuscript Table XX (URL here)
-    for parameter symbols, names, and dimensions.
+    parameter.
 
     **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
     class. In addition to the parameters required by the base class, models
@@ -61,6 +60,9 @@ class BasicStTh(StochasticErosionModel):
     +------------------+----------------------------------+
     |:math:`I_m`       | ``infiltration_capacity``        |
     +------------------+----------------------------------+
+
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
+    published) for full list of parameter symbols, names, and dimensions.
 
     For information about the stochastic precipitation and runoff model used,
     see the documentation for **BasicSt** and the base class
