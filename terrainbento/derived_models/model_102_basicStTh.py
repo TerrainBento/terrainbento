@@ -98,25 +98,25 @@ class BasicStTh(StochasticErosionModel):
 
         Set up a parameters variable.
 
-        >>> params = {'model_grid': 'RasterModelGrid',
-        ...           'dt': 1,
-        ...           'output_interval': 2.,
-        ...           'run_duration': 200.,
-        ...           'number_of_node_rows' : 6,
-        ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0,
-        ...           'regolith_transport_parameter': 0.001,
-        ...           'water_erodability~stochastic': 0.001,
-        ...           'water_erosion_rule__threshold': 0.2,
-        ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0,
-        ...           'opt_stochastic_duration': False,
-        ...           'number_of_sub_time_steps': 1,
-        ...           'rainfall_intermittency_factor': 0.5,
-        ...           'rainfall__mean_rate': 1.0,
-        ...           'rainfall__shape_factor': 1.0,
-        ...           'infiltration_capacity': 1.0,
-        ...           'random_seed': 0}
+        >>> params = {"model_grid": "RasterModelGrid",
+        ...           "dt": 1,
+        ...           "output_interval": 2.,
+        ...           "run_duration": 200.,
+        ...           "number_of_node_rows" : 6,
+        ...           "number_of_node_columns" : 9,
+        ...           "node_spacing" : 10.0,
+        ...           "regolith_transport_parameter": 0.001,
+        ...           "water_erodability~stochastic": 0.001,
+        ...           "water_erosion_rule__threshold": 0.2,
+        ...           "m_sp": 0.5,
+        ...           "n_sp": 1.0,
+        ...           "opt_stochastic_duration": False,
+        ...           "number_of_sub_time_steps": 1,
+        ...           "rainfall_intermittency_factor": 0.5,
+        ...           "rainfall__mean_rate": 1.0,
+        ...           "rainfall__shape_factor": 1.0,
+        ...           "infiltration_capacity": 1.0,
+        ...           "random_seed": 0}
 
         Construct the model.
 
@@ -130,7 +130,7 @@ class BasicStTh(StochasticErosionModel):
         1.0
 
         """
-        # Call ErosionModel's init
+        # Call ErosionModel"s init
         super(BasicStTh, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )

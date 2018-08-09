@@ -136,29 +136,29 @@ class BasicHySa(ErosionModel):
 
         Set up a parameters variable.
 
-        >>> params = {'model_grid': 'RasterModelGrid',
-        ...           'dt': 1,
-        ...           'output_interval': 2.,
-        ...           'run_duration': 200.,
-        ...           'number_of_node_rows' : 6,
-        ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0,
-        ...           'regolith_transport_parameter': 0.001,
-        ...           'water_erodability~rock': 0.001,
-        ...           'water_erodability~sediment': 0.001,
-        ...           'sp_crit_br': 0,
-        ...           'sp_crit_sed': 0,
-        ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0,
-        ...           'v_sc': 0.01,
-        ...           'sediment_porosity': 0,
-        ...           'fraction_fines': 0,
-        ...           'roughness__length_scale': 0.1,
-        ...           'solver': 'basic',
-        ...           'soil_transport_decay_depth': 1,
-        ...           'soil_production__maximum_rate': 0.0001,
-        ...           'soil_production__decay_depth': 0.5,
-        ...           'soil__initial_thickness': 1.0}
+        >>> params = {"model_grid": "RasterModelGrid",
+        ...           "dt": 1,
+        ...           "output_interval": 2.,
+        ...           "run_duration": 200.,
+        ...           "number_of_node_rows" : 6,
+        ...           "number_of_node_columns" : 9,
+        ...           "node_spacing" : 10.0,
+        ...           "regolith_transport_parameter": 0.001,
+        ...           "water_erodability~rock": 0.001,
+        ...           "water_erodability~sediment": 0.001,
+        ...           "sp_crit_br": 0,
+        ...           "sp_crit_sed": 0,
+        ...           "m_sp": 0.5,
+        ...           "n_sp": 1.0,
+        ...           "v_sc": 0.01,
+        ...           "sediment_porosity": 0,
+        ...           "fraction_fines": 0,
+        ...           "roughness__length_scale": 0.1,
+        ...           "solver": "basic",
+        ...           "soil_transport_decay_depth": 1,
+        ...           "soil_production__maximum_rate": 0.0001,
+        ...           "soil_production__decay_depth": 0.5,
+        ...           "soil__initial_thickness": 1.0}
 
         Construct the model.
 
@@ -172,7 +172,7 @@ class BasicHySa(ErosionModel):
         1.0
 
         """
-        # Call ErosionModel's init
+        # Call ErosionModel"s init
         super(BasicHySa, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )

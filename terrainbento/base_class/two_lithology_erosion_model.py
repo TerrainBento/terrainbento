@@ -58,7 +58,7 @@ class TwoLithologyErosionModel(ErosionModel):
         recommend that you look at the terrainbento tutorials for examples of
         usage.
         """
-        # Call ErosionModel's init
+        # Call ErosionModel"s init
         super(TwoLithologyErosionModel, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )

@@ -154,23 +154,23 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         Set up a parameters variable.
 
-        >>> params = {'model_grid': 'RasterModelGrid',
-        ...           'dt': 1,
-        ...           'output_interval': 2.,
-        ...           'run_duration': 200.,
-        ...           'number_of_node_rows' : 6,
-        ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0,
-        ...           'regolith_transport_parameter': 0.001,
-        ...           'water_erodability~lower': 0.001,
-        ...           'water_erodability~upper': 0.01,
-        ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
-        ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0,
-        ...           'recharge_rate': 0.5,
-        ...           'soil__initial_thickness': 2.0,
-        ...           'hydraulic_conductivity': 0.1}
+        >>> params = {"model_grid": "RasterModelGrid",
+        ...           "dt": 1,
+        ...           "output_interval": 2.,
+        ...           "run_duration": 200.,
+        ...           "number_of_node_rows" : 6,
+        ...           "number_of_node_columns" : 9,
+        ...           "node_spacing" : 10.0,
+        ...           "regolith_transport_parameter": 0.001,
+        ...           "water_erodability~lower": 0.001,
+        ...           "water_erodability~upper": 0.01,
+        ...           "contact_zone__width": 1.0,
+        ...           "lithology_contact_elevation__file_name": "tests/data/example_contact_elevation.asc",
+        ...           "m_sp": 0.5,
+        ...           "n_sp": 1.0,
+        ...           "recharge_rate": 0.5,
+        ...           "soil__initial_thickness": 2.0,
+        ...           "hydraulic_conductivity": 0.1}
 
         Construct the model.
 
@@ -184,7 +184,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         1.0
 
         """
-        # Call ErosionModel's init
+        # Call ErosionModel"s init
         super(BasicRtVs, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )

@@ -126,24 +126,24 @@ class BasicSaVs(ErosionModel):
 
         Set up a parameters variable.
 
-        >>> params = {'model_grid': 'RasterModelGrid',
-        ...           'dt': 1,
-        ...           'output_interval': 2.,
-        ...           'run_duration': 200.,
-        ...           'number_of_node_rows' : 6,
-        ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0,
-        ...           'regolith_transport_parameter': 0.001,
-        ...           'soil__initial_thickness': 0.0,
-        ...           'soil_transport_decay_depth': 0.2,
-        ...           'soil_production__maximum_rate': 0.001,
-        ...           'soil_production__decay_depth': 0.1,
-        ...           'water_erodability': 0.001,
-        ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0,
-        ...           'recharge_rate': 0.5,
-        ...           'soil__initial_thickness': 2.0,
-        ...           'hydraulic_conductivity': 0.1}
+        >>> params = {"model_grid": "RasterModelGrid",
+        ...           "dt": 1,
+        ...           "output_interval": 2.,
+        ...           "run_duration": 200.,
+        ...           "number_of_node_rows" : 6,
+        ...           "number_of_node_columns" : 9,
+        ...           "node_spacing" : 10.0,
+        ...           "regolith_transport_parameter": 0.001,
+        ...           "soil__initial_thickness": 0.0,
+        ...           "soil_transport_decay_depth": 0.2,
+        ...           "soil_production__maximum_rate": 0.001,
+        ...           "soil_production__decay_depth": 0.1,
+        ...           "water_erodability": 0.001,
+        ...           "m_sp": 0.5,
+        ...           "n_sp": 1.0,
+        ...           "recharge_rate": 0.5,
+        ...           "soil__initial_thickness": 2.0,
+        ...           "hydraulic_conductivity": 0.1}
 
         Construct the model.
 
@@ -157,7 +157,7 @@ class BasicSaVs(ErosionModel):
         1.0
 
         """
-        # Call ErosionModel's init
+        # Call ErosionModel"s init
         super(BasicSaVs, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )

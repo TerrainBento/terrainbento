@@ -43,18 +43,18 @@ instantiate a synthetic grid and set the value of ``model.z`` to the values of
 the numpy array.
 
 DEM_filename : str, optional
-    File path to either an ESRII ASCII or netCDF file. Either  ``'DEM_filename'``
-    or ``'model_grid'`` must be specified.
+    File path to either an ESRII ASCII or netCDF file. Either  ``"DEM_filename"``
+    or ``"model_grid"`` must be specified.
 model_grid : str, optional
-    Either ``'RasterModelGrid'`` or ``'HexModelGrid'``.
+    Either ``"RasterModelGrid"`` or ``"HexModelGrid"``.
 
-Note that if both ``'DEM_filename'`` and ``'model_grid'`` are specified,
+Note that if both ``"DEM_filename"`` and ``"model_grid"`` are specified,
 an error will be raised.
 
 Parameters that control creation of a synthetic HexModelGrid
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 These parameters control the size, shape, and model boundary conditions of a
-synthetic HexModelGrid. They are only used if ``model_grid == 'HexModelGrid'``.
+synthetic HexModelGrid. They are only used if ``model_grid == "HexModelGrid"``.
 
 number_of_node_rows : int, optional
     Number of rows of nodes in the left column. Default is 8.
@@ -63,11 +63,11 @@ number_of_node_columns : int, optional
 node_spacing : float, optional
     Node spacing. Default is 10.0.
 orientation : str, optional
-    Either 'horizontal' (default) or 'vertical'.
+    Either "horizontal" (default) or "vertical".
 shape : str, optional
     Controls the shape of the bounding hull, i.e., are the nodes
-    arranged in a hexagon, or a rectangle? Either 'hex' (default) or
-    'rect'.
+    arranged in a hexagon, or a rectangle? Either "hex" (default) or
+    "rect".
 reorient_links : bool, optional
     Whether or not to re-orient all links to point between -45 deg
     and +135 deg clockwise from "north" (i.e., along y axis). Default
@@ -83,8 +83,8 @@ Parameters that control creation of a synthetic RasterModelGrid
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 These parameters control the size, shape, and model boundary conditions of a
 synthetic ``RasterModelGrid``.  These parameters are used if neither
-``DEM_filename`` nor ``'model_grid'`` is specified or if
-``model_grid == 'RasterModelGrid'``.
+``DEM_filename`` nor ``"model_grid"`` is specified or if
+``model_grid == "RasterModelGrid"``.
 
 number_of_node_rows : int, optional
     Number of node rows. Default is 4.
@@ -144,9 +144,9 @@ describing the functionality you would like to use in your work.
 
 BoundaryHandlers : str or list of str, optional
     Strings containing the names of classes used to handle boundary conditions.
-    Valid options are currently: 'NormalFault', 'PrecipChanger',
-    'CaptureNodeBaselevelHandler', 'NotCoreNodeBaselevelHandler', and
-    'SingleNodeBaselevelHandler'. These BoundaryHandlers are instantiated with
+    Valid options are currently: "NormalFault", "PrecipChanger",
+    "CaptureNodeBaselevelHandler", "NotCoreNodeBaselevelHandler", and
+    "SingleNodeBaselevelHandler". These BoundaryHandlers are instantiated with
     the entire parameter set unless there is an entry in the parameter
     dictionary with the name of the boundary handler that contains its own
     parameter dictionary. If this is the case, the handler-specific dictionary
@@ -176,7 +176,7 @@ hydrology. These parameters control options associated with this component.
 flow_director : str, optional
     String name of a Landlab FlowDirector. All options that the Landlab
     FlowAccumulator is compatible with are permitted. Default is
-    'FlowDirectorSteepest'.
+    "FlowDirectorSteepest".
 depression_finder : str, optional
     String name of a Landlab depression finder. Default is no depression finder.
 
@@ -190,7 +190,7 @@ save_first_timestep : bool, optional
     True.
 output_filename : str, optional
     String prefix for names of output netCDF files. Default is
-    ``'terrainbento_output'``.
+    ``"terrainbento_output"``.
 
 Note also that the **run** method takes as a parameter ``output_fields``, which
 is a list of model grid fields to write as output.
@@ -354,7 +354,7 @@ class ErosionModel(object):
             self.params.get("DEM_filename") is not None
         ):
             raise ValueError(
-                "Both a DEM filename and number_of_node_rows have " "been specified."
+                "Both a DEM filename and number_of_node_rows have been specified."
             )
 
         if "DEM_filename" in self.params:
@@ -418,7 +418,7 @@ class ErosionModel(object):
         meters_to_feet = self.params.get("meters_to_feet", False)
         if feet_to_meters and meters_to_feet:
             raise ValueError(
-                'Both "feet_to_meters" and "meters_to_feet" are'
+                "Both 'feet_to_meters' and 'meters_to_feet' are"
                 "set as True. This is not realistic."
             )
         else:
@@ -524,7 +524,7 @@ class ErosionModel(object):
         inherent to running a terrainbento model but is desired by the
         user. An example might be making a plot of topography while the model
         is running. terrainbento saves output to NetCDF format at each
-        interval defined by the parameter ``'output_interval'``.
+        interval defined by the parameter ``"output_interval"``.
 
         If a class, an OutputWriter will be instantiated with only one passed
         argument: the entire model object. The class is expected to have a bound
@@ -548,8 +548,8 @@ class ErosionModel(object):
         """Create hexagonal grid based on input parameters.
 
         This method will be called if the value of the input parameter
-        ``'DEM_filename'`` does not exist, and if the value of the input parameter
-        ``'model_grid'`` is set to `'HexModelGrid'`. Input parameters are not
+        ``"DEM_filename"`` does not exist, and if the value of the input parameter
+        ``"model_grid"`` is set to `"HexModelGrid"`. Input parameters are not
         passed explicitly, but are expected to be located in the model attribute
         ``params``.
 
@@ -562,11 +562,11 @@ class ErosionModel(object):
         node_spacing : float, optional
             Node spacing. Default is 10.0.
         orientation : str, optional
-            Either 'horizontal' (default) or 'vertical'.
+            Either "horizontal" (default) or "vertical".
         shape : str, optional
             Controls the shape of the bounding hull, i.e., are the nodes
-            arranged in a hexagon, or a rectangle? Either ``'hex'`` (default) or
-            ``'rect'``.
+            arranged in a hexagon, or a rectangle? Either ``"hex"`` (default) or
+            ``"rect"``.
         reorient_links, bool, optional
             Whether or not to re-orient all links to point between -45 deg
             and +135 deg clockwise from "north" (i.e., along y axis). Default
@@ -582,11 +582,11 @@ class ErosionModel(object):
         --------
         >>> from landlab import HexModelGrid
         >>> from terrainbento import ErosionModel
-        >>> params = {'model_grid' : 'HexModelGrid',
-        ...           'number_of_node_rows' : 6,
-        ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0,
-        ...           'dt': 1, 'output_interval': 2., 'run_duration': 10.}
+        >>> params = {"model_grid" : "HexModelGrid",
+        ...           "number_of_node_rows" : 6,
+        ...           "number_of_node_columns" : 9,
+        ...           "node_spacing" : 10.0,
+        ...           "dt": 1, "output_interval": 2., "run_duration": 10.}
 
         >>> em = ErosionModel(params=params)
         >>> isinstance(em.grid, HexModelGrid)
@@ -651,8 +651,8 @@ class ErosionModel(object):
         """Create raster grid based on input parameters.
 
         This method will be called if the value of the input parameter
-        ``'DEM_filename'`` does not exist, and if the value of the input parameter
-        ``'model_grid'`` is set to ``'RasterModelGrid'``. Input parameters are not
+        ``"DEM_filename"`` does not exist, and if the value of the input parameter
+        ``"model_grid"`` is set to ``"RasterModelGrid"``. Input parameters are not
         passed explicitly, but are expected to be located in the model attribute
         ``params``.
 
@@ -680,10 +680,10 @@ class ErosionModel(object):
         Examples
         --------
         >>> from landlab import RasterModelGrid
-        >>> params = { 'number_of_node_rows' : 6,
-        ...            'number_of_node_columns' : 9,
-        ...            'node_spacing' : 10.0,
-        ...            'dt': 1, 'output_interval': 2., 'run_duration': 10.}
+        >>> params = { "number_of_node_rows" : 6,
+        ...            "number_of_node_columns" : 9,
+        ...            "node_spacing" : 10.0,
+        ...            "dt": 1, "output_interval": 2., "run_duration": 10.}
         >>> from terrainbento import ErosionModel
         >>> em = ErosionModel(params=params)
         >>> em = ErosionModel(params=params)
@@ -857,24 +857,24 @@ class ErosionModel(object):
         >>> from terrainbento import ErosionModel
 
         Sometimes it makes sense to provide a parameter as an exponent (base 10).
-        If the string `'_exp'` is attached to the end of the name in the input
+        If the string `"_exp"` is attached to the end of the name in the input
         dictionary, this function can help.
 
-        >>> params = {'model_grid' : 'HexModelGrid',
-        ...           'water_erodability_exp' : -3.,
-        ...           'dt': 1, 'output_interval': 2., 'run_duration': 10.}
+        >>> params = {"model_grid" : "HexModelGrid",
+        ...           "water_erodability_exp" : -3.,
+        ...           "dt": 1, "output_interval": 2., "run_duration": 10.}
         >>> em = ErosionModel(params=params)
-        >>> em.get_parameter_from_exponent('water_erodability')
+        >>> em.get_parameter_from_exponent("water_erodability")
         0.001
 
         Alternatively, the same call to the dictionary still works if the
         parameter was not provided as an exponent.
 
-        >>> params = {'model_grid' : 'HexModelGrid',
-        ...           'water_erodability' : 0.5,
-        ...           'dt': 1, 'output_interval': 2., 'run_duration': 10.}
+        >>> params = {"model_grid" : "HexModelGrid",
+        ...           "water_erodability" : 0.5,
+        ...           "dt": 1, "output_interval": 2., "run_duration": 10.}
         >>> em = ErosionModel(params=params)
-        >>> em.get_parameter_from_exponent('water_erodability')
+        >>> em.get_parameter_from_exponent("water_erodability")
         0.5
 
         """
@@ -908,7 +908,7 @@ class ErosionModel(object):
     def write_output(self):
         """Write output to file as a netCDF.
 
-        Filenames will have the value of ``'output_filename'`` from the input
+        Filenames will have the value of ``"output_filename"`` from the input
         file or parameter dictionary as the first part of the file name and the
         model run iteration as the second part of the filename.
         """
@@ -979,8 +979,8 @@ class ErosionModel(object):
         """Run the model until complete.
 
         The model will run for the duration indicated by the input file or
-        dictionary parameter ``'run_duration'``, at a time step specified by the
-        parameter ``'dt'``, and create ouput at intervales of ``'output_duration'``.
+        dictionary parameter ``"run_duration"``, at a time step specified by the
+        parameter ``"dt"``, and create ouput at intervales of ``"output_duration"``.
 
         Parameters
         ----------

@@ -14,7 +14,7 @@ Currently in development.
 
 A modular landscape evolution modeling package built on top of the [Landlab Toolkit](http://landlab.github.io).
 
-terrainbento's documentation can be found [here](http://terrainbento.readthedocs.io/).
+terrainbento"s documentation can be found [here](http://terrainbento.readthedocs.io/).
 
 A set of Jupyter notebooks introducing terrainbento can be found [here](https://github.com/TerrainBento/examples_tests_and_tutorials).
 

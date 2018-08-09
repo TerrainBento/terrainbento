@@ -47,7 +47,7 @@ class SingleNodeBaselevelHandler(object):
             and ``lowering_file_path`` is required. Units are implied by
             the model grids spatial scale and the time units of ``dt``.
             This file should be readable with
-            ``np.loadtxt(filename, skiprows=1, delimiter=',')``
+            ``np.loadtxt(filename, skiprows=1, delimiter=",")``
             Its first column is time and its second column is the elevation
             change at the outlet since the onset of the model run. Negative
             values mean the outlet lowers.
@@ -64,7 +64,7 @@ class SingleNodeBaselevelHandler(object):
 
         >>> from landlab import RasterModelGrid
         >>> mg = RasterModelGrid(5, 5)
-        >>> z = mg.add_zeros('node', 'topographic__elevation')
+        >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> print(z.reshape(mg.shape))
         [[ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]
@@ -183,7 +183,7 @@ class SingleNodeBaselevelHandler(object):
         # if there is an outlet elevation object
         else:
             # if bedrock__elevation exists as a field, lower it also
-            # calcuate the topographic change required to match the current time's value for
+            # calcuate the topographic change required to match the current time"s value for
             # outlet elevation. This must be done in case bedrock elevation exists, and must
             # be done before the topography is lowered
             topo_change = self.z[self.outlet_node] - self.outlet_elevation_obj(

@@ -100,19 +100,19 @@ class BasicDd(ErosionModel):
 
         Set up a parameters variable.
 
-        >>> params = {'model_grid': 'RasterModelGrid',
-        ...           'dt': 1,
-        ...           'output_interval': 2.,
-        ...           'run_duration': 200.,
-        ...           'number_of_node_rows' : 6,
-        ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0,
-        ...           'regolith_transport_parameter': 0.001,
-        ...           'water_erodability': 0.001,
-        ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0,
+        >>> params = {"model_grid": "RasterModelGrid",
+        ...           "dt": 1,
+        ...           "output_interval": 2.,
+        ...           "run_duration": 200.,
+        ...           "number_of_node_rows" : 6,
+        ...           "number_of_node_columns" : 9,
+        ...           "node_spacing" : 10.0,
+        ...           "regolith_transport_parameter": 0.001,
+        ...           "water_erodability": 0.001,
+        ...           "m_sp": 0.5,
+        ...           "n_sp": 1.0,
         ...           "water_erosion_rule__threshold": 0.01,
-        ...           'water_erosion_rule__thresh_depth_derivative': 0.01}
+        ...           "water_erosion_rule__thresh_depth_derivative": 0.01}
 
         Construct the model.
 
@@ -126,7 +126,7 @@ class BasicDd(ErosionModel):
         1.0
 
         """
-        # Call ErosionModel's init
+        # Call ErosionModel"s init
         super(BasicDd, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )

@@ -156,23 +156,23 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         Set up a parameters variable.
 
-        >>> params = {'model_grid': 'RasterModelGrid',
-        ...           'dt': 1,
-        ...           'output_interval': 2.,
-        ...           'run_duration': 200.,
-        ...           'number_of_node_rows' : 6,
-        ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0,
-        ...           'regolith_transport_parameter': 0.001,
-        ...           'water_erodability~lower': 0.001,
-        ...           'water_erodability~upper': 0.01,
-        ...           'water_erosion_rule~upper__threshold': 0.1,
-        ...           'water_erosion_rule~lower__threshold': 0.2,
-        ...           'contact_zone__width': 1.0,
-        ...           'lithology_contact_elevation__file_name': 'tests/data/example_contact_elevation.asc',
-        ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0,
-        ...           'critical_slope': 0.1}
+        >>> params = {"model_grid": "RasterModelGrid",
+        ...           "dt": 1,
+        ...           "output_interval": 2.,
+        ...           "run_duration": 200.,
+        ...           "number_of_node_rows" : 6,
+        ...           "number_of_node_columns" : 9,
+        ...           "node_spacing" : 10.0,
+        ...           "regolith_transport_parameter": 0.001,
+        ...           "water_erodability~lower": 0.001,
+        ...           "water_erodability~upper": 0.01,
+        ...           "water_erosion_rule~upper__threshold": 0.1,
+        ...           "water_erosion_rule~lower__threshold": 0.2,
+        ...           "contact_zone__width": 1.0,
+        ...           "lithology_contact_elevation__file_name": "tests/data/example_contact_elevation.asc",
+        ...           "m_sp": 0.5,
+        ...           "n_sp": 1.0,
+        ...           "critical_slope": 0.1}
 
         Construct the model.
 
@@ -186,7 +186,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         1.0
 
         """
-        # Call ErosionModel's init
+        # Call ErosionModel"s init
         super(BasicChRtTh, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )

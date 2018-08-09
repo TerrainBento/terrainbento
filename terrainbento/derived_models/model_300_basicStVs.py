@@ -115,26 +115,26 @@ class BasicStVs(StochasticErosionModel):
 
         Set up a parameters variable.
 
-        >>> params = {'model_grid': 'RasterModelGrid',
-        ...           'dt': 1,
-        ...           'output_interval': 2.,
-        ...           'run_duration': 200.,
-        ...           'number_of_node_rows' : 6,
-        ...           'number_of_node_columns' : 9,
-        ...           'node_spacing' : 10.0,
-        ...           'regolith_transport_parameter': 0.001,
-        ...           'water_erodability~stochastic': 0.001,
-        ...           'm_sp': 0.5,
-        ...           'n_sp': 1.0,
-        ...           'opt_stochastic_duration': False,
-        ...           'number_of_sub_time_steps': 1,
-        ...           'rainfall_intermittency_factor': 0.5,
-        ...           'rainfall__mean_rate': 1.0,
-        ...           'rainfall__shape_factor': 1.0,
-        ...           'infiltration_capacity': 1.0,
-        ...           'random_seed': 0,
-        ...           'soil__initial_thickness': 2.0,
-        ...           'hydraulic_conductivity': 0.1}
+        >>> params = {"model_grid": "RasterModelGrid",
+        ...           "dt": 1,
+        ...           "output_interval": 2.,
+        ...           "run_duration": 200.,
+        ...           "number_of_node_rows" : 6,
+        ...           "number_of_node_columns" : 9,
+        ...           "node_spacing" : 10.0,
+        ...           "regolith_transport_parameter": 0.001,
+        ...           "water_erodability~stochastic": 0.001,
+        ...           "m_sp": 0.5,
+        ...           "n_sp": 1.0,
+        ...           "opt_stochastic_duration": False,
+        ...           "number_of_sub_time_steps": 1,
+        ...           "rainfall_intermittency_factor": 0.5,
+        ...           "rainfall__mean_rate": 1.0,
+        ...           "rainfall__shape_factor": 1.0,
+        ...           "infiltration_capacity": 1.0,
+        ...           "random_seed": 0,
+        ...           "soil__initial_thickness": 2.0,
+        ...           "hydraulic_conductivity": 0.1}
 
         Construct the model.
 
@@ -148,7 +148,7 @@ class BasicStVs(StochasticErosionModel):
         1.0
 
         """
-        # Call ErosionModel's init
+        # Call ErosionModel"s init
         super(BasicStVs, self).__init__(
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )
@@ -210,7 +210,7 @@ class BasicStVs(StochasticErosionModel):
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
 
-        # Here's the total (surface + subsurface) discharge
+        # Here"s the total (surface + subsurface) discharge
         pa = self.rain_rate * self.area
 
         # Transmissivity x lambda x slope = subsurface discharge capacity
