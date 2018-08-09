@@ -125,7 +125,6 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "soil_transport_decay_depth": soil_transport_decay_depth,
         "soil_production__maximum_rate": soil_production__maximum_rate,
         "soil_production__decay_depth": soil_production__decay_depth,
-        "solver": "basic",
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
