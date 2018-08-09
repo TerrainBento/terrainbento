@@ -1,4 +1,4 @@
-model_grid: 'RasterModelGrid'
+model_grid: "RasterModelGrid"
 dt: 100
 output_interval: 500
 run_duration: 2000.

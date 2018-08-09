@@ -23,7 +23,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     ModelTemplate is a template for making your own terrainbento models.
 
     This is where you will put introductory information about the model. We
-    recommend that you start from an existing terrainbento model's docstring
+    recommend that you start from an existing terrainbento model"s docstring
     and modify to preserve a somewhat standard style.
 
     The docstring should have:
@@ -35,18 +35,18 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     3. Description of the governing equation of the model.
 
     4. A table listing the required parameters.
+
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |
     +==================+==================================+
-
     |:math:`m`         | ``m_sp``                         |
-    |:math:`n`         | ``n_sp``                         |
     +------------------+----------------------------------+
+    |:math:`n`         | ``n_sp``                         |
     +------------------+----------------------------------+
     |:math:`K`         | ``water_erodability``            |
     +------------------+----------------------------------+
-    +------------------+----------------------------------+
     |:math:`D`         | ``regolith_transport_parameter`` |
+    +------------------+----------------------------------+
 
     Expand on this table to include all required parameters.
 
@@ -89,10 +89,10 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
         Set up a parameters variable.
 
-        >>> params = {'model_grid': 'RasterModelGrid',
-        ...           'dt': 1,
-        ...           'output_interval': 2.,
-        ...           'run_duration': 200.}
+        >>> params = {"model_grid": "RasterModelGrid",
+        ...           "dt": 1,
+        ...           "output_interval": 2.,
+        ...           "run_duration": 200.}
 
         Construct the model.
 

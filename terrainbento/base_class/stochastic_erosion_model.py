@@ -62,10 +62,10 @@ no-rain.
 record_rain : boolean
     Flag to indicate if a sequence of storms should be saved. Default is False.
 storm_sequence_filename : str
-    Storm sequence filename. Default is 'storm_sequence.txt'
+    Storm sequence filename. Default is "storm_sequence.txt"
 frequency_filename : str
     Filename for precipitation exceedance frequency summary. Default value is
-    'exceedance_summary.txt'
+    "exceedance_summary.txt"
 """
 
 import os
@@ -139,7 +139,7 @@ class StochasticErosionModel(ErosionModel):
         # (stochastic time, number_time_steps>1, more manually) the dt may
         # change. Thus, rather than writing routines to reconstruct the time
         # series of precipitation from the dt could change based on users use,
-        # we'll record this with the model run instead of re-running.
+        # we"ll record this with the model run instead of re-running.
 
         # make this the non-default option.
 
@@ -166,7 +166,7 @@ class StochasticErosionModel(ErosionModel):
         # check that if (self.opt_stochastic_duration==True) that
         # frequency_filename does not exist. For stochastic time, computing
         # exceedance frequencies is not super sensible. So make a warning that
-        # it won't be done.
+        # it won"t be done.
         if (self.opt_stochastic_duration == True) and (
             self.params.get("frequency_filename")
         ):
@@ -185,7 +185,7 @@ class StochasticErosionModel(ErosionModel):
                 self.infilt * (1.0 - np.exp(-self.rain_rate / self.infilt))
             )
             if runoff <= 0:
-                runoff = 0 # pragma: no cover
+                runoff = 0  # pragma: no cover
         else:
             runoff = self.rain_rate
         self.discharge[:] = runoff * self.area
@@ -275,7 +275,7 @@ class StochasticErosionModel(ErosionModel):
         have been calculated already. It might be zero, in which case we
         are between storms, so we don't do water erosion.
 
-        If we're NOT doing stochastic duration, then we'll run water
+        If we're NOT doing stochastic duration, then we"ll run water
         erosion for one or more sub-time steps, each with its own
         randomly drawn precipitation intensity.
 
@@ -413,14 +413,14 @@ class StochasticErosionModel(ErosionModel):
         Parameters
         ----------
         filename : str
-            Default value is 'storm_sequence.txt'
+            Default value is "storm_sequence.txt"
         """
 
         # Open a file for writing
         if self.record_rain == False:
             raise ValueError(
                 "Rain was not recorded when the model run. To "
-                'record rain, set the parameter "record_rain"'
+                "record rain, set the parameter 'record_rain'"
                 "to True."
             )
 
@@ -455,12 +455,12 @@ class StochasticErosionModel(ErosionModel):
         Parameters
         ----------
         filename : str
-            Default value is 'exceedance_summary.txt'
+            Default value is "exceedance_summary.txt"
         """
         if self.record_rain == False:
             raise ValueError(
                 "Rain was not recorded when the model run. To "
-                'record rain, set the parameter "record_rain"'
+                "record rain, set the parameter 'record_rain'"
                 "to True."
             )
 
@@ -618,7 +618,7 @@ class StochasticErosionModel(ErosionModel):
             # non-linearly with decreasing event probability and decreases linearly
             # with increaseing observations.
 
-            # we've already calculated F-1(p) for our events, and it is represented
+            # we"ve already calculated F-1(p) for our events, and it is represented
             # by the variable expected_rainfall
 
             daily_distribution_event_percentile = (

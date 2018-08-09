@@ -36,7 +36,7 @@ class VersioneerConfig:
 
 def get_config():
     """Create, populate and return the VersioneerConfig() object."""
-    # these strings are filled in when 'setup.py versioneer' creates
+    # these strings are filled in when "setup.py versioneer" creates
     # _version.py
     cfg = VersioneerConfig()
     cfg.VCS = "git"
@@ -232,10 +232,10 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose):
 
 @register_vcs_handler("git", "pieces_from_vcs")
 def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
-    """Get version from 'git describe' in the root of the source tree.
+    """Get version from "git describe" in the root of the source tree.
 
-    This only gets called if the git-archive 'subst' keywords were *not*
-    expanded, and _version.py hasn't already been rewritten with a short
+    This only gets called if the git-archive "subst" keywords were *not*
+    expanded, and _version.py hasn"t already been rewritten with a short
     version string, meaning we're inside a checked out source tree.
     """
     GITS = ["git"]
@@ -430,10 +430,10 @@ def render_pep440_old(pieces):
 def render_git_describe(pieces):
     """TAG[-DISTANCE-gHEX][-dirty].
 
-    Like 'git describe --tags --dirty --always'.
+    Like "git describe --tags --dirty --always".
 
     Exceptions:
-    1: no tags. HEX[-dirty]  (note: no 'g' prefix)
+    1: no tags. HEX[-dirty]  (note: no "g" prefix)
     """
     if pieces["closest-tag"]:
         rendered = pieces["closest-tag"]
@@ -450,11 +450,11 @@ def render_git_describe(pieces):
 def render_git_describe_long(pieces):
     """TAG-DISTANCE-gHEX[-dirty].
 
-    Like 'git describe --tags --dirty --always -long'.
+    Like "git describe --tags --dirty --always -long".
     The distance/hash is unconditional.
 
     Exceptions:
-    1: no tags. HEX[-dirty]  (note: no 'g' prefix)
+    1: no tags. HEX[-dirty]  (note: no "g" prefix)
     """
     if pieces["closest-tag"]:
         rendered = pieces["closest-tag"]

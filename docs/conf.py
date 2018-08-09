@@ -99,10 +99,10 @@ sys.path.insert(0, ".")
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+# needs_sphinx = "1.0"
 
 # Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+# extensions coming with Sphinx (named "sphinx.ext.*") or your custom
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
@@ -131,12 +131,12 @@ autodoc_warningiserror = False
 autodoc_mock_imports = ["landlab", "numpy", "scipy", "yaml"]
 
 # Add any paths that contain templates here, relative to this directory.
-# templates_path = ['_templates']
+# templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-# source_suffix = ['.rst', '.md']
+# source_suffix = [".rst", ".md"]
 source_suffix = ".rst"
 
 # The master toctree document.
@@ -147,7 +147,7 @@ project = "terrainbento"
 copyright = str(date.today().year) + u", The TerrainBento Team"
 author = "The TerrainBento Team"
 
-# The version info for the project you're documenting, acts as replacement for
+# The version info for the project you"re documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
@@ -157,7 +157,7 @@ author = "The TerrainBento Team"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-# language = 'python'
+# language = "python"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -196,7 +196,7 @@ html_logo = "images/terrainbento_logo.png"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
+# html_static_path = ["_static"]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -207,7 +207,7 @@ html_sidebars = {
     "**": [
         "about.html",
         "navigation.html",
-        "relations.html",  # needs 'show_related': True theme option to display
+        "relations.html",  # needs "show_related": True theme option to display
         "searchbox.html",
         "donate.html",
     ]
@@ -223,18 +223,18 @@ htmlhelp_basename = "terrainbentodoc"
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
+    # The paper size ("letterpaper" or "a4paper").
     #
-    # 'papersize': 'letterpaper',
-    # The font size ('10pt', '11pt' or '12pt').
+    # "papersize": "letterpaper",
+    # The font size ("10pt", "11pt" or "12pt").
     #
-    # 'pointsize': '10pt',
+    # "pointsize": "10pt",
     # Additional stuff for the LaTeX preamble.
     #
-    # 'preamble': '',
+    # "preamble": "",
     # Latex figure (float) alignment
     #
-    # 'figure_align': 'htbp',
+    # "figure_align": "htbp",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -286,11 +286,11 @@ epub_copyright = copyright
 # The unique identifier of the text. This can be a ISBN number
 # or the project homepage.
 #
-# epub_identifier = ''
+# epub_identifier = ""
 
 # A unique identification for the text.
 #
-# epub_uid = ''
+# epub_uid = ""
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]

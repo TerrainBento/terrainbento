@@ -3,7 +3,7 @@
 
 package:
   name: {{ name }}
-  version: {{ data.get('version') }}
+  version: {{ data.get("version") }}
 
 source:
   path: ..
@@ -38,4 +38,4 @@ test:
 
 build:
   number: 0
-  string: {{ environ.get('BUILD_STR', '') }}
+  string: {{ environ.get("BUILD_STR", "") }}

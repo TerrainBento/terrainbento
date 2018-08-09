@@ -55,7 +55,7 @@ class NotCoreNodeBaselevelHandler(object):
             and `lowering_file_path` is required. Units are implied by
             the model grids spatial scale and the time units of ``dt``.
             This file should be readable with
-            ``np.loadtxt(filename, skiprows=1, delimiter=',')``
+            ``np.loadtxt(filename, skiprows=1, delimiter=",")``
             Its first column is time and its second colum is the elevation
             change at the outlet since the onset of the model run. Negative
             values mean the outlet lowers.
@@ -72,13 +72,13 @@ class NotCoreNodeBaselevelHandler(object):
 
         >>> from landlab import RasterModelGrid
         >>> mg = RasterModelGrid(5, 5)
-        >>> z = mg.add_zeros('node', 'topographic__elevation')
+        >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
         ...                                        left_is_closed=True,
         ...                                        right_is_closed=True,
         ...                                        top_is_closed=True)
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node['topographic__elevation'], -9999.)
+        ...     0, mg.at_node["topographic__elevation"], -9999.)
         >>> print(z.reshape(mg.shape))
         [[ 0.  0.  0.  0.  0.]
          [ 0.  0.  0.  0.  0.]
@@ -109,13 +109,13 @@ class NotCoreNodeBaselevelHandler(object):
         elevation, we would set ``modify_core_nodes = True``.
 
         >>> mg = RasterModelGrid(5, 5)
-        >>> z = mg.add_zeros('node', 'topographic__elevation')
+        >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
         ...                                        left_is_closed=True,
         ...                                        right_is_closed=True,
         ...                                        top_is_closed=True)
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node['topographic__elevation'], -9999.)
+        ...     0, mg.at_node["topographic__elevation"], -9999.)
         >>> from terrainbento.boundary_condition_handlers import (
         ...                                         NotCoreNodeBaselevelHandler)
         >>> bh = NotCoreNodeBaselevelHandler(mg,
@@ -238,7 +238,7 @@ class NotCoreNodeBaselevelHandler(object):
         # if there is an outlet elevation object
         else:
             # if bedrock__elevation exists as a field, lower it also
-            # calcuate the topographic change required to match the current time's value for
+            # calcuate the topographic change required to match the current time"s value for
             # outlet elevation. This must be done in case bedrock elevation exists, and must
             # be done before the topography is lowered
             mean_z = np.mean(self.z[self.nodes_to_lower])
@@ -247,9 +247,7 @@ class NotCoreNodeBaselevelHandler(object):
             other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
             for of in other_fields:
                 if of in self._grid.at_node:
-                    self._grid.at_node[of][
-                        self.nodes_to_lower
-                    ] -= self.topo_change
+                    self._grid.at_node[of][self.nodes_to_lower] -= self.topo_change
 
             # lower topography
             self.z[self.nodes_to_lower] -= self.topo_change
