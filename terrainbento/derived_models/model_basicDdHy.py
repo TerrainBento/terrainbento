@@ -82,7 +82,7 @@ class BasicDdHy(ErosionModel):
     component or if an adaptive internal timestep is used. Refer to the
     **ErosionDeposition** documentation for details.
 
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when 
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
 
     """

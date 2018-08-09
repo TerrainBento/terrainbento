@@ -59,7 +59,7 @@ class BasicCh(ErosionModel):
     |:math:`S_c`       | ``critical_slope``               |
     +------------------+----------------------------------+
 
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when 
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
 
     """

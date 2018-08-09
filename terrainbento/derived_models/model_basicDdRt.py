@@ -88,7 +88,7 @@ class BasicDdRt(TwoLithologyErosionModel):
     |:math:`D`           | ``regolith_transport_parameter``                |
     +--------------------+-------------------------------------------------+
 
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when 
+    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
 
     *Specifying the Lithology Contact*
