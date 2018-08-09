@@ -87,7 +87,7 @@ that when :math:`p<I_c`, no runoff occurs, and when :math:`p>I_c`,
 An advantage of this simple approach is that :math:`I_c` can be measured directly
 or inferred from stream-flow records.
 
-To relate short-term ('instantaneous') erosion rate to the long-term average,
+To relate short-term ("instantaneous") erosion rate to the long-term average,
 one can first integrate the erosion rate over the full probability distribution
 of daily precipitation intensity. This operation yields the average erosion rate
 produced on wet days. To convert this into an average that includes dry days, we
@@ -176,7 +176,7 @@ def _integrand(p, Ic, lam, c, m):
 
     where :math:`f(p)`` is a Weibull distribution.
 
-    Called by the scipy 'quad' numerical integration function.
+    Called by the scipy "quad" numerical integration function.
 
     Parameters
     ----------
