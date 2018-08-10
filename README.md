@@ -14,11 +14,15 @@ Currently in development.
 
 A modular landscape evolution modeling package built on top of the [Landlab Toolkit](http://landlab.github.io).
 
-terrainbento"s documentation can be found [here](http://terrainbento.readthedocs.io/).
+terrainbento's User Manual is located at our [Read The Docs page](http://terrainbento.readthedocs.io/).
 
-A set of Jupyter notebooks introducing terrainbento can be found [here](https://github.com/TerrainBento/examples_tests_and_tutorials).
+We recommend that you start with [this set of Jupyter notebooks](https://github.com/TerrainBento/examples_tests_and_tutorials) that introduce terrainbento .
 
 A manuscript describing terrainbento can be found [here]() ** not yet submitted, link does not exist **.
+
+## Installation instructions
+
+These will exist when the first version is released. 
 
 ## How to cite
 
