@@ -1,7 +1,7 @@
 # coding: utf8
 #! /usr/env/python
 
-from numpy.testing import assert_almost_equal, assert_array_equal
+from numpy.testing import assert_almost_equal
 import pytest
 
 from terrainbento.boundary_condition_handlers import PrecipChanger

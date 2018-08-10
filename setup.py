@@ -3,8 +3,6 @@
 from setuptools import setup, find_packages
 import versioneer
 
-import os
-
 setup(
     name="terrainbento",
     version=versioneer.get_version(),

@@ -2,12 +2,11 @@
 #! /usr/env/python
 
 import os
-import numpy as np
-from numpy.testing import assert_array_equal, assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal
 import pytest
 
 from landlab import HexModelGrid
-from landlab.components import FlowAccumulator, DepressionFinderAndRouter
+from landlab.components import FlowAccumulator
 from terrainbento import ErosionModel
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")

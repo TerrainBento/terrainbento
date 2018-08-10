@@ -5,12 +5,11 @@ import numpy as np
 from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 import pytest
 
-from landlab import HexModelGrid, RasterModelGrid
-from landlab.components import LinearDiffuser, NormalFault
+from landlab import RasterModelGrid
+from landlab.components import NormalFault
 
 from terrainbento import ErosionModel, Basic, BasicSt
 from terrainbento.boundary_condition_handlers import (
-    NotCoreNodeBaselevelHandler,
     PrecipChanger,
     SingleNodeBaselevelHandler,
     CaptureNodeBaselevelHandler,
@@ -98,7 +97,6 @@ def test_boundary_condition_handler_without_special_part_of_params():
     K = 0.001
     m = 1. / 3.
     n = 2. / 3.
-    dt = 1000
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",

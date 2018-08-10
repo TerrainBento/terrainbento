@@ -35,7 +35,7 @@ def test_passing_neither_lowering_method():
 def test_passing_both_lowering_methods():
     """Test passing both lowering methods"""
     mg = RasterModelGrid(5, 5)
-    z = mg.add_zeros("node", "topographic__elevation")
+    _ = mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
     with pytest.raises(ValueError):
