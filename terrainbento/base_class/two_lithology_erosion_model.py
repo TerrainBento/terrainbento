@@ -73,13 +73,13 @@ class TwoLithologyErosionModel(ErosionModel):
 
         self.regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
+        ) * self._get_parameter_from_exponent("regolith_transport_parameter")
 
-        self.K_rock = self.get_parameter_from_exponent("water_erodability~lower") * (
+        self.K_rock = self._get_parameter_from_exponent("water_erodability~lower") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
-        self.K_till = self.get_parameter_from_exponent("water_erodability~upper") * (
+        self.K_till = self._get_parameter_from_exponent("water_erodability~upper") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 

@@ -192,10 +192,10 @@ class BasicChRtTh(TwoLithologyErosionModel):
         )
 
         # Save the threshold values for rock and till
-        self.rock_thresh = self.get_parameter_from_exponent(
+        self.rock_thresh = self._get_parameter_from_exponent(
             "water_erosion_rule~lower__threshold"
         )
-        self.till_thresh = self.get_parameter_from_exponent(
+        self.till_thresh = self._get_parameter_from_exponent(
             "water_erosion_rule~upper__threshold"
         )
 

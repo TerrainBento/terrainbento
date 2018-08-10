@@ -156,17 +156,17 @@ class BasicDdHy(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         regolith_transport_parameter = (
             self._length_factor ** 2
-        ) * self.get_parameter_from_exponent(  # L2/T
+        ) * self._get_parameter_from_exponent(  # L2/T
             "regolith_transport_parameter"
         )
-        v_s = self.get_parameter_from_exponent("v_sc")  # unitless
-        self.sp_crit = self._length_factor * self.get_parameter_from_exponent(  # L/T
+        v_s = self._get_parameter_from_exponent("v_sc")  # unitless
+        self.sp_crit = self._length_factor * self._get_parameter_from_exponent(  # L/T
             "water_erosion_rule__threshold"
         )
 

@@ -147,17 +147,17 @@ class BasicHySt(StochasticErosionModel):
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+        self.K = self._get_parameter_from_exponent("water_erodability~stochastic") * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # L^2/T
 
-        v_s = (self._length_factor) * self.get_parameter_from_exponent(
+        v_s = (self._length_factor) * self._get_parameter_from_exponent(
             "v_s"
         )  # has units length per time
 

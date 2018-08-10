@@ -359,16 +359,16 @@ class ErosionModel(object):
 
         if "DEM_filename" in self.params:
             self._starting_topography = "inputDEM"
-            (self.grid, self.z) = self.read_topography()
+            (self.grid, self.z) = self._read_topography()
             self.opt_watershed = True
         else:
             # this routine will set self.opt_watershed internally
             if self.params.get("model_grid", "RasterModelGrid") == "HexModelGrid":
                 self._starting_topography = "HexModelGrid"
-                self.setup_hexagonal_grid()
+                self._setup_hexagonal_grid()
             else:
                 self._starting_topography = "RasterModelGrid"
-                self.setup_raster_grid()
+                self._setup_raster_grid()
 
         # Set DEM boundaries
         if self.opt_watershed:
@@ -439,9 +439,9 @@ class ErosionModel(object):
 
             if isinstance(BoundaryHandlers, list):
                 for comp in BoundaryHandlers:
-                    self.setup_boundary_handler(comp)
+                    self._setup_boundary_handler(comp)
             else:
-                self.setup_boundary_handler(BoundaryHandlers)
+                self._setup_boundary_handler(BoundaryHandlers)
 
         ###################################################################
         # Output Writers
@@ -450,16 +450,16 @@ class ErosionModel(object):
         if OutputWriters is not None:
             if isinstance(OutputWriters, list):
                 for comp in OutputWriters:
-                    self.setup_output_writer(comp)
+                    self._setup_output_writer(comp)
             else:
-                self.setup_output_writer(OutputWriters)
+                self._setup_output_writer(OutputWriters)
 
     @property
     def model_time(self):
         """Return current time of model integration in model time units."""
         return self._model_time
 
-    def setup_boundary_handler(self, name):
+    def _setup_boundary_handler(self, name):
         """ Setup BoundaryHandlers for use by a terrainbento model.
 
         A boundary condition handler is a class with a **run_one_step** method that
@@ -516,7 +516,7 @@ class ErosionModel(object):
                 )
             )
 
-    def setup_output_writer(self, writer):
+    def _setup_output_writer(self, writer):
         """Setup OutputWriter for use by a terrainbento model.
 
         An OutputWriter can be either a function or a class designed to create
@@ -544,7 +544,7 @@ class ErosionModel(object):
             name = writer.__name__
             self.output_writers["class"][name] = writer(self)
 
-    def setup_hexagonal_grid(self):
+    def _setup_hexagonal_grid(self):
         """Create hexagonal grid based on input parameters.
 
         This method will be called if the value of the input parameter
@@ -647,7 +647,7 @@ class ErosionModel(object):
         # Set boundary conditions
         self._setup_synthetic_boundary_conditions()
 
-    def setup_raster_grid(self):
+    def _setup_raster_grid(self):
         """Create raster grid based on input parameters.
 
         This method will be called if the value of the input parameter
@@ -798,7 +798,7 @@ class ErosionModel(object):
                     east_closed, north_closed, west_closed, south_closed
                 )
 
-    def read_topography(self, name="topographic__elevation", halo=1):
+    def _read_topography(self, name="topographic__elevation", halo=1):
         """Read and return topography from file located in the parameter
         dictionary at ``DEM_filename``.
 
@@ -837,7 +837,7 @@ class ErosionModel(object):
 
         return (grid, vals)
 
-    def get_parameter_from_exponent(self, param_name, raise_error=True):
+    def _get_parameter_from_exponent(self, param_name, raise_error=True):
         """Return absolute parameter value from provided exponent.
 
         Parameters
@@ -864,7 +864,7 @@ class ErosionModel(object):
         ...           "water_erodability_exp" : -3.,
         ...           "dt": 1, "output_interval": 2., "run_duration": 10.}
         >>> em = ErosionModel(params=params)
-        >>> em.get_parameter_from_exponent("water_erodability")
+        >>> em._get_parameter_from_exponent("water_erodability")
         0.001
 
         Alternatively, the same call to the dictionary still works if the
@@ -874,7 +874,7 @@ class ErosionModel(object):
         ...           "water_erodability" : 0.5,
         ...           "dt": 1, "output_interval": 2., "run_duration": 10.}
         >>> em = ErosionModel(params=params)
-        >>> em.get_parameter_from_exponent("water_erodability")
+        >>> em._get_parameter_from_exponent("water_erodability")
         0.5
 
         """
@@ -939,6 +939,11 @@ class ErosionModel(object):
         self.run_output_writers()
 
     def finalize__run_one_step(self, dt):
+        """Finalize run_one_step method.
+
+        This base-class method increments model time and updates boundary
+        conditions.
+        """
         # calculate model time
         self._model_time += dt
 
@@ -1126,8 +1131,7 @@ class ErosionModel(object):
         ds.close()
 
     def remove_output_netcdfs(self):
-        """
-        """
+        """Remove all netCDF files written by a model run."""
         for f in self._output_files:
             os.remove(f)
 
