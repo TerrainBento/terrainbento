@@ -39,7 +39,8 @@ class BasicCh(ErosionModel):
     :math:`K` is the erodability by water, :math:`D` is the regolith
     transport efficiency, and :math:`S_c` is the critical slope. :math:`q_h`
     represents the hillslope sediment flux per unit width. :math:`N` is the
-    number of terms in the Taylor Expansion and is set at 11.
+    number of terms in the Taylor Series expansion. :math:`N` is set at a
+    default value of 11 but can be modified by a user.
 
     The **BasicCh** program inherits from the terrainbento **ErosionModel** base
     class. In addition to the parameters required by the base class, models
@@ -57,6 +58,8 @@ class BasicCh(ErosionModel):
     |:math:`D`         | ``regolith_transport_parameter`` |
     +------------------+----------------------------------+
     |:math:`S_c`       | ``critical_slope``               |
+    +------------------+----------------------------------+
+    |:math:`N`         | ``number_of_taylor_terms``       |
     +------------------+----------------------------------+
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
@@ -139,6 +142,9 @@ class BasicCh(ErosionModel):
             "regolith_transport_parameter"
         )  # has units length^2/time
 
+        # get taylor terms
+        nterms = self.params.get('number_of_taylor_terms', 11)
+
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
 
@@ -147,7 +153,7 @@ class BasicCh(ErosionModel):
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
-            nterms=11,
+            nterms=nterms,
         )
 
     def run_one_step(self, dt):

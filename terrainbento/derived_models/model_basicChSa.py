@@ -54,8 +54,8 @@ class BasicChSa(ErosionModel):
     production rate, and :math:`H_0` is the sediment transport decay depth.
     :math:`q_h` is the hillslope sediment flux per unit width. :math:`S_c`
     is the critical slope parameter and :math:`N` is the number of terms in the
-    Taylor Series expansion. Presently :math:`N` is set at 11 and is not a user
-    defined parameter.
+    Taylor Series expansion. :math:`N` is set at a default value of 11 but can
+    be modified by a user.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is
@@ -87,6 +87,8 @@ class BasicChSa(ErosionModel):
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
     |:math:`S_c`       | ``critical_slope``                |
+    +------------------+-----------------------------------+
+    |:math:`N`         | ``number_of_taylor_terms``        |
     +------------------+-----------------------------------+
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
@@ -184,6 +186,9 @@ class BasicChSa(ErosionModel):
             "soil_production__decay_depth"
         ]  # has units length
 
+        # get taylor terms
+        nterms = self.params.get('number_of_taylor_terms', 11)
+
         # Create soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.add_zeros("node", "soil__depth")
 
@@ -209,7 +214,7 @@ class BasicChSa(ErosionModel):
             linear_diffusivity=regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
             soil_transport_decay_depth=soil_transport_decay_depth,
-            nterms=11,
+            nterms=nterms,
         )
 
     def run_one_step(self, dt):
