@@ -5,9 +5,6 @@ import numpy as np
 from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 import pytest
 
-from landlab import RasterModelGrid
-from landlab.components import NormalFault
-
 from terrainbento import ErosionModel, Basic, BasicSt
 from terrainbento.boundary_condition_handlers import (
     PrecipChanger,

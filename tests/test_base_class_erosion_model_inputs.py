@@ -2,7 +2,6 @@
 #! /usr/env/python
 
 import os
-from numpy.testing import assert_array_almost_equal
 import pytest
 
 from landlab import HexModelGrid

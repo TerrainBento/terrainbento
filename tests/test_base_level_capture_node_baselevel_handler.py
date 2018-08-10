@@ -1,8 +1,6 @@
 # coding: utf8
 #! /usr/env/python
 
-from numpy.testing import assert_array_equal
-
 from terrainbento.boundary_condition_handlers import CaptureNodeBaselevelHandler
 from landlab import RasterModelGrid, HexModelGrid
 
