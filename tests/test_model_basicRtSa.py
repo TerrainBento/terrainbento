@@ -76,7 +76,6 @@ def test_steady_Ksp_no_precip_changer():
     dt = 1000
     max_soil_production_rate = 0.0
     soil_production_decay_depth = 0.2
-    regolith_transport_parameter = 0.0
     soil_transport_decay_depth = 0.5
     soil__initial_thickness = 0.
 

@@ -4,7 +4,7 @@
 import os
 import numpy as np
 
-from numpy.testing import assert_array_almost_equal, assert_array_equal
+from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicRtTh
 from terrainbento.utilities import precip_defaults, precip_testing_factor
@@ -196,14 +196,10 @@ def test_diffusion_only():
 
 
 def test_with_precip_changer():
-    U = 0.0001
     Kr = 0.001
     Kt = 0.005
     Tr = 0.01
     Tt = 0.05
-    m = 0.5
-    n = 1.0
-    dt = 1000
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
     # construct dictionary. note that D is turned off here

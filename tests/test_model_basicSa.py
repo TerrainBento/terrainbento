@@ -204,17 +204,9 @@ def test_steady_Ksp_no_precip_changer():
 
 def test_with_precip_changer():
     K = 0.01
-    U = 0.001
-    m = 0.5
-    n = 1.0
-    dt = 10
-    dx = 10.0
-    number_of_node_columns = 20
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2
-    regolith_transport_parameter = 0
     soil_transport_decay_depth = 0.5
-    initial_soil_thickness = 0.0
     params = {
         "model_grid": "RasterModelGrid",
         "dt": 1,

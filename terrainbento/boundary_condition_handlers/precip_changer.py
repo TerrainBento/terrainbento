@@ -461,7 +461,7 @@ class PrecipChanger(object):
 
         """
         lam = _scale_fac(self.starting_daily_mean_depth, self.rainfall__shape_factor)
-        psi, abserror = quad(
+        psi, _ = quad(
             _integrand,
             self.infilt_cap,
             np.inf,
@@ -531,7 +531,7 @@ class PrecipChanger(object):
             lam = _scale_fac(mean_depth, self.rainfall__shape_factor)
 
             # calculate current value of Psi
-            psi, err = quad(
+            psi, _ = quad(
                 _integrand,
                 self.infilt_cap,
                 np.inf,

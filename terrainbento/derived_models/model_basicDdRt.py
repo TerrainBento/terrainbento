@@ -187,7 +187,7 @@ class BasicDdRt(TwoLithologyErosionModel):
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
-        self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
+        self.threshold_value = self._length_factor * self._get_parameter_from_exponent(
             "water_erosion_rule__threshold"
         )  # has units length/time
 

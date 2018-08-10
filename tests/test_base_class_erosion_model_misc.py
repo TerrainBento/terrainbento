@@ -6,7 +6,6 @@ import numpy as np
 # from numpy.testing import assert_array_equal, assert_array_almost_equal
 import pytest
 
-from landlab import HexModelGrid
 from terrainbento import ErosionModel
 
 
@@ -75,7 +74,7 @@ def test_calc_cumulative_erosion():
 
 
 def test_parameter_exponent_both_provided():
-    """Test the get_parameter_from_exponent function when both are provided."""
+    """Test the _get_parameter_from_exponent function when both are provided."""
     params = {
         "model_grid": "HexModelGrid",
         "water_erodability_exp": -3.,
@@ -86,11 +85,11 @@ def test_parameter_exponent_both_provided():
     }
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):
-        em.get_parameter_from_exponent("water_erodability")
+        em._get_parameter_from_exponent("water_erodability")
 
 
 def test_parameter_exponent_neither_provided():
-    """Test the get_parameter_from_exponent function when neither are provided."""
+    """Test the _get_parameter_from_exponent function when neither are provided."""
     params = {
         "model_grid": "HexModelGrid",
         "dt": 1,
@@ -99,6 +98,6 @@ def test_parameter_exponent_neither_provided():
     }
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):
-        em.get_parameter_from_exponent("water_erodability")
-    val = em.get_parameter_from_exponent("water_erodability", raise_error=False)
+        em._get_parameter_from_exponent("water_erodability")
+    val = em._get_parameter_from_exponent("water_erodability", raise_error=False)
     assert val is None

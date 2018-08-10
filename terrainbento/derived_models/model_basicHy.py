@@ -141,17 +141,17 @@ class BasicHy(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         # Unit conversion for linear_diffusivity, with units L^2/T
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
+        ) * self._get_parameter_from_exponent("regolith_transport_parameter")
 
         # Normalized settling velocity (dimensionless)
-        v_sc = self.get_parameter_from_exponent("v_sc")
+        v_sc = self._get_parameter_from_exponent("v_sc")
 
         # Handle solver option
         solver = self.params.get("solver", "basic")

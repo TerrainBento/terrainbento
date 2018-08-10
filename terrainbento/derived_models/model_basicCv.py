@@ -130,12 +130,12 @@ class BasicCv(ErosionModel):
         )
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        K_sp = self.get_parameter_from_exponent("water_erodability") * (
+        K_sp = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent("regolith_transport_parameter")
+        ) * self._get_parameter_from_exponent("regolith_transport_parameter")
 
         self.climate_factor = self.params["climate_factor"]
         self.climate_constant_date = self.params["climate_constant_date"]
