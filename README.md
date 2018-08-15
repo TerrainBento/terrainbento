@@ -28,11 +28,10 @@ The following is the code needed to run the Basic model.
 
 ```python
 from terrainbento import Basic
-from landlab import imshow_grid
 
-model = Basic(params={"dt" : 10,
-                      "output_interval": 1e4,
-                      "run_duration": 1e6,
+model = Basic(params={"dt" : 100,
+                      "output_interval": 1e3,
+                      "run_duration": 1.5e5,
                       "number_of_node_rows" : 200,
                       "number_of_node_columns" : 320,
                       "node_spacing" : 10.0,
@@ -43,21 +42,23 @@ model = Basic(params={"dt" : 10,
                       "m_sp" : 0.5,
                       "n_sp" : 1.0,
                       "regolith_transport_parameter" : 0.2,
-                      "BoundaryHandlers": "NotCoreNodeBaselevelHandler"
+                      "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
                       "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
-                                                      "lowering_rate": -0.001}
-model.run()
+                                                      "lowering_rate": -0.001}})
+model.run(output_fields='topographic__elevation')
 ```
 
 Next we make an image for each output interval.
 
 ```python
+from landlab import imshow_grid
+
 filenames = []
 ds = model.to_xarray_dataset()
 model.remove_output_netcdfs()
 for i in range(ds.topographic__elevation.shape[0]):
     filename = "temp_output."+str(i)+".png"
-    imshow_grid(model.grid, ds.topographic__elevation[i, :, :], cmap="viridis", limits=(0, 120), output=filename)
+    imshow_grid(model.grid, ds.topographic__elevation[i, :, :], cmap="viridis", limits=(0, 12), output=filename)
     filenames.append(filename)
 ```
 
