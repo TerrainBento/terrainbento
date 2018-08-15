@@ -82,3 +82,9 @@ script:
  fi
 virtualenv:
   system_site_packages: false
+after_success:
+  - |
+  if [[ "$TRAVIS_TAG" == v* ]]; then
+    TB_PACKAGE=$(conda build --output ./.conda-recipe --old-build-string)
+    anaconda -t $ANACONDA_TOKEN upload --force --user terrainbento --channel main $TB_PACKAGE
+  fi

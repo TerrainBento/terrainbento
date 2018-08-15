@@ -69,3 +69,6 @@ build: false
 
 test_script:
   - cmd: pytest
+
+deploy_script:
+  - cmd: python .ci/appveyor/anaconda_upload.py
