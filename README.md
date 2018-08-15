@@ -22,7 +22,43 @@ A manuscript describing terrainbento can be found [here]() ** not yet submitted,
 
 ## Installation instructions
 
-These will exist when the first version is released. 
+Before installing terrainbento you will need a python distribution. We recommend that you use the [Anaconda python distribution](https://www.anaconda.com/download/). Unless you have a specific reason to want Python 2.7 we strongly suggest that you install Python 3.6 (or the current 3.* version provided by Anaconda). 
+
+### Using conda
+To install the release version of terrainbento (this is probably what you want) open a terminal and execute the following:
+
+```
+conda config --add channels landlab
+conda install -c terrainbento terrainbento
+```
+
+### From source code
+
+To install the terrainbento source code version of terrainbento do the following:
+
+#### Option A: You already have landlab installed (either through conda or through the source code). 
+
+```
+git clone https://github.com/TerrainBento/terrainbento.git
+cd terrainbento
+conda install --file=requirements.txt
+python setup.py install
+```
+
+#### Option B: You do not have landlab installed
+
+```
+conda install -c landlab landlab
+git clone https://github.com/TerrainBento/terrainbento.git
+cd terrainbento
+conda install --file=requirements.txt
+python setup.py install
+```
+
+#### A note to developers
+
+If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and replace `python setup.py install` with `python setup.py develop`.
+
 
 ## How to cite
 
