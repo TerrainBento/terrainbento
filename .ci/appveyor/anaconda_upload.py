@@ -30,21 +30,16 @@ else:
     file_to_upload = resp.strip().split()[-1]
 
 (dirname, filename) = os.path.split(file_to_upload)
-try:
-    print(file_to_upload)
-    print(dirname)
-    print(filename)
-    print(dirname + b'\\' + b'terrainbento*.tar.bz2')
 
-    print(glob.glob(dirname + b'\\' + b'terrainbento*.tar.bz2'))
-    file_to_upload = glob.glob(dirname + b'\\' + b'landlab*.tar.bz2')[0]
-except IndexError:
-    raise RuntimeError('{name}: not a file'.format(name=file_to_upload))
+if os.path.exists(file_to_upload):
+    print('Path exists.')
 
 print(file_to_upload)
 
 if not os.path.isfile(file_to_upload):
     raise RuntimeError('{name}: not a file'.format(name=file_to_upload))
+else:
+    print("File exists")
 
 cmd = ' '.join(['anaconda', '-t', token, 'upload', '--force',
                 '--user', 'terrainbento', '--channel', channel,
