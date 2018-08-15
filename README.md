@@ -22,6 +22,31 @@ We recommend that you start with [this set of Jupyter notebooks](https://github.
 
 A manuscript describing terrainbento can be found [here]() ** not yet submitted, link does not exist **.
 
+## A quick example
+
+The following is the code needed to run the Basic model and create the gif below.
+
+```python
+from terrainbento import Basic
+
+model = Basic(params = {'dt':100, 
+                        'run_duration':100000, 
+                        'output_interval':1000, 
+                        'm_sp': 0.5, 
+                        'n_sp': 1, 
+                        'water_erodability':0.001, 
+                        'regolith_transport_parameter': 0.1, 
+                        'number_of_node_rows': 50, 
+                        'number_of_node_columns':50,
+                        'node_spacing': 10,
+                        'initial_elevation': 1000, 
+                        'add_initial_elevation_to_all_nodes': False})
+model.run()
+ds = model.to_xarray_dataset()
+
+
+```
+
 ## Installation instructions
 
 Before installing terrainbento you will need a python distribution. We recommend that you use the [Anaconda python distribution](https://www.anaconda.com/download/). Unless you have a specific reason to want Python 2.7 we strongly suggest that you install Python 3.6 (or the current 3.* version provided by Anaconda). 
@@ -38,7 +63,7 @@ conda install -c terrainbento terrainbento
 
 To install the terrainbento source code version of terrainbento do the following:
 
-#### Option A: You already have landlab installed (either through conda or through the source code). 
+#### Option A: You already have landlab installed (either through conda or through the source code)
 
 ```
 git clone https://github.com/TerrainBento/terrainbento.git
