@@ -15,40 +15,39 @@ token = os.environ.get('ANACONDA_TOKEN', 'NOT_A_TOKEN')
 if repo_tag == 'true' and tag_name.startswith('v'):
     channel = 'main'
     os.environ['BUILD_STR'] = ''
-else:
-    channel = 'dev'
-    os.environ['BUILD_STR'] = 'dev'
 
-print('Uploading to {channel} channel'.format(channel=channel))
+    print('Uploading package to {channel} channel'.format(channel=channel))
 
-try:
-    cmd = ' '.join(['conda', 'build', '--output', '.conda-recipe', '--old-build-string'])
-    resp = subprocess.check_output(cmd, shell=True)
-except subprocess.CalledProcessError:
-    traceback.print_exc()
-else:
-    file_to_upload = resp.strip().split()[-1]
-
-(dirname, filename) = os.path.split(file_to_upload)
-
-if os.path.exists(file_to_upload):
-    print('Path exists.')
-
-print(file_to_upload)
-
-if not os.path.isfile(file_to_upload):
-    raise RuntimeError('{name}: not a file'.format(name=file_to_upload))
-else:
-    print("File exists")
-
-cmd = ' '.join(['anaconda', '-t', token, 'upload', '--force',
-                '--user', 'terrainbento', '--channel', channel,
-                file_to_upload.decode('utf-8')])
-
-if channel == 'main':
     try:
-        subprocess.check_call(cmd, shell=True)
+        cmd = ' '.join(['conda', 'build', '--output', '.conda-recipe', '--old-build-string'])
+        resp = subprocess.check_output(cmd, shell=True)
     except subprocess.CalledProcessError:
         traceback.print_exc()
+    else:
+        file_to_upload = resp.strip().split()[-1]
+
+    (dirname, filename) = os.path.split(file_to_upload)
+
+    if os.path.exists(file_to_upload):
+        print('Path exists... continuing.')
+
+    print(file_to_upload)
+
+    if not os.path.isfile(file_to_upload):
+        raise RuntimeError('{name}: not a file'.format(name=file_to_upload))
+    else:
+        print("File exists... continuing.")
+
+    cmd = ' '.join(['anaconda', '-t', token, 'upload', '--force',
+                    '--user', 'terrainbento', '--channel', channel,
+                    file_to_upload.decode('utf-8')])
+    print("Trying to upload.")
+    try:
+        subprocess.check_call(cmd, shell=True)
+        print("Upload suceeded.")
+    except subprocess.CalledProcessError:
+        print("Upload failed.")
+        traceback.print_exc()
+
 else:
     print('Not a tagged release. Not deploying to Anaconda Cloud.')
