@@ -83,6 +83,7 @@ script:
 virtualenv:
   system_site_packages: false
 after_success:
+- conda build -q .conda-recipe --old-build-string
 - |
   if [[ "$TRAVIS_TAG" == v* ]]; then
     TB_PACKAGE=$(conda build --output ./.conda-recipe --old-build-string)
