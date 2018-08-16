@@ -4,7 +4,6 @@ import os
 import sys
 import subprocess
 import traceback
-import glob
 
 print('Using python: {prefix}'.format(prefix=sys.prefix))
 
