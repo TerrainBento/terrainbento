@@ -41,8 +41,6 @@ os: Previous Visual Studio 2015
 init:
   - "ECHO %CONDA_INSTALL_LOCN% %CONDA_PY% %HOME% %PLATFORM%"
   - "ECHO %APPVEYOR_REPO_BRANCH%"
-  - "ECHO %WITH_COMPILER%"
-
 
 install:
   - cmd: call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
@@ -61,11 +59,13 @@ install:
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
   - cmd: conda config --add channels landlab
-  - cmd: conda install --file=requirements.txt
-  - "%WITH_COMPILER% conda build -q .conda-recipe --old-build-string"
+  - cmd: conda build -q .conda-recipe --old-build-string
   - cmd: conda install -q terrainbento --use-local
 
 build: false
 
 test_script:
   - cmd: pytest
+
+deploy_script:
+  - cmd: python .ci/appveyor/anaconda_upload.py
