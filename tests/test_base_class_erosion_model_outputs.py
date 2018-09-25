@@ -14,6 +14,15 @@ from terrainbento import Basic
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
+def test_write_gif():
+    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
+    model = Basic(input_file=fp)
+    model._out_file_name = "gif_output"
+    model.run()
+    model.to_gif()
+    model.remove_output_netcdfs()
+    os.remove("terrainbento_example.gif")
+
 def test_write_output_raster():
     fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
     model = Basic(input_file=fp)

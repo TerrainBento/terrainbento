@@ -57,6 +57,7 @@ install:
 - conda install -q sphinx
 - conda install -q pytest
 - conda install -q pytest-cov
+- conda install -q -c conda-forge imageio
 - pip install --upgrade pip
 - pip install pytest
 - pip install codacy-coverage

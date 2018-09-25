@@ -54,6 +54,7 @@ install:
   - cmd: conda install -q conda-verify
   - cmd: conda install -q anaconda-client
   - cmd: conda install -q numpy=1.11
+  - cmd: conda install -q -c conda-forge imageio
   - cmd: pip install twine
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no

@@ -24,7 +24,8 @@ A manuscript describing terrainbento can be found [here]() ** not yet submitted,
 
 ## A quick example
 
-The following is the code needed to run the Basic model.
+The following is the code needed to run the Basic model and compile it into a
+gif.
 
 ```python
 from terrainbento import Basic
@@ -46,32 +47,9 @@ model = Basic(params={"dt" : 100,
                       "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
                                                       "lowering_rate": -0.001}})
 model.run(output_fields='topographic__elevation')
-```
-
-Next we make an image for each output interval.
-
-```python
-from landlab import imshow_grid
-
-filenames = []
-ds = model.to_xarray_dataset()
-model.remove_output_netcdfs()
-for i in range(ds.topographic__elevation.shape[0]):
-    filename = "temp_output."+str(i)+".png"
-    imshow_grid(model.grid, ds.topographic__elevation[i, :, :], cmap="viridis", limits=(0, 12), output=filename)
-    filenames.append(filename)
-```
-
-Finally we compile the images into a gif.
-
-```python
-import os
-import imageio
-with imageio.get_writer("terrainbento_example.gif", mode="I") as writer:
-    for filename in filenames:
-        image = imageio.imread(filename)
-        writer.append_data(image)
-        os.remove(filename)
+model.to_gif("terrainbento_example.gif",
+             field="topographic__elevation",
+             limits = (0, 12))
 ```
 
 ![Example terrainbento run](https://github.com/TerrainBento/terrainbento/blob/master/docs/images/terrainbento_example.gif)

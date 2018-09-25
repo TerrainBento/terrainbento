@@ -207,8 +207,11 @@ from types import FunctionType
 import xarray as xr
 import dask
 
+import imageio
+
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf
+from landlab import imshow_grid
 from landlab import load_params
 from landlab.io.netcdf import write_raster_netcdf
 from landlab.graph import Graph
@@ -1134,6 +1137,34 @@ class ErosionModel(object):
         """Remove all netCDF files written by a model run."""
         for f in self._output_files:
             os.remove(f)
+
+    def to_gif(self,
+               filename="terrainbento_example.gif",
+               field="topographic__elevation",
+               limits=[None, None]):
+        """
+
+        """
+        ds = self.to_xarray_dataset()
+
+        if limits[0] is None:
+            limits[0] = ds[field].min()
+        if limits[1] is None:
+            limits[1] = ds[field].max()
+
+        filenames = []
+        for i in range(ds[field].values.shape[0]):
+            filename = "temp_output."+str(i)+".png"
+            imshow_grid(self.grid, ds[field][i, :, :].values, cmap="viridis", limits=limits, output=filename)
+            filenames.append(filename)
+
+        with imageio.get_writer(uri=filename, mode="I") as writer:
+            for filename in filenames:
+                writer.append_data(imageio.imread(filename))
+        writer.close()
+
+        for filename in filenames:
+            os.remove(filename)
 
 
 def main():  # pragma: no cover
