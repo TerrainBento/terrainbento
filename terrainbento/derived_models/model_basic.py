@@ -161,8 +161,22 @@ class Basic(ErosionModel):
         dt : float
             Increment of time for which the model is run.
         """
-        # Direct and accumulate flow
+        # TODO: Precipitate (this could be constant or could be spatially variable)
+        # This will go into the field `rainfall__flux`
+        # default is that this is 1.0
+        self.precipitator.run_one_step()
+
+        # TODO: Calculate runoff (this could be constant or could be spatially variable)
+        # This will go into the `water__unit_flux_in` field.
+        # default is that water__unit_flux_in == rainfall__flux
+        self.runoff_generator.run_one_step()
+
+        # Direct and accumulate runoff (which will use `water__unit_flux_in`)
         self.flow_accumulator.run_one_step()
+
+
+        # TODO: make all water eroders use the field `surface_water__discharge`
+
 
         # Get IDs of flooded nodes, if any.
         if self.flow_accumulator.depression_finder is None:

@@ -430,6 +430,15 @@ class ErosionModel(object):
                 self._length_factor = 1.0
         self.params["length_factor"] = self._length_factor
 
+
+        ###################################################################
+        # Create water related fields
+        ###################################################################
+        self.rainfall__flux = self.grid.add_ones("rainfall__flux", at="node")
+
+        self.water__unit_flux_in = self.grid.add_ones("water__unit_flux_in",
+                                                      at="node")
+
         ###################################################################
         # Boundary Conditions
         ###################################################################

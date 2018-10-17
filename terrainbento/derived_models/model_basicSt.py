@@ -226,7 +226,6 @@ class BasicSt(StochasticErosionModel):
         dt : float
             Increment of time for which the model is run.
         """
-
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
