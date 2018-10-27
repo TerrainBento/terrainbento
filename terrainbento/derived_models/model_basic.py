@@ -164,12 +164,12 @@ class Basic(ErosionModel):
         # TODO: Precipitate (this could be constant or could be spatially variable)
         # This will go into the field `rainfall__flux`
         # default is that this is 1.0
-        self.precipitator.run_one_step()
+        self.precipitator.run_one_step(dt)
 
         # TODO: Calculate runoff (this could be constant or could be spatially variable)
         # This will go into the `water__unit_flux_in` field.
         # default is that water__unit_flux_in == rainfall__flux
-        self.runoff_generator.run_one_step()
+        self.runoff_generator.run_one_step(dt)
 
         # Direct and accumulate runoff (which will use `water__unit_flux_in`)
         self.flow_accumulator.run_one_step()

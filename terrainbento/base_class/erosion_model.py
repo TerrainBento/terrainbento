@@ -242,6 +242,13 @@ _HANDLER_METHODS = {
     "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
 
+from terrainbento.precipitators import (UniformPrecipitator, RandomPrecipitator)
+
+_SUPPORTED_PRECIPITATORS = []
+
+from terrainbento.runoff_generators import (SimpleRunoff, VariableSourceAreaRunoff)
+
+_SUPPORTED_RUNOFF_GENERATORS = []
 
 class ErosionModel(object):
 
@@ -391,6 +398,26 @@ class ErosionModel(object):
         self.data_nodes = self.grid.at_node["topographic__elevation"] != -9999.
 
         ###################################################################
+        # Create water related fields
+        ###################################################################
+        self.rainfall__flux = self.grid.add_ones("rainfall__flux", at="node")
+
+        self.water__unit_flux_in = self.grid.add_ones("water__unit_flux_in",
+                                                      at="node")
+
+        ###################################################################
+        # Set Up Precipitator
+        ###################################################################
+
+        self.precipitator = UniformPrecipitator(self.grid)
+
+        ###################################################################
+        # Set Up RunoffGenerator
+        ###################################################################
+
+        self.runoff_generator = SimpleRunoff(self.grid)
+
+        ###################################################################
         # instantiate flow direction and accumulation
         ###################################################################
         # get flow direction, and depression finding options
@@ -429,15 +456,6 @@ class ErosionModel(object):
             else:
                 self._length_factor = 1.0
         self.params["length_factor"] = self._length_factor
-
-
-        ###################################################################
-        # Create water related fields
-        ###################################################################
-        self.rainfall__flux = self.grid.add_ones("rainfall__flux", at="node")
-
-        self.water__unit_flux_in = self.grid.add_ones("water__unit_flux_in",
-                                                      at="node")
 
         ###################################################################
         # Boundary Conditions

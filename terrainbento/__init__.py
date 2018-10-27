@@ -1,11 +1,13 @@
 """
 Public classes of the terrainbento package.
 
-terrainbento has three types of public classes: base models, derived models
-and boundary condition handlers. Base models are used to help easily build
-new models. Derived models are models that have inherited from the
-**ErosionModel** base class. Boundary condition handlers are helper classes
-that have been designed to modify model boundary conditions during a model run.
+terrainbento has five types of public classes: base models, derived models
+precipitators, runoff-generators, and boundary condition handlers. Base models
+are used to help easily build new models. Derived models are models that have
+inherited from the **ErosionModel** base class. Precipitators can make different
+types of spatially variable precipitation. Runoff-generators convert
+precipiation to runoff and Boundary condition handlers are helper classes that
+have been designed to modify model boundary conditions during a model run.
 """
 
 from .base_class import ErosionModel
@@ -19,6 +21,9 @@ from .boundary_condition_handlers import SingleNodeBaselevelHandler
 from .boundary_condition_handlers import CaptureNodeBaselevelHandler
 from .boundary_condition_handlers import NotCoreNodeBaselevelHandler
 from .boundary_condition_handlers import GenericFuncBaselevelHandler
+
+from .precipitators import UniformPrecipitator, RandomPrecipitator
+from .runoff_generators import SimpleRunoff, VariableSourceAreaRunoff
 
 from .derived_models import Basic
 from .derived_models import BasicTh
