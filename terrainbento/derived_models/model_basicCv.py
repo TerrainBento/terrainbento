@@ -145,7 +145,7 @@ class BasicCv(ErosionModel):
         self.K_through_time = interp1d(time, K)
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=K[0], m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(self.grid, K_sp=K[0], m_sp=self.m, n_sp=self.n, discharge_name='surface_water__discharge')
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

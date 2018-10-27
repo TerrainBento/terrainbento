@@ -205,7 +205,7 @@ class BasicDdSt(StochasticErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             K_sp=self.K,
-            use_Q=self.discharge,
+            use_Q="surface_water__discharge",
             threshold_sp=self.threshold,
         )
 

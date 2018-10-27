@@ -196,7 +196,7 @@ class BasicDdVs(ErosionModel):
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
-            use_Q=self.eff_area,
+            use_Q="surface_water__discharge",
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,

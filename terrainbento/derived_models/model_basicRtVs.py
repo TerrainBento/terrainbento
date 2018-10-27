@@ -212,7 +212,7 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid, K_sp=self.erody, m_sp=self.m, n_sp=self.n, use_Q=self.eff_area
+            self.grid, K_sp=self.erody, m_sp=self.m, n_sp=self.n, , discharge_name='surface_water__discharge'
         )
 
         # Instantiate a LinearDiffuser component

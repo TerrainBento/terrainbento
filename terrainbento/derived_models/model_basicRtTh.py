@@ -203,6 +203,7 @@ class BasicRtTh(TwoLithologyErosionModel):
             threshold_sp=self.threshold,
             m_sp=self.m,
             n_sp=self.n,
+            use_Q='surface_water__discharge'
         )
 
         # Instantiate a LinearDiffuser component

@@ -179,7 +179,7 @@ class BasicStTh(StochasticErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             threshold_sp=threshold,
-            use_Q=self.discharge,
+            use_Q='surface_water__discharge',
         )
 
         # Instantiate a LinearDiffuser component

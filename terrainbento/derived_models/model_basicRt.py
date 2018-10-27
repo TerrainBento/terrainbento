@@ -176,7 +176,7 @@ class BasicRt(TwoLithologyErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.erody, m_sp=self.m, n_sp=self.n
+            self.grid, K_sp=self.erody, m_sp=self.m, n_sp=self.n, discharge_name='surface_water__discharge'
         )
 
         # Instantiate a LinearDiffuser component
