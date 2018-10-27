@@ -202,8 +202,8 @@ class BasicHySt(StochasticErosionModel):
         """
         Advance model for one time-step of duration dt.
         """
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+        # create and move water
+        self.create_and_move_water(dt)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:

@@ -269,8 +269,8 @@ class BasicRtVs(TwoLithologyErosionModel):
         dt : float
             Increment of time for which the model is run.
         """
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+        # create and move water
+        self.create_and_move_water(dt)
 
         # Update effective runoff ratio
         self._calc_effective_drainage_area()
