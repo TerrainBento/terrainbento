@@ -26,6 +26,7 @@ class SingleNodeBaselevelHandler(object):
         self,
         grid,
         outlet_node=0,
+        modify_outlet_node=True,
         lowering_rate=None,
         lowering_file_path=None,
         model_end_elevation=None,
@@ -37,6 +38,10 @@ class SingleNodeBaselevelHandler(object):
         grid : landlab model grid
         outlet_node : int, optional
             Node ID of the outlet node. Default value is 0.
+        modify_outlet_node : boolean, optional
+            Flag to indicate if the outlet node or all other nodes will be
+            modified. Default is True, indicating that the outlet node will
+            be modified.
         lowering_rate : float, optional
             Lowering rate of the outlet node. One of ``lowering_rate`` and
             ``lowering_file_path`` is required. Units are implied by the
@@ -99,6 +104,17 @@ class SingleNodeBaselevelHandler(object):
         self.outlet_node = outlet_node
         self.z = self._grid.at_node["topographic__elevation"]
 
+        # determine which nodes to lower
+        # based on which are lowering, set the prefactor correctly.
+        self.modify_outlet_node = modify_outlet_node
+        node_ids = np.arange(grid.number_of_nodes)
+        if self.modify_outlet_node:
+            self.nodes_to_lower = node_ids == outlet_node
+            self.prefactor = 1.0
+        else:
+            self.nodes_to_lower = node_ids != outlet_node
+            self.prefactor = -1.0
+
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(
                 (
@@ -129,6 +145,8 @@ class SingleNodeBaselevelHandler(object):
                     ) + model_start_elevation
                     self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
+                    self._outlet_start_z = model_start_elevation
+                    self._outlet_effective_z = model_start_elevation
                 else:
                     raise ValueError(
                         (
@@ -172,13 +190,13 @@ class SingleNodeBaselevelHandler(object):
         if self.outlet_elevation_obj is None:
 
             # calculate lowering amount and subtract
-            self.z[self.outlet_node] += self.lowering_rate * dt
+            self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
 
             # if bedrock__elevation exists as a field, lower it also
             other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
             for of in other_fields:
                 if of in self._grid.at_node:
-                    self._grid.at_node[of][self.outlet_node] += self.lowering_rate * dt
+                    self._grid.at_node[of][self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
 
         # if there is an outlet elevation object
         else:
@@ -186,6 +204,10 @@ class SingleNodeBaselevelHandler(object):
             # calcuate the topographic change required to match the current time"s value for
             # outlet elevation. This must be done in case bedrock elevation exists, and must
             # be done before the topography is lowered
+
+            # TODO: Fix this so it can be the outlet lowering or the rest
+            # rising AND works if some deposition happens in the outlet node.
+            self.z[self.outlet_node] = self._outlet_start_z
             topo_change = self.z[self.outlet_node] - self.outlet_elevation_obj(
                 self.model_time
             )
@@ -193,9 +215,10 @@ class SingleNodeBaselevelHandler(object):
             other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
             for of in other_fields:
                 if of in self._grid.at_node:
-                    self._grid.at_node[of][self.outlet_node] -= topo_change
+                    self._grid.at_node[of][self.nodes_to_lower] -= self.prefactor * topo_change
 
             # lower topography
-            self.z[self.outlet_node] -= topo_change
+            self.z[self.outlet_node] -= self.prefactor * topo_change
+
         # increment model time
         self.model_time += dt

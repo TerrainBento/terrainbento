@@ -41,7 +41,7 @@ class GenericFuncBaselevelHandler(object):
         grid : landlab model grid
         modify_core_nodes : boolean, optional
             Flag to indicate if the core nodes or the non-core nodes will
-            be modified. Default is False, indicating that nodes in the core
+            be modified. Default is False, indicating that the boundary nodes
             will be modified.
         function : function, optional
             Function of model grid node x position, y position and model time
