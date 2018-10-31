@@ -5,6 +5,8 @@ import os
 import numpy as np
 from scipy.interpolate import interp1d
 
+_OTHER_FIELDS = ["bedrock__elevation", "lithology_contact__elevation"]
+
 
 class SingleNodeBaselevelHandler(object):
     """Control the elevation of a single open boundary node.
@@ -111,9 +113,13 @@ class SingleNodeBaselevelHandler(object):
         if self.modify_outlet_node:
             self.nodes_to_lower = node_ids == outlet_node
             self.prefactor = 1.0
+
         else:
             self.nodes_to_lower = node_ids != outlet_node
             self.prefactor = -1.0
+            self._outlet_start_values = {
+                "topographic_elevation": self.z[self.outlet_node]
+            }
 
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(
@@ -124,6 +130,14 @@ class SingleNodeBaselevelHandler(object):
             )
         else:
             if lowering_rate is None:
+                if self.modify_outlet_node is False:
+                    raise ValueError(
+                        "SingleNodeBaselevelHandler currently does not support "
+                        "using a filepath for lowering and "
+                        "'modify_outlet_node'=False'. If this is something you "
+                        "need in your research please create at an issue to "
+                        "discuss developing it."
+                    )
                 # initialize outlet elevation object
                 if os.path.exists(lowering_file_path):
 
@@ -193,10 +207,12 @@ class SingleNodeBaselevelHandler(object):
             self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
 
             # if bedrock__elevation exists as a field, lower it also
-            other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
-            for of in other_fields:
+
+            for of in _OTHER_FIELDS:
                 if of in self._grid.at_node:
-                    self._grid.at_node[of][self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
+                    self._grid.at_node[of][self.nodes_to_lower] += (
+                        self.prefactor * self.lowering_rate * dt
+                    )
 
         # if there is an outlet elevation object
         else:
@@ -205,9 +221,6 @@ class SingleNodeBaselevelHandler(object):
             # outlet elevation. This must be done in case bedrock elevation exists, and must
             # be done before the topography is lowered
 
-            # TODO: Fix this so it can be the outlet lowering or the rest
-            # rising AND works if some deposition happens in the outlet node.
-            self.z[self.outlet_node] = self._outlet_start_z
             topo_change = self.z[self.outlet_node] - self.outlet_elevation_obj(
                 self.model_time
             )
@@ -215,10 +228,10 @@ class SingleNodeBaselevelHandler(object):
             other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
             for of in other_fields:
                 if of in self._grid.at_node:
-                    self._grid.at_node[of][self.nodes_to_lower] -= self.prefactor * topo_change
+                    self._grid.at_node[of][self.outlet_node] -= topo_change
 
             # lower topography
-            self.z[self.outlet_node] -= self.prefactor * topo_change
+            self.z[self.outlet_node] -= topo_change
 
         # increment model time
         self.model_time += dt
