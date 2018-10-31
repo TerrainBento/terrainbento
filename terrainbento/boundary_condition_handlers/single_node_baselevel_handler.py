@@ -120,6 +120,9 @@ class SingleNodeBaselevelHandler(object):
             self._outlet_start_values = {
                 "topographic_elevation": self.z[self.outlet_node]
             }
+            for of in _OTHER_FIELDS:
+                if of in self._grid.at_node:
+                    self._outlet_start_values[of] = self._grid.at_node[of][self.outlet_id]
 
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(
@@ -213,6 +216,10 @@ class SingleNodeBaselevelHandler(object):
                     self._grid.at_node[of][self.nodes_to_lower] += (
                         self.prefactor * self.lowering_rate * dt
                     )
+
+            if self.modify_outlet_id is False:
+                for key in self._outlet_start_values.keys():
+                    self._grid.at_node[key][self.outlet_id] = self._outlet_start_values[key]
 
         # if there is an outlet elevation object
         else:
