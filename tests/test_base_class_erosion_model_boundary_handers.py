@@ -5,6 +5,8 @@ import numpy as np
 from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 import pytest
 
+from landlab import FIXED_VALUE_BOUNDARY, CLOSED_BOUNDARY
+
 from terrainbento import ErosionModel, Basic, BasicSt
 from terrainbento.boundary_condition_handlers import (
     PrecipChanger,
@@ -109,6 +111,27 @@ def test_boundary_condition_handler_with_bad_special_part_of_params_single():
         Basic(params=params)
 
 
+def test_single_node_blh_with_closed_boundaries():
+    params = {'dt' : 10, # years
+          'output_interval': 1e3, # years
+          'run_duration': 1e6, # years
+          'number_of_node_rows' : 10,
+          'number_of_node_columns' : 10,
+          "north_boundary_closed": True,
+          "south_boundary_closed": True,
+          'node_spacing' : 10.0, # meters
+          'random_seed': 4897, # set to initialize the topography with reproducible random noise
+          'water_erodability' : 0.0001, # years^-1
+          'm_sp' : 0.5, # unitless
+          'n_sp' : 1.0, # unitless
+          'regolith_transport_parameter' : 0.01, # meters^2/year
+          "BoundaryHandlers": "SingleNodeBaselevelHandler",
+          "SingleNodeBaselevelHandler": {"modify_outlet_node": False, "lowering_rate": -0.0005, 'outlet_id': 3} , # meters/year
+    }
+    model = Basic(params=params)
+    assert model.grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
+
+
 def test_boundary_condition_handler_without_special_part_of_params():
     U = 0.0001
     K = 0.001
@@ -161,6 +184,8 @@ def test_pass_two_boundary_handlers():
         "node_spacing": 100.0,
         "north_boundary_closed": True,
         "south_boundary_closed": True,
+        "east_boundary_closed": True,
+        "west_boundary_closed": True,
         "regolith_transport_parameter": 0.,
         "water_erodability": K,
         "m_sp": m,
@@ -180,6 +205,11 @@ def test_pass_two_boundary_handlers():
     truth[0] -= U
     truth[model.grid.core_nodes] += U
     assert_array_equal(model.z, truth)
+
+    status_at_node = np.zeros(model.z.size)
+    status_at_node[model.grid.boundary_nodes] = CLOSED_BOUNDARY
+    status_at_node[0] = FIXED_VALUE_BOUNDARY
+    assert_array_equal(model.grid.status_at_node, status_at_node)
 
 
 def test_generic_bch():
