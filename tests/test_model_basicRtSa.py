@@ -26,9 +26,9 @@ def test_steady_Kss_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 8,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -83,9 +83,9 @@ def test_steady_Ksp_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 8,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -141,9 +141,9 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 8,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -203,7 +203,7 @@ def test_diffusion_only():
         "model_grid": "RasterModelGrid",
         "dt": dt,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": number_of_node_rows,
         "number_of_node_columns": 3,
         "node_spacing": dx,
@@ -284,9 +284,9 @@ def test_with_precip_changer():
 
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 21,
         "number_of_node_columns": 3,
         "node_spacing": 100.0,
