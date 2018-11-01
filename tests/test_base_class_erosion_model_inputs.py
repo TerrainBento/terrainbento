@@ -34,9 +34,7 @@ def test_no_inputs():
 def test_both_inputs():
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 10.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 10.},
     }
     fp = os.path.join(_TEST_DATA_DIR, "inputs.txt")
 
@@ -47,9 +45,7 @@ def test_both_inputs():
 def test_both_node_rows_and_DEM():
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1,
-                  "output_interval": 2.,
-                  "run_duration": 100},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 100},
         "number_of_node_rows": 5,
         "DEM_filename": "foo.nc",
     }
@@ -66,7 +62,10 @@ def test_no_required_params():
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
-    params = {"model_grid": "HexModelGrid", "clock": {"output_interval": 2, "run_duration": 10.}}
+    params = {
+        "model_grid": "HexModelGrid",
+        "clock": {"output_interval": 2, "run_duration": 10.},
+    }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
@@ -74,27 +73,21 @@ def test_no_required_params():
 def test_bad_req_params():
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": "spam",
-        "output_interval": 2.,
-        "run_duration": 10.},
+        "clock": {"dt": "spam", "output_interval": 2., "run_duration": 10.},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": "eggs",
-        "run_duration": 10.},
+        "clock": {"dt": 1, "output_interval": "eggs", "run_duration": 10.},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": "wooo"},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": "wooo"},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -120,9 +113,7 @@ def test_input_file():
 def test_parameters():
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 10.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 10.},
     }
     em = ErosionModel(params=params)
     assert isinstance(em.grid, HexModelGrid)

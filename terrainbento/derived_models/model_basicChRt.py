@@ -184,7 +184,7 @@ class BasicChRt(TwoLithologyErosionModel):
         self._setup_rock_and_till()
 
         # get taylor terms
-        nterms = self.params.get('number_of_taylor_terms', 7)
+        nterms = self.params.get("number_of_taylor_terms", 7)
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(

@@ -19,9 +19,7 @@ def test_steady_Ksp_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": run_time * dt},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": run_time * dt},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -58,9 +56,7 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": total_time},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": total_time},
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": 100.0,
@@ -105,9 +101,7 @@ def test_with_precip_changer():
     climate_constant_date = 10
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,

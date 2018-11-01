@@ -143,7 +143,7 @@ class BasicCh(ErosionModel):
         )  # has units length^2/time
 
         # get taylor terms
-        nterms = self.params.get('number_of_taylor_terms', 11)
+        nterms = self.params.get("number_of_taylor_terms", 11)
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)

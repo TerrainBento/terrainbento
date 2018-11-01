@@ -83,7 +83,9 @@ def test_outlet_lowering_rate_on_not_outlet():
     b = mg.add_zeros("node", "bedrock__elevation")
 
     node_id = 27
-    bh = SingleNodeBaselevelHandler(mg, outlet_id=node_id, lowering_rate=-0.1, modify_outlet_id=False)
+    bh = SingleNodeBaselevelHandler(
+        mg, outlet_id=node_id, lowering_rate=-0.1, modify_outlet_id=False
+    )
     for _ in range(240):
         bh.run_one_step(10)
 
@@ -154,8 +156,6 @@ def test_outlet_lowering_modify_other_nodes():
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
     with pytest.raises(ValueError):
-        SingleNodeBaselevelHandler(mg,
-                                   outlet_id=node_id,
-                                   lowering_file_path=file,
-                                   modify_outlet_id=False
-                                  )
+        SingleNodeBaselevelHandler(
+            mg, outlet_id=node_id, lowering_file_path=file, modify_outlet_id=False
+        )

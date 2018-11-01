@@ -24,9 +24,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -83,9 +81,7 @@ def test_steady_Ksp_no_precip_changer_no_solver_given():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -141,9 +137,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -196,9 +190,7 @@ def test_with_precip_changer():
     thresh_change_per_depth = 0
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -243,9 +235,7 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": 100.0,

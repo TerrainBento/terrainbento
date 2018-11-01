@@ -17,9 +17,7 @@ from terrainbento.boundary_condition_handlers import (
 
 def test_bad_boundary_condition_string():
     params = {
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 10.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 10.},
         "BoundaryHandlers": "spam",
     }
     with pytest.raises(ValueError):
@@ -34,9 +32,7 @@ def test_boundary_condition_handler_with_special_part_of_params():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -63,9 +59,7 @@ def test_boundary_condition_handler_with_special_part_of_params():
 def test_boundary_condition_handler_with_bad_special_part_of_params():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10,
-        "output_interval": 2.,
-        "run_duration": 1000.},
+        "clock": {"dt": 10, "output_interval": 2., "run_duration": 1000.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -92,41 +86,51 @@ def test_boundary_condition_handler_with_bad_special_part_of_params():
 
 
 def test_boundary_condition_handler_with_bad_special_part_of_params_single():
-    params = {'dt' : 10, # years
-          'output_interval': 1e3, # years
-          'run_duration': 1e6, # years
-          'number_of_node_rows' : 10,
-          'number_of_node_columns' : 10,
-          'outlet_id': 1,
-          'node_spacing' : 10.0, # meters
-          'random_seed': 4897, # set to initialize the topography with reproducible random noise
-          'water_erodability' : 0.0001, # years^-1
-          'm_sp' : 0.5, # unitless
-          'n_sp' : 1.0, # unitless
-          'regolith_transport_parameter' : 0.01, # meters^2/year
-          "BoundaryHandlers": "SingleNodeBaselevelHandler",
-          "SingleNodeBaselevelHandler": {"modify_outlet_node": False, "lowering_rate": -0.0005, 'outlet_id': 50} , # meters/year
+    params = {
+        "dt": 10,  # years
+        "output_interval": 1e3,  # years
+        "run_duration": 1e6,  # years
+        "number_of_node_rows": 10,
+        "number_of_node_columns": 10,
+        "outlet_id": 1,
+        "node_spacing": 10.0,  # meters
+        "random_seed": 4897,  # set to initialize the topography with reproducible random noise
+        "water_erodability": 0.0001,  # years^-1
+        "m_sp": 0.5,  # unitless
+        "n_sp": 1.0,  # unitless
+        "regolith_transport_parameter": 0.01,  # meters^2/year
+        "BoundaryHandlers": "SingleNodeBaselevelHandler",
+        "SingleNodeBaselevelHandler": {
+            "modify_outlet_node": False,
+            "lowering_rate": -0.0005,
+            "outlet_id": 50,
+        },  # meters/year
     }
     with pytest.raises(ValueError):
         Basic(params=params)
 
 
 def test_single_node_blh_with_closed_boundaries():
-    params = {'dt' : 10, # years
-          'output_interval': 1e3, # years
-          'run_duration': 1e6, # years
-          'number_of_node_rows' : 10,
-          'number_of_node_columns' : 10,
-          "north_boundary_closed": True,
-          "south_boundary_closed": True,
-          'node_spacing' : 10.0, # meters
-          'random_seed': 4897, # set to initialize the topography with reproducible random noise
-          'water_erodability' : 0.0001, # years^-1
-          'm_sp' : 0.5, # unitless
-          'n_sp' : 1.0, # unitless
-          'regolith_transport_parameter' : 0.01, # meters^2/year
-          "BoundaryHandlers": "SingleNodeBaselevelHandler",
-          "SingleNodeBaselevelHandler": {"modify_outlet_node": False, "lowering_rate": -0.0005, 'outlet_id': 3} , # meters/year
+    params = {
+        "dt": 10,  # years
+        "output_interval": 1e3,  # years
+        "run_duration": 1e6,  # years
+        "number_of_node_rows": 10,
+        "number_of_node_columns": 10,
+        "north_boundary_closed": True,
+        "south_boundary_closed": True,
+        "node_spacing": 10.0,  # meters
+        "random_seed": 4897,  # set to initialize the topography with reproducible random noise
+        "water_erodability": 0.0001,  # years^-1
+        "m_sp": 0.5,  # unitless
+        "n_sp": 1.0,  # unitless
+        "regolith_transport_parameter": 0.01,  # meters^2/year
+        "BoundaryHandlers": "SingleNodeBaselevelHandler",
+        "SingleNodeBaselevelHandler": {
+            "modify_outlet_node": False,
+            "lowering_rate": -0.0005,
+            "outlet_id": 3,
+        },  # meters/year
     }
     model = Basic(params=params)
     assert model.grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
@@ -140,9 +144,7 @@ def test_boundary_condition_handler_without_special_part_of_params():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -176,9 +178,7 @@ def test_pass_two_boundary_handlers():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -219,9 +219,7 @@ def test_generic_bch():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -260,9 +258,7 @@ def test_capture_node():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,

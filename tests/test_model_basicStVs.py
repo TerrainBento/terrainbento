@@ -24,9 +24,7 @@ def test_bad_transmiss():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 6,
         "node_spacing": 100.0,
@@ -62,9 +60,7 @@ def test_steady_without_stochastic_duration():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 6,
         "node_spacing": 100.0,
@@ -116,9 +112,7 @@ def test_stochastic_duration_rainfall_means():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock":{"dt": dt,
-        "output_interval": 401.,
-        "run_duration": 400.},
+        "clock": {"dt": dt, "output_interval": 401., "run_duration": 400.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 6,
         "node_spacing": 100.0,
@@ -170,9 +164,7 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.},
+        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": 100.0,

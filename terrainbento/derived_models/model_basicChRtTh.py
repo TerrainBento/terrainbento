@@ -200,7 +200,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         )
 
         # get taylor terms
-        nterms = self.params.get('number_of_taylor_terms', 7)
+        nterms = self.params.get("number_of_taylor_terms", 7)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()

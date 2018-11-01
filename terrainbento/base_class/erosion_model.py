@@ -313,9 +313,9 @@ class ErosionModel(object):
 
         # ensure required values are provided
         for req in ["dt", "output_interval", "run_duration"]:
-            if req in self.params['clock']:
+            if req in self.params["clock"]:
                 try:
-                    _ = float(self.params['clock'][req])
+                    _ = float(self.params["clock"][req])
                 except ValueError:
                     msg = (
                         "Required parameter {0} is not compatible with type float.".format(
@@ -329,8 +329,8 @@ class ErosionModel(object):
                 raise ValueError(msg)
 
         # save total run druation and output interval
-        self.total_run_duration = self.params['clock']["run_duration"]
-        self.output_interval = self.params['clock']["output_interval"]
+        self.total_run_duration = self.params["clock"]["run_duration"]
+        self.output_interval = self.params["clock"]["output_interval"]
 
         # identify if initial conditions should be saved.
         # default behavior is to not save the first timestep
