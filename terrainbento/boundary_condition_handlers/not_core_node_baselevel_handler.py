@@ -43,7 +43,7 @@ class NotCoreNodeBaselevelHandler(object):
         grid : landlab model grid
         modify_core_nodes : boolean, optional
             Flag to indicate if the core nodes or the non-core nodes will
-            be modified. Default is False, indicating that nodes in the core
+            be modified. Default is False, indicating that the boundary nodes
             will be modified.
         lowering_rate : float, optional
             Lowering rate of the outlet node. One of ``lowering_rate`` and

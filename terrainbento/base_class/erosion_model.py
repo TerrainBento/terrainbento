@@ -377,6 +377,7 @@ class ErosionModel(object):
                 self.grid.set_watershed_boundary_condition_outlet_id(
                     self.outlet_node, self.z, nodata_value=-9999
                 )
+                self.z[self.grid.status_at_node == 4] = -9999
             else:
                 self.outlet_node = self.grid.set_watershed_boundary_condition(
                     self.z, nodata_value=-9999, return_outlet_id=True
