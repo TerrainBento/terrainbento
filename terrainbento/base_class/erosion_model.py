@@ -313,9 +313,9 @@ class ErosionModel(object):
 
         # ensure required values are provided
         for req in ["dt", "output_interval", "run_duration"]:
-            if req in self.params:
+            if req in self.params['clock']:
                 try:
-                    _ = float(self.params[req])
+                    _ = float(self.params['clock'][req])
                 except ValueError:
                     msg = (
                         "Required parameter {0} is not compatible with type float.".format(
@@ -329,8 +329,8 @@ class ErosionModel(object):
                 raise ValueError(msg)
 
         # save total run druation and output interval
-        self.total_run_duration = self.params["run_duration"]
-        self.output_interval = self.params["output_interval"]
+        self.total_run_duration = self.params['clock']["run_duration"]
+        self.output_interval = self.params['clock']["output_interval"]
 
         # identify if initial conditions should be saved.
         # default behavior is to not save the first timestep
@@ -586,7 +586,9 @@ class ErosionModel(object):
         ...           "number_of_node_rows" : 6,
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
-        ...           "dt": 1, "output_interval": 2., "run_duration": 10.}
+        ...           "clock": {"dt": 1,
+        ...                     "output_interval": 2.,
+        ...                     "run_duration": 200.}}
 
         >>> em = ErosionModel(params=params)
         >>> isinstance(em.grid, HexModelGrid)
@@ -683,7 +685,7 @@ class ErosionModel(object):
         >>> params = { "number_of_node_rows" : 6,
         ...            "number_of_node_columns" : 9,
         ...            "node_spacing" : 10.0,
-        ...            "dt": 1, "output_interval": 2., "run_duration": 10.}
+        ...            "clock":{"dt": 1, "output_interval": 2., "run_duration": 10.}}
         >>> from terrainbento import ErosionModel
         >>> em = ErosionModel(params=params)
         >>> em = ErosionModel(params=params)
@@ -862,7 +864,9 @@ class ErosionModel(object):
 
         >>> params = {"model_grid" : "HexModelGrid",
         ...           "water_erodability_exp" : -3.,
-        ...           "dt": 1, "output_interval": 2., "run_duration": 10.}
+        ...           "clock": {"dt": 1,
+        ...                     "output_interval": 2.,
+        ...                     "run_duration": 200.}}
         >>> em = ErosionModel(params=params)
         >>> em._get_parameter_from_exponent("water_erodability")
         0.001
@@ -872,7 +876,9 @@ class ErosionModel(object):
 
         >>> params = {"model_grid" : "HexModelGrid",
         ...           "water_erodability" : 0.5,
-        ...           "dt": 1, "output_interval": 2., "run_duration": 10.}
+        ...           "clock": {"dt": 1,
+        ...                     "output_interval": 2.,
+        ...                     "run_duration": 200.}}
         >>> em = ErosionModel(params=params)
         >>> em._get_parameter_from_exponent("water_erodability")
         0.5

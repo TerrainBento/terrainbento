@@ -99,9 +99,9 @@ class BasicCv(ErosionModel):
         Set up a parameters variable.
 
         >>> params = {"model_grid": "RasterModelGrid",
-        ...           "dt": 1,
-        ...           "output_interval": 2.,
-        ...           "run_duration": 200.,
+        ...           "clock": {"dt": 1,
+        ...                     "output_interval": 2.,
+        ...                     "run_duration": 200.},
         ...           "number_of_node_rows" : 6,
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
@@ -140,7 +140,7 @@ class BasicCv(ErosionModel):
         self.climate_factor = self.params["climate_factor"]
         self.climate_constant_date = self.params["climate_constant_date"]
 
-        time = [0, self.climate_constant_date, self.params["run_duration"]]
+        time = [0, self.climate_constant_date, self.params["clock"]["run_duration"]]
         K = [K_sp * self.climate_factor, K_sp, K_sp]
         self.K_through_time = interp1d(time, K)
 
