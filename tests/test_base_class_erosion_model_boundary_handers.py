@@ -17,7 +17,7 @@ def test_bad_boundary_condition_string():
     params = {
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 10.,
+        "run_duration": 10.},
         "BoundaryHandlers": "spam",
     }
     with pytest.raises(ValueError):
@@ -61,9 +61,9 @@ def test_boundary_condition_handler_with_special_part_of_params():
 def test_boundary_condition_handler_with_bad_special_part_of_params():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
-        "run_duration": 1000.,
+        "run_duration": 1000.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,

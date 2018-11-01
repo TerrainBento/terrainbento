@@ -588,7 +588,7 @@ class ErosionModel(object):
         ...           "node_spacing" : 10.0,
         ...           "clock": {"dt": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.}}
+        ...                     "run_duration": 200.},}
 
         >>> em = ErosionModel(params=params)
         >>> isinstance(em.grid, HexModelGrid)
@@ -685,7 +685,7 @@ class ErosionModel(object):
         >>> params = { "number_of_node_rows" : 6,
         ...            "number_of_node_columns" : 9,
         ...            "node_spacing" : 10.0,
-        ...            "clock":{"dt": 1, "output_interval": 2., "run_duration": 10.}}
+        ...            "clock":{"dt": 1, "output_interval": 2., "run_duration": 10.},}
         >>> from terrainbento import ErosionModel
         >>> em = ErosionModel(params=params)
         >>> em = ErosionModel(params=params)
@@ -866,7 +866,7 @@ class ErosionModel(object):
         ...           "water_erodability_exp" : -3.,
         ...           "clock": {"dt": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.}}
+        ...                     "run_duration": 200.},}
         >>> em = ErosionModel(params=params)
         >>> em._get_parameter_from_exponent("water_erodability")
         0.001
@@ -878,7 +878,7 @@ class ErosionModel(object):
         ...           "water_erodability" : 0.5,
         ...           "clock": {"dt": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.}}
+        ...                     "run_duration": 200.},}
         >>> em = ErosionModel(params=params)
         >>> em._get_parameter_from_exponent("water_erodability")
         0.5
@@ -1016,7 +1016,7 @@ class ErosionModel(object):
             next_run_pause = min(
                 time_now + self.output_interval, self.total_run_duration
             )
-            self.run_for(self.params["dt"], next_run_pause - time_now)
+            self.run_for(self.params["clock"]["dt"], next_run_pause - time_now)
             time_now = self._model_time
             self.iteration += 1
             self._itters.append(self.iteration)
@@ -1080,7 +1080,7 @@ class ErosionModel(object):
         )
 
         # add a time dimension
-        time_array = np.asarray(self._itters) * self.params["output_interval"]
+        time_array = np.asarray(self._itters) * self.params["clock"]["output_interval"]
         time = xr.DataArray(
             time_array,
             dims=("nt"),

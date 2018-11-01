@@ -12,7 +12,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_defaults():
-    params = {"clock": {"dt": 1, "output_interval": 2., "run_duration": 200.}
+    params = {"clock": {"dt": 1, "output_interval": 2., "run_duration": 200.}}
     model = StochasticErosionModel(params=params)
     assert model.opt_stochastic_duration == False
     assert model.record_rain == False
@@ -44,9 +44,9 @@ def test_init_record_opt_false():
 def test_run_stochastic_opt_true():
     params = {
         "opt_stochastic_duration": True,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
-        "run_duration": 100000.,
+        "run_duration": 100000.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -61,7 +61,7 @@ def test_run_stochastic_opt_true():
 
     model = BasicSt(params=params)
     assert model.opt_stochastic_duration == True
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(decimals=5)
     event_duration = np.asarray(model.rain_record["event_duration"]).round(decimals=5)
@@ -90,7 +90,7 @@ def test_run_stochastic_opt_true():
 def test_run_stochastic_opt_false():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
         "run_duration": 200.},
         "record_rain": True,
@@ -108,7 +108,7 @@ def test_run_stochastic_opt_false():
 
     model = BasicSt(params=params)
     assert model.opt_stochastic_duration == False
-    model.run_for(params["dt"], 10000.)
+    model.run_for(params["clock"]["dt"], 10000.)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"])
     event_duration = np.asarray(model.rain_record["event_duration"])
@@ -118,13 +118,13 @@ def test_run_stochastic_opt_false():
 
     assert (
         np.array_equiv(
-            dry_times, params["dt"] * (1. - params["rainfall_intermittency_factor"])
+            dry_times, params["clock"]["dt"] * (1. - params["rainfall_intermittency_factor"])
         )
         == True
     )
     assert (
         np.array_equiv(
-            wet_times, params["dt"] * (params["rainfall_intermittency_factor"])
+            wet_times, params["clock"]["dt"] * (params["rainfall_intermittency_factor"])
         )
         == True
     )
@@ -203,7 +203,7 @@ def test_reset_random_seed_stochastic_duration_true():
 def test_reset_random_seed_stochastic_duration_false():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
         "run_duration": 200.},
         "record_rain": True,
@@ -243,7 +243,7 @@ def test_reset_random_seed_stochastic_duration_false():
 def test_float_number_of_sub_time_steps():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
         "run_duration": 200.},
         "record_rain": True,
@@ -267,7 +267,7 @@ def test_run_opt_false_with_changer():
         "opt_stochastic_duration": False,
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 3.,
+        "run_duration": 3.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -285,18 +285,18 @@ def test_run_opt_false_with_changer():
 
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
     assert "PrecipChanger" in model.boundary_handler
 
     predicted_intermittency = params["rainfall_intermittency_factor"] + params[
         "PrecipChanger"
     ]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (
-        params["run_duration"] - params["dt"]
+        params["clock"]["run_duration"] - params["clock"]["dt"]
     )
 
     predicted_intensity = params["rainfall__mean_rate"] + params["PrecipChanger"][
         "rainfall__mean_rate_time_rate_of_change"
-    ] * (params["run_duration"] - params["dt"])
+    ] * (params["clock"]["run_duration"] - params["clock"]["dt"])
 
     assert model.rainfall_intermittency_factor == predicted_intermittency
     assert model.rainfall__mean_rate == predicted_intensity
@@ -305,9 +305,9 @@ def test_run_opt_false_with_changer():
 def test_opt_dur_true_with_changer():
     params = {
         "opt_stochastic_duration": True,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
-        "run_duration": 1000.,
+        "run_duration": 1000.},
         "BoundaryHandlers": "PrecipChanger",
         "PrecipChanger": precip_defaults,
     }
@@ -319,7 +319,7 @@ def test_opt_dur_true_with_changer():
 def test_not_specifying_record_rain():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
         "run_duration": 200.},
         "record_rain": False,
@@ -337,7 +337,7 @@ def test_not_specifying_record_rain():
 
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
     with pytest.raises(ValueError):
         model.write_storm_sequence_to_file()
 
@@ -348,7 +348,7 @@ def test_not_specifying_record_rain():
 def test_finalize_opt_duration_stochastic_false_too_short():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
         "run_duration": 200.},
         "record_rain": True,
@@ -366,7 +366,7 @@ def test_finalize_opt_duration_stochastic_false_too_short():
 
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
     with pytest.raises(RuntimeError):
         model.finalize()
 
@@ -376,9 +376,9 @@ def test_finalize_opt_duration_stochastic_false_too_short():
 def test_finalize_opt_duration_stochastic_false_no_rain():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10,
+        "clock": {"dt": 10,
         "output_interval": 2.,
-        "run_duration": 10000.,
+        "run_duration": 10000.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -393,7 +393,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
     }
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
     with pytest.raises(ValueError):
         model.finalize()
 
@@ -401,9 +401,9 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
 def test_finalize_opt_duration_stochastic_false():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10.,
+        "clock": {"dt": 10.,
         "output_interval": 2.,
-        "run_duration": 10000.,
+        "run_duration": 10000.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -418,7 +418,7 @@ def test_finalize_opt_duration_stochastic_false():
     }
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
     model.finalize()
 
     # assert that these are correct
@@ -435,9 +435,9 @@ def test_finalize_opt_duration_stochastic_false():
 def test_finalize_opt_duration_stochastic_true():
     params = {
         "opt_stochastic_duration": True,
-        "dt": 10.,
+        "clock": {"dt": 10.,
         "output_interval": 2.,
-        "run_duration": 10000.,
+        "run_duration": 10000.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -452,7 +452,7 @@ def test_finalize_opt_duration_stochastic_true():
 
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
     model.finalize()
 
     # assert that these are correct
@@ -465,9 +465,9 @@ def test_finalize_opt_duration_stochastic_true():
 def test_runoff_equals_zero():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 10.,
+        "clock": {"dt": 10.,
         "output_interval": 2.,
-        "run_duration": 10000.,
+        "run_duration": 10000.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,

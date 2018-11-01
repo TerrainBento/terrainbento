@@ -92,7 +92,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         >>> params = {"model_grid": "RasterModelGrid",
         ...           "clock": {"dt": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.}}
+        ...                     "run_duration": 200.},}
 
         Construct the model.
 

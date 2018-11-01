@@ -17,7 +17,7 @@ def test_length_conversion_raises_error():
         "feet_to_meters": True,
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 10.,
+        "run_duration": 10.},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -30,7 +30,7 @@ def test_meters_to_feet_correct():
         "meters_to_feet": True,
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 10.,
+        "run_duration": 10.},
     }
     em = ErosionModel(params=params)
     assert em._length_factor == 3.28084
@@ -42,7 +42,7 @@ def test_feet_to_meters_correct():
         "feet_to_meters": True,
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 10.,
+        "run_duration": 10.},
     }
     em = ErosionModel(params=params)
     assert em._length_factor == 1.0 / 3.28084
@@ -53,7 +53,7 @@ def test_no_units_correct():
         "model_grid": "HexModelGrid",
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 10.,
+        "run_duration": 10.},
     }
     em = ErosionModel(params=params)
     assert em._length_factor == 1.0
@@ -64,7 +64,7 @@ def test_calc_cumulative_erosion():
         "model_grid": "HexModelGrid",
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 10.,
+        "run_duration": 10.},
     }
     em = ErosionModel(params=params)
     assert np.array_equiv(em.z, 0.) == True
@@ -81,7 +81,7 @@ def test_parameter_exponent_both_provided():
         "water_erodability": 0.01,
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 10.,
+        "run_duration": 10.},
     }
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):
@@ -94,7 +94,7 @@ def test_parameter_exponent_neither_provided():
         "model_grid": "HexModelGrid",
         "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 10.,
+        "run_duration": 10.},
     }
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):

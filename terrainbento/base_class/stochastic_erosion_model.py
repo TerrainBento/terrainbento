@@ -222,8 +222,8 @@ class StochasticErosionModel(ErosionModel):
                 mean_storm_duration=self.params["mean_storm_duration"],
                 mean_interstorm_duration=self.params["mean_interstorm_duration"],
                 mean_storm_depth=self.params["mean_storm_depth"],
-                total_t=self.params["run_duration"],
-                delta_t=self.params["dt"],
+                total_t=self.params['clock']["run_duration"],
+                delta_t=self.params['clock']["dt"],
                 random_seed=self.seed,
             )
             self.run_for = self.run_for_stochastic  # override base method
