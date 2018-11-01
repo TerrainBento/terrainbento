@@ -15,7 +15,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_write_output_raster():
-    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
+    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.yaml")
     model = Basic(input_file=fp)
     model._out_file_name = "tb_raster_output"
     model.run()
@@ -32,7 +32,7 @@ def test_write_output_raster():
 
 
 def test_write_output_hex():
-    fp = os.path.join(_TEST_DATA_DIR, "basic_inputs.txt")
+    fp = os.path.join(_TEST_DATA_DIR, "basic_inputs.yaml")
     model = Basic(input_file=fp)
     model._out_file_name = "tb_hex_output"
     model.run()
@@ -47,7 +47,7 @@ def test_write_output_hex():
 
 
 def test_write_synthesis_netcdf():
-    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs_for_nc.txt")
+    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs_for_nc.yaml")
     truth = os.path.join(_TEST_DATA_DIR, "truth.nc")
     model = Basic(input_file=fp)
     model._out_file_name = "tb_synth_output"
@@ -76,7 +76,7 @@ def test_write_synthesis_netcdf():
 
 
 def test_write_synthesis_netcdf_one_field():
-    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
+    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.yaml")
     truth = os.path.join(_TEST_DATA_DIR, "truth_one_field.nc")
     model = Basic(input_file=fp)
     model._out_file_name = "tb_synth_output_one_field"
@@ -105,7 +105,7 @@ def test_write_synthesis_netcdf_one_field():
 
 
 def test_write_synthesis_netcdf_one_field_first_timestep_false():
-    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.txt")
+    fp = os.path.join(_TEST_DATA_DIR, "basic_raster_inputs.yaml")
     truth = os.path.join(_TEST_DATA_DIR, "truth_one_field_first_ts.nc")
     model = Basic(input_file=fp)
     model.save_first_timestep = False
