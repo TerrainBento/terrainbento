@@ -15,7 +15,7 @@ from terrainbento.boundary_condition_handlers import (
 
 def test_bad_boundary_condition_string():
     params = {
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "BoundaryHandlers": "spam",
@@ -32,9 +32,9 @@ def test_boundary_condition_handler_with_special_part_of_params():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -97,9 +97,9 @@ def test_boundary_condition_handler_without_special_part_of_params():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -133,9 +133,9 @@ def test_pass_two_boundary_handlers():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -169,9 +169,9 @@ def test_generic_bch():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -210,9 +210,9 @@ def test_capture_node():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,

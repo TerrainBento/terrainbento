@@ -31,7 +31,7 @@ at_node_fields = [
 def test_HexModelGrid_default():
     params = {
         "model_grid": "HexModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -43,7 +43,7 @@ def test_HexModelGrid_default():
 
 
 def test_RasterModelGrid_default():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {"clock": {"dt": 1, "output_interval": 2., "run_duration": 10.}}
     em = ErosionModel(params=params)
     assert isinstance(em.grid, RasterModelGrid)
     assert em.grid.number_of_nodes == 20
@@ -55,7 +55,7 @@ def test_RasterModelGrid_default():
 
 
 def test_default_sythetic_topo():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {"clock": {"dt": 1, "output_interval": 2., "run_duration": 10.}}
     em = ErosionModel(params=params)
     assert np.array_equiv(em.z, 0.0) == True
 
@@ -63,7 +63,7 @@ def test_default_sythetic_topo():
 def test_no_noise_sythetic_topo():
     params = {
         "initial_elevation": 10.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "add_random_noise": False,
@@ -77,7 +77,7 @@ def test_no_noise_sythetic_topo():
 def test_no_noise_sythetic_topo_core_only():
     params = {
         "initial_elevation": 10.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "add_random_noise": False,
@@ -92,7 +92,7 @@ def test_no_noise_sythetic_topo_core_only():
 def test_no_noise_all_nodes_sythetic_topo_valueError():
     params = {
         "initial_elevation": 10.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "add_random_noise": False,
@@ -106,7 +106,7 @@ def test_no_noise_all_nodes_sythetic_topo_valueError():
 def test_noise_all_nodes_sythetic_topo():
     params = {
         "initial_elevation": 10.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "add_random_noise": True,
@@ -124,7 +124,7 @@ def test_noise_all_nodes_sythetic_topo():
 def test_noise_all_nodes_sythetic_topo_init_elevation_only_core():
     params = {
         "initial_elevation": 10.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "add_random_noise": True,
@@ -149,7 +149,7 @@ def test_synthetic_topo_noise_with_bad_std():
         "add_random_noise": True,
         "initial_elevation": 10.,
         "initial_noise_std": -1.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -162,7 +162,7 @@ def test_synthetic_topo_noise_with_zero_std():
         "add_random_noise": True,
         "initial_elevation": 10.,
         "initial_noise_std": 0.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -175,7 +175,7 @@ def test_synthetic_topo_default_seed():
         "add_random_noise": True,
         "initial_elevation": 10.,
         "initial_noise_std": 2.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "add_initial_elevation_to_all_nodes": False,
@@ -194,7 +194,7 @@ def test_synthetic_topo_set_seed():
         "add_random_noise": True,
         "initial_elevation": 10.,
         "initial_noise_std": 2.,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "random_seed": 42,
@@ -215,7 +215,7 @@ def test_Hex_with_outlet():
         "number_of_node_columns": 4,
         "node_spacing": 10,
         "outlet_id": 9,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -234,7 +234,7 @@ def test_Hex_with_outlet_not_specified():
         "number_of_node_rows": 5,
         "number_of_node_columns": 4,
         "node_spacing": 10,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -254,7 +254,7 @@ def test_Hex_with_boundaries():
         "number_of_node_columns": 4,
         "node_spacing": 10,
         "boundary_closed": True,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -274,7 +274,7 @@ def test_Raster_with_outlet():
         "number_of_node_columns": 4,
         "node_spacing": 10,
         "outlet_id": 3,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -291,7 +291,7 @@ def test_Raster_with_outlet_not_specified():
         "number_of_node_rows": 5,
         "number_of_node_columns": 4,
         "node_spacing": 10,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -310,7 +310,7 @@ def test_Raster_with_boundaries():
         "east_boundary_closed": True,
         "west_boundary_closed": True,
         "node_spacing": 10,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -325,7 +325,7 @@ def test_DEM_and_rows():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
     params = {
         "DEM_filename": fp,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
         "number_of_node_rows": 5,
@@ -337,7 +337,7 @@ def test_DEM_and_rows():
 
 def test_DEM_ascii():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {"DEM_filename": fp, "clock": {"dt": 1, "output_interval": 2., "run_duration": 10.}}
 
     em = ErosionModel(params=params)
 
@@ -355,7 +355,7 @@ def test_DEM_ascii():
 
 def test_bad_DEM_file():
     fp = os.path.join(_TEST_DATA_DIR, "bad_dem.txt")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {"DEM_filename": fp, "clock": {"dt": 1, "output_interval": 2., "run_duration": 10.}}
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -363,7 +363,7 @@ def test_bad_DEM_file():
 
 def test_DEM_two_possible_outlets():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {"DEM_filename": fp, "clock": {"dt": 1, "output_interval": 2., "run_duration": 10.}}
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -372,7 +372,7 @@ def test_DEM_two_possible_outlets():
     params = {
         "DEM_filename": fp,
         "outlet_id": 22,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 10.,
     }
@@ -384,7 +384,7 @@ def test_DEM_two_possible_outlets():
 def test_DEM_netcdf():
     """Test DEM."""
     fp = os.path.join(_TEST_DATA_DIR, "test_file.nc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {"DEM_filename": fp, "clock": {"dt": 1, "output_interval": 2., "run_duration": 10.}}
 
     em = ErosionModel(params=params)
 

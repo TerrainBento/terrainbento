@@ -12,14 +12,14 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_defaults():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 200.}
+    params = {"clock": {"dt": 1, "output_interval": 2., "run_duration": 200.}
     model = StochasticErosionModel(params=params)
     assert model.opt_stochastic_duration == False
     assert model.record_rain == False
 
 
 def test_init_record_opt_true():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 200., "record_rain": True}
+    params = {"clock": {"dt": 1, "output_interval": 2., "run_duration": 200.}, "record_rain": True}
     model = StochasticErosionModel(params=params)
     assert model.record_rain == True
     assert isinstance(model.rain_record, dict)
@@ -31,9 +31,9 @@ def test_init_record_opt_true():
 
 def test_init_record_opt_false():
     params = {
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "record_rain": False,
     }
     model = StochasticErosionModel(params=params)
@@ -92,7 +92,7 @@ def test_run_stochastic_opt_false():
         "opt_stochastic_duration": False,
         "dt": 10,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -139,9 +139,9 @@ def test_run_stochastic_opt_false():
 def test_freq_file_with_opt_duration_true():
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -156,9 +156,9 @@ def test_freq_file_with_opt_duration_true():
 def test_reset_random_seed_stochastic_duration_true():
     params = {
         "opt_stochastic_duration": True,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -205,7 +205,7 @@ def test_reset_random_seed_stochastic_duration_false():
         "opt_stochastic_duration": False,
         "dt": 10,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -245,7 +245,7 @@ def test_float_number_of_sub_time_steps():
         "opt_stochastic_duration": False,
         "dt": 10,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -265,7 +265,7 @@ def test_float_number_of_sub_time_steps():
 def test_run_opt_false_with_changer():
     params = {
         "opt_stochastic_duration": False,
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
         "run_duration": 3.,
         "record_rain": True,
@@ -321,7 +321,7 @@ def test_not_specifying_record_rain():
         "opt_stochastic_duration": False,
         "dt": 10,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "record_rain": False,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -350,7 +350,7 @@ def test_finalize_opt_duration_stochastic_false_too_short():
         "opt_stochastic_duration": False,
         "dt": 10,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,

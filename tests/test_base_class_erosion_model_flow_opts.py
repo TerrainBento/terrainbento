@@ -15,9 +15,9 @@ from terrainbento import ErosionModel
 def test_FlowAccumulator_with_depression_steepest():
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "flow_director": "FlowDirectorSteepest",
         "depression_finder": "DepressionFinderAndRouter",
     }
@@ -30,9 +30,9 @@ def test_FlowAccumulator_with_depression_steepest():
 def test_no_depression_finder():
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
     }
 
     em = ErosionModel(params=params)
@@ -42,9 +42,9 @@ def test_no_depression_finder():
 def test_FlowAccumulator_with_D8_Hex():
     params = {
         "model_grid": "HexModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "flow_director": "D8",
     }
     pytest.raises(NotImplementedError, ErosionModel, params=params)
@@ -53,9 +53,9 @@ def test_FlowAccumulator_with_D8_Hex():
 def test_FlowAccumulator_with_depression_MFD():
     params = {
         "model_grid": "HexModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "flow_director": "MFD",
     }
     em = ErosionModel(params=params)
@@ -65,9 +65,9 @@ def test_FlowAccumulator_with_depression_MFD():
 def test_alt_names_steepest():
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "flow_director": "D4",
     }
 
@@ -76,9 +76,9 @@ def test_alt_names_steepest():
 
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "flow_director": "Steepest",
     }
 

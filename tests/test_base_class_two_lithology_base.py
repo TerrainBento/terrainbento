@@ -18,9 +18,9 @@ def test_no_contact_zone_width():
 
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 6,
         "number_of_node_columns": 9,
         "node_spacing": 10.0,
@@ -45,9 +45,9 @@ def test_no_contact_zone_width():
 def test_contact_zone_width():
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": 1,
+        "clock": {"dt": 1,
         "output_interval": 2.,
-        "run_duration": 200.,
+        "run_duration": 200.},
         "number_of_node_rows": 6,
         "number_of_node_columns": 9,
         "node_spacing": 10.0,
