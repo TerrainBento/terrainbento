@@ -87,9 +87,9 @@ def test_boundary_condition_handler_with_bad_special_part_of_params():
 
 def test_boundary_condition_handler_with_bad_special_part_of_params_single():
     params = {
-        "dt": 10,  # years
+        "clock": {"dt": 10,  # years
         "output_interval": 1e3,  # years
-        "run_duration": 1e6,  # years
+        "run_duration": 1e6},  # years
         "number_of_node_rows": 10,
         "number_of_node_columns": 10,
         "outlet_id": 1,
@@ -112,9 +112,9 @@ def test_boundary_condition_handler_with_bad_special_part_of_params_single():
 
 def test_single_node_blh_with_closed_boundaries():
     params = {
-        "dt": 10,  # years
+        "clock":{"dt": 10,  # years
         "output_interval": 1e3,  # years
-        "run_duration": 1e6,  # years
+        "run_duration": 1e6},  # years
         "number_of_node_rows": 10,
         "number_of_node_columns": 10,
         "north_boundary_closed": True,
