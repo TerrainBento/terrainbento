@@ -150,7 +150,7 @@ def test_diffusion_only():
     # Construct dictionary. Note that stream power is turned off
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": dt,
+        "clock":{"dt": dt,
         "output_interval": 2.,
         "run_duration": 200.},
         "number_of_node_rows": 21,

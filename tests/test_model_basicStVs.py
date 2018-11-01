@@ -116,9 +116,9 @@ def test_stochastic_duration_rainfall_means():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "dt": dt,
+        "clock":{"dt": dt,
         "output_interval": 401.,
-        "run_duration": 400.,
+        "run_duration": 400.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 6,
         "node_spacing": 100.0,

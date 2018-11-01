@@ -289,7 +289,7 @@ def test_stability_checker():
 #
 #     # construct dictionary. note that D is turned off here
 #     params = {"model_grid": "RasterModelGrid",
-#               "dt": dt,
+#               "clock":{"dt": dt,
 #               "output_interval": 2.,
 #               "run_duration": 200.},
 #               "number_of_node_rows" : 3,
