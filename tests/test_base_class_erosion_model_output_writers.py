@@ -6,7 +6,7 @@ import numpy as np
 import glob
 
 from terrainbento import Basic
-from terrainbento.utilities import filecmp
+from terrainbento.utilities import *
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -55,7 +55,7 @@ def cleanup_files(searchpath):
 def test_one_function_writer():
     params = {
         "save_first_timestep": False,
-        "clock": {"dt": 1, "output_interval": 20., "run_duration": 20.},
+        "clock": CLOCK_08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
@@ -79,7 +79,7 @@ def test_one_function_writer():
 def test_one_class_writer():
     params = {
         "save_first_timestep": False,
-        "clock": {"dt": 1, "output_interval": 20., "run_duration": 20.},
+        "clock": CLOCK_08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
@@ -103,7 +103,7 @@ def test_one_class_writer():
 def test_two_function_writers():
     params = {
         "save_first_timestep": False,
-        "clock": {"dt": 1, "output_interval": 20., "run_duration": 20.},
+        "clock": CLOCK_08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
@@ -133,7 +133,7 @@ def test_two_function_writers():
 def test_two_class_writers():
     params = {
         "save_first_timestep": False,
-        "clock": {"dt": 1, "output_interval": 20., "run_duration": 20.},
+        "clock": CLOCK_08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
@@ -162,7 +162,7 @@ def test_two_class_writers():
 def test_all_four_writers():
     params = {
         "save_first_timestep": False,
-        "clock": {"dt": 1, "output_interval": 20., "run_duration": 20.},
+        "clock": CLOCK_08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,

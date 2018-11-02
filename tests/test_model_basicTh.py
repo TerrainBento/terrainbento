@@ -8,13 +8,13 @@ import pytest
 
 
 from terrainbento import BasicTh
-from terrainbento.utilities import precip_defaults, precip_testing_factor
+from terrainbento.utilities import *
 
 
 def test_bad_n_sp():
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "water_erosion_rule__threshold": 0.001,
         "water_erodability": 0.001,
         "n_sp": 1.01,
@@ -35,7 +35,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -136,7 +136,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -176,7 +176,7 @@ def test_with_precip_changer():
     threshold = 0.000001
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -212,7 +212,7 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": 100.0,

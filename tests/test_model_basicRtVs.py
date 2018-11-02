@@ -5,7 +5,7 @@ from numpy.testing import assert_array_almost_equal
 
 
 from terrainbento import BasicRtVs
-from terrainbento.utilities import precip_defaults, precip_testing_factor
+from terrainbento.utilities import *
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -26,7 +26,7 @@ def test_steady_Kss_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 8,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -79,7 +79,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 8,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -132,7 +132,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 8,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -187,7 +187,7 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 21,
         "number_of_node_columns": 3,
         "node_spacing": 100.0,
@@ -240,7 +240,7 @@ def test_with_precip_changer():
 
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 21,
         "number_of_node_columns": 3,
         "node_spacing": 100.0,

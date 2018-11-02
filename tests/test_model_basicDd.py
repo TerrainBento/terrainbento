@@ -8,13 +8,13 @@ import pytest
 
 
 from terrainbento import BasicDd
-from terrainbento.utilities import precip_defaults, precip_testing_factor
+from terrainbento.utilities import *
 
 
 def test_bad_n_sp():
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "water_erodability": 0.001,
         "n_sp": 1.01,
         "regolith_transport_parameter": 0.001,
@@ -81,7 +81,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -140,7 +140,7 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -193,7 +193,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -239,7 +239,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -281,7 +281,7 @@ def test_with_precip_changer():
     thresh_change_per_depth = 0
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -319,7 +319,7 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": 100.0,

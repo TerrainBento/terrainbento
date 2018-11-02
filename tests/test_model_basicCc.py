@@ -101,7 +101,7 @@ def test_with_precip_changer():
     climate_constant_date = 10
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,

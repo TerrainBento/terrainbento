@@ -5,24 +5,21 @@ import pytest
 import numpy as np
 
 from terrainbento import StochasticErosionModel, BasicSt
-from terrainbento.utilities import precip_defaults, filecmp
+from terrainbento.utilities import *
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_defaults():
-    params = {"clock": {"dt": 1, "output_interval": 2., "run_duration": 200.}}
+    params = {"clock": SIMPLE_CLOCK}
     model = StochasticErosionModel(params=params)
     assert model.opt_stochastic_duration == False
     assert model.record_rain == False
 
 
 def test_init_record_opt_true():
-    params = {
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
-        "record_rain": True,
-    }
+    params = {"clock": SIMPLE_CLOCK, "record_rain": True}
     model = StochasticErosionModel(params=params)
     assert model.record_rain == True
     assert isinstance(model.rain_record, dict)
@@ -33,10 +30,7 @@ def test_init_record_opt_true():
 
 
 def test_init_record_opt_false():
-    params = {
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
-        "record_rain": False,
-    }
+    params = {"clock": SIMPLE_CLOCK, "record_rain": False}
     model = StochasticErosionModel(params=params)
     assert model.record_rain == False
     assert model.rain_record is None
@@ -45,7 +39,7 @@ def test_init_record_opt_false():
 def test_run_stochastic_opt_true():
     params = {
         "opt_stochastic_duration": True,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 100000.},
+        "clock": CLOCK_04,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -89,7 +83,7 @@ def test_run_stochastic_opt_true():
 def test_run_stochastic_opt_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 200.},
+        "clock": CLOCK_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -137,7 +131,7 @@ def test_run_stochastic_opt_false():
 def test_freq_file_with_opt_duration_true():
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -152,7 +146,7 @@ def test_freq_file_with_opt_duration_true():
 def test_reset_random_seed_stochastic_duration_true():
     params = {
         "opt_stochastic_duration": True,
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -197,7 +191,7 @@ def test_reset_random_seed_stochastic_duration_true():
 def test_reset_random_seed_stochastic_duration_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 200.},
+        "clock": CLOCK_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -235,7 +229,7 @@ def test_reset_random_seed_stochastic_duration_false():
 def test_float_number_of_sub_time_steps():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 200.},
+        "clock": CLOCK_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -255,7 +249,7 @@ def test_float_number_of_sub_time_steps():
 def test_run_opt_false_with_changer():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 3.},
+        "clock": CLOCK_06,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -293,7 +287,7 @@ def test_run_opt_false_with_changer():
 def test_opt_dur_true_with_changer():
     params = {
         "opt_stochastic_duration": True,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 1000.},
+        "clock": CLOCK_02,
         "BoundaryHandlers": "PrecipChanger",
         "PrecipChanger": precip_defaults,
     }
@@ -305,7 +299,7 @@ def test_opt_dur_true_with_changer():
 def test_not_specifying_record_rain():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 200.},
+        "clock": CLOCK_05,
         "record_rain": False,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -332,7 +326,7 @@ def test_not_specifying_record_rain():
 def test_finalize_opt_duration_stochastic_false_too_short():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 200.},
+        "clock": CLOCK_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -358,7 +352,7 @@ def test_finalize_opt_duration_stochastic_false_too_short():
 def test_finalize_opt_duration_stochastic_false_no_rain():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 10000.},
+        "clock": CLOCK_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -381,7 +375,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
 def test_finalize_opt_duration_stochastic_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10., "output_interval": 2., "run_duration": 10000.},
+        "clock": CLOCK_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -413,7 +407,7 @@ def test_finalize_opt_duration_stochastic_false():
 def test_finalize_opt_duration_stochastic_true():
     params = {
         "opt_stochastic_duration": True,
-        "clock": {"dt": 10., "output_interval": 2., "run_duration": 10000.},
+        "clock": CLOCK_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -441,7 +435,7 @@ def test_finalize_opt_duration_stochastic_true():
 def test_runoff_equals_zero():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10., "output_interval": 2., "run_duration": 10000.},
+        "clock": CLOCK_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,

@@ -13,13 +13,11 @@ from terrainbento.boundary_condition_handlers import (
     SingleNodeBaselevelHandler,
     CaptureNodeBaselevelHandler,
 )
+from terrainbento.utilities import *
 
 
 def test_bad_boundary_condition_string():
-    params = {
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 10.},
-        "BoundaryHandlers": "spam",
-    }
+    params = {"clock": CLOCK_01, "BoundaryHandlers": "spam"}
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
@@ -32,7 +30,7 @@ def test_boundary_condition_handler_with_special_part_of_params():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -59,7 +57,7 @@ def test_boundary_condition_handler_with_special_part_of_params():
 def test_boundary_condition_handler_with_bad_special_part_of_params():
     params = {
         "opt_stochastic_duration": False,
-        "clock": {"dt": 10, "output_interval": 2., "run_duration": 1000.},
+        "clock": CLOCK_02,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -87,9 +85,7 @@ def test_boundary_condition_handler_with_bad_special_part_of_params():
 
 def test_boundary_condition_handler_with_bad_special_part_of_params_single():
     params = {
-        "clock": {"dt": 10,  # years
-        "output_interval": 1e3,  # years
-        "run_duration": 1e6},  # years
+        "clock": CLOCK_03,
         "number_of_node_rows": 10,
         "number_of_node_columns": 10,
         "outlet_id": 1,
@@ -112,9 +108,7 @@ def test_boundary_condition_handler_with_bad_special_part_of_params_single():
 
 def test_single_node_blh_with_closed_boundaries():
     params = {
-        "clock":{"dt": 10,  # years
-        "output_interval": 1e3,  # years
-        "run_duration": 1e6},  # years
+        "clock": CLOCK_03,  # years
         "number_of_node_rows": 10,
         "number_of_node_columns": 10,
         "north_boundary_closed": True,
@@ -144,7 +138,7 @@ def test_boundary_condition_handler_without_special_part_of_params():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -178,7 +172,7 @@ def test_pass_two_boundary_handlers():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -219,7 +213,7 @@ def test_generic_bch():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -258,7 +252,7 @@ def test_capture_node():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,

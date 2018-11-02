@@ -686,7 +686,7 @@ class ErosionModel(object):
         >>> params = { "number_of_node_rows" : 6,
         ...            "number_of_node_columns" : 9,
         ...            "node_spacing" : 10.0,
-        ...            "clock":{"dt": 1, "output_interval": 2., "run_duration": 10.},}
+        ...            "clock":CLOCK_01,}
         >>> from terrainbento import ErosionModel
         >>> em = ErosionModel(params=params)
         >>> em = ErosionModel(params=params)

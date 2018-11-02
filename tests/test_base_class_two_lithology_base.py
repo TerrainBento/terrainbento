@@ -6,8 +6,9 @@ import numpy as np
 
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 
-
 from terrainbento.base_class import TwoLithologyErosionModel
+from terrainbento.utilities import *
+
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -18,7 +19,7 @@ def test_no_contact_zone_width():
 
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 6,
         "number_of_node_columns": 9,
         "node_spacing": 10.0,
@@ -43,7 +44,7 @@ def test_no_contact_zone_width():
 def test_contact_zone_width():
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 200.},
+        "clock": SIMPLE_CLOCK,
         "number_of_node_rows": 6,
         "number_of_node_columns": 9,
         "node_spacing": 10.0,
