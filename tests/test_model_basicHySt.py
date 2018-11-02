@@ -5,6 +5,7 @@ import glob
 from numpy.testing import assert_equal, assert_array_almost_equal
 
 from terrainbento import BasicHySt
+from terrainbento.utilities import *
 
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
