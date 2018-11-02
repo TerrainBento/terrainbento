@@ -4,7 +4,7 @@
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicCv
-from terrainbento.utilities import precip_defaults  # , precip_testing_factor
+from terrainbento.utilities import *
 
 
 def test_steady_Ksp_with_depression_finding():
