@@ -54,7 +54,17 @@ class Basic(ErosionModel):
 
     """
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+
+    def __init__(self,
+                 modelgrid,
+                 clock,
+                 precipitator=None,
+                 runoff_generator=None,
+                 boundaryhandler=None,
+                 outputwriters=None,
+                 m_sp=0.1,
+                 n_sp=0.1
+                 water_erodability=3):
         """
         Parameters
         ----------

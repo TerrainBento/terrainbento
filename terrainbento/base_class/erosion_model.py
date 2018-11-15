@@ -259,8 +259,47 @@ class ErosionModel(object):
     **run_one_step** method. If desired, the derived model can overwrite the
     existing **run_for**, **run**, and **finalize** methods.
     """
+    @classmethod
+    def from_file(cls, filename):
+        """
+        model = ErosionModel.from_file("file.yaml")
+        """
+        dict = yaml.load(filename)
+        return cls.from_dict(dict)
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+    @classmethod
+    def from_dict(cls, dictionary, outputwriters=None):
+        """
+        model = ErosionModel.from_file("file.yaml")
+        """
+        params = yaml.load(filename)
+
+        cls._validate(params)
+
+        modelgrid = ModelGrid.from_dictionary(**params.pop('modelgrid'))
+        clock = Clock(**params.pop('clock'))
+        precipitator = Preciptator.from_dict(**params.pop('precipitator'))
+        runoff_generator = RunoffGenerator.from_dict(**params.pop('runoff_generator'))
+
+        return cls(modelgrid, clock, precipitator, runoff_generator, outputwriters, **params)
+
+    @classmethod
+    def _validate(cls, params):
+        """Make sure necessary things for a model grid and a clock are here.
+        """
+        if 'modelgrid' not in params:
+            msg = ""
+            raise ValueError(msg)
+        if 'clock' not in params:
+            msg = ""
+            raise ValueError(msg)
+
+    def __init__(self,
+                 precipitator=None,
+                 runoff_generator=None,
+                 boundaryhandler=None,
+                 outputwriters=None,
+                 **params):
         """
         Parameters
         ----------
