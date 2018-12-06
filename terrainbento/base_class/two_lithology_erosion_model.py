@@ -1,10 +1,10 @@
 # coding: utf8
 # !/usr/env/python
-"""
-Base class for common functions of terrainbento models with two lithologies.
+"""Base class for common functions of terrainbento models with two lithologies.
 
-The **TwoLithologyErosionModel** is a base class that contains all of the
-functionality shared by the terrainbento models that have two lithologies.
+The **TwoLithologyErosionModel** is a base class that contains all of
+the functionality shared by the terrainbento models that have two
+lithologies.
 """
 import numpy as np
 
@@ -31,7 +31,6 @@ class TwoLithologyErosionModel(ErosionModel):
     the shape of the field must be ``number_of_node_rows-2`` by
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
-
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -102,7 +101,8 @@ class TwoLithologyErosionModel(ErosionModel):
         ]
 
     def _setup_rock_and_till(self):
-        """Set up fields to handle for two layers with different erodability."""
+        """Set up fields to handle for two layers with different
+        erodability."""
         # Get a reference to the rock-till field
         self._setup_contact_elevation()
 
@@ -117,7 +117,8 @@ class TwoLithologyErosionModel(ErosionModel):
         self._update_erodability_field()
 
     def _setup_rock_and_till_with_threshold(self):
-        """Set up fields to handle for two layers with different erodability."""
+        """Set up fields to handle for two layers with different
+        erodability."""
         # Get a reference to the rock-till field\
         self._setup_contact_elevation()
 
@@ -163,9 +164,10 @@ class TwoLithologyErosionModel(ErosionModel):
     def _update_erodability_field(self):
         """Update erodability at each node.
 
-        The erodability at each node is a smooth function between the rock and
-        till erodabilities and is based on the contact zone width and the
-        elevation of the surface relative to contact elevation.
+        The erodability at each node is a smooth function between the
+        rock and till erodabilities and is based on the contact zone
+        width and the elevation of the surface relative to contact
+        elevation.
         """
         self._update_erodywt()
         self._update_Ks_with_precip()
@@ -179,9 +181,10 @@ class TwoLithologyErosionModel(ErosionModel):
     def _update_erodability_and_threshold_fields(self):
         """Update erodability at each node.
 
-        The erodability at each node is a smooth function between the rock and
-        till erodabilities and is based on the contact zone width and the
-        elevation of the surface relative to contact elevation.
+        The erodability at each node is a smooth function between the
+        rock and till erodabilities and is based on the contact zone
+        width and the elevation of the surface relative to contact
+        elevation.
         """
         self._update_erodywt()
         self._update_Ks_with_precip()

@@ -169,7 +169,7 @@ class GenericFuncBaselevelHandler(object):
             self.prefactor = 1.0
 
     def run_one_step(self, dt):
-        """ Run **GenericFuncBaselevelHandler** forward and update elevations.
+        """Run **GenericFuncBaselevelHandler** forward and update elevations.
 
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.
@@ -185,7 +185,6 @@ class GenericFuncBaselevelHandler(object):
         ----------
         dt : float
             Duration of model time to advance forward.
-
         """
         self.dzdt = self.function(self._grid, self.model_time)
 

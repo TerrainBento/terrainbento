@@ -463,7 +463,7 @@ class ErosionModel(object):
         return self._model_time
 
     def _setup_boundary_handler(self, name):
-        """ Setup BoundaryHandlers for use by a terrainbento model.
+        """Setup BoundaryHandlers for use by a terrainbento model.
 
         A boundary condition handler is a class with a **run_one_step** method that
         takes the parameter ``dt``. Permitted boundary condition handlers
@@ -729,8 +729,8 @@ class ErosionModel(object):
     def _create_synthetic_topography(self):
         """Create topography for synthetic grids.
 
-        If noise or initial elevation is added, it will only be added to the
-        core nodes.
+        If noise or initial elevation is added, it will only be added to
+        the core nodes.
         """
         add_noise = self.params.get("add_random_noise", False)
         init_z = self.params.get("initial_elevation", 0.0)
@@ -883,7 +883,6 @@ class ErosionModel(object):
         >>> em = ErosionModel(params=params)
         >>> em._get_parameter_from_exponent("water_erodability")
         0.5
-
         """
         if (param_name in self.params) and (
             param_name + "_exp" in self.params
@@ -921,9 +920,10 @@ class ErosionModel(object):
     def write_output(self):
         """Write output to file as a netCDF.
 
-        Filenames will have the value of ``"output_filename"`` from the input
-        file or parameter dictionary as the first part of the file name and the
-        model run iteration as the second part of the filename.
+        Filenames will have the value of ``"output_filename"`` from the
+        input file or parameter dictionary as the first part of the file
+        name and the model run iteration as the second part of the
+        filename.
         """
         self.calculate_cumulative_change()
         filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
@@ -954,8 +954,8 @@ class ErosionModel(object):
     def finalize__run_one_step(self, dt):
         """Finalize run_one_step method.
 
-        This base-class method increments model time and updates boundary
-        conditions.
+        This base-class method increments model time and updates
+        boundary conditions.
         """
         # calculate model time
         self._model_time += dt
@@ -964,10 +964,10 @@ class ErosionModel(object):
         self.update_boundary_conditions(dt)
 
     def finalize(self):
-        """Finalize model
+        """Finalize model.
 
-        This base-class method does nothing. Derived classes can override
-        it to run any required finalization steps.
+        This base-class method does nothing. Derived classes can
+        override it to run any required finalization steps.
         """
         pass
 

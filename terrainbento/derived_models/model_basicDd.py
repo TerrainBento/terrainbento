@@ -195,7 +195,6 @@ class BasicDd(ErosionModel):
         :math:`b` is the rate at which the threshold increases with incision depth,
         and :math:`D_I` is the cumulative incision depth at location
         :math:`\left(x,y\\right)` and time :math:`t`.
-
         """
 
         # Set the erosion threshold.

@@ -10,8 +10,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_steady_without_stochastic_duration():
-    """Test steady profile solution with fixed duration.
-    """
+    """Test steady profile solution with fixed duration."""
     U = 0.0001
     K = 0.001
     thresh = 1.0e-9

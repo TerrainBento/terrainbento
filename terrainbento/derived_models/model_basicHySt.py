@@ -1,7 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""
-terrainbento Model **BasicHySt** program.
+"""terrainbento Model **BasicHySt** program.
 
 Erosion model program using linear diffusion for gravitational mass transport,
 and an entrainment-deposition law for water erosion and deposition. Discharge
@@ -203,9 +202,7 @@ class BasicHySt(StochasticErosionModel):
         )
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
-        """
+        """Advance model for one time-step of duration dt."""
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 

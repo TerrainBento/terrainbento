@@ -196,7 +196,7 @@ class SingleNodeBaselevelHandler(object):
                 )
 
     def run_one_step(self, dt):
-        """ Run **SingleNodeBaselevelHandler** to update outlet node elevation.
+        """Run **SingleNodeBaselevelHandler** to update outlet node elevation.
 
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.

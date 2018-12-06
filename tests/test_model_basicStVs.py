@@ -11,8 +11,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_bad_transmiss():
-    """Test steady profile solution with fixed duration.
-    """
+    """Test steady profile solution with fixed duration."""
     K = 0.001
     H0 = 0.0
     Ks = 0.0
@@ -47,8 +46,7 @@ def test_bad_transmiss():
 
 
 def test_steady_without_stochastic_duration():
-    """Test steady profile solution with fixed duration.
-    """
+    """Test steady profile solution with fixed duration."""
     U = 0.0001
     K = 0.001
     H0 = 1.0e-9

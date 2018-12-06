@@ -16,7 +16,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_hex():
-    "Test using a hex grid"
+    """Test using a hex grid."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
@@ -37,7 +37,7 @@ def test_hex():
 
 
 def test_passing_neither_lowering_method():
-    """Test passing no lowering information"""
+    """Test passing no lowering information."""
     mg = RasterModelGrid(5, 5)
     _ = mg.add_zeros("node", "topographic__elevation")
 
@@ -46,7 +46,7 @@ def test_passing_neither_lowering_method():
 
 
 def test_passing_both_lowering_methods():
-    """Test passing both lowering methods"""
+    """Test passing both lowering methods."""
     mg = RasterModelGrid(5, 5)
     _ = mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
@@ -58,7 +58,7 @@ def test_passing_both_lowering_methods():
 
 
 def test_outlet_lowering_object_bad_file():
-    """Test using an outlet lowering object with a bad file"""
+    """Test using an outlet lowering object with a bad file."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
@@ -68,7 +68,7 @@ def test_outlet_lowering_object_bad_file():
 
 
 def test_outlet_lowering_rate_no_scaling_bedrock():
-    """Test using an outlet lowering rate with no scaling and bedrock"""
+    """Test using an outlet lowering rate with no scaling and bedrock."""
 
     mg = RasterModelGrid(5, 5)
     z = mg.add_ones("node", "topographic__elevation")
@@ -115,7 +115,7 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
 
 
 def test_outlet_lowering_object_no_scaling_bedrock():
-    """Test using an outlet lowering object with no scaling and bedrock"""
+    """Test using an outlet lowering object with no scaling and bedrock."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_ones("node", "topographic__elevation")
@@ -141,7 +141,7 @@ def test_outlet_lowering_object_no_scaling_bedrock():
 
 
 def test_outlet_lowering_object_no_scaling():
-    """Test using an outlet lowering object with no scaling"""
+    """Test using an outlet lowering object with no scaling."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_ones("node", "topographic__elevation")
@@ -163,7 +163,7 @@ def test_outlet_lowering_object_no_scaling():
 
 
 def test_outlet_lowering_object_no_scaling_core_nodes():
-    """Test using an outlet lowering object with no scaling on core nodes"""
+    """Test using an outlet lowering object with no scaling on core nodes."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_ones("node", "topographic__elevation")
@@ -187,7 +187,7 @@ def test_outlet_lowering_object_no_scaling_core_nodes():
 
 
 def test_outlet_lowering_object_with_scaling():
-    """Test using an outlet lowering object with scaling"""
+    """Test using an outlet lowering object with scaling."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")

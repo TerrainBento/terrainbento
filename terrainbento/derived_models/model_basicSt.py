@@ -1,7 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""
-terrainbento Model **BasicSt** program.
+"""terrainbento Model **BasicSt** program.
 
 Erosion model program using linear diffusion and stream power. Discharge is
 calculated from drainage area, infiltration capacity (a parameter), and

@@ -8,7 +8,7 @@ from terrainbento.boundary_condition_handlers import (
 
 
 def test_hex():
-    """Test using a hex grid"""
+    """Test using a hex grid."""
 
     mg = HexModelGrid(5, 5)
     _ = mg.add_zeros("node", "topographic__elevation")
@@ -25,7 +25,7 @@ def test_hex():
 
 
 def test_no_stop_time():
-    """Test with no stop time"""
+    """Test with no stop time."""
 
     mg = RasterModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")

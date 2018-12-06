@@ -77,7 +77,8 @@ def test_calc_cumulative_erosion():
 
 
 def test_parameter_exponent_both_provided():
-    """Test the _get_parameter_from_exponent function when both are provided."""
+    """Test the _get_parameter_from_exponent function when both are
+    provided."""
     params = {
         "model_grid": "HexModelGrid",
         "water_erodability_exp": -3.,
@@ -92,7 +93,8 @@ def test_parameter_exponent_both_provided():
 
 
 def test_parameter_exponent_neither_provided():
-    """Test the _get_parameter_from_exponent function when neither are provided."""
+    """Test the _get_parameter_from_exponent function when neither are
+    provided."""
     params = {
         "model_grid": "HexModelGrid",
         "dt": 1,

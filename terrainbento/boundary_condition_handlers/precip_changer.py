@@ -460,7 +460,6 @@ class PrecipChanger(object):
         capacity, :math:`m` is the discharge/area exponent (e.g., 1/2), and
         :math:`f_0(p)` is the Weibull distribution representing the probability
         distribution of daily precipitation intensity at model run onset.
-
         """
         lam = _scale_fac(
             self.starting_daily_mean_depth, self.rainfall__shape_factor
@@ -480,7 +479,6 @@ class PrecipChanger(object):
         -------
         daily_rainfall_rainfall_intermittency_factor : float
         rainfall__mean_rate : float
-
         """
         # if after start time
         if self.model_time > self.start_time:
@@ -525,7 +523,6 @@ class PrecipChanger(object):
         Returns
         -------
         erodability_adjustment_factor : float
-
         """
         # if after start time
         if self.model_time > self.start_time:
@@ -572,6 +569,5 @@ class PrecipChanger(object):
         ----------
         dt : float
             Duration of model time to advance forward.
-
         """
         self.model_time += dt

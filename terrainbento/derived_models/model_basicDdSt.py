@@ -1,7 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""
-terrainbento **BasicDdSt** model program.
+"""terrainbento **BasicDdSt** model program.
 
 Erosion model program using linear diffusion, smoothly thresholded stream
 power, and stochastic discharge with a smoothed infiltration capacity
@@ -240,9 +239,7 @@ class BasicDdSt(StochasticErosionModel):
         self.update_threshold_field()
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
-        """
+        """Advance model for one time-step of duration dt."""
 
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()

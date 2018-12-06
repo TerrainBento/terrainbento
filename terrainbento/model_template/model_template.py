@@ -1,5 +1,4 @@
-"""
-A template for making a derived terrainbento model.
+"""A template for making a derived terrainbento model.
 
 This template shows all of the required parts of a new terrainbento model,
 designed and created by **you**
@@ -19,8 +18,7 @@ from terrainbento.base_class import ErosionModel
 
 class ModelTemplate(ErosionModel):  # The model must inherit from either
     # ErosionModel, StochasticErosionModel, or TwoLithologyErosionModel
-    """
-    ModelTemplate is a template for making your own terrainbento models.
+    """ModelTemplate is a template for making your own terrainbento models.
 
     This is where you will put introductory information about the model. We
     recommend that you start from an existing terrainbento model"s docstring
@@ -49,7 +47,6 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     +------------------+----------------------------------+
 
     Expand on this table to include all required parameters.
-
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -111,7 +108,8 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         """Run each component for one time step.
 
         Put any additional information about **run_one_step** here.
-        Importantly, **run_one_step** should only take on parameter, ``dt``.
+        Importantly, **run_one_step** should only take on parameter,
+        ``dt``.
         """
         # write here all actions needed to run the model forward for a time
         # increment `dt`.

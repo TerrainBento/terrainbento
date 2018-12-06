@@ -58,7 +58,6 @@ def test_steady_without_stochastic_duration():
 
     ..math::
         S = \frac{2U}{K_q A}
-
     """
     U = 0.0001
     K = 0.001

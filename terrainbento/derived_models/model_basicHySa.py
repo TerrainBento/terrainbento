@@ -103,7 +103,6 @@ class BasicHySa(ErosionModel):
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
-
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):

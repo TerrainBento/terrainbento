@@ -86,7 +86,7 @@ def test_not_passing_infiltration_capacity():
 
 
 def test_a_stop_time():
-    """Test that it is possible to provide a stop time"""
+    """Test that it is possible to provide a stop time."""
     mg = HexModelGrid(5, 5)
 
     pc = PrecipChanger(

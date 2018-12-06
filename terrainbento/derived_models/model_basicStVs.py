@@ -1,7 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""
-terrainbento Model **BasicStVs** program.
+"""terrainbento Model **BasicStVs** program.
 
 Erosion model program using linear diffusion and stream power. Precipitation is
 modeled as a stochastic process. Discharge is calculated from precipitation
@@ -16,7 +15,6 @@ Landlab components used:
 
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
 PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
-
 """
 
 import numpy as np
@@ -240,9 +238,7 @@ class BasicStVs(StochasticErosionModel):
         return np.nan
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
-        """
+        """Advance model for one time-step of duration dt."""
 
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()

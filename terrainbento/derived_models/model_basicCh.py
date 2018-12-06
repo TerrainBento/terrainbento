@@ -1,6 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-""" terrainbento **BasicCh** model program.
+"""terrainbento **BasicCh** model program.
 
 Erosion model program using cubic diffusion, basic stream power, and discharge
 proportional to drainage area.
@@ -11,7 +11,6 @@ Landlab components used:
     2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
-
 """
 
 import numpy as np

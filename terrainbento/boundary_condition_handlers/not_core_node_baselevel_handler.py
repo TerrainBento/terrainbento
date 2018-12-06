@@ -209,7 +209,7 @@ class NotCoreNodeBaselevelHandler(object):
                 )
 
     def run_one_step(self, dt):
-        """ Run **NotCoreNodeBaselevelHandler** forward and update elevations.
+        """Run **NotCoreNodeBaselevelHandler** forward and update elevations.
 
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.
@@ -225,7 +225,6 @@ class NotCoreNodeBaselevelHandler(object):
         ----------
         dt : float
             Duration of model time to advance forward.
-
         """
         # next, lower the correct nodes the desired amount
         # first, if we do not have an outlet elevation object

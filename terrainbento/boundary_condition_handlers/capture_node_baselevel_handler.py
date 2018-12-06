@@ -141,8 +141,8 @@ class CaptureNodeBaselevelHandler(object):
         self._grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
 
     def run_one_step(self, dt):
-        """
-        Run **CaptureNodeBaselevelHandler** to update captured node elevation.
+        """Run **CaptureNodeBaselevelHandler** to update captured node
+        elevation.
 
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.
@@ -158,7 +158,6 @@ class CaptureNodeBaselevelHandler(object):
         ----------
         dt : float
             Duration of model time to advance forward.
-
         """
         # lower the correct amount.
         if self.model_time >= self.start:

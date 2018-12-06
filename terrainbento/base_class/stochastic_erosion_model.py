@@ -1,7 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""
-Base class for common functions of terrainbento stochastic erosion models.
+"""Base class for common functions of terrainbento stochastic erosion models.
 
 The **StochasticErosionModel** is a base class that contains all of the
 functionality shared by the terrainbento models that use stochastic
@@ -278,8 +277,9 @@ class StochasticErosionModel(ErosionModel):
     def _pre_water_erosion_steps(self):
         """Convenience function for pre-water erosion steps.
 
-        If a model needs to do anything before each erosion step is run, e.g.
-        recalculate a threshold value, that model should overwrite this function.
+        If a model needs to do anything before each erosion step is run,
+        e.g. recalculate a threshold value, that model should overwrite
+        this function.
         """
         pass
 
@@ -383,9 +383,10 @@ class StochasticErosionModel(ErosionModel):
     def finalize(self):
         """Finalize stochastic erosion models.
 
-        The finalization step of stochastic erosion models in terrainbento
-        results in writing out the storm sequence file and the precipitation
-        exceedence statistics summary if ``record_rain`` was set to ``True``.
+        The finalization step of stochastic erosion models in
+        terrainbento results in writing out the storm sequence file and
+        the precipitation exceedence statistics summary if
+        ``record_rain`` was set to ``True``.
         """
         # if rain was recorded, write it out.
         if self.record_rain:
@@ -433,7 +434,7 @@ class StochasticErosionModel(ErosionModel):
         self.rain_record["runoff_rate"].append(runoff_rate)
 
     def write_storm_sequence_to_file(self, filename="storm_sequence.txt"):
-        """ Write event duration and intensity to a formatted text file.
+        """Write event duration and intensity to a formatted text file.
 
         Parameters
         ----------
