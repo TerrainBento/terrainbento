@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """**GenericFuncBaselevelHandler** modifies elevation for all not-core nodes."""
 
 

@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento model **BasicHySa** program.
 
 Erosion model program using exponential weathering, soil-depth-dependent

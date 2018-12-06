@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicChSa** model program.
 
 Erosion model program using depth-dependent cubic diffusion

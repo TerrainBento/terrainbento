@@ -60,9 +60,9 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
             Path to model input file. See wiki for discussion of input file
             formatting. One of input_file or params is required.
         params : dict
-            Dictionary containing the input file. One of input_file or params is
-            required.
-        OutputWriters : class, function, or list of classes and/or functions, optional
+            Dictionary containing the input file. One of input_file or params
+            is required.
+        OutputWriters : class, function, or list, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
 
@@ -78,10 +78,10 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         expected.
 
         *For example*: This is a minimal example to demonstrate how to
-        construct an instance of model **ModelTemplate**. Note that a YAML input
-        file can be used instead of a parameter dictionary. For more detailed
-        examples, including steady-state test examples, see the terrainbento
-        tutorials.
+        construct an instance of model **ModelTemplate**. Note that a YAML
+        input file can be used instead of a parameter dictionary. For more
+        detailed examples, including steady-state test examples, see the
+        terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -99,8 +99,9 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         >>> model = ModelTemplate(params=params)
 
         """
+        # Replace  `ModelTemplate` with your model name.
         super(ModelTemplate, self).__init__(
-            input_file=input_file,  # Replace  `ModelTemplate` with your model name.
+            input_file=input_file,
             params=params,  # Do not change any additional parts of this
         )  # line.
 
@@ -109,8 +110,8 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     def run_one_step(self, dt):
         """Run each component for one time step.
 
-        Put any additional information about **run_one_step** here. Importantly,
-        **run_one_step** should only take on parameter, ``dt``.
+        Put any additional information about **run_one_step** here.
+        Importantly, **run_one_step** should only take on parameter, ``dt``.
         """
         # write here all actions needed to run the model forward for a time
         # increment `dt`.

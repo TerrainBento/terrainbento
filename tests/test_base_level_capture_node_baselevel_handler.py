@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 from landlab import HexModelGrid, RasterModelGrid
 from terrainbento.boundary_condition_handlers import CaptureNodeBaselevelHandler

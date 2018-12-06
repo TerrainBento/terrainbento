@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """ terrainbento **BasicCh** model program.
 
 Erosion model program using cubic diffusion, basic stream power, and discharge

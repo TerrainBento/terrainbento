@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """
 Base class for common functions of terrainbento stochastic erosion models.
 

@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 from numpy.testing import assert_array_almost_equal
 

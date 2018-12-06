@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """Base class for common functions of all terrainbento erosion models.
 
 The **ErosionModel** is a base class that contains all of the functionality
