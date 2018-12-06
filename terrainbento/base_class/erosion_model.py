@@ -350,8 +350,10 @@ class ErosionModel(object):
             self.params.get("DEM_filename") is not None
         ):
             raise ValueError(
-                ("Both a DEM filename and number_of_node_rows have been "
-                 "specified.")
+                (
+                    "Both a DEM filename and number_of_node_rows have been "
+                    "specified."
+                )
             )
 
         if "DEM_filename" in self.params:

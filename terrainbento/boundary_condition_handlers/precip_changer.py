@@ -393,33 +393,45 @@ class PrecipChanger(object):
         1.721
         """
         if daily_rainfall__intermittency_factor is None:
-            msg = ("terrainbento PrecipChanger requires the parameter "
-                   "daily_rainfall__intermittency_factor")
+            msg = (
+                "terrainbento PrecipChanger requires the parameter "
+                "daily_rainfall__intermittency_factor"
+            )
             raise ValueError(msg)
 
         if daily_rainfall__intermittency_factor_time_rate_of_change is None:
-            msg = ("terrainbento PrecipChanger requires the parameter "
-                   "daily_rainfall__intermittency_factor_time_rate_of_change")
+            msg = (
+                "terrainbento PrecipChanger requires the parameter "
+                "daily_rainfall__intermittency_factor_time_rate_of_change"
+            )
             raise ValueError(msg)
 
         if rainfall__mean_rate is None:
-            msg = ("terrainbento PrecipChanger requires the parameter "
-                   "rainfall__mean_rate")
+            msg = (
+                "terrainbento PrecipChanger requires the parameter "
+                "rainfall__mean_rate"
+            )
             raise ValueError(msg)
 
         if rainfall__mean_rate_time_rate_of_change is None:
-            msg = ("terrainbento PrecipChanger requires the parameter "
-                   "rainfall__mean_rate_time_rate_of_change")
+            msg = (
+                "terrainbento PrecipChanger requires the parameter "
+                "rainfall__mean_rate_time_rate_of_change"
+            )
             raise ValueError(msg)
 
         if rainfall__shape_factor is None:
-            msg = ("terrainbento PrecipChanger requires the parameter "
-                   "rainfall__shape_factor")
+            msg = (
+                "terrainbento PrecipChanger requires the parameter "
+                "rainfall__shape_factor"
+            )
             raise ValueError(msg)
 
         if infiltration_capacity is None:
-            msg = ("terrainbento PrecipChanger requires the parameter "
-                   "infiltration_capacity")
+            msg = (
+                "terrainbento PrecipChanger requires the parameter "
+                "infiltration_capacity"
+            )
             raise ValueError(msg)
 
         self.model_time = 0.0

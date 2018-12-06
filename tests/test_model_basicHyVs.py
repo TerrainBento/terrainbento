@@ -83,9 +83,9 @@ def test_Aeff():
     # assert all slopes above non effective
     predicted_slopes_normal = (U / (K * (actual_areas ** m))) ** (1. / n)
     assert np.all(
-            actual_slopes[model.grid.core_nodes]
-            > predicted_slopes_normal[model.grid.core_nodes]
-        )
+        actual_slopes[model.grid.core_nodes]
+        > predicted_slopes_normal[model.grid.core_nodes]
+    )
 
 
 def test_steady_Kss_no_precip_changer():

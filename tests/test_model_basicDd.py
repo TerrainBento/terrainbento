@@ -187,9 +187,9 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change():
     # assert actual and predicted slopes are in the correct range for the
     # slopes.
     assert np.all(
-            actual_slopes[model.grid.core_nodes[1:-1]]
-            > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
-        )
+        actual_slopes[model.grid.core_nodes[1:-1]]
+        > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+    )
 
 
 def test_steady_Ksp_no_precip_changer():
