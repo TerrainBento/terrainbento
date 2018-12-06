@@ -56,6 +56,7 @@ lint: ## check style with flake8
 
 pretty: ## reformat files to make them look pretty
 	find terrainbento -name '*.py' | xargs isort
+	find tests -name '*.py' | xargs isort
 	black setup.py terrainbento tests
 
 test: ## run tests quickly with the default Python
