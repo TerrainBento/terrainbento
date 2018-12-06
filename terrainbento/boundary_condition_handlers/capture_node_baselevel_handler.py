@@ -72,7 +72,7 @@ class CaptureNodeBaselevelHandler(object):
         Now import the **CaptureNodeBaselevelHandler** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         CaptureNodeBaselevelHandler)
+        ...                                       CaptureNodeBaselevelHandler)
         >>> bh = CaptureNodeBaselevelHandler(mg,
         ...                                  capture_node = 3,
         ...                                  capture_incision_rate = -3.0,
@@ -82,8 +82,8 @@ class CaptureNodeBaselevelHandler(object):
         >>> for _ in range(10):
         ...     bh.run_one_step(1)
 
-        The capture has not yet started, so we should expect that the topography
-        is still all zeros.
+        The capture has not yet started, so we should expect that the
+        topography is still all zeros.
 
         >>> print(z.reshape(mg.shape))
         [[ 0.  0.  0.  0.  0.]

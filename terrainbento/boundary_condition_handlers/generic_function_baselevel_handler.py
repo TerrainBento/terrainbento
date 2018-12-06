@@ -1,6 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""**GenericFuncBaselevelHandler** modifies elevation for all not-core nodes."""
+"""**GenericFuncBaselevelHandler** modifies elevation for not-core nodes."""
 
 
 class GenericFuncBaselevelHandler(object):
@@ -51,7 +51,9 @@ class GenericFuncBaselevelHandler(object):
             be a function of three variables and return an array of size
             number of nodes. If a constant value is desired, used
             **NotCoreNodeBaselevelHandler** instead. The default function is:
-            ``lambda grid, t: (0 * grid.x_of_node + 0 * grid.y_of_node + 0 * t)``
+            ``lambda grid, t: (0 * grid.x_of_node +
+                               0 * grid.y_of_node +
+                               0 * t)``
 
         Examples
         --------
@@ -76,15 +78,16 @@ class GenericFuncBaselevelHandler(object):
         Now import the **GenericFuncBaselevelHandler** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         GenericFuncBaselevelHandler)
+        ...                                       GenericFuncBaselevelHandler)
+        >>> my_func = lambda grid, t:-(grid.x_of_node + grid.y_of_node + (0*t))
         >>> bh = GenericFuncBaselevelHandler(mg,
-        ...                                 modify_core_nodes = False,
-        ...                                 function = lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0*t)))
+        ...                                  modify_core_nodes = False,
+        ...                                   function=myfunc)
         >>> bh.run_one_step(10.0)
 
         We should expect that the boundary nodes (except for node 0) will all
-        have lowered by ``10*(x+y)`` in which ``x`` and ``y`` are the node x and
-        y positions. The function we provided has no time dependence.
+        have lowered by ``10*(x+y)`` in which ``x`` and ``y`` are the node x
+        and y positions. The function we provided has no time dependence.
 
         >>> print(z.reshape(mg.shape))
         [[  0. -10. -20. -30. -40.]
@@ -108,9 +111,10 @@ class GenericFuncBaselevelHandler(object):
         ...                                        top_is_closed=True)
         >>> mg.set_watershed_boundary_condition_outlet_id(
         ...     0, mg.at_node["topographic__elevation"], -9999.)
+        >>> my_func = lambda grid, t: -(grid.x_of_node + grid.y_of_node)
         >>> bh = GenericFuncBaselevelHandler(mg,
         ...                                 modify_core_nodes = True,
-        ...                                 function = lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0*t)))
+        ...                                 function=my_func)
         >>> bh.run_one_step(10.0)
         >>> print(z.reshape(mg.shape))
         [[  0.   0.   0.   0.   0.]
@@ -142,17 +146,20 @@ class GenericFuncBaselevelHandler(object):
 
         # test the function behaves well
         if function.__code__.co_argcount != 2:
-            msg = "GenericFuncBaselevelHandler: function must take only two arguments, grid and t."
+            msg = ("GenericFuncBaselevelHandler: function must take only two "
+                   "arguments, grid and t.")
             raise ValueError(msg)
 
         test_dzdt = function(self._grid, self.model_time)
 
         if hasattr(test_dzdt, "shape"):
             if test_dzdt.shape != self._grid.x_of_node.shape:
-                msg = "GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)"
+                msg = ("GenericFuncBaselevelHandler: function must return an "
+                       "array of shape (n_nodes,)")
                 raise ValueError(msg)
         else:
-            msg = "GenericFuncBaselevelHandler: function must return an array of shape (n_nodes,)"
+            msg = ("GenericFuncBaselevelHandler: function must return an "
+                   "array of shape (n_nodes,)")
             raise ValueError(msg)
 
         self.function = function
@@ -174,9 +181,9 @@ class GenericFuncBaselevelHandler(object):
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.
 
-        In the **run_one_step** routine, the **GenericFuncBaselevelHandler** will
-        either lower the closed or raise the non-closed nodes based on inputs
-        specified at instantiation.
+        In the **run_one_step** routine, the **GenericFuncBaselevelHandler**
+        will either lower the closed or raise the non-closed nodes based on
+        inputs specified at instantiation.
 
         Note that **GenericFuncBaselevelHandler** increments time at the end of
         the **run_one_step** method.

@@ -43,8 +43,8 @@ instantiate a synthetic grid and set the value of ``model.z`` to the values of
 the numpy array.
 
 DEM_filename : str, optional
-    File path to either an ESRII ASCII or netCDF file. Either  ``"DEM_filename"``
-    or ``"model_grid"`` must be specified.
+    File path to either an ESRII ASCII or netCDF file. Either
+    ``"DEM_filename"`` or ``"model_grid"`` must be specified.
 model_grid : str, optional
     Either ``"RasterModelGrid"`` or ``"HexModelGrid"``.
 
@@ -130,9 +130,9 @@ Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 terrainbento provides the ability for an arbitrary number of boundary
 condition handler classes to operate on the model grid each time step in order
-to handle time-variable boundary conditions such as: changing a watershed outlet
-elevation, modifying precipitation parameters through time, or simulating
-external drainage capture.
+to handle time-variable boundary conditions such as: changing a watershed
+outlet elevation, modifying precipitation parameters through time, or
+simulating external drainage capture.
 
 Boundary condition handlers are styled after Landlab components. terrainbento
 presently has four built-in boundary condition handlers, and supports the use
@@ -178,7 +178,7 @@ flow_director : str, optional
     FlowAccumulator is compatible with are permitted. Default is
     "FlowDirectorSteepest".
 depression_finder : str, optional
-    String name of a Landlab depression finder. Default is no depression finder.
+    String name of a Landlab depression finder. Default is None.
 
 Parameters that control output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -313,9 +313,8 @@ class ErosionModel(object):
                     _ = float(self.params[req])
                 except ValueError:
                     msg = (
-                        "Required parameter {0} is not compatible with type float.".format(
-                            req
-                        ),
+                        "Required parameter {0} is not compatible".format(req)
+                        " with type float."
                     )
                     raise ValueError(msg)
             else:
@@ -351,7 +350,8 @@ class ErosionModel(object):
             self.params.get("DEM_filename") is not None
         ):
             raise ValueError(
-                "Both a DEM filename and number_of_node_rows have been specified."
+                ("Both a DEM filename and number_of_node_rows have been "
+                 "specified.")
             )
 
         if "DEM_filename" in self.params:
@@ -465,8 +465,8 @@ class ErosionModel(object):
     def _setup_boundary_handler(self, name):
         """Setup BoundaryHandlers for use by a terrainbento model.
 
-        A boundary condition handler is a class with a **run_one_step** method that
-        takes the parameter ``dt``. Permitted boundary condition handlers
+        A boundary condition handler is a class with a **run_one_step** method
+        that takes the parameter ``dt``. Permitted boundary condition handlers
         include the Landlab Component ``NormalFault`` as well as the following
         options from terrainbento: **PrecipChanger**,
         **CaptureNodeBaselevelHandler**, **NotCoreNodeBaselevelHandler**,
@@ -530,11 +530,11 @@ class ErosionModel(object):
         interval defined by the parameter ``"output_interval"``.
 
         If a class, an OutputWriter will be instantiated with only one passed
-        argument: the entire model object. The class is expected to have a bound
-        function called **run_one_step** which is run with no arguments each time
-        output is written. If a function, the OutputWriter will be run at each
-        time output is written with one passed argument: the entire model
-        object.
+        argument: the entire model object. The class is expected to have a
+        bound function called **run_one_step** which is run with no arguments
+        each time output is written. If a function, the OutputWriter will be
+        run at each time output is written with one passed argument: the entire
+        model object.
 
         Parameters
         ----------
@@ -551,10 +551,10 @@ class ErosionModel(object):
         """Create hexagonal grid based on input parameters.
 
         This method will be called if the value of the input parameter
-        ``"DEM_filename"`` does not exist, and if the value of the input parameter
-        ``"model_grid"`` is set to `"HexModelGrid"`. Input parameters are not
-        passed explicitly, but are expected to be located in the model attribute
-        ``params``.
+        ``"DEM_filename"`` does not exist, and if the value of the input
+        parameter ``"model_grid"`` is set to `"HexModelGrid"`. Input parameters
+        are not passed explicitly, but are expected to be located in the model
+        attribute ``params``.
 
         Parameters
         ----------
@@ -568,15 +568,15 @@ class ErosionModel(object):
             Either "horizontal" (default) or "vertical".
         shape : str, optional
             Controls the shape of the bounding hull, i.e., are the nodes
-            arranged in a hexagon, or a rectangle? Either ``"hex"`` (default) or
-            ``"rect"``.
+            arranged in a hexagon, or a rectangle? Either ``"hex"`` (default)
+            or ``"rect"``.
         reorient_links, bool, optional
             Whether or not to re-orient all links to point between -45 deg
             and +135 deg clockwise from "north" (i.e., along y axis). Default
             value is True.
         outlet_id : int, optional
-            Node id for the watershed outlet. If not provided, the model will be
-            set boundary conditions based on the following parameters.
+            Node id for the watershed outlet. If not provided, the model will
+            be set boundary conditions based on the following parameters.
         boundary_closed : boolean, optional
             If ``True`` the model boundarys are closed boundaries. Default is
             ``False``.
@@ -654,10 +654,10 @@ class ErosionModel(object):
         """Create raster grid based on input parameters.
 
         This method will be called if the value of the input parameter
-        ``"DEM_filename"`` does not exist, and if the value of the input parameter
-        ``"model_grid"`` is set to ``"RasterModelGrid"``. Input parameters are not
-        passed explicitly, but are expected to be located in the model attribute
-        ``params``.
+        ``"DEM_filename"`` does not exist, and if the value of the input
+        parameter ``"model_grid"`` is set to ``"RasterModelGrid"``. Input
+        parameters are not passed explicitly, but are expected to be located in
+        the model attribute ``params``.
 
         Parameters
         ----------
@@ -672,13 +672,17 @@ class ErosionModel(object):
             provided, the model will set boundary conditions
             based on the following parameters.
         east_boundary_closed : boolean
-            If ``True`` right-edge nodes are closed boundaries. Default is ``False``.
+            If ``True`` right-edge nodes are closed boundaries.
+            Default is ``False``.
         north_boundary_closed : boolean
-            If ``True`` top-edge nodes are closed boundaries. Default is ``False``.
+            If ``True`` top-edge nodes are closed boundaries.
+            Default is ``False``.
         west_boundary_closed : boolean
-            If ``True`` left-edge nodes are closed boundaries. Default is ``False``.
+            If ``True`` left-edge nodes are closed boundaries.
+            Default is ``False``.
         south_boundary_closed : boolean
-            If ``True`` bottom-edge nodes are closed boundaries. Default is ``False``.
+            If ``True`` bottom-edge nodes are closed boundaries.
+            Default is ``False``.
 
         Examples
         --------
@@ -815,7 +819,8 @@ class ErosionModel(object):
             Name of grid field for read topography. Default value is
              topographic__elevation.
         halo : int, optional
-            Halo with which to pad DEM. Used only if file is an ESRI ASCII type.
+            Halo with which to pad DEM. Used only if file is an ESRI ASCII
+            type.
 
         Returns
         -------
@@ -863,9 +868,9 @@ class ErosionModel(object):
         >>> from landlab import HexModelGrid
         >>> from terrainbento import ErosionModel
 
-        Sometimes it makes sense to provide a parameter as an exponent (base 10).
-        If the string `"_exp"` is attached to the end of the name in the input
-        dictionary, this function can help.
+        Sometimes it makes sense to provide a parameter as an exponent
+        (base 10). If the string `"_exp"` is attached to the end of the name
+        in the input dictionary, this function can help.
 
         >>> params = {"model_grid" : "HexModelGrid",
         ...           "water_erodability_exp" : -3.,
@@ -997,8 +1002,9 @@ class ErosionModel(object):
         """Run the model until complete.
 
         The model will run for the duration indicated by the input file or
-        dictionary parameter ``"run_duration"``, at a time step specified by the
-        parameter ``"dt"``, and create ouput at intervales of ``"output_duration"``.
+        dictionary parameter ``"run_duration"``, at a time step specified by
+        the parameter ``"dt"``, and create ouput at intervales of
+        ``"output_duration"``.
 
         Parameters
         ----------

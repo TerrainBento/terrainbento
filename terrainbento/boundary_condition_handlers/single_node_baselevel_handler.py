@@ -1,6 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""**SingleNodeBaselevelHandler** changes elevation for a single boundary node."""
+"""**SingleNodeBaselevelHandler** changes elevation for a boundary node."""
 import os
 
 import numpy as np
@@ -15,8 +15,8 @@ class SingleNodeBaselevelHandler(object):
     """Control the elevation of a single open boundary node.
 
     The **SingleNodeBaselevelHandler** controls the elevation of a single open
-    boundary node, referred to here as the *outlet*. The outlet lowering rate is
-    specified either as a constant or through a time or through a text file
+    boundary node, referred to here as the *outlet*. The outlet lowering rate
+    is specified either as a constant or through a time or through a text file
     that specifies the elevation change through time.
 
     The **SingleNodeBaselevelHandler** expects that ``topographic__elevation``
@@ -143,8 +143,8 @@ class SingleNodeBaselevelHandler(object):
             if lowering_rate is None:
                 if self.modify_outlet_id is False:
                     raise ValueError(
-                        "SingleNodeBaselevelHandler currently does not support "
-                        "using a filepath for lowering and "
+                        "SingleNodeBaselevelHandler currently does not "
+                        "support using a filepath for lowering and "
                         "'modify_outlet_id'=False'. If this is something you "
                         "need in your research please create at an issue to "
                         "discuss developing it."
@@ -238,8 +238,9 @@ class SingleNodeBaselevelHandler(object):
         # if there is an outlet elevation object
         else:
             # if bedrock__elevation exists as a field, lower it also
-            # calcuate the topographic change required to match the current time"s value for
-            # outlet elevation. This must be done in case bedrock elevation exists, and must
+            # calcuate the topographic change required to match the current
+            # time"s value for outlet elevation. This must be done in case
+            # bedrock elevation exists, and must
             # be done before the topography is lowered
 
             topo_change = self.z[self.outlet_id] - self.outlet_elevation_obj(
