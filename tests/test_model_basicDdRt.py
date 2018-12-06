@@ -174,10 +174,9 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37]) is True
-
+    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37])
     # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97]) is True
+    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97])
 
 
 def test_diffusion_only():
