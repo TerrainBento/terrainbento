@@ -17,9 +17,9 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import (
-    FastscapeEroder,
     DepthDependentDiffuser,
     ExponentialWeatherer,
+    FastscapeEroder,
 )
 from terrainbento.base_class import TwoLithologyErosionModel
 

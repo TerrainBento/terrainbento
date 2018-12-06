@@ -2,10 +2,12 @@
 #! /usr/env/python
 """**SingleNodeBaselevelHandler** changes elevation for a single boundary node."""
 import os
+
 import numpy as np
 from scipy.interpolate import interp1d
 
 from landlab import FIXED_VALUE_BOUNDARY
+
 _OTHER_FIELDS = ["bedrock__elevation", "lithology_contact__elevation"]
 
 
@@ -126,7 +128,9 @@ class SingleNodeBaselevelHandler(object):
             }
             for of in _OTHER_FIELDS:
                 if of in self._grid.at_node:
-                    self._outlet_start_values[of] = self._grid.at_node[of][self.outlet_id]
+                    self._outlet_start_values[of] = self._grid.at_node[of][
+                        self.outlet_id
+                    ]
 
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(
@@ -223,7 +227,9 @@ class SingleNodeBaselevelHandler(object):
 
             if self.modify_outlet_id is False:
                 for key in self._outlet_start_values.keys():
-                    self._grid.at_node[key][self.outlet_id] = self._outlet_start_values[key]
+                    self._grid.at_node[key][self.outlet_id] = self._outlet_start_values[
+                        key
+                    ]
 
         # if there is an outlet elevation object
         else:

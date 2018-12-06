@@ -18,9 +18,9 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import (
-    FastscapeEroder,
     DepthDependentTaylorDiffuser,
     ExponentialWeatherer,
+    FastscapeEroder,
 )
 from terrainbento.base_class import ErosionModel
 
@@ -187,7 +187,7 @@ class BasicChSa(ErosionModel):
         ]  # has units length
 
         # get taylor terms
-        nterms = self.params.get('number_of_taylor_terms', 11)
+        nterms = self.params.get("number_of_taylor_terms", 11)
 
         # Create soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.add_zeros("node", "soil__depth")

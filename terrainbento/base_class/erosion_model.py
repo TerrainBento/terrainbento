@@ -196,32 +196,27 @@ Note also that the **run** method takes as a parameter ``output_fields``, which
 is a list of model grid fields to write as output.
 """
 
-import sys
 import os
-
-import six
+import sys
 import time as tm
-import numpy as np
 from types import FunctionType
 
-import xarray as xr
 import dask
+import numpy as np
+import six
+import xarray as xr
 
-from landlab.io import read_esri_ascii
-from landlab.io.netcdf import read_netcdf
-from landlab import load_params
-from landlab.io.netcdf import write_raster_netcdf
-from landlab.graph import Graph
-
-from landlab import CLOSED_BOUNDARY
+from landlab import CLOSED_BOUNDARY, load_params
 from landlab.components import FlowAccumulator, NormalFault
-
+from landlab.graph import Graph
+from landlab.io import read_esri_ascii
+from landlab.io.netcdf import read_netcdf, write_raster_netcdf
 from terrainbento.boundary_condition_handlers import (
-    PrecipChanger,
     CaptureNodeBaselevelHandler,
-    NotCoreNodeBaselevelHandler,
-    SingleNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
+    NotCoreNodeBaselevelHandler,
+    PrecipChanger,
+    SingleNodeBaselevelHandler,
 )
 
 _SUPPORTED_BOUNDARY_HANDLERS = [

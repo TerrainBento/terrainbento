@@ -21,7 +21,7 @@ PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
 
 import numpy as np
 
-from landlab.components import StreamPowerEroder, LinearDiffuser
+from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import StochasticErosionModel
 
 

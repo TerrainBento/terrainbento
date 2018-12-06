@@ -161,8 +161,8 @@ not :math:`c`.
 """
 
 import numpy as np
-from scipy.special import gamma
 from scipy.integrate import quad
+from scipy.special import gamma
 
 
 def _integrand(p, Ic, lam, c, m):

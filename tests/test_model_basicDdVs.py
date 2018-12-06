@@ -61,7 +61,11 @@ def test_Aeff():
     A_eff_predicted = actual_areas * np.exp(-(-alpha * actual_slopes) / actual_areas)
 
     # assert aeff internally calculated correclty
-    assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes], decimal = 1)
+    assert_array_almost_equal(
+        model.eff_area[model.grid.core_nodes],
+        A_eff_predicted[model.grid.core_nodes],
+        decimal=1,
+    )
 
     # somewhat circular test to make sure slopes are below predicted upper bound
     predicted_slopes_eff_upper = ((U + threshold) / (K * (model.eff_area ** m))) ** (

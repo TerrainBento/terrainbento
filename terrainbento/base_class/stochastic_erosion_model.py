@@ -69,13 +69,13 @@ frequency_filename : str
 """
 
 import os
+import textwrap
+
 import numpy as np
 import scipy.stats as stats
-import textwrap
 
 from landlab.components import PrecipitationDistribution
 from terrainbento.base_class import ErosionModel
-
 
 _STRING_LENGTH = 80
 

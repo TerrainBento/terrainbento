@@ -17,9 +17,9 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import (
-    StreamPowerEroder,
     DepthDependentDiffuser,
     ExponentialWeatherer,
+    StreamPowerEroder,
 )
 from terrainbento.base_class import ErosionModel
 
