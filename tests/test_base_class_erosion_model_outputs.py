@@ -56,7 +56,9 @@ def test_write_synthesis_netcdf():
     ds = model.to_xarray_dataset(time_unit="years", space_unit="meter")
 
     out_fn = "tb_output.nc"
-    model.save_to_xarray_dataset(filename=out_fn, time_unit="years", space_unit="meter")
+    model.save_to_xarray_dataset(
+        filename=out_fn, time_unit="years", space_unit="meter"
+    )
 
     output = xr.open_dataset(out_fn, decode_times=False)
     truth = xr.open_dataset(truth, decode_times=False)
@@ -85,7 +87,9 @@ def test_write_synthesis_netcdf_one_field():
     ds = model.to_xarray_dataset(time_unit="years", space_unit="meter")
 
     out_fn = "tb_output_one_field.nc"
-    model.save_to_xarray_dataset(filename=out_fn, time_unit="years", space_unit="meter")
+    model.save_to_xarray_dataset(
+        filename=out_fn, time_unit="years", space_unit="meter"
+    )
 
     output = xr.open_dataset(out_fn, decode_times=False)
     truth = xr.open_dataset(truth, decode_times=False)
@@ -115,7 +119,9 @@ def test_write_synthesis_netcdf_one_field_first_timestep_false():
     ds = model.to_xarray_dataset(time_unit="years", space_unit="meter")
 
     out_fn = "tb_output_one_field_first_ts.nc"
-    model.save_to_xarray_dataset(filename=out_fn, time_unit="years", space_unit="meter")
+    model.save_to_xarray_dataset(
+        filename=out_fn, time_unit="years", space_unit="meter"
+    )
 
     output = xr.open_dataset(out_fn, decode_times=False)
     truth = xr.open_dataset(truth, decode_times=False)

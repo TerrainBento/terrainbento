@@ -16,7 +16,11 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import DepthDependentDiffuser, ExponentialWeatherer, Space
+from landlab.components import (
+    DepthDependentDiffuser,
+    ExponentialWeatherer,
+    Space,
+)
 from terrainbento.base_class import ErosionModel
 
 
@@ -176,12 +180,12 @@ class BasicHySa(ErosionModel):
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K_br = self._get_parameter_from_exponent("water_erodability~rock") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        self.K_sed = self._get_parameter_from_exponent("water_erodability~sediment") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.K_br = self._get_parameter_from_exponent(
+            "water_erodability~rock"
+        ) * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_sed = self._get_parameter_from_exponent(
+            "water_erodability~sediment"
+        ) * (self._length_factor ** (1. - (2. * self.m)))
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * self._get_parameter_from_exponent(
@@ -333,7 +337,9 @@ class BasicHySa(ErosionModel):
             if np.any(np.isnan(self.grid.at_node[f])) or np.any(
                 np.isinf(self.grid.at_node[f])
             ):
-                raise SystemExit("terrainbento ModelHySa: Model became unstable")
+                raise SystemExit(
+                    "terrainbento ModelHySa: Model became unstable"
+                )
 
 
 def main():  # pragma: no cover

@@ -46,7 +46,10 @@ def test_steady_Kss_no_precip_changer():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -60,10 +63,14 @@ def test_steady_Kss_no_precip_changer():
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same for rock and till portions.
-    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
+    assert_array_almost_equal(
+        actual_slopes[22:37], rock_predicted_slopes[22:37]
+    )
 
     # assert actual and predicted slopes are the same for rock and till portions.
-    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
+    assert_array_almost_equal(
+        actual_slopes[82:97], till_predicted_slopes[82:97]
+    )
 
 
 def test_steady_Ksp_no_precip_changer():
@@ -103,7 +110,10 @@ def test_steady_Ksp_no_precip_changer():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -117,10 +127,14 @@ def test_steady_Ksp_no_precip_changer():
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same for rock and till portions.
-    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
+    assert_array_almost_equal(
+        actual_slopes[22:37], rock_predicted_slopes[22:37]
+    )
 
     # assert actual and predicted slopes are the same for rock and till portions.
-    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
+    assert_array_almost_equal(
+        actual_slopes[82:97], till_predicted_slopes[82:97]
+    )
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
@@ -162,7 +176,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -176,10 +193,14 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same for rock and till portions.
-    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
+    assert_array_almost_equal(
+        actual_slopes[22:37], rock_predicted_slopes[22:37]
+    )
 
     # assert actual and predicted slopes are the same for rock and till portions.
-    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
+    assert_array_almost_equal(
+        actual_slopes[82:97], till_predicted_slopes[82:97]
+    )
 
 
 def test_diffusion_only():
@@ -221,7 +242,10 @@ def test_diffusion_only():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -237,7 +261,9 @@ def test_diffusion_only():
     assert_array_almost_equal(actual_depth, predicted_depth, decimal=3)
 
     # test steady state slope
-    actual_profile = model.grid.at_node["topographic__elevation"][model.grid.core_nodes]
+    actual_profile = model.grid.at_node["topographic__elevation"][
+        model.grid.core_nodes
+    ]
 
     domain = np.arange(0, max(model.grid.node_y + dx), dx)
     steady_domain = np.arange(-max(domain) / 2., max(domain) / 2. + dx, dx)
@@ -309,8 +335,12 @@ def test_with_precip_changer():
 
     model = BasicRtSa(params=params)
     model._update_erodability_field()
-    assert np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) == True
-    assert np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) == True
+    assert (
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) == True
+    )
+    assert (
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) == True
+    )
 
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)

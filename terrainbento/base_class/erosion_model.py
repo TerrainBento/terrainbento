@@ -330,7 +330,9 @@ class ErosionModel(object):
         # identify if initial conditions should be saved.
         # default behavior is to not save the first timestep
         self.save_first_timestep = self.params.get("save_first_timestep", True)
-        self._out_file_name = self.params.get("output_filename", "terrainbento_output")
+        self._out_file_name = self.params.get(
+            "output_filename", "terrainbento_output"
+        )
         self._output_files = []
         # instantiate model time.
         self._model_time = 0.
@@ -358,7 +360,10 @@ class ErosionModel(object):
             self.opt_watershed = True
         else:
             # this routine will set self.opt_watershed internally
-            if self.params.get("model_grid", "RasterModelGrid") == "HexModelGrid":
+            if (
+                self.params.get("model_grid", "RasterModelGrid")
+                == "HexModelGrid"
+            ):
                 self._starting_topography = "HexModelGrid"
                 self._setup_hexagonal_grid()
             else:
@@ -390,7 +395,9 @@ class ErosionModel(object):
         # instantiate flow direction and accumulation
         ###################################################################
         # get flow direction, and depression finding options
-        self.flow_director = self.params.get("flow_director", "FlowDirectorSteepest")
+        self.flow_director = self.params.get(
+            "flow_director", "FlowDirectorSteepest"
+        )
         if (self.flow_director == "Steepest") or (self.flow_director == "D4"):
             self.flow_director = "FlowDirectorSteepest"
         self.depression_finder = self.params.get("depression_finder", None)
@@ -731,7 +738,9 @@ class ErosionModel(object):
         seed = self.params.get("random_seed", 0)
         self.z = self.grid.add_zeros("node", "topographic__elevation")
         noise_location = self.params.get("add_noise_to_all_nodes", False)
-        init_z_location = self.params.get("add_initial_elevation_to_all_nodes", True)
+        init_z_location = self.params.get(
+            "add_initial_elevation_to_all_nodes", True
+        )
 
         if init_z != 0.0:
             if init_z_location:
@@ -776,7 +785,9 @@ class ErosionModel(object):
                 self.outlet_node = 0
                 closed_boundaries = self.params.get("boundary_closed", False)
                 if closed_boundaries:
-                    self.grid.status_at_node[self.grid.boundary_nodes] = CLOSED_BOUNDARY
+                    self.grid.status_at_node[
+                        self.grid.boundary_nodes
+                    ] = CLOSED_BOUNDARY
 
         else:
             if "outlet_id" in self.params:
@@ -874,15 +885,21 @@ class ErosionModel(object):
         0.5
 
         """
-        if (param_name in self.params) and (param_name + "_exp" in self.params):
+        if (param_name in self.params) and (
+            param_name + "_exp" in self.params
+        ):
             raise ValueError(
                 "Parameter file includes both absolute value and"
                 "exponent version of:" + param_name
             )
 
-        if (param_name in self.params) and (param_name + "_exp" not in self.params):
+        if (param_name in self.params) and (
+            param_name + "_exp" not in self.params
+        ):
             param = self.params[param_name]
-        elif (param_name not in self.params) and (param_name + "_exp" in self.params):
+        elif (param_name not in self.params) and (
+            param_name + "_exp" in self.params
+        ):
             param = 10. ** float(self.params[param_name + "_exp"])
         else:
             if raise_error:

@@ -147,7 +147,9 @@ class BasicHySt(StochasticErosionModel):
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self._get_parameter_from_exponent("water_erodability~stochastic") * (
+        self.K = self._get_parameter_from_exponent(
+            "water_erodability~stochastic"
+        ) * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
@@ -169,7 +171,9 @@ class BasicHySt(StochasticErosionModel):
 
         # Get the infiltration-capacity parameter
         # has units length per time
-        self.infilt = (self._length_factor) * self.params["infiltration_capacity"]
+        self.infilt = (self._length_factor) * self.params[
+            "infiltration_capacity"
+        ]
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()

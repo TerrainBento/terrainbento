@@ -177,20 +177,25 @@ class BasicDdVs(ErosionModel):
             "hydraulic_conductivity"
         ]  # has units length per time
 
-        self.threshold_value = self._length_factor * self._get_parameter_from_exponent(
-            "water_erosion_rule__threshold"
+        self.threshold_value = (
+            self._length_factor
+            * self._get_parameter_from_exponent(
+                "water_erosion_rule__threshold"
+            )
         )  # has units length/time
 
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
-        self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (
-            recharge_rate
-        )
+        self.sat_param = (
+            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+        ) / (recharge_rate)
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
+        self.threshold = self.grid.add_zeros(
+            "node", "water_erosion_rule__threshold"
+        )
         self.threshold[:] = self.threshold_value
 
         # Instantiate a FastscapeEroder component
@@ -275,11 +280,15 @@ class BasicDdVs(ErosionModel):
         # we want the threshold to stay at its initial value rather than
         # getting smaller.
         cum_ero = self.grid.at_node["cumulative_elevation_change"]
-        cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
+        cum_ero[:] = (
+            self.z - self.grid.at_node["initial_topographic__elevation"]
+        )
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero
         )
-        self.threshold[self.threshold < self.threshold_value] = self.threshold_value
+        self.threshold[
+            self.threshold < self.threshold_value
+        ] = self.threshold_value
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)

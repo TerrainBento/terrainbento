@@ -70,7 +70,10 @@ def test_calc_cumulative_erosion():
     assert np.array_equiv(em.z, 0.) == True
     em.z += 1.
     em.calculate_cumulative_change()
-    assert np.array_equiv(em.grid.at_node["cumulative_elevation_change"], 1.) == True
+    assert (
+        np.array_equiv(em.grid.at_node["cumulative_elevation_change"], 1.)
+        == True
+    )
 
 
 def test_parameter_exponent_both_provided():
@@ -99,5 +102,7 @@ def test_parameter_exponent_neither_provided():
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):
         em._get_parameter_from_exponent("water_erodability")
-    val = em._get_parameter_from_exponent("water_erodability", raise_error=False)
+    val = em._get_parameter_from_exponent(
+        "water_erodability", raise_error=False
+    )
     assert val is None

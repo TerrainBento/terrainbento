@@ -199,7 +199,9 @@ class BasicChSa(ErosionModel):
         bedrock_elev[:] = self.z - initial_soil_thickness
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+        )
 
         # Instantiate a weathering component
         self.weatherer = ExponentialWeatherer(

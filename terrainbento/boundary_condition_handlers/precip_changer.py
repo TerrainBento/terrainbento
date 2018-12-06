@@ -226,7 +226,9 @@ def _scale_fac(pmean, c):
 
 def _check_intermittency_value(rainfall_intermittency_factor):
     """Check that rainfall_intermittency_factor is >= 0 and <=1."""
-    if (rainfall_intermittency_factor < 0.0) or (rainfall_intermittency_factor > 1.0):
+    if (rainfall_intermittency_factor < 0.0) or (
+        rainfall_intermittency_factor > 1.0
+    ):
         raise ValueError(
             (
                 "The PrecipChanger rainfall_intermittency_factor has a "
@@ -392,9 +394,7 @@ class PrecipChanger(object):
             raise ValueError(msg)
 
         if rainfall__mean_rate is None:
-            msg = (
-                "terrainbento PrecipChanger requires the parameter rainfall__mean_rate"
-            )
+            msg = "terrainbento PrecipChanger requires the parameter rainfall__mean_rate"
             raise ValueError(msg)
 
         if rainfall__mean_rate_time_rate_of_change is None:
@@ -424,7 +424,9 @@ class PrecipChanger(object):
             daily_rainfall__intermittency_factor_time_rate_of_change
         )
 
-        self.starting_daily_mean_depth = rainfall__mean_rate * self._length_factor
+        self.starting_daily_mean_depth = (
+            rainfall__mean_rate * self._length_factor
+        )
         self.mean_depth_rate_of_change = (
             rainfall__mean_rate_time_rate_of_change * self._length_factor
         )
@@ -460,7 +462,9 @@ class PrecipChanger(object):
         distribution of daily precipitation intensity at model run onset.
 
         """
-        lam = _scale_fac(self.starting_daily_mean_depth, self.rainfall__shape_factor)
+        lam = _scale_fac(
+            self.starting_daily_mean_depth, self.rainfall__shape_factor
+        )
         psi, _ = quad(
             _integrand,
             self.infilt_cap,
@@ -492,10 +496,12 @@ class PrecipChanger(object):
 
             # calculate and return updated values
             frac_wet_days = (
-                self.starting_frac_wet_days + self.frac_wet_days_rate_of_change * time
+                self.starting_frac_wet_days
+                + self.frac_wet_days_rate_of_change * time
             )
             mean_depth = (
-                self.starting_daily_mean_depth + self.mean_depth_rate_of_change * time
+                self.starting_daily_mean_depth
+                + self.mean_depth_rate_of_change * time
             )
 
             _check_intermittency_value(frac_wet_days)
@@ -535,7 +541,12 @@ class PrecipChanger(object):
                 _integrand,
                 self.infilt_cap,
                 np.inf,
-                args=(self.infilt_cap, lam, self.rainfall__shape_factor, self.m),
+                args=(
+                    self.infilt_cap,
+                    lam,
+                    self.rainfall__shape_factor,
+                    self.m,
+                ),
             )
 
             # calculate the adjustment factor

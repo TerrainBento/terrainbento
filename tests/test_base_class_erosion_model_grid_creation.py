@@ -223,7 +223,32 @@ def test_Hex_with_outlet():
     assert em.outlet_node == 9
     assert em.opt_watershed == True
     status = np.array(
-        [4, 4, 4, 4, 4, 0, 0, 0, 4, 1, 0, 0, 0, 0, 4, 4, 0, 0, 0, 4, 4, 4, 4, 4]
+        [
+            4,
+            4,
+            4,
+            4,
+            4,
+            0,
+            0,
+            0,
+            4,
+            1,
+            0,
+            0,
+            0,
+            0,
+            4,
+            4,
+            0,
+            0,
+            0,
+            4,
+            4,
+            4,
+            4,
+            4,
+        ]
     )
     assert_array_equal(status, em.grid.status_at_node)
 
@@ -242,7 +267,32 @@ def test_Hex_with_outlet_not_specified():
     assert em.outlet_node == 0
     assert em.opt_watershed == False
     status = np.array(
-        [1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1]
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+        ]
     )
     assert_array_equal(status, em.grid.status_at_node)
 
@@ -262,7 +312,32 @@ def test_Hex_with_boundaries():
     assert em.outlet_node == 0
     assert em.opt_watershed == False
     status = np.array(
-        [4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 0, 4, 4, 0, 0, 0, 4, 4, 4, 4, 4]
+        [
+            4,
+            4,
+            4,
+            4,
+            4,
+            0,
+            0,
+            0,
+            4,
+            4,
+            0,
+            0,
+            0,
+            0,
+            4,
+            4,
+            0,
+            0,
+            0,
+            4,
+            4,
+            4,
+            4,
+            4,
+        ]
     )
     assert_array_equal(status, em.grid.status_at_node)
 
@@ -281,7 +356,9 @@ def test_Raster_with_outlet():
     em = ErosionModel(params=params)
     assert em.outlet_node == 3
     assert em.opt_watershed == True
-    status = np.array([4, 4, 4, 1, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 4, 4, 4])
+    status = np.array(
+        [4, 4, 4, 1, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 4, 4, 4]
+    )
     assert_array_equal(status, em.grid.status_at_node)
 
 
@@ -298,7 +375,9 @@ def test_Raster_with_outlet_not_specified():
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
     assert em.opt_watershed == False
-    status = np.array([1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1])
+    status = np.array(
+        [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1]
+    )
     assert_array_equal(status, em.grid.status_at_node)
 
 
@@ -317,7 +396,9 @@ def test_Raster_with_boundaries():
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
     assert em.opt_watershed == False
-    status = np.array([1, 1, 1, 1, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 1, 1, 1, 1])
+    status = np.array(
+        [1, 1, 1, 1, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 1, 1, 1, 1]
+    )
     assert_array_equal(status, em.grid.status_at_node)
 
 
@@ -337,7 +418,12 @@ def test_DEM_and_rows():
 
 def test_DEM_ascii():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+    }
 
     em = ErosionModel(params=params)
 
@@ -355,7 +441,12 @@ def test_DEM_ascii():
 
 def test_bad_DEM_file():
     fp = os.path.join(_TEST_DATA_DIR, "bad_dem.txt")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+    }
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -363,7 +454,12 @@ def test_bad_DEM_file():
 
 def test_DEM_two_possible_outlets():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+    }
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -384,7 +480,12 @@ def test_DEM_two_possible_outlets():
 def test_DEM_netcdf():
     """Test DEM."""
     fp = os.path.join(_TEST_DATA_DIR, "test_file.nc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+    }
 
     em = ErosionModel(params=params)
 

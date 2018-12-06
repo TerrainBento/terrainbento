@@ -161,13 +161,17 @@ class BasicVs(ErosionModel):
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
-        self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (
-            recharge_rate
-        )
+        self.sat_param = (
+            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+        ) / (recharge_rate)
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid, use_Q=self.eff_area, K_sp=self.K, m_sp=self.m, n_sp=self.n
+            self.grid,
+            use_Q=self.eff_area,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
         )
 
         # Instantiate a LinearDiffuser component
