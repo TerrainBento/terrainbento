@@ -41,7 +41,8 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 #         "n_sp": n,
 #         "random_seed": 3141,
 #         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-#         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+#         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
+# "lowering_rate": -U},
 #     }
 #
 #     # construct and run model
@@ -116,10 +117,10 @@ def test_steady_Ksp_no_precip_changer():
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37]) is True
+    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37])
 
     # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97]) is True
+    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97])
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():

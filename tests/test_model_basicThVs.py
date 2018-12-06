@@ -72,7 +72,8 @@ def test_Aeff():
         decimal=1,
     )
 
-    # somewhat circular test to make sure slopes are below predicted upper bound
+    # somewhat circular test to make sure slopes are below predicted upper
+    # bound
     predicted_slopes_eff_upper = (
         (U + threshold) / (K * (model.eff_area ** m))
     ) ** (1. / n)
@@ -80,7 +81,8 @@ def test_Aeff():
         1. / n
     )
 
-    # somewhat circular test to make sure VSA slopes are higher than expected "normal" slopes
+    # somewhat circular test to make sure VSA slopes are higher than expected
+    # "normal" slopes
     predicted_slopes_normal_upper = (
         (U + threshold) / (K * (actual_areas ** m))
     ) ** (1. / n)
@@ -88,34 +90,23 @@ def test_Aeff():
         (U + 0.0) / (K * (actual_areas ** m))
     ) ** (1. / n)
 
-    assert (
-        np.all(
-            actual_slopes[model.grid.core_nodes[1:-1]]
-            < predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]
-        )
-        is True
-    )
-    assert (
-        np.all(
+    assert np.all(actual_slopes[model.grid.core_nodes[1:-1]]
+                  < predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]
+                  )
+    assert np.all(
             predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]
             > predicted_slopes_normal_upper[model.grid.core_nodes[1:-1]]
         )
-        is True
-    )
-    assert (
-        np.all(
+
+    assert np.all(
             actual_slopes[model.grid.core_nodes[1:-1]]
             > predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]]
-        )
-        is True
-    )
-    assert (
-        np.all(
+         )
+
+    assert np.all(
             predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]]
             > predicted_slopes_normal_lower[model.grid.core_nodes[1:-1]]
         )
-        is True
-    )
 
 
 def test_bad_n_sp():
@@ -237,8 +228,8 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct actual and predicted slopes
     # note that since we have a smooth threshold, we do not have a true
-    # analytical solution, but a bracket within wich we expect the actual slopes
-    # to fall.
+    # analytical solution, but a bracket within wich we expect the actual
+    # slopes to fall.
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
     predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (
@@ -248,21 +239,17 @@ def test_steady_Ksp_no_precip_changer():
         1. / n
     )
 
-    # assert actual and predicted slopes are in the correct range for the slopes.
-    assert (
-        np.all(
+    # assert actual and predicted slopes are in the correct range for the
+    # slopes.
+    assert np.all(
             actual_slopes[model.grid.core_nodes[1:-1]]
             > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
         )
-        is True
-    )
-    assert (
-        np.all(
+
+    assert np.all(
             actual_slopes[model.grid.core_nodes[1:-1]]
             < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
         )
-        is True
-    )
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():

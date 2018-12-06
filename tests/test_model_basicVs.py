@@ -60,11 +60,12 @@ def test_Aeff():
         / recharge_rate
     )
     A_eff_predicted = actual_areas * np.exp(
-        -(-alpha * actual_slopes) / actual_areas
+        -(alpha * actual_slopes) / actual_areas
     )
 
     # assert aeff internally calculated correclty
-    # assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes], decimal = 2)
+    # assert_array_almost_equal(model.eff_area[model.grid.core_nodes],
+    # A_eff_predicted[model.grid.core_nodes], decimal = 2)
 
     # assert correct s a relationship (slightly circular)
     predicted_slopes = (U / (K * (A_eff_predicted ** m))) ** (1. / n)
@@ -76,13 +77,10 @@ def test_Aeff():
 
     # assert all slopes above non effective
     predicted_slopes_normal = (U / (K * (actual_areas ** m))) ** (1. / n)
-    assert (
-        np.all(
+    assert np.all(
             actual_slopes[model.grid.core_nodes]
             > predicted_slopes_normal[model.grid.core_nodes]
         )
-        is True
-    )
 
 
 def test_steady_Ksp_no_precip_changer():

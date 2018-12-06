@@ -63,8 +63,8 @@ def test_steady_Ksp_no_precip_changer():
 
     # construct actual and predicted slopes
     # note that since we have a smooth threshold, we do not have a true
-    # analytical solution, but a bracket within wich we expect the actual slopes
-    # to fall.
+    # analytical solution, but a bracket within wich we expect the actual
+    # slopes to fall.
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
     predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (
@@ -74,22 +74,17 @@ def test_steady_Ksp_no_precip_changer():
         1. / n
     )
 
-    # assert actual and predicted slopes are in the correct range for the slopes.
-    assert (
-        np.all(
+    # assert actual and predicted slopes are in the correct range for the
+    # slopes.
+    assert np.all(
             actual_slopes[model.grid.core_nodes[1:-1]]
             > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
         )
-        is True
-    )
-    assert (
-        np.all(
+
+    assert np.all(
             actual_slopes[model.grid.core_nodes[1:-1]]
             < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
         )
-        is True
-    )
-
 
 # def test_steady_Ksp_no_precip_changer_no_thresh():
 #     U = 0.0001
@@ -116,7 +111,8 @@ def test_steady_Ksp_no_precip_changer():
 #         "water_erosion_rule__threshold": threshold,
 #         "random_seed": 3141,
 #         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-#         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+#         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
+# "lowering_rate": -U},
 #     }
 #
 #     # construct and run model
@@ -130,7 +126,8 @@ def test_steady_Ksp_no_precip_changer():
 #
 #     predicted_slopes = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 #
-#     # assert actual and predicted slopes are in the correct range for the slopes.
+#     # assert actual and predicted slopes are in the correct range for the
+# slopes.
 #     assert_array_almost_equal(actual_slopes[model.grid.core_nodes[1:-1]],
 #                               predicted_slopes[model.grid.core_nodes[1:-1]])
 

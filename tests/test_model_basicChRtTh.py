@@ -76,23 +76,13 @@ def test_steady_Ksp_no_precip_changer():
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
-    assert (
-        np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37])
-        is True
-    )
-    assert (
-        np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37])
-        is True
-    )
+    assert np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37])
 
-    assert (
-        np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97])
-        is True
-    )
-    assert (
-        np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
-        is True
-    )
+    assert np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37])
+
+    assert np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97])
+
+    assert np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
@@ -163,23 +153,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
-    assert (
-        np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37])
-        is True
-    )
-    assert (
-        np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37])
-        is True
-    )
-
-    assert (
-        np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97])
-        is True
-    )
-    assert (
-        np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
-        is True
-    )
+    assert np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37])
+    assert np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37])
+    assert np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97])
+    assert np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
 
 
 def test_diffusion_only():
