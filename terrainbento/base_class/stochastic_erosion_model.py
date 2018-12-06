@@ -150,7 +150,7 @@ class StochasticErosionModel(ErosionModel):
         if (
             (self.params.get("storm_sequence_filename") is not None)
             or (self.params.get("frequency_filename") is not None)
-        ) and (self.params.get("record_rain") != True):
+        ) and (self.params.get("record_rain") is not True):
             self.params["record_rain"] = True
 
         # Second, test that
@@ -170,7 +170,7 @@ class StochasticErosionModel(ErosionModel):
         # frequency_filename does not exist. For stochastic time, computing
         # exceedance frequencies is not super sensible. So make a warning that
         # it won"t be done.
-        if (self.opt_stochastic_duration == True) and (
+        if (self.opt_stochastic_duration is True) and (
             self.params.get("frequency_filename")
         ):
             raise ValueError(
@@ -262,7 +262,7 @@ class StochasticErosionModel(ErosionModel):
                 isinstance(
                     self.params["number_of_sub_time_steps"], (int, np.integer)
                 )
-                == False
+                is False
             ):
                 raise ValueError(
                     ("number_of_sub_time_steps must be of type integer.")
@@ -395,8 +395,8 @@ class StochasticErosionModel(ErosionModel):
             )
             self.write_storm_sequence_to_file(filename=filename)
 
-            if self.opt_stochastic_duration == False:
-                # if opt_stochastic_duration = False, calculate exceedance
+            if self.opt_stochastic_duration is False:
+                # if opt_stochastic_duration is False, calculate exceedance
                 # frequencies and write out.
                 frequency_filename = self.params.get(
                     "frequency_filename", "exceedance_summary.txt"
@@ -443,7 +443,7 @@ class StochasticErosionModel(ErosionModel):
         """
 
         # Open a file for writing
-        if self.record_rain == False:
+        if self.record_rain is False:
             raise ValueError(
                 "Rain was not recorded when the model run. To "
                 "record rain, set the parameter 'record_rain'"
@@ -501,7 +501,7 @@ class StochasticErosionModel(ErosionModel):
         filename : str
             Default value is "exceedance_summary.txt"
         """
-        if self.record_rain == False:
+        if self.record_rain is False:
             raise ValueError(
                 "Rain was not recorded when the model run. To "
                 "record rain, set the parameter 'record_rain'"

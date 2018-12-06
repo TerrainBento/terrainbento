@@ -310,11 +310,11 @@ class ErosionModel(object):
         for req in ["dt", "output_interval", "run_duration"]:
             if req in self.params:
                 try:
-                    _ = float(self.params[req])
+                    float(self.params[req])
                 except ValueError:
                     msg = (
-                        "Required parameter {0} is not compatible".format(req)
-                        " with type float."
+                        "Required parameter {0} is not".format(req)
+                        + "compatible with type float."
                     )
                     raise ValueError(msg)
             else:
@@ -842,8 +842,8 @@ class ErosionModel(object):
             except:
                 msg = (
                     "terrainbento ErosionModel base class: the parameter "
-                    "provided in 'DEM_filename' is not a valid ESRII ASCII file "
-                    "or NetCDF file."
+                    "provided in 'DEM_filename' is not a valid ESRII ASCII "
+                    "file or NetCDF file."
                 )
                 raise ValueError(msg)
 

@@ -118,7 +118,9 @@ is:
 
 .. math::
 
-    \\frac{K}{K_0} = \\frac{F\int_{I_c}^\infty (p-I_c)^{m} f(p) dp}{F_0\int_{I_c}^\infty (p-I_c)^{m} f_0(p) dp}
+    \\frac{K}{K_0} =
+    \\frac{F\int_{I_c}^\infty (p-I_c)^{m} f(p) dp}
+          {F_0\int_{I_c}^\infty (p-I_c)^{m} f_0(p) dp}
 
 Here :math:`F_0` is the starting intermittency factor.
 
@@ -130,7 +132,9 @@ distribution such that :math:`f(p)` has the form:
 
 .. math::
 
-    f(p) = \\frac{c}{\lambda}\left( \\frac{p}{\lambda} \\right)^{(c-1)} e^{-(p \lambda)^c}.
+    f(p) = \\frac{c}
+                 {\lambda}\left( \\frac{p}{\lambda} \\right)^{(c-1)}
+                 e^{-(p \lambda)^c}.
 
 The above definition can be substituted in the integrals in the equation for
 :math:`\\frac{K}{K_0}`. We are not aware of a closed-form solution to the
@@ -294,23 +298,23 @@ class PrecipChanger(object):
         Parameters
         ----------
         grid : landlab model grid
-        daily_rainfall_intermittency_factor : float, optional
+        daily_rainfall_intermittency_factor : float
             Starting value of the daily rainfall intermittency factor
             :math:`F`. This value is a proportion and ranges from 0 (no rain
             ever) to 1 (rains every day).
-        daily_rainfall_intermittency_factor__time_rate_of_change : float, optional
+        daily_rainfall_intermittency_factor__time_rate_of_change : float
             Time rate of change of the daily rainfall intermittency factor
             :math:`F`. Units are implied by the ``time_unit`` argument. Note
             that this factor must always be between 0 and 1.
-        rainfall__mean_rate : float, optional
+        rainfall__mean_rate : float
             Starting value of the mean daily rainfall intensity :math:`p_d`.
             Units are implied by the ``time_unit`` argument.
-        rainfall__mean_rate__time_rate_of_change : float, optional
+        rainfall__mean_rate__time_rate_of_change : float
             Time rate of change of the mean daily rainfall intensity
             :math:`p_d`. Units are implied by the ``time_unit`` argument.
-        rainfall__shape_factor : float, optional
+        rainfall__shape_factor : float
             Weibull distribution shape factor :math:`c`.
-        infiltration_capacity : float, optional
+        infiltration_capacity : float
             Infiltration capacity. Time units are implied by the ``time_unit``
             argument.
         m_sp : float, optional
@@ -452,11 +456,11 @@ class PrecipChanger(object):
         _check_infiltration_capacity(self.infilt_cap)
 
     def calculate_starting_psi(self):
-        """Calculate and store for later the factor :math:`\Psi_0`.
+        r"""Calculate and store for later the factor :math:`\Psi_0`.
 
         :math:`\Psi` represents the portion of the erosion coefficient that
-        depends on precipitation intensity. :math:`\Psi_0` is the starting value
-        of :math:`\Psi`.
+        depends on precipitation intensity. :math:`\Psi_0` is the starting
+        value of :math:`\Psi`.
 
         :math:`\Psi_0` is defined as the integral from :math:`I_c` to infinity
         of the rainfall in excess of infiltration.
@@ -520,7 +524,7 @@ class PrecipChanger(object):
             return self.starting_frac_wet_days, self.starting_daily_mean_depth
 
     def get_erodability_adjustment_factor(self):
-        """Calculates the erodability adjustment factor at the current time.
+        r"""Calculates the erodability adjustment factor at the current time.
 
         Calculates and returns the factor :math:`F_{w}` by which an erodability
         by water should be adjusted.
