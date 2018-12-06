@@ -70,7 +70,8 @@ def test_Aeff():
     )
 
     # assert aeff internally calculated correclty
-    # assert_array_almost_equal(model.eff_area[model.grid.core_nodes], A_eff_predicted[model.grid.core_nodes],decimal = 2)
+    # assert_array_almost_equal(model.eff_area[model.grid.core_nodes],
+    #  A_eff_predicted[model.grid.core_nodes],decimal = 2)
 
     # assert correct s a relationship (slightly circular)
     predicted_slopes = (U / (K * (A_eff_predicted ** m))) ** (1. / n)

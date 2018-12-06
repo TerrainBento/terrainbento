@@ -102,7 +102,8 @@ def test_boundary_condition_handler_with_bad_special_part_of_params_single():
         "number_of_node_columns": 10,
         "outlet_id": 1,
         "node_spacing": 10.0,  # meters
-        "random_seed": 4897,  # set to initialize the topography with reproducible random noise
+        "random_seed": 4897,  # set to initialize the topography with
+                              # reproducible random noise
         "water_erodability": 0.0001,  # years^-1
         "m_sp": 0.5,  # unitless
         "n_sp": 1.0,  # unitless
@@ -128,7 +129,8 @@ def test_single_node_blh_with_closed_boundaries():
         "north_boundary_closed": True,
         "south_boundary_closed": True,
         "node_spacing": 10.0,  # meters
-        "random_seed": 4897,  # set to initialize the topography with reproducible random noise
+        "random_seed": 4897,  # set to initialize the topography with
+                              # reproducible random noise
         "water_erodability": 0.0001,  # years^-1
         "m_sp": 0.5,  # unitless
         "n_sp": 1.0,  # unitless

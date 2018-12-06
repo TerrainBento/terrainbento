@@ -62,12 +62,12 @@ def test_steady_Kss_no_precip_changer():
     rock_predicted_slopes = (U / (Kr * (actual_areas ** m))) ** (1. / n)
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
-    # assert actual and predicted slopes are the same for rock and till portions.
+    # assert actual and predicted slopes are the same for rock and till.
     assert_array_almost_equal(
         actual_slopes[22:37], rock_predicted_slopes[22:37]
     )
 
-    # assert actual and predicted slopes are the same for rock and till portions.
+    # assert actual and predicted slopes are the same for rock and till.
     assert_array_almost_equal(
         actual_slopes[82:97], till_predicted_slopes[82:97]
     )
@@ -126,12 +126,12 @@ def test_steady_Ksp_no_precip_changer():
     rock_predicted_slopes = (U / (Kr * (actual_areas ** m))) ** (1. / n)
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
-    # assert actual and predicted slopes are the same for rock and till portions.
+    # assert actual and predicted slopes are the same for rock and till.
     assert_array_almost_equal(
         actual_slopes[22:37], rock_predicted_slopes[22:37]
     )
 
-    # assert actual and predicted slopes are the same for rock and till portions.
+    # assert actual and predicted slopes are the same for rock and till.
     assert_array_almost_equal(
         actual_slopes[82:97], till_predicted_slopes[82:97]
     )
@@ -192,12 +192,12 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     rock_predicted_slopes = (U / (Kr * (actual_areas ** m))) ** (1. / n)
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
-    # assert actual and predicted slopes are the same for rock and till portions.
+    # assert actual and predicted slopes are the same for rock and till.
     assert_array_almost_equal(
         actual_slopes[22:37], rock_predicted_slopes[22:37]
     )
 
-    # assert actual and predicted slopes are the same for rock and till portions.
+    # assert actual and predicted slopes are the same for rock and till.
     assert_array_almost_equal(
         actual_slopes[82:97], till_predicted_slopes[82:97]
     )

@@ -339,8 +339,10 @@ def test_stability_checker():
 #         model.run_one_step(dt)
 #
 #
-#     predicted_z = (model.z[model.grid.core_nodes[reference_node]]-(U / (2. * D)) *
-#                ((model.grid.x_of_node - model.grid.x_of_node[model.grid.core_nodes[reference_node]])**2))
+#     predicted_z = (model.z[model.grid.core_nodes[reference_node]]-
+# (U / (2. * D)) *
+#                ((model.grid.x_of_node - model.grid.x_of_node
+# [model.grid.core_nodes[reference_node]])**2))
 #
 #     # assert actual and predicted elevations are the same.
 #     assert_array_almost_equal(predicted_z[model.grid.core_nodes],
