@@ -2,12 +2,12 @@
 #! /usr/env/python
 
 import os
-import pytest
 
 import numpy as np
+import pytest
 
+from landlab import HexModelGrid, RasterModelGrid
 from terrainbento.boundary_condition_handlers import SingleNodeBaselevelHandler
-from landlab import RasterModelGrid, HexModelGrid
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

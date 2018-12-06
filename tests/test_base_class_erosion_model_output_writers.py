@@ -1,13 +1,13 @@
 # coding: utf8
 #! /usr/env/python
 
-import os
-import numpy as np
 import glob
+import os
+
+import numpy as np
 
 from terrainbento import Basic
 from terrainbento.utilities import filecmp
-
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

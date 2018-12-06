@@ -1,11 +1,10 @@
 import os
-import numpy as np
 
+import numpy as np
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicChRt
 from terrainbento.utilities import precip_defaults, precip_testing_factor
-
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

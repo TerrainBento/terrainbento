@@ -1,13 +1,11 @@
-import os
-import numpy as np
 import glob
+import os
 
+import numpy as np
 import pytest
-
-from numpy.testing import assert_equal, assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_equal
 
 from terrainbento import BasicStVs
-
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

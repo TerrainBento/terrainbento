@@ -1,8 +1,8 @@
 # coding: utf8
 #! /usr/env/python
 
+from landlab import HexModelGrid, RasterModelGrid
 from terrainbento.boundary_condition_handlers import CaptureNodeBaselevelHandler
-from landlab import RasterModelGrid, HexModelGrid
 
 
 def test_hex():

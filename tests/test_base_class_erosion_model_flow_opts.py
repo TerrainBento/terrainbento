@@ -4,11 +4,10 @@
 import pytest
 
 from landlab.components import (
-    FlowDirectorSteepest,
     DepressionFinderAndRouter,
     FlowDirectorMFD,
+    FlowDirectorSteepest,
 )
-
 from terrainbento import ErosionModel
 
 

@@ -2,13 +2,13 @@
 #! /usr/env/python
 
 import os
+
 import numpy as np
-from numpy.testing import assert_array_equal
 import pytest
+from numpy.testing import assert_array_equal
 
 from landlab import HexModelGrid, RasterModelGrid
 from terrainbento import ErosionModel
-
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

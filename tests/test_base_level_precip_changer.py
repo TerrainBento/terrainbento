@@ -3,8 +3,8 @@
 
 import pytest
 
+from landlab import HexModelGrid, RasterModelGrid
 from terrainbento.boundary_condition_handlers import PrecipChanger
-from landlab import RasterModelGrid, HexModelGrid
 
 
 def test_not_passing_daily_rainfall__intermittency_factor():

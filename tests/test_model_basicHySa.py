@@ -1,9 +1,8 @@
 # coding: utf8
 #! /usr/env/python
 
-import pytest
-
 import numpy as np
+import pytest
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 from terrainbento import BasicHySa

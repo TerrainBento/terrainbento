@@ -2,6 +2,7 @@
 #! /usr/env/python
 
 import os
+
 import pytest
 
 from landlab import HexModelGrid

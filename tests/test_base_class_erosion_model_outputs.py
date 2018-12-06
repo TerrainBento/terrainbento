@@ -1,15 +1,15 @@
 # coding: utf8
 #! /usr/env/python
 
-import os
-
 import glob
-
-# from numpy.testing import assert_array_equal, assert_array_almost_equal
+import os
 
 import xarray as xr
 
 from terrainbento import Basic
+
+# from numpy.testing import assert_array_equal, assert_array_almost_equal
+
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

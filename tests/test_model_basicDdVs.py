@@ -2,9 +2,8 @@
 #! /usr/env/python
 
 import numpy as np
-
-from numpy.testing import assert_array_almost_equal
 import pytest
+from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicDdVs
 from terrainbento.utilities import precip_defaults, precip_testing_factor

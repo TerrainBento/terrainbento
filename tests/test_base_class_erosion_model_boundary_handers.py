@@ -2,16 +2,15 @@
 #! /usr/env/python
 
 import numpy as np
-from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 import pytest
+from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 
-from landlab import FIXED_VALUE_BOUNDARY, CLOSED_BOUNDARY
-
-from terrainbento import ErosionModel, Basic, BasicSt
+from landlab import CLOSED_BOUNDARY, FIXED_VALUE_BOUNDARY
+from terrainbento import Basic, BasicSt, ErosionModel
 from terrainbento.boundary_condition_handlers import (
+    CaptureNodeBaselevelHandler,
     PrecipChanger,
     SingleNodeBaselevelHandler,
-    CaptureNodeBaselevelHandler,
 )
 
 

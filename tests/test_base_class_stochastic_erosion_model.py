@@ -1,12 +1,12 @@
 # coding: utf8
 #! /usr/env/python
 import os
-import pytest
+
 import numpy as np
+import pytest
 
-from terrainbento import StochasticErosionModel, BasicSt
-from terrainbento.utilities import precip_defaults, filecmp
-
+from terrainbento import BasicSt, StochasticErosionModel
+from terrainbento.utilities import filecmp, precip_defaults
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
