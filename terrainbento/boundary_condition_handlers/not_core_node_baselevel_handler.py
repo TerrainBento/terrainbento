@@ -1,6 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""**NotCoreNodeBaselevelHandler** modifies elevation for all not-core nodes."""
+"""**NotCoreNodeBaselevelHandler** modifies elevation for not-core nodes."""
 
 import os
 
@@ -61,11 +61,11 @@ class NotCoreNodeBaselevelHandler(object):
             change at the outlet since the onset of the model run. Negative
             values mean the outlet lowers.
         model_end_elevation : float, optional
-            Average elevation of the nodes_to_lower at the end of the model run duration. When
-            the outlet is lowered based on an lowering_file_path, a
-            ``model_end_elevation`` can be set such that lowering is scaled
-            based on the starting and ending outlet elevation. Default behavior
-            is to not scale the lowering pattern.
+            Average elevation of the nodes_to_lower at the end of the model
+            run duration. When the outlet is lowered based on an
+            lowering_file_path, a ``model_end_elevation`` can be set such that
+            lowering is scaled based on the starting and ending outlet
+            elevation. Default behavior is to not scale the lowering pattern.
 
         Examples
         --------
@@ -90,7 +90,7 @@ class NotCoreNodeBaselevelHandler(object):
         Now import the **NotCoreNodeBaselevelHandler** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         NotCoreNodeBaselevelHandler)
+        ...                                      NotCoreNodeBaselevelHandler)
         >>> bh = NotCoreNodeBaselevelHandler(mg,
         ...                                 modify_core_nodes = False,
         ...                                 lowering_rate = -0.1)
@@ -118,7 +118,7 @@ class NotCoreNodeBaselevelHandler(object):
         >>> mg.set_watershed_boundary_condition_outlet_id(
         ...     0, mg.at_node["topographic__elevation"], -9999.)
         >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         NotCoreNodeBaselevelHandler)
+        ...                                        NotCoreNodeBaselevelHandler)
         >>> bh = NotCoreNodeBaselevelHandler(mg,
         ...                                 modify_core_nodes = True,
         ...                                 lowering_rate = -0.1)
@@ -214,9 +214,9 @@ class NotCoreNodeBaselevelHandler(object):
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.
 
-        In the **run_one_step** routine, the **NotCoreNodeBaselevelHandler** will
-        either lower the closed or raise the non-closed nodes based on inputs
-        specified at instantiation.
+        In the **run_one_step** routine, the **NotCoreNodeBaselevelHandler**
+        will either lower the closed or raise the non-closed nodes based on
+        inputs specified at instantiation.
 
         Note that **NotCoreNodeBaselevelHandler** increments time at the end of
         the **run_one_step** method.
@@ -249,9 +249,10 @@ class NotCoreNodeBaselevelHandler(object):
         # if there is an outlet elevation object
         else:
             # if bedrock__elevation exists as a field, lower it also
-            # calcuate the topographic change required to match the current time"s value for
-            # outlet elevation. This must be done in case bedrock elevation exists, and must
-            # be done before the topography is lowered
+            # calcuate the topographic change required to match the current
+            # time"s value for outlet elevation. This must be done in case
+            # bedrock elevation exists, and must be done before the topography
+            # is lowered
             mean_z = np.mean(self.z[self.nodes_to_lower])
             self.topo_change = mean_z - self.outlet_elevation_obj(
                 self.model_time
