@@ -66,8 +66,8 @@ def test_write_synthesis_netcdf():
     assert truth.dims == output.dims
     assert truth.dims == ds.dims
 
-    assert truth.equals(output) == True
-    assert truth.equals(ds) == True
+    assert truth.equals(output) is True
+    assert truth.equals(ds) is True
 
     output.close()
     truth.close()
@@ -97,8 +97,8 @@ def test_write_synthesis_netcdf_one_field():
     assert truth.dims == output.dims
     assert truth.dims == ds.dims
 
-    assert truth.equals(output) == True
-    assert truth.equals(ds) == True
+    assert truth.equals(output) is True
+    assert truth.equals(ds) is True
 
     output.close()
     truth.close()
@@ -129,8 +129,8 @@ def test_write_synthesis_netcdf_one_field_first_timestep_false():
     assert truth.dims == output.dims
     assert truth.dims == ds.dims
 
-    assert truth.equals(output) == True
-    assert truth.equals(ds) == True
+    assert truth.equals(output) is True
+    assert truth.equals(ds) is True
 
     output.close()
     truth.close()

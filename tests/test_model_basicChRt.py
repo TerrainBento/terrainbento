@@ -278,10 +278,10 @@ def test_with_precip_changer():
     model = BasicChRt(params=params)
     model._update_erodability_field()
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) == True
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
     )
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) == True
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
     )
 
     assert "PrecipChanger" in model.boundary_handler

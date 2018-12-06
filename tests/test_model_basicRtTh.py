@@ -79,20 +79,20 @@ def test_steady_Ksp_no_precip_changer():
     # assert actual and predicted slopes are the same for rock and till portions.
     assert (
         np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37])
-        == True
+        is True
     )
     assert (
         np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37])
-        == True
+        is True
     )
 
     assert (
         np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97])
-        == True
+        is True
     )
     assert (
         np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
-        == True
+        is True
     )
 
 
@@ -164,20 +164,20 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # assert actual and predicted slopes are the same for rock and till portions.
     assert (
         np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37])
-        == True
+        is True
     )
     assert (
         np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37])
-        == True
+        is True
     )
 
     assert (
         np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97])
-        == True
+        is True
     )
     assert (
         np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
-        == True
+        is True
     )
 
 
@@ -282,10 +282,10 @@ def test_with_precip_changer():
     model = BasicRtTh(params=params)
     model._update_erodability_and_threshold_fields()
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) == True
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
     )
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) == True
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
     )
 
     assert "PrecipChanger" in model.boundary_handler

@@ -116,10 +116,10 @@ def test_steady_Ksp_no_precip_changer():
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37]) == True
+    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37]) is True
 
     # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97]) == True
+    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97]) is True
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
@@ -173,10 +173,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37]) == True
+    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37]) is True
 
     # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97]) == True
+    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97]) is True
 
 
 def test_diffusion_only():
@@ -279,10 +279,10 @@ def test_with_precip_changer():
     model = BasicDdRt(params=params)
     model._update_erodability_field()
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) == True
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
     )
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) == True
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
     )
 
     assert "PrecipChanger" in model.boundary_handler

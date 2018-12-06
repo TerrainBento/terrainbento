@@ -255,7 +255,7 @@ def test_with_precip_changer():
     }
 
     model = BasicSaVs(params=params)
-    assert np.array_equiv(model.eroder._K_unit_time, K) == True
+    assert np.array_equiv(model.eroder._K_unit_time, K) is True
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)

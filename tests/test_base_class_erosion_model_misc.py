@@ -67,12 +67,12 @@ def test_calc_cumulative_erosion():
         "run_duration": 10.,
     }
     em = ErosionModel(params=params)
-    assert np.array_equiv(em.z, 0.) == True
+    assert np.array_equiv(em.z, 0.) is True
     em.z += 1.
     em.calculate_cumulative_change()
     assert (
         np.array_equiv(em.grid.at_node["cumulative_elevation_change"], 1.)
-        == True
+        is True
     )
 
 

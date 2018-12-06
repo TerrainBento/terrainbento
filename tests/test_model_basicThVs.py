@@ -93,28 +93,28 @@ def test_Aeff():
             actual_slopes[model.grid.core_nodes[1:-1]]
             < predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]
         )
-        == True
+        is True
     )
     assert (
         np.all(
             predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]
             > predicted_slopes_normal_upper[model.grid.core_nodes[1:-1]]
         )
-        == True
+        is True
     )
     assert (
         np.all(
             actual_slopes[model.grid.core_nodes[1:-1]]
             > predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]]
         )
-        == True
+        is True
     )
     assert (
         np.all(
             predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]]
             > predicted_slopes_normal_lower[model.grid.core_nodes[1:-1]]
         )
-        == True
+        is True
     )
 
 
@@ -254,14 +254,14 @@ def test_steady_Ksp_no_precip_changer():
             actual_slopes[model.grid.core_nodes[1:-1]]
             > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
         )
-        == True
+        is True
     )
     assert (
         np.all(
             actual_slopes[model.grid.core_nodes[1:-1]]
             < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
         )
-        == True
+        is True
     )
 
 

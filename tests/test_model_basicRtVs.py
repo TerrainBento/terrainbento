@@ -303,13 +303,13 @@ def test_with_precip_changer():
         np.array_equiv(
             model.eroder._K_unit_time[model.grid.core_nodes[:8]], Kt
         )
-        == True
+        is True
     )
     assert (
         np.array_equiv(
             model.eroder._K_unit_time[model.grid.core_nodes[10:]], Kr
         )
-        == True
+        is True
     )
 
     assert "PrecipChanger" in model.boundary_handler

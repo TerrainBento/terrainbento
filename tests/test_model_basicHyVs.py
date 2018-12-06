@@ -87,7 +87,7 @@ def test_Aeff():
             actual_slopes[model.grid.core_nodes]
             > predicted_slopes_normal[model.grid.core_nodes]
         )
-        == True
+        is True
     )
 
 

@@ -14,8 +14,8 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 def test_defaults():
     params = {"dt": 1, "output_interval": 2., "run_duration": 200.}
     model = StochasticErosionModel(params=params)
-    assert model.opt_stochastic_duration == False
-    assert model.record_rain == False
+    assert model.opt_stochastic_duration is False
+    assert model.record_rain is False
 
 
 def test_init_record_opt_true():
@@ -26,7 +26,7 @@ def test_init_record_opt_true():
         "record_rain": True,
     }
     model = StochasticErosionModel(params=params)
-    assert model.record_rain == True
+    assert model.record_rain is True
     assert isinstance(model.rain_record, dict)
     fields = [
         "event_start_time",
@@ -47,7 +47,7 @@ def test_init_record_opt_false():
         "record_rain": False,
     }
     model = StochasticErosionModel(params=params)
-    assert model.record_rain == False
+    assert model.record_rain is False
     assert model.rain_record is None
 
 
@@ -70,7 +70,7 @@ def test_run_stochastic_opt_true():
     }
 
     model = BasicSt(params=params)
-    assert model.opt_stochastic_duration == True
+    assert model.opt_stochastic_duration is True
     model.run_for(params["dt"], params["run_duration"])
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(
@@ -121,7 +121,7 @@ def test_run_stochastic_opt_false():
     }
 
     model = BasicSt(params=params)
-    assert model.opt_stochastic_duration == False
+    assert model.opt_stochastic_duration is False
     model.run_for(params["dt"], 10000.)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"])
@@ -135,13 +135,13 @@ def test_run_stochastic_opt_false():
             dry_times,
             params["dt"] * (1. - params["rainfall_intermittency_factor"]),
         )
-        == True
+        is True
     )
     assert (
         np.array_equiv(
             wet_times, params["dt"] * (params["rainfall_intermittency_factor"])
         )
-        == True
+        is True
     )
 
     avg_storm_depth = np.sum((rainfall_rate * event_duration)) / len(wet_times)
@@ -448,12 +448,12 @@ def test_finalize_opt_duration_stochastic_false():
     truth_file = os.path.join(
         _TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt"
     )
-    assert filecmp("storm_sequence.txt", truth_file) == True
+    assert filecmp("storm_sequence.txt", truth_file) is True
 
     truth_file = os.path.join(
         _TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt"
     )
-    assert filecmp("exceedance_summary.txt", truth_file) == True
+    assert filecmp("exceedance_summary.txt", truth_file) is True
 
     os.remove("storm_sequence.txt")
     os.remove("exceedance_summary.txt")
@@ -486,7 +486,7 @@ def test_finalize_opt_duration_stochastic_true():
     truth_file = os.path.join(
         _TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt"
     )
-    assert filecmp("storm_sequence.txt", truth_file) == True
+    assert filecmp("storm_sequence.txt", truth_file) is True
 
     os.remove("storm_sequence.txt")
 
