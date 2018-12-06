@@ -82,7 +82,7 @@ class GenericFuncBaselevelHandler(object):
         >>> my_func = lambda grid, t:-(grid.x_of_node + grid.y_of_node + (0*t))
         >>> bh = GenericFuncBaselevelHandler(mg,
         ...                                  modify_core_nodes = False,
-        ...                                   function=myfunc)
+        ...                                   function=my_func)
         >>> bh.run_one_step(10.0)
 
         We should expect that the boundary nodes (except for node 0) will all
