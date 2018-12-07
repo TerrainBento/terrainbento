@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicCv** model program.
 
 Erosion model program using linear diffusion, stream power, and discharge
@@ -145,7 +145,9 @@ class BasicCv(ErosionModel):
         self.K_through_time = interp1d(time, K)
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=K[0], m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=K[0], m_sp=self.m, n_sp=self.n
+        )
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

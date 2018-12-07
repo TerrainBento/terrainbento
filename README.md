@@ -20,7 +20,7 @@ terrainbento"s User Manual is located at our [Read The Docs page](http://terrain
 
 We recommend that you start with [this set of Jupyter notebooks](https://github.com/TerrainBento/examples_tests_and_tutorials) that introduce terrainbento .
 
-A manuscript describing terrainbento can be found [here]() ** not yet submitted, link does not exist **.
+A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/). Please consider contributing comments or feedback as part of the review process.
 
 ## A quick example
 

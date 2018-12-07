@@ -1,14 +1,13 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 import pytest
 
 from landlab.components import (
-    FlowDirectorSteepest,
     DepressionFinderAndRouter,
     FlowDirectorMFD,
+    FlowDirectorSteepest,
 )
-
 from terrainbento import ErosionModel
 
 
@@ -24,7 +23,9 @@ def test_FlowAccumulator_with_depression_steepest():
 
     em = ErosionModel(params=params)
     assert isinstance(em.flow_accumulator.flow_director, FlowDirectorSteepest)
-    assert isinstance(em.flow_accumulator.depression_finder, DepressionFinderAndRouter)
+    assert isinstance(
+        em.flow_accumulator.depression_finder, DepressionFinderAndRouter
+    )
 
 
 def test_no_depression_finder():
