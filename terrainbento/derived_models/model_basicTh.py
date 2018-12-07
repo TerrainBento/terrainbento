@@ -142,8 +142,12 @@ class BasicTh(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n, threshold_sp=threshold,
-            use_Q='surface_water__discharge'
+            self.grid,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
+            threshold_sp=threshold,
+            use_Q="surface_water__discharge",
         )
 
         # Instantiate a LinearDiffuser component

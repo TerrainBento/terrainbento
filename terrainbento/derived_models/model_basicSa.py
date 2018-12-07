@@ -180,7 +180,13 @@ class BasicSa(ErosionModel):
         ]  # has units length
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n, discharge_name='surface_water__discharge')
+        self.eroder = FastscapeEroder(
+            self.grid,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
+            discharge_name="surface_water__discharge",
+        )
 
         # Create soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.add_zeros("node", "soil__depth")

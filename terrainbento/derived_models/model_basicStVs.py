@@ -201,7 +201,11 @@ class BasicStVs(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid, use_Q="surface_water__discharge", K_sp=self.K, m_sp=self.m, n_sp=self.m
+            self.grid,
+            use_Q="surface_water__discharge",
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.m,
         )
 
         # Instantiate a LinearDiffuser component

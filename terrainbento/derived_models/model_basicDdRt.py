@@ -210,7 +210,7 @@ class BasicDdRt(TwoLithologyErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             threshold_sp=self.threshold,
-            use_Q='surface_water__discharge'
+            use_Q="surface_water__discharge",
         )
 
         # Get the parameter for rate of threshold increase with erosion depth

@@ -218,6 +218,11 @@ from terrainbento.boundary_condition_handlers import (
     PrecipChanger,
     SingleNodeBaselevelHandler,
 )
+from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
+from terrainbento.runoff_generators import (
+    SimpleRunoff,
+    VariableSourceAreaRunoff,
+)
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
     "NormalFault",
@@ -237,13 +242,12 @@ _HANDLER_METHODS = {
     "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
 
-from terrainbento.precipitators import (UniformPrecipitator, RandomPrecipitator)
 
 _SUPPORTED_PRECIPITATORS = []
 
-from terrainbento.runoff_generators import (SimpleRunoff, VariableSourceAreaRunoff)
 
 _SUPPORTED_RUNOFF_GENERATORS = []
+
 
 class ErosionModel(object):
 
@@ -405,8 +409,9 @@ class ErosionModel(object):
         ###################################################################
         self.rainfall__flux = self.grid.add_ones("rainfall__flux", at="node")
 
-        self.water__unit_flux_in = self.grid.add_ones("water__unit_flux_in",
-                                                      at="node")
+        self.water__unit_flux_in = self.grid.add_ones(
+            "water__unit_flux_in", at="node"
+        )
 
         ###################################################################
         # Set Up Precipitator

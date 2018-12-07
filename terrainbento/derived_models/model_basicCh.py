@@ -145,7 +145,13 @@ class BasicCh(ErosionModel):
         nterms = self.params.get("number_of_taylor_terms", 11)
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n, discharge_name='surface_water__discharge')
+        self.eroder = FastscapeEroder(
+            self.grid,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
+            discharge_name="surface_water__discharge",
+        )
 
         # Instantiate a NonLinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(

@@ -170,7 +170,7 @@ class BasicDd(ErosionModel):
             n_sp=self.n,
             K_sp=self.K,
             threshold_sp=self.threshold,
-            use_Q='surface_water__discharge'
+            use_Q="surface_water__discharge",
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
