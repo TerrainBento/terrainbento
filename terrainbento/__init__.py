@@ -1,5 +1,4 @@
-"""
-Public classes of the terrainbento package.
+"""Public classes of the terrainbento package.
 
 terrainbento has five types of public classes: base models, derived models
 precipitators, runoff-generators, and boundary condition handlers. Base models

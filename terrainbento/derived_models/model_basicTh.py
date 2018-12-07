@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicTh** model program.
 
 Erosion model program using linear diffusion, stream power with a smoothed

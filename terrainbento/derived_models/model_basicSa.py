@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicSa** model program.
 
 Erosion model using depth-dependent linear diffusion with a soil layer, basic
@@ -12,15 +12,14 @@ Landlab components used:
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `DepthDependentDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_diffusion/hillslope_depth_dependent_linear_flux.html#DepthDependentDiffuser>`_
     5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
-
 """
 
 import numpy as np
 
 from landlab.components import (
-    FastscapeEroder,
     DepthDependentDiffuser,
     ExponentialWeatherer,
+    FastscapeEroder,
 )
 from terrainbento.base_class import ErosionModel
 

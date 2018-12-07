@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicRt** model program.
 
 Erosion model program using depth-dependent linear diffusion, soil production
@@ -17,9 +17,9 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import (
-    FastscapeEroder,
     DepthDependentDiffuser,
     ExponentialWeatherer,
+    FastscapeEroder,
 )
 from terrainbento.base_class import TwoLithologyErosionModel
 
@@ -298,7 +298,9 @@ class BasicRtSa(TwoLithologyErosionModel):
         self._update_erodability_field()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(dt, flooded_nodes=flooded, K_if_used=self.erody)
+        self.eroder.run_one_step(
+            dt, flooded_nodes=flooded, K_if_used=self.erody
+        )
 
         # We must also now erode the bedrock where relevant. If water erosion
         # into bedrock has occurred, the bedrock elevation will be higher than

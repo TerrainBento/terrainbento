@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicChRtTh** model program.
 
 Erosion model program using non-linear diffusion, stream power with stream power
@@ -15,7 +15,10 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import StreamPowerSmoothThresholdEroder, TaylorNonLinearDiffuser
+from landlab.components import (
+    StreamPowerSmoothThresholdEroder,
+    TaylorNonLinearDiffuser,
+)
 from terrainbento.base_class import TwoLithologyErosionModel
 
 
@@ -200,7 +203,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         )
 
         # get taylor terms
-        nterms = self.params.get('number_of_taylor_terms', 7)
+        nterms = self.params.get("number_of_taylor_terms", 7)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()

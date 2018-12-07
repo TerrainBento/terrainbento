@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicChSa** model program.
 
 Erosion model program using depth-dependent cubic diffusion
@@ -12,15 +12,14 @@ Landlab components used:
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
     5. `DepthDependentTaylorDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_taylor_soil_creep/hillslope_depth_dependent_taylor_flux.html#DepthDependentTaylorDiffuser>`_
-
 """
 
 import numpy as np
 
 from landlab.components import (
-    FastscapeEroder,
     DepthDependentTaylorDiffuser,
     ExponentialWeatherer,
+    FastscapeEroder,
 )
 from terrainbento.base_class import ErosionModel
 
@@ -187,7 +186,7 @@ class BasicChSa(ErosionModel):
         ]  # has units length
 
         # get taylor terms
-        nterms = self.params.get('number_of_taylor_terms', 11)
+        nterms = self.params.get("number_of_taylor_terms", 11)
 
         # Create soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.add_zeros("node", "soil__depth")

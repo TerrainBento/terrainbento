@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 precip_defaults = {
     "daily_rainfall__intermittency_factor": 0.5,
