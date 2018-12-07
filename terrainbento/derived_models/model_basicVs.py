@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento model **BasicVs** program.
 
 Erosion model program using linear diffusion, stream power, and discharge
@@ -14,7 +14,7 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import StreamPowerEroder, LinearDiffuser
+from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import ErosionModel
 
 
@@ -137,13 +137,13 @@ class BasicVs(ErosionModel):
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
@@ -161,13 +161,17 @@ class BasicVs(ErosionModel):
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
-        self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (
-            recharge_rate
-        )
+        self.sat_param = (
+            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+        ) / (recharge_rate)
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid, use_Q=self.eff_area, K_sp=self.K, m_sp=self.m, n_sp=self.n
+            self.grid,
+            use_Q=self.eff_area,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
         )
 
         # Instantiate a LinearDiffuser component

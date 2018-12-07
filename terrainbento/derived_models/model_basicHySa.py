@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento model **BasicHySa** program.
 
 Erosion model program using exponential weathering, soil-depth-dependent
@@ -16,7 +16,11 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import Space, DepthDependentDiffuser, ExponentialWeatherer
+from landlab.components import (
+    DepthDependentDiffuser,
+    ExponentialWeatherer,
+    Space,
+)
 from terrainbento.base_class import ErosionModel
 
 
@@ -99,7 +103,6 @@ class BasicHySa(ErosionModel):
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
-
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -176,24 +179,24 @@ class BasicHySa(ErosionModel):
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K_br = self.get_parameter_from_exponent("water_erodability~rock") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        self.K_sed = self.get_parameter_from_exponent("water_erodability~sediment") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.K_br = self._get_parameter_from_exponent(
+            "water_erodability~rock"
+        ) * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_sed = self._get_parameter_from_exponent(
+            "water_erodability~sediment"
+        ) * (self._length_factor ** (1. - (2. * self.m)))
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-        v_sc = self.get_parameter_from_exponent(
+        v_sc = self._get_parameter_from_exponent(
             "v_sc"
         )  # normalized settling velocity. Unitless.
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
@@ -333,7 +336,9 @@ class BasicHySa(ErosionModel):
             if np.any(np.isnan(self.grid.at_node[f])) or np.any(
                 np.isinf(self.grid.at_node[f])
             ):
-                raise SystemExit("terrainbento ModelHySa: Model became unstable")
+                raise SystemExit(
+                    "terrainbento ModelHySa: Model became unstable"
+                )
 
 
 def main():  # pragma: no cover

@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicChRt** model program.
 
 Erosion model program using non-linear diffusion, stream power with spatially
@@ -45,9 +45,9 @@ class BasicChRt(TwoLithologyErosionModel):
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`S_c` is the critical slope parameter
-    and :math:`N` is the number of terms in the Taylor Series expansion.
-    Presently :math:`N` is set at 7 and is not a user defined parameter. :math:`w`
-    is a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
+    and :math:`N` is the number of terms in the Taylor Series expansion. :math:`N`
+    is set at a default value of 7 but can be modified by a user. :math:`w` is a
+    weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
     based on the depth to the contact zone and the width of the contact zone.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
@@ -78,6 +78,8 @@ class BasicChRt(TwoLithologyErosionModel):
     |:math:`D`         | ``regolith_transport_parameter`` |
     +------------------+----------------------------------+
     |:math:`S_c`       | ``critical_slope``               |
+    +------------------+----------------------------------+
+    |:math:`N`         | ``number_of_taylor_terms``       |
     +------------------+----------------------------------+
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
@@ -181,6 +183,9 @@ class BasicChRt(TwoLithologyErosionModel):
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 
+        # get taylor terms
+        nterms = self.params.get("number_of_taylor_terms", 7)
+
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
             self.grid, m_sp=self.m, n_sp=self.n, K_sp=self.erody
@@ -191,7 +196,7 @@ class BasicChRt(TwoLithologyErosionModel):
             self.grid,
             linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
-            nterms=7,
+            nterms=nterms,
         )
 
     def run_one_step(self, dt):
@@ -239,7 +244,9 @@ class BasicChRt(TwoLithologyErosionModel):
         self._update_erodability_field()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(dt, flooded_nodes=flooded, K_if_used=self.erody)
+        self.eroder.run_one_step(
+            dt, flooded_nodes=flooded, K_if_used=self.erody
+        )
 
         # Do some soil creep
         self.diffuser.run_one_step(

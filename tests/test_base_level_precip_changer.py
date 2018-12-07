@@ -1,11 +1,10 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
-from numpy.testing import assert_almost_equal, assert_array_equal
 import pytest
 
+from landlab import HexModelGrid, RasterModelGrid
 from terrainbento.boundary_condition_handlers import PrecipChanger
-from landlab import RasterModelGrid, HexModelGrid
 
 
 def test_not_passing_daily_rainfall__intermittency_factor():
@@ -21,7 +20,7 @@ def test_not_passing_daily_rainfall__intermittency_factor():
         )
 
 
-def test_not_passing_daily_rainfall__intermittency_factor_time_rate_of_change():
+def test_not_passing_daily_rainfall__intermittency_factor_troc():
     mg = HexModelGrid(5, 5)
     with pytest.raises(ValueError):
         PrecipChanger(
@@ -87,7 +86,7 @@ def test_not_passing_infiltration_capacity():
 
 
 def test_a_stop_time():
-    """Test that it is possible to provide a stop time"""
+    """Test that it is possible to provide a stop time."""
     mg = HexModelGrid(5, 5)
 
     pc = PrecipChanger(

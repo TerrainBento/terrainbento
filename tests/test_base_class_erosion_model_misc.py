@@ -1,12 +1,11 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 import numpy as np
 
 # from numpy.testing import assert_array_equal, assert_array_almost_equal
 import pytest
 
-from landlab import HexModelGrid
 from terrainbento import ErosionModel
 
 
@@ -68,14 +67,18 @@ def test_calc_cumulative_erosion():
         "run_duration": 10.,
     }
     em = ErosionModel(params=params)
-    assert np.array_equiv(em.z, 0.) == True
+    assert np.array_equiv(em.z, 0.) is True
     em.z += 1.
     em.calculate_cumulative_change()
-    assert np.array_equiv(em.grid.at_node["cumulative_elevation_change"], 1.) == True
+    assert (
+        np.array_equiv(em.grid.at_node["cumulative_elevation_change"], 1.)
+        is True
+    )
 
 
 def test_parameter_exponent_both_provided():
-    """Test the get_parameter_from_exponent function when both are provided."""
+    """Test the _get_parameter_from_exponent function when both are
+    provided."""
     params = {
         "model_grid": "HexModelGrid",
         "water_erodability_exp": -3.,
@@ -86,11 +89,12 @@ def test_parameter_exponent_both_provided():
     }
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):
-        em.get_parameter_from_exponent("water_erodability")
+        em._get_parameter_from_exponent("water_erodability")
 
 
 def test_parameter_exponent_neither_provided():
-    """Test the get_parameter_from_exponent function when neither are provided."""
+    """Test the _get_parameter_from_exponent function when neither are
+    provided."""
     params = {
         "model_grid": "HexModelGrid",
         "dt": 1,
@@ -99,6 +103,8 @@ def test_parameter_exponent_neither_provided():
     }
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):
-        em.get_parameter_from_exponent("water_erodability")
-    val = em.get_parameter_from_exponent("water_erodability", raise_error=False)
+        em._get_parameter_from_exponent("water_erodability")
+    val = em._get_parameter_from_exponent(
+        "water_erodability", raise_error=False
+    )
     assert val is None

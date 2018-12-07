@@ -1,14 +1,13 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 import os
-import numpy as np
 
-from numpy.testing import assert_array_almost_equal, assert_array_equal
+import numpy as np
+from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicRtTh
 from terrainbento.utilities import precip_defaults, precip_testing_factor
-
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -46,7 +45,10 @@ def test_steady_Ksp_no_precip_changer():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -58,20 +60,30 @@ def test_steady_Ksp_no_precip_changer():
     actual_areas = model.grid.at_node["drainage_area"]
 
     # note that since we have a smooth threshold, we do not have a true
-    # analytical solution, but a bracket within wich we expect the actual slopes
-    # to fall.
-    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (1. / n)
+    # analytical solution, but a bracket within wich we expect the actual
+    # slopes to fall.
+    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (
+        1. / n
+    )
+    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (
+        1. / n
+    )
 
-    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (1. / n)
+    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (
+        1. / n
+    )
+    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (
+        1. / n
+    )
 
-    # assert actual and predicted slopes are the same for rock and till portions.
-    assert np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37]) == True
-    assert np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37]) == True
+    # assert actual and predicted slopes are the same for rock and till
+    # portions.
+    assert np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37])
+    assert np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37])
 
-    assert np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97]) == True
-    assert np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97]) == True
+    assert np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97])
+
+    assert np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
 
 
 def test_steady_Ksp_no_precip_changer_with_depression_finding():
@@ -108,7 +120,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
         "depression_finder": "DepressionFinderAndRouter",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -120,20 +135,28 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     actual_areas = model.grid.at_node["drainage_area"]
 
     # note that since we have a smooth threshold, we do not have a true
-    # analytical solution, but a bracket within wich we expect the actual slopes
-    # to fall.
-    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (1. / n)
+    # analytical solution, but a bracket within wich we expect the actual
+    # slopes to fall.
+    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (
+        1. / n
+    )
+    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (
+        1. / n
+    )
 
-    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (1. / n)
+    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (
+        1. / n
+    )
+    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (
+        1. / n
+    )
 
-    # assert actual and predicted slopes are the same for rock and till portions.
-    assert np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37]) == True
-    assert np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37]) == True
-
-    assert np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97]) == True
-    assert np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97]) == True
+    # assert actual and predicted slopes are the same for rock and till
+    # portions.
+    assert np.all(actual_slopes[22:37] > rock_predicted_slopes_lower[22:37])
+    assert np.all(actual_slopes[22:37] < rock_predicted_slopes_upper[22:37])
+    assert np.all(actual_slopes[82:97] > till_predicted_slopes_lower[82:97])
+    assert np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
 
 
 def test_diffusion_only():
@@ -171,7 +194,10 @@ def test_diffusion_only():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
     nts = int(total_time / dt)
 
@@ -181,7 +207,9 @@ def test_diffusion_only():
     for _ in range(nts):
         model.run_one_step(dt)
 
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
+    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
+        U / (2. * D)
+    ) * (
         (
             model.grid.x_of_node
             - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
@@ -191,19 +219,17 @@ def test_diffusion_only():
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+        predicted_z[model.grid.core_nodes],
+        model.z[model.grid.core_nodes],
+        decimal=2,
     )
 
 
 def test_with_precip_changer():
-    U = 0.0001
     Kr = 0.001
     Kt = 0.005
     Tr = 0.01
     Tt = 0.05
-    m = 0.5
-    n = 1.0
-    dt = 1000
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
     # construct dictionary. note that D is turned off here
@@ -233,8 +259,12 @@ def test_with_precip_changer():
 
     model = BasicRtTh(params=params)
     model._update_erodability_and_threshold_fields()
-    assert np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) == True
-    assert np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) == True
+    assert (
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
+    )
+    assert (
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
+    )
 
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)

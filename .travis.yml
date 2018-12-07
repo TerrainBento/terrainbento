@@ -57,6 +57,7 @@ install:
 - conda install -q sphinx
 - conda install -q pytest
 - conda install -q pytest-cov
+- conda install -q flake8
 - pip install --upgrade pip
 - pip install pytest
 - pip install codacy-coverage
@@ -74,11 +75,20 @@ script:
     coveralls
     export CODACY_PROJECT_TOKEN=$CODACITY_API_TOKEN
     python-codacy-coverage -r coverage.xml
-
   fi
+- make lint
 - |
  if [[ "$BUILD_DOCS" == "1" && "$TRAVIS_OS_NAME" == "linux" ]]; then
    (cd docs && make html)
  fi
+
 virtualenv:
   system_site_packages: false
+
+after_success:
+- conda build -q .conda-recipe --old-build-string
+- |
+  if [[ "$TRAVIS_TAG" == v* ]]; then
+    TB_PACKAGE=$(conda build --output ./.conda-recipe --old-build-string)
+    anaconda -t $ANACONDA_TOKEN upload --force --user terrainbento --channel main $TB_PACKAGE
+  fi

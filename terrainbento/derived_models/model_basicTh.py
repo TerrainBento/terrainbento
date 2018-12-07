@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicTh** model program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
@@ -124,25 +124,29 @@ class BasicTh(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
-        threshold = self._length_factor * self.get_parameter_from_exponent(
+        threshold = self._length_factor * self._get_parameter_from_exponent(
             "water_erosion_rule__threshold"
         )  # has units length/time
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n, threshold_sp=threshold
+            self.grid,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
+            threshold_sp=threshold,
         )
 
         # Instantiate a LinearDiffuser component

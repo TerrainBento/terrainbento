@@ -1,6 +1,6 @@
 # coding: utf8
-#! /usr/env/python
-""" terrainbento **BasicCh** model program.
+# !/usr/env/python
+"""terrainbento **BasicCh** model program.
 
 Erosion model program using cubic diffusion, basic stream power, and discharge
 proportional to drainage area.
@@ -11,7 +11,6 @@ Landlab components used:
     2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
-
 """
 
 import numpy as np
@@ -39,7 +38,8 @@ class BasicCh(ErosionModel):
     :math:`K` is the erodability by water, :math:`D` is the regolith
     transport efficiency, and :math:`S_c` is the critical slope. :math:`q_h`
     represents the hillslope sediment flux per unit width. :math:`N` is the
-    number of terms in the Taylor Expansion and is set at 11.
+    number of terms in the Taylor Series expansion. :math:`N` is set at a
+    default value of 11 but can be modified by a user.
 
     The **BasicCh** program inherits from the terrainbento **ErosionModel** base
     class. In addition to the parameters required by the base class, models
@@ -57,6 +57,8 @@ class BasicCh(ErosionModel):
     |:math:`D`         | ``regolith_transport_parameter`` |
     +------------------+----------------------------------+
     |:math:`S_c`       | ``critical_slope``               |
+    +------------------+----------------------------------+
+    |:math:`N`         | ``number_of_taylor_terms``       |
     +------------------+----------------------------------+
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
@@ -129,25 +131,30 @@ class BasicCh(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
+        # get taylor terms
+        nterms = self.params.get("number_of_taylor_terms", 11)
+
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+        )
 
         # Instantiate a NonLinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
-            nterms=11,
+            nterms=nterms,
         )
 
     def run_one_step(self, dt):

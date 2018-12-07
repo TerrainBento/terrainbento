@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento model **BasicThVs** program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
@@ -14,7 +14,7 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
+from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import ErosionModel
 
 
@@ -142,16 +142,16 @@ class BasicThVs(ErosionModel):
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
-        threshold = self._length_factor * self.get_parameter_from_exponent(
+        threshold = self._length_factor * self._get_parameter_from_exponent(
             "water_erosion_rule__threshold"
         )  # has units length/time
 
@@ -169,9 +169,9 @@ class BasicThVs(ErosionModel):
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
-        self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (
-            recharge_rate
-        )
+        self.sat_param = (
+            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+        ) / (recharge_rate)
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(

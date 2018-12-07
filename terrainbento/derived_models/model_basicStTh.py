@@ -1,7 +1,6 @@
 # coding: utf8
-#! /usr/env/python
-"""
-terrainbento **BasicStTh** model program.
+# !/usr/env/python
+"""terrainbento **BasicStTh** model program.
 
 Erosion model program using linear diffusion, smoothly thresholded stream
 power, and stochastic discharge with a smoothed infiltration capacity
@@ -140,19 +139,21 @@ class BasicStTh(StochasticErosionModel):
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+        self.K = self._get_parameter_from_exponent(
+            "water_erodability~stochastic"
+        ) * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
-        threshold = self._length_factor * self.get_parameter_from_exponent(
+        threshold = self._length_factor * self._get_parameter_from_exponent(
             "water_erosion_rule__threshold"
         )  # has units length/time
 
@@ -164,7 +165,9 @@ class BasicStTh(StochasticErosionModel):
 
         # Get the infiltration-capacity parameter
         # has units length per time
-        self.infilt = (self._length_factor) * self.params["infiltration_capacity"]
+        self.infilt = (self._length_factor) * self.params[
+            "infiltration_capacity"
+        ]
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
@@ -188,9 +191,7 @@ class BasicStTh(StochasticErosionModel):
         )
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
-        """
+        """Advance model for one time-step of duration dt."""
 
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()

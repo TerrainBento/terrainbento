@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicChRtTh** model program.
 
 Erosion model program using non-linear diffusion, stream power with stream power
@@ -15,7 +15,10 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import StreamPowerSmoothThresholdEroder, TaylorNonLinearDiffuser
+from landlab.components import (
+    StreamPowerSmoothThresholdEroder,
+    TaylorNonLinearDiffuser,
+)
 from terrainbento.base_class import TwoLithologyErosionModel
 
 
@@ -52,8 +55,8 @@ class BasicChRtTh(TwoLithologyErosionModel):
     regolith transport parameter. :math:`w` is a weight used to calculate the
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
     contact zone and the width of the contact zone. :math:`N` is the number of
-    terms in the Taylor Series expansion. Presently :math:`N` is set at 11 and
-    is not a user defined parameter.
+    terms in the Taylor Series expansion. :math:`N` is set at a default value
+    of 7 but can be modified by a user.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -87,6 +90,8 @@ class BasicChRtTh(TwoLithologyErosionModel):
     |:math:`D`           | ``regolith_transport_parameter``        |
     +--------------------+-----------------------------------------+
     |:math:`S_c`         | ``critical_slope``                      |
+    +--------------------+-----------------------------------------+
+    |:math:`N`           | ``number_of_taylor_terms``              |
     +--------------------+-----------------------------------------+
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
@@ -190,12 +195,15 @@ class BasicChRtTh(TwoLithologyErosionModel):
         )
 
         # Save the threshold values for rock and till
-        self.rock_thresh = self.get_parameter_from_exponent(
+        self.rock_thresh = self._get_parameter_from_exponent(
             "water_erosion_rule~lower__threshold"
         )
-        self.till_thresh = self.get_parameter_from_exponent(
+        self.till_thresh = self._get_parameter_from_exponent(
             "water_erosion_rule~upper__threshold"
         )
+
+        # get taylor terms
+        nterms = self.params.get("number_of_taylor_terms", 7)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()
@@ -214,7 +222,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
             self.grid,
             linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
-            nterms=7,
+            nterms=nterms,
         )
 
     def run_one_step(self, dt):

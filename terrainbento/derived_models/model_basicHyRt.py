@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicHyRt** model program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment
@@ -190,7 +190,7 @@ class BasicHyRt(TwoLithologyErosionModel):
             input_file=input_file, params=params, OutputWriters=OutputWriters
         )
 
-        settling_velocity = self.get_parameter_from_exponent(
+        settling_velocity = self._get_parameter_from_exponent(
             "settling_velocity"
         )  # normalized settling velocity. Unitless.
 

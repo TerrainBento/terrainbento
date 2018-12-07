@@ -1,7 +1,6 @@
 # coding: utf8
-#! /usr/env/python
-"""
-terrainbento **BasicDdSt** model program.
+# !/usr/env/python
+"""terrainbento **BasicDdSt** model program.
 
 Erosion model program using linear diffusion, smoothly thresholded stream
 power, and stochastic discharge with a smoothed infiltration capacity
@@ -158,19 +157,24 @@ class BasicDdSt(StochasticErosionModel):
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+        self.K = self._get_parameter_from_exponent(
+            "water_erodability~stochastic"
+        ) * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
-        self.threshold_value = self._length_factor * self.get_parameter_from_exponent(
-            "water_erosion_rule__threshold"
+        self.threshold_value = (
+            self._length_factor
+            * self._get_parameter_from_exponent(
+                "water_erosion_rule__threshold"
+            )
         )  # has units length/time
 
         # Get the parameter for rate of threshold increase with erosion depth
@@ -184,7 +188,9 @@ class BasicDdSt(StochasticErosionModel):
 
         # Get the infiltration-capacity parameter
         # has units length per time
-        self.infilt = (self._length_factor) * self.params["infiltration_capacity"]
+        self.infilt = (self._length_factor) * self.params[
+            "infiltration_capacity"
+        ]
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
@@ -193,7 +199,9 @@ class BasicDdSt(StochasticErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
+        self.threshold = self.grid.add_zeros(
+            "node", "water_erosion_rule__threshold"
+        )
         self.threshold[:] = self.threshold_value
 
         # Get the parameter for rate of threshold increase with erosion depth
@@ -217,19 +225,21 @@ class BasicDdSt(StochasticErosionModel):
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
         cum_ero = self.grid.at_node["cumulative_elevation_change"]
-        cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
+        cum_ero[:] = (
+            self.z - self.grid.at_node["initial_topographic__elevation"]
+        )
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero
         )
-        self.threshold[self.threshold < self.threshold_value] = self.threshold_value
+        self.threshold[
+            self.threshold < self.threshold_value
+        ] = self.threshold_value
 
     def _pre_water_erosion_steps(self):
         self.update_threshold_field()
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
-        """
+        """Advance model for one time-step of duration dt."""
 
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()

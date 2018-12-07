@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **Basic** model program.
 
 Erosion model program using linear diffusion, stream power, and discharge
@@ -117,18 +117,20 @@ class Basic(ErosionModel):
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+        )
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

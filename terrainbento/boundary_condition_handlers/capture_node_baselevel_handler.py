@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """
 **CaptureNodeBaselevelHandler** implements "external" stream capture.
 """
@@ -72,7 +72,7 @@ class CaptureNodeBaselevelHandler(object):
         Now import the **CaptureNodeBaselevelHandler** and instantiate.
 
         >>> from terrainbento.boundary_condition_handlers import (
-        ...                                         CaptureNodeBaselevelHandler)
+        ...                                       CaptureNodeBaselevelHandler)
         >>> bh = CaptureNodeBaselevelHandler(mg,
         ...                                  capture_node = 3,
         ...                                  capture_incision_rate = -3.0,
@@ -82,8 +82,8 @@ class CaptureNodeBaselevelHandler(object):
         >>> for _ in range(10):
         ...     bh.run_one_step(1)
 
-        The capture has not yet started, so we should expect that the topography
-        is still all zeros.
+        The capture has not yet started, so we should expect that the
+        topography is still all zeros.
 
         >>> print(z.reshape(mg.shape))
         [[ 0.  0.  0.  0.  0.]
@@ -141,8 +141,8 @@ class CaptureNodeBaselevelHandler(object):
         self._grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
 
     def run_one_step(self, dt):
-        """
-        Run **CaptureNodeBaselevelHandler** to update captured node elevation.
+        """Run **CaptureNodeBaselevelHandler** to update captured node
+        elevation.
 
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.
@@ -158,7 +158,6 @@ class CaptureNodeBaselevelHandler(object):
         ----------
         dt : float
             Duration of model time to advance forward.
-
         """
         # lower the correct amount.
         if self.model_time >= self.start:

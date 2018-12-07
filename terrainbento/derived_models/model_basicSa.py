@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicSa** model program.
 
 Erosion model using depth-dependent linear diffusion with a soil layer, basic
@@ -12,15 +12,14 @@ Landlab components used:
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `DepthDependentDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_diffusion/hillslope_depth_dependent_linear_flux.html#DepthDependentDiffuser>`_
     5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
-
 """
 
 import numpy as np
 
 from landlab.components import (
-    FastscapeEroder,
     DepthDependentDiffuser,
     ExponentialWeatherer,
+    FastscapeEroder,
 )
 from terrainbento.base_class import ErosionModel
 
@@ -158,13 +157,13 @@ class BasicSa(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
         initial_soil_thickness = (self._length_factor) * self.params[
@@ -181,7 +180,9 @@ class BasicSa(ErosionModel):
         ]  # has units length
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+        )
 
         # Create soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.add_zeros("node", "soil__depth")

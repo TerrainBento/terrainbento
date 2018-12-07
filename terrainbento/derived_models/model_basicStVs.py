@@ -1,7 +1,6 @@
 # coding: utf8
-#! /usr/env/python
-"""
-terrainbento Model **BasicStVs** program.
+# !/usr/env/python
+"""terrainbento Model **BasicStVs** program.
 
 Erosion model program using linear diffusion and stream power. Precipitation is
 modeled as a stochastic process. Discharge is calculated from precipitation
@@ -16,12 +15,11 @@ Landlab components used:
 
 Landlab components used: FlowRouter, DepressionFinderAndRouter,
 PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
-
 """
 
 import numpy as np
 
-from landlab.components import StreamPowerEroder, LinearDiffuser
+from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import StochasticErosionModel
 
 
@@ -157,13 +155,15 @@ class BasicStVs(StochasticErosionModel):
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability~stochastic") * (
+        self.K = self._get_parameter_from_exponent(
+            "water_erodability~stochastic"
+        ) * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
@@ -201,7 +201,11 @@ class BasicStVs(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
-            self.grid, use_Q=self.discharge, K_sp=self.K, m_sp=self.m, n_sp=self.m
+            self.grid,
+            use_Q=self.discharge,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.m,
         )
 
         # Instantiate a LinearDiffuser component
@@ -234,9 +238,7 @@ class BasicStVs(StochasticErosionModel):
         return np.nan
 
     def run_one_step(self, dt):
-        """
-        Advance model for one time-step of duration dt.
-        """
+        """Advance model for one time-step of duration dt."""
 
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()

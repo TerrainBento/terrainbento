@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicRt** model program.
 
 Erosion model program using linear diffusion, stream power with spatially
@@ -229,7 +229,9 @@ class BasicRt(TwoLithologyErosionModel):
         self._update_erodability_field()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(dt, flooded_nodes=flooded, K_if_used=self.erody)
+        self.eroder.run_one_step(
+            dt, flooded_nodes=flooded, K_if_used=self.erody
+        )
 
         # Do some soil creep
         self.diffuser.run_one_step(dt)

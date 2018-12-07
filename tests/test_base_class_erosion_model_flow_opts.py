@@ -1,18 +1,13 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
-import numpy as np
-
-# from numpy.testing import assert_array_equal, assert_array_almost_equal
 import pytest
 
-from landlab import HexModelGrid
 from landlab.components import (
-    FlowDirectorSteepest,
     DepressionFinderAndRouter,
     FlowDirectorMFD,
+    FlowDirectorSteepest,
 )
-
 from terrainbento import ErosionModel
 
 
@@ -28,7 +23,9 @@ def test_FlowAccumulator_with_depression_steepest():
 
     em = ErosionModel(params=params)
     assert isinstance(em.flow_accumulator.flow_director, FlowDirectorSteepest)
-    assert isinstance(em.flow_accumulator.depression_finder, DepressionFinderAndRouter)
+    assert isinstance(
+        em.flow_accumulator.depression_finder, DepressionFinderAndRouter
+    )
 
 
 def test_no_depression_finder():

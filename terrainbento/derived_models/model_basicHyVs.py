@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento model **BasicThVs** program.
 
 Erosion model program using linear diffusion, stream-power-driven sediment
@@ -151,13 +151,13 @@ class BasicHyVs(ErosionModel):
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
 
         regolith_transport_parameter = (
             self._length_factor ** 2
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
 
@@ -171,7 +171,7 @@ class BasicHyVs(ErosionModel):
             self._length_factor * self.params["hydraulic_conductivity"]
         )  # has units length per time
 
-        v_sc = self.get_parameter_from_exponent(
+        v_sc = self._get_parameter_from_exponent(
             "v_sc"
         )  # normalized settling velocity. Unitless.
 

@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicChSa** model program.
 
 Erosion model program using depth-dependent cubic diffusion
@@ -12,15 +12,14 @@ Landlab components used:
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
     5. `DepthDependentTaylorDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_taylor_soil_creep/hillslope_depth_dependent_taylor_flux.html#DepthDependentTaylorDiffuser>`_
-
 """
 
 import numpy as np
 
 from landlab.components import (
-    FastscapeEroder,
     DepthDependentTaylorDiffuser,
     ExponentialWeatherer,
+    FastscapeEroder,
 )
 from terrainbento.base_class import ErosionModel
 
@@ -54,8 +53,8 @@ class BasicChSa(ErosionModel):
     production rate, and :math:`H_0` is the sediment transport decay depth.
     :math:`q_h` is the hillslope sediment flux per unit width. :math:`S_c`
     is the critical slope parameter and :math:`N` is the number of terms in the
-    Taylor Series expansion. Presently :math:`N` is set at 11 and is not a user
-    defined parameter.
+    Taylor Series expansion. :math:`N` is set at a default value of 11 but can
+    be modified by a user.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is
@@ -87,6 +86,8 @@ class BasicChSa(ErosionModel):
     |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
     +------------------+-----------------------------------+
     |:math:`S_c`       | ``critical_slope``                |
+    +------------------+-----------------------------------+
+    |:math:`N`         | ``number_of_taylor_terms``        |
     +------------------+-----------------------------------+
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
@@ -163,12 +164,12 @@ class BasicChSa(ErosionModel):
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
-        self.K = self.get_parameter_from_exponent("water_erodability") * (
+        self.K = self._get_parameter_from_exponent("water_erodability") * (
             self._length_factor ** (1. - (2. * self.m))
         )
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self.get_parameter_from_exponent(
+        ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
         )  # has units length^2/time
         initial_soil_thickness = (self._length_factor) * self.params[
@@ -184,6 +185,9 @@ class BasicChSa(ErosionModel):
             "soil_production__decay_depth"
         ]  # has units length
 
+        # get taylor terms
+        nterms = self.params.get("number_of_taylor_terms", 11)
+
         # Create soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.add_zeros("node", "soil__depth")
 
@@ -194,7 +198,9 @@ class BasicChSa(ErosionModel):
         bedrock_elev[:] = self.z - initial_soil_thickness
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+        )
 
         # Instantiate a weathering component
         self.weatherer = ExponentialWeatherer(
@@ -209,7 +215,7 @@ class BasicChSa(ErosionModel):
             linear_diffusivity=regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
             soil_transport_decay_depth=soil_transport_decay_depth,
-            nterms=11,
+            nterms=nterms,
         )
 
     def run_one_step(self, dt):
