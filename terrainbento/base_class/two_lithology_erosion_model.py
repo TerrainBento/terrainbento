@@ -1,10 +1,10 @@
 # coding: utf8
-#! /usr/env/python
-"""
-Base class for common functions of terrainbento models with two lithologies.
+# !/usr/env/python
+"""Base class for common functions of terrainbento models with two lithologies.
 
-The **TwoLithologyErosionModel** is a base class that contains all of the
-functionality shared by the terrainbento models that have two lithologies.
+The **TwoLithologyErosionModel** is a base class that contains all of
+the functionality shared by the terrainbento models that have two
+lithologies.
 """
 import numpy as np
 
@@ -31,7 +31,6 @@ class TwoLithologyErosionModel(ErosionModel):
     the shape of the field must be ``number_of_node_rows-2`` by
     ``number_of_node_columns-2``. This is because the read-in DEM will be padded
     by a halo of size 1.
-
     """
 
     def __init__(self, input_file=None, params=None, OutputWriters=None):
@@ -75,13 +74,13 @@ class TwoLithologyErosionModel(ErosionModel):
             self._length_factor ** 2.
         ) * self._get_parameter_from_exponent("regolith_transport_parameter")
 
-        self.K_rock = self._get_parameter_from_exponent("water_erodability~lower") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.K_rock = self._get_parameter_from_exponent(
+            "water_erodability~lower"
+        ) * (self._length_factor ** (1. - (2. * self.m)))
 
-        self.K_till = self._get_parameter_from_exponent("water_erodability~upper") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.K_till = self._get_parameter_from_exponent(
+            "water_erodability~upper"
+        ) * (self._length_factor ** (1. - (2. * self.m)))
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock
@@ -92,12 +91,18 @@ class TwoLithologyErosionModel(ErosionModel):
 
         # Read input data on rock-till contact elevation
         read_esri_ascii(
-            file_name, grid=self.grid, halo=1, name="lithology_contact__elevation"
+            file_name,
+            grid=self.grid,
+            halo=1,
+            name="lithology_contact__elevation",
         )
-        self.rock_till_contact = self.grid.at_node["lithology_contact__elevation"]
+        self.rock_till_contact = self.grid.at_node[
+            "lithology_contact__elevation"
+        ]
 
     def _setup_rock_and_till(self):
-        """Set up fields to handle for two layers with different erodability."""
+        """Set up fields to handle for two layers with different
+        erodability."""
         # Get a reference to the rock-till field
         self._setup_contact_elevation()
 
@@ -112,7 +117,8 @@ class TwoLithologyErosionModel(ErosionModel):
         self._update_erodability_field()
 
     def _setup_rock_and_till_with_threshold(self):
-        """Set up fields to handle for two layers with different erodability."""
+        """Set up fields to handle for two layers with different
+        erodability."""
         # Get a reference to the rock-till field\
         self._setup_contact_elevation()
 
@@ -120,7 +126,9 @@ class TwoLithologyErosionModel(ErosionModel):
         self.erody = self.grid.add_zeros("node", "substrate__erodability")
 
         # Create field for threshold values
-        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
+        self.threshold = self.grid.add_zeros(
+            "node", "water_erosion_rule__threshold"
+        )
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
@@ -136,7 +144,8 @@ class TwoLithologyErosionModel(ErosionModel):
             self.erody_wt[core] = 1.0 / (
                 1.0
                 + np.exp(
-                    -(self.z[core] - self.rock_till_contact[core]) / self.contact_width
+                    -(self.z[core] - self.rock_till_contact[core])
+                    / self.contact_width
                 )
             )
         else:
@@ -155,34 +164,39 @@ class TwoLithologyErosionModel(ErosionModel):
     def _update_erodability_field(self):
         """Update erodability at each node.
 
-        The erodability at each node is a smooth function between the rock and
-        till erodabilities and is based on the contact zone width and the
-        elevation of the surface relative to contact elevation.
+        The erodability at each node is a smooth function between the
+        rock and till erodabilities and is based on the contact zone
+        width and the elevation of the surface relative to contact
+        elevation.
         """
         self._update_erodywt()
         self._update_Ks_with_precip()
 
         # Calculate the effective erodibilities using weighted averaging
         self.erody[:] = (
-            self.erody_wt * self.till_erody + (1.0 - self.erody_wt) * self.rock_erody
+            self.erody_wt * self.till_erody
+            + (1.0 - self.erody_wt) * self.rock_erody
         )
 
     def _update_erodability_and_threshold_fields(self):
         """Update erodability at each node.
 
-        The erodability at each node is a smooth function between the rock and
-        till erodabilities and is based on the contact zone width and the
-        elevation of the surface relative to contact elevation.
+        The erodability at each node is a smooth function between the
+        rock and till erodabilities and is based on the contact zone
+        width and the elevation of the surface relative to contact
+        elevation.
         """
         self._update_erodywt()
         self._update_Ks_with_precip()
 
         # Calculate the effective erodibilities using weighted averaging
         self.erody[:] = (
-            self.erody_wt * self.till_erody + (1.0 - self.erody_wt) * self.rock_erody
+            self.erody_wt * self.till_erody
+            + (1.0 - self.erody_wt) * self.rock_erody
         )
 
         # Calculate the effective thresholds using weighted averaging
         self.threshold[:] = (
-            self.erody_wt * self.till_thresh + (1.0 - self.erody_wt) * self.rock_thresh
+            self.erody_wt * self.till_thresh
+            + (1.0 - self.erody_wt) * self.rock_thresh
         )

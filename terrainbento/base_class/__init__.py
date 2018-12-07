@@ -1,5 +1,4 @@
-"""
-Base class models in the terrainbento package.
+"""Base class models in the terrainbento package.
 
 terrainbento includes to base classes useful for creating derived models. The
 first of these base classes is **ErosionModel** which is the base class for all
@@ -15,4 +14,8 @@ from .erosion_model import ErosionModel
 from .stochastic_erosion_model import StochasticErosionModel
 from .two_lithology_erosion_model import TwoLithologyErosionModel
 
-__all__ = ["ErosionModel", "StochasticErosionModel", "TwoLithologyErosionModel"]
+__all__ = [
+    "ErosionModel",
+    "StochasticErosionModel",
+    "TwoLithologyErosionModel",
+]

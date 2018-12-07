@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicChRt** model program.
 
 Erosion model program using non-linear diffusion, stream power with spatially
@@ -184,7 +184,7 @@ class BasicChRt(TwoLithologyErosionModel):
         self._setup_rock_and_till()
 
         # get taylor terms
-        nterms = self.params.get('number_of_taylor_terms', 7)
+        nterms = self.params.get("number_of_taylor_terms", 7)
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
@@ -244,7 +244,9 @@ class BasicChRt(TwoLithologyErosionModel):
         self._update_erodability_field()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(dt, flooded_nodes=flooded, K_if_used=self.erody)
+        self.eroder.run_one_step(
+            dt, flooded_nodes=flooded, K_if_used=self.erody
+        )
 
         # Do some soil creep
         self.diffuser.run_one_step(

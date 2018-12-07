@@ -1,20 +1,17 @@
-import os
-import numpy as np
 import glob
+import os
 
+import numpy as np
 import pytest
-
-from numpy.testing import assert_equal, assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_equal
 
 from terrainbento import BasicStVs
-
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_bad_transmiss():
-    """Test steady profile solution with fixed duration.
-    """
+    """Test steady profile solution with fixed duration."""
     K = 0.001
     H0 = 0.0
     Ks = 0.0
@@ -49,8 +46,7 @@ def test_bad_transmiss():
 
 
 def test_steady_without_stochastic_duration():
-    """Test steady profile solution with fixed duration.
-    """
+    """Test steady profile solution with fixed duration."""
     U = 0.0001
     K = 0.001
     H0 = 1.0e-9
@@ -82,7 +78,10 @@ def test_steady_without_stochastic_duration():
         "rainfall__shape_factor": 1.0,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -138,7 +137,10 @@ def test_stochastic_duration_rainfall_means():
         "mean_storm_depth": 1.0,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -191,7 +193,10 @@ def test_diffusion_only():
         "rainfall__shape_factor": 1.0,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
     nts = int(total_time / dt)
 
@@ -201,7 +206,9 @@ def test_diffusion_only():
     for _ in range(nts):
         model.run_one_step(dt)
 
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
+    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
+        U / (2. * D)
+    ) * (
         (
             model.grid.x_of_node
             - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
@@ -211,5 +218,7 @@ def test_diffusion_only():
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+        predicted_z[model.grid.core_nodes],
+        model.z[model.grid.core_nodes],
+        decimal=2,
     )
