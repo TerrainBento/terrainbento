@@ -1,5 +1,4 @@
-"""
-Public classes of the terrainbento package.
+"""Public classes of the terrainbento package.
 
 terrainbento has three types of public classes: base models, derived models
 and boundary condition handlers. Base models are used to help easily build

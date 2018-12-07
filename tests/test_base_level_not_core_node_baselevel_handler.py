@@ -1,26 +1,29 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 import os
 
 import numpy as np
-
-from numpy.testing import assert_array_almost_equal, assert_array_equal
 import pytest
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from terrainbento.boundary_condition_handlers import NotCoreNodeBaselevelHandler
-from landlab import RasterModelGrid, HexModelGrid
+from landlab import HexModelGrid, RasterModelGrid
+from terrainbento.boundary_condition_handlers import (
+    NotCoreNodeBaselevelHandler
+)
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_hex():
-    "Test using a hex grid"
+    """Test using a hex grid."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
 
-    bh = NotCoreNodeBaselevelHandler(mg, modify_core_nodes=False, lowering_rate=-0.1)
+    bh = NotCoreNodeBaselevelHandler(
+        mg, modify_core_nodes=False, lowering_rate=-0.1
+    )
     bh.run_one_step(10.0)
 
     closed = mg.status_at_node != 0
@@ -34,7 +37,7 @@ def test_hex():
 
 
 def test_passing_neither_lowering_method():
-    """Test passing no lowering information"""
+    """Test passing no lowering information."""
     mg = RasterModelGrid(5, 5)
     _ = mg.add_zeros("node", "topographic__elevation")
 
@@ -43,17 +46,19 @@ def test_passing_neither_lowering_method():
 
 
 def test_passing_both_lowering_methods():
-    """Test passing both lowering methods"""
+    """Test passing both lowering methods."""
     mg = RasterModelGrid(5, 5)
     _ = mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
     with pytest.raises(ValueError):
-        NotCoreNodeBaselevelHandler(mg, lowering_rate=-0.1, lowering_file_path=file)
+        NotCoreNodeBaselevelHandler(
+            mg, lowering_rate=-0.1, lowering_file_path=file
+        )
 
 
 def test_outlet_lowering_object_bad_file():
-    """Test using an outlet lowering object with a bad file"""
+    """Test using an outlet lowering object with a bad file."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
@@ -63,13 +68,15 @@ def test_outlet_lowering_object_bad_file():
 
 
 def test_outlet_lowering_rate_no_scaling_bedrock():
-    """Test using an outlet lowering rate with no scaling and bedrock"""
+    """Test using an outlet lowering rate with no scaling and bedrock."""
 
     mg = RasterModelGrid(5, 5)
     z = mg.add_ones("node", "topographic__elevation")
     b = mg.add_zeros("node", "bedrock__elevation")
 
-    bh = NotCoreNodeBaselevelHandler(mg, modify_core_nodes=True, lowering_rate=-0.1)
+    bh = NotCoreNodeBaselevelHandler(
+        mg, modify_core_nodes=True, lowering_rate=-0.1
+    )
     for _ in range(240):
         bh.run_one_step(10)
 
@@ -89,7 +96,9 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
     z = mg.add_ones("node", "topographic__elevation")
     b = mg.add_zeros("node", "bedrock__elevation")
 
-    bh = NotCoreNodeBaselevelHandler(mg, modify_core_nodes=False, lowering_rate=-0.1)
+    bh = NotCoreNodeBaselevelHandler(
+        mg, modify_core_nodes=False, lowering_rate=-0.1
+    )
     for _ in range(240):
         bh.run_one_step(10)
 
@@ -106,7 +115,7 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
 
 
 def test_outlet_lowering_object_no_scaling_bedrock():
-    """Test using an outlet lowering object with no scaling and bedrock"""
+    """Test using an outlet lowering object with no scaling and bedrock."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_ones("node", "topographic__elevation")
@@ -132,7 +141,7 @@ def test_outlet_lowering_object_no_scaling_bedrock():
 
 
 def test_outlet_lowering_object_no_scaling():
-    """Test using an outlet lowering object with no scaling"""
+    """Test using an outlet lowering object with no scaling."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_ones("node", "topographic__elevation")
@@ -154,7 +163,7 @@ def test_outlet_lowering_object_no_scaling():
 
 
 def test_outlet_lowering_object_no_scaling_core_nodes():
-    """Test using an outlet lowering object with no scaling on core nodes"""
+    """Test using an outlet lowering object with no scaling on core nodes."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_ones("node", "topographic__elevation")
@@ -172,17 +181,22 @@ def test_outlet_lowering_object_no_scaling_core_nodes():
     assert_array_equal(z[closed], np.ones(np.sum(closed)))
 
     # not closed should raise by 47.5  to 48.5
-    assert_array_almost_equal(z[not_closed], 48.5 * np.ones(np.sum(not_closed)))
+    assert_array_almost_equal(
+        z[not_closed], 48.5 * np.ones(np.sum(not_closed))
+    )
 
 
 def test_outlet_lowering_object_with_scaling():
-    """Test using an outlet lowering object with scaling"""
+    """Test using an outlet lowering object with scaling."""
 
     mg = HexModelGrid(5, 5)
     z = mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
     bh = NotCoreNodeBaselevelHandler(
-        mg, modify_core_nodes=False, lowering_file_path=file, model_end_elevation=-318.0
+        mg,
+        modify_core_nodes=False,
+        lowering_file_path=file,
+        model_end_elevation=-318.0,
     )
     for _ in range(241):
         bh.run_one_step(10)
