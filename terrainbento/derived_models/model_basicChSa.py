@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicChSa** model program.
 
 Erosion model program using depth-dependent cubic diffusion
@@ -12,15 +12,14 @@ Landlab components used:
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
     5. `DepthDependentTaylorDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_taylor_soil_creep/hillslope_depth_dependent_taylor_flux.html#DepthDependentTaylorDiffuser>`_
-
 """
 
 import numpy as np
 
 from landlab.components import (
-    FastscapeEroder,
     DepthDependentTaylorDiffuser,
     ExponentialWeatherer,
+    FastscapeEroder,
 )
 from terrainbento.base_class import ErosionModel
 
@@ -199,7 +198,9 @@ class BasicChSa(ErosionModel):
         bedrock_elev[:] = self.z - initial_soil_thickness
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+        )
 
         # Instantiate a weathering component
         self.weatherer = ExponentialWeatherer(

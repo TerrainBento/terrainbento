@@ -1,7 +1,8 @@
 # coding: utf8
-#! /usr/env/python
-"""**SingleNodeBaselevelHandler** changes elevation for a single boundary node."""
+# !/usr/env/python
+"""**SingleNodeBaselevelHandler** changes elevation for a boundary node."""
 import os
+
 import numpy as np
 from scipy.interpolate import interp1d
 
@@ -14,8 +15,8 @@ class SingleNodeBaselevelHandler(object):
     """Control the elevation of a single open boundary node.
 
     The **SingleNodeBaselevelHandler** controls the elevation of a single open
-    boundary node, referred to here as the *outlet*. The outlet lowering rate is
-    specified either as a constant or through a time or through a text file
+    boundary node, referred to here as the *outlet*. The outlet lowering rate
+    is specified either as a constant or through a time or through a text file
     that specifies the elevation change through time.
 
     The **SingleNodeBaselevelHandler** expects that ``topographic__elevation``
@@ -142,8 +143,8 @@ class SingleNodeBaselevelHandler(object):
             if lowering_rate is None:
                 if self.modify_outlet_id is False:
                     raise ValueError(
-                        "SingleNodeBaselevelHandler currently does not support "
-                        "using a filepath for lowering and "
+                        "SingleNodeBaselevelHandler currently does not "
+                        "support using a filepath for lowering and "
                         "'modify_outlet_id'=False'. If this is something you "
                         "need in your research please create at an issue to "
                         "discuss developing it."
@@ -167,7 +168,9 @@ class SingleNodeBaselevelHandler(object):
                     outlet_elevation = (
                         scaling_factor * elev_change_df[:, 1]
                     ) + model_start_elevation
-                    self.outlet_elevation_obj = interp1d(time, outlet_elevation)
+                    self.outlet_elevation_obj = interp1d(
+                        time, outlet_elevation
+                    )
                     self.lowering_rate = None
                     self._outlet_start_z = model_start_elevation
                     self._outlet_effective_z = model_start_elevation
@@ -193,7 +196,7 @@ class SingleNodeBaselevelHandler(object):
                 )
 
     def run_one_step(self, dt):
-        """ Run **SingleNodeBaselevelHandler** to update outlet node elevation.
+        """Run **SingleNodeBaselevelHandler** to update outlet node elevation.
 
         The **run_one_step** method provides a consistent interface to update
         the terrainbento boundary condition handlers.
@@ -214,7 +217,9 @@ class SingleNodeBaselevelHandler(object):
         if self.outlet_elevation_obj is None:
 
             # calculate lowering amount and subtract
-            self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * dt
+            self.z[self.nodes_to_lower] += (
+                self.prefactor * self.lowering_rate * dt
+            )
 
             # if bedrock__elevation exists as a field, lower it also
 
@@ -226,22 +231,26 @@ class SingleNodeBaselevelHandler(object):
 
             if self.modify_outlet_id is False:
                 for key in self._outlet_start_values.keys():
-                    self._grid.at_node[key][self.outlet_id] = self._outlet_start_values[
-                        key
-                    ]
+                    self._grid.at_node[key][
+                        self.outlet_id
+                    ] = self._outlet_start_values[key]
 
         # if there is an outlet elevation object
         else:
             # if bedrock__elevation exists as a field, lower it also
-            # calcuate the topographic change required to match the current time"s value for
-            # outlet elevation. This must be done in case bedrock elevation exists, and must
+            # calcuate the topographic change required to match the current
+            # time"s value for outlet elevation. This must be done in case
+            # bedrock elevation exists, and must
             # be done before the topography is lowered
 
             topo_change = self.z[self.outlet_id] - self.outlet_elevation_obj(
                 self.model_time
             )
 
-            other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
+            other_fields = [
+                "bedrock__elevation",
+                "lithology_contact__elevation",
+            ]
             for of in other_fields:
                 if of in self._grid.at_node:
                     self._grid.at_node[of][self.outlet_id] -= topo_change

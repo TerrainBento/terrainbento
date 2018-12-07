@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 import os
 
@@ -32,7 +32,10 @@ def test_steady_Kss_no_precip_changer():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -73,7 +76,10 @@ def test_steady_Ksp_no_precip_changer():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -115,7 +121,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -159,7 +168,10 @@ def test_diffusion_only():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
     nts = int(total_time / dt)
 
@@ -169,7 +181,9 @@ def test_diffusion_only():
     for _ in range(nts):
         model.run_one_step(dt)
 
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
+    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
+        U / (2. * D)
+    ) * (
         (
             model.grid.x_of_node
             - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
@@ -179,7 +193,9 @@ def test_diffusion_only():
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+        predicted_z[model.grid.core_nodes],
+        model.z[model.grid.core_nodes],
+        decimal=2,
     )
 
 
@@ -231,7 +247,10 @@ def test_steady_m_075():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -272,7 +291,10 @@ def test_steady_m_025():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model

@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **Basic** model program.
 
 Erosion model program using linear diffusion, stream power, and discharge
@@ -138,7 +138,9 @@ class Basic(ErosionModel):
         )  # has units length^2/time
 
         # Instantiate a FastscapeEroder component
-        self.eroder = FastscapeEroder(self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n)
+        self.eroder = FastscapeEroder(
+            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+        )
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

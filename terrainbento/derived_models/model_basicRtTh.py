@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento **BasicRtTh** model program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
@@ -15,7 +15,7 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
+from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import TwoLithologyErosionModel
 
 

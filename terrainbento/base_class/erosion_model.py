@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """Base class for common functions of all terrainbento erosion models.
 
 The **ErosionModel** is a base class that contains all of the functionality
@@ -43,8 +43,8 @@ instantiate a synthetic grid and set the value of ``model.z`` to the values of
 the numpy array.
 
 DEM_filename : str, optional
-    File path to either an ESRII ASCII or netCDF file. Either  ``"DEM_filename"``
-    or ``"model_grid"`` must be specified.
+    File path to either an ESRII ASCII or netCDF file. Either
+    ``"DEM_filename"`` or ``"model_grid"`` must be specified.
 model_grid : str, optional
     Either ``"RasterModelGrid"`` or ``"HexModelGrid"``.
 
@@ -130,9 +130,9 @@ Parameters that control grid boundary conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 terrainbento provides the ability for an arbitrary number of boundary
 condition handler classes to operate on the model grid each time step in order
-to handle time-variable boundary conditions such as: changing a watershed outlet
-elevation, modifying precipitation parameters through time, or simulating
-external drainage capture.
+to handle time-variable boundary conditions such as: changing a watershed
+outlet elevation, modifying precipitation parameters through time, or
+simulating external drainage capture.
 
 Boundary condition handlers are styled after Landlab components. terrainbento
 presently has four built-in boundary condition handlers, and supports the use
@@ -178,7 +178,7 @@ flow_director : str, optional
     FlowAccumulator is compatible with are permitted. Default is
     "FlowDirectorSteepest".
 depression_finder : str, optional
-    String name of a Landlab depression finder. Default is no depression finder.
+    String name of a Landlab depression finder. Default is None.
 
 Parameters that control output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -196,32 +196,27 @@ Note also that the **run** method takes as a parameter ``output_fields``, which
 is a list of model grid fields to write as output.
 """
 
-import sys
 import os
-
-import six
+import sys
 import time as tm
-import numpy as np
 from types import FunctionType
 
-import xarray as xr
 import dask
+import numpy as np
+import six
+import xarray as xr
 
-from landlab.io import read_esri_ascii
-from landlab.io.netcdf import read_netcdf
-from landlab import load_params
-from landlab.io.netcdf import write_raster_netcdf
-from landlab.graph import Graph
-
-from landlab import CLOSED_BOUNDARY
+from landlab import CLOSED_BOUNDARY, load_params
 from landlab.components import FlowAccumulator, NormalFault
-
+from landlab.graph import Graph
+from landlab.io import read_esri_ascii
+from landlab.io.netcdf import read_netcdf, write_raster_netcdf
 from terrainbento.boundary_condition_handlers import (
-    PrecipChanger,
     CaptureNodeBaselevelHandler,
-    NotCoreNodeBaselevelHandler,
-    SingleNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
+    NotCoreNodeBaselevelHandler,
+    PrecipChanger,
+    SingleNodeBaselevelHandler,
 )
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
@@ -354,12 +349,11 @@ class ErosionModel(object):
         for req in ["dt", "output_interval", "run_duration"]:
             if req in self.params["clock"]:
                 try:
-                    _ = float(self.params["clock"][req])
+                    float(self.params[req])
                 except ValueError:
                     msg = (
-                        "Required parameter {0} is not compatible with type float.".format(
-                            req
-                        ),
+                        "Required parameter {0} is not".format(req)
+                        + "compatible with type float."
                     )
                     raise ValueError(msg)
             else:
@@ -374,7 +368,9 @@ class ErosionModel(object):
         # identify if initial conditions should be saved.
         # default behavior is to not save the first timestep
         self.save_first_timestep = self.params.get("save_first_timestep", True)
-        self._out_file_name = self.params.get("output_filename", "terrainbento_output")
+        self._out_file_name = self.params.get(
+            "output_filename", "terrainbento_output"
+        )
         self._output_files = []
         # instantiate model time.
         self._model_time = 0.
@@ -393,7 +389,10 @@ class ErosionModel(object):
             self.params.get("DEM_filename") is not None
         ):
             raise ValueError(
-                "Both a DEM filename and number_of_node_rows have been specified."
+                (
+                    "Both a DEM filename and number_of_node_rows have been "
+                    "specified."
+                )
             )
 
         if "DEM_filename" in self.params:
@@ -402,7 +401,10 @@ class ErosionModel(object):
             self.opt_watershed = True
         else:
             # this routine will set self.opt_watershed internally
-            if self.params.get("model_grid", "RasterModelGrid") == "HexModelGrid":
+            if (
+                self.params.get("model_grid", "RasterModelGrid")
+                == "HexModelGrid"
+            ):
                 self._starting_topography = "HexModelGrid"
                 self._setup_hexagonal_grid()
             else:
@@ -434,7 +436,9 @@ class ErosionModel(object):
         # instantiate flow direction and accumulation
         ###################################################################
         # get flow direction, and depression finding options
-        self.flow_director = self.params.get("flow_director", "FlowDirectorSteepest")
+        self.flow_director = self.params.get(
+            "flow_director", "FlowDirectorSteepest"
+        )
         if (self.flow_director == "Steepest") or (self.flow_director == "D4"):
             self.flow_director = "FlowDirectorSteepest"
         self.depression_finder = self.params.get("depression_finder", None)
@@ -500,10 +504,10 @@ class ErosionModel(object):
         return self._model_time
 
     def _setup_boundary_handler(self, name):
-        """ Setup BoundaryHandlers for use by a terrainbento model.
+        """Setup BoundaryHandlers for use by a terrainbento model.
 
-        A boundary condition handler is a class with a **run_one_step** method that
-        takes the parameter ``dt``. Permitted boundary condition handlers
+        A boundary condition handler is a class with a **run_one_step** method
+        that takes the parameter ``dt``. Permitted boundary condition handlers
         include the Landlab Component ``NormalFault`` as well as the following
         options from terrainbento: **PrecipChanger**,
         **CaptureNodeBaselevelHandler**, **NotCoreNodeBaselevelHandler**,
@@ -567,11 +571,11 @@ class ErosionModel(object):
         interval defined by the parameter ``"output_interval"``.
 
         If a class, an OutputWriter will be instantiated with only one passed
-        argument: the entire model object. The class is expected to have a bound
-        function called **run_one_step** which is run with no arguments each time
-        output is written. If a function, the OutputWriter will be run at each
-        time output is written with one passed argument: the entire model
-        object.
+        argument: the entire model object. The class is expected to have a
+        bound function called **run_one_step** which is run with no arguments
+        each time output is written. If a function, the OutputWriter will be
+        run at each time output is written with one passed argument: the entire
+        model object.
 
         Parameters
         ----------
@@ -588,10 +592,10 @@ class ErosionModel(object):
         """Create hexagonal grid based on input parameters.
 
         This method will be called if the value of the input parameter
-        ``"DEM_filename"`` does not exist, and if the value of the input parameter
-        ``"model_grid"`` is set to `"HexModelGrid"`. Input parameters are not
-        passed explicitly, but are expected to be located in the model attribute
-        ``params``.
+        ``"DEM_filename"`` does not exist, and if the value of the input
+        parameter ``"model_grid"`` is set to `"HexModelGrid"`. Input parameters
+        are not passed explicitly, but are expected to be located in the model
+        attribute ``params``.
 
         Parameters
         ----------
@@ -605,15 +609,15 @@ class ErosionModel(object):
             Either "horizontal" (default) or "vertical".
         shape : str, optional
             Controls the shape of the bounding hull, i.e., are the nodes
-            arranged in a hexagon, or a rectangle? Either ``"hex"`` (default) or
-            ``"rect"``.
+            arranged in a hexagon, or a rectangle? Either ``"hex"`` (default)
+            or ``"rect"``.
         reorient_links, bool, optional
             Whether or not to re-orient all links to point between -45 deg
             and +135 deg clockwise from "north" (i.e., along y axis). Default
             value is True.
         outlet_id : int, optional
-            Node id for the watershed outlet. If not provided, the model will be
-            set boundary conditions based on the following parameters.
+            Node id for the watershed outlet. If not provided, the model will
+            be set boundary conditions based on the following parameters.
         boundary_closed : boolean, optional
             If ``True`` the model boundarys are closed boundaries. Default is
             ``False``.
@@ -693,10 +697,10 @@ class ErosionModel(object):
         """Create raster grid based on input parameters.
 
         This method will be called if the value of the input parameter
-        ``"DEM_filename"`` does not exist, and if the value of the input parameter
-        ``"model_grid"`` is set to ``"RasterModelGrid"``. Input parameters are not
-        passed explicitly, but are expected to be located in the model attribute
-        ``params``.
+        ``"DEM_filename"`` does not exist, and if the value of the input
+        parameter ``"model_grid"`` is set to ``"RasterModelGrid"``. Input
+        parameters are not passed explicitly, but are expected to be located in
+        the model attribute ``params``.
 
         Parameters
         ----------
@@ -711,13 +715,17 @@ class ErosionModel(object):
             provided, the model will set boundary conditions
             based on the following parameters.
         east_boundary_closed : boolean
-            If ``True`` right-edge nodes are closed boundaries. Default is ``False``.
+            If ``True`` right-edge nodes are closed boundaries.
+            Default is ``False``.
         north_boundary_closed : boolean
-            If ``True`` top-edge nodes are closed boundaries. Default is ``False``.
+            If ``True`` top-edge nodes are closed boundaries.
+            Default is ``False``.
         west_boundary_closed : boolean
-            If ``True`` left-edge nodes are closed boundaries. Default is ``False``.
+            If ``True`` left-edge nodes are closed boundaries.
+            Default is ``False``.
         south_boundary_closed : boolean
-            If ``True`` bottom-edge nodes are closed boundaries. Default is ``False``.
+            If ``True`` bottom-edge nodes are closed boundaries.
+            Default is ``False``.
 
         Examples
         --------
@@ -768,8 +776,8 @@ class ErosionModel(object):
     def _create_synthetic_topography(self):
         """Create topography for synthetic grids.
 
-        If noise or initial elevation is added, it will only be added to the
-        core nodes.
+        If noise or initial elevation is added, it will only be added to
+        the core nodes.
         """
         add_noise = self.params.get("add_random_noise", False)
         init_z = self.params.get("initial_elevation", 0.0)
@@ -777,7 +785,9 @@ class ErosionModel(object):
         seed = self.params.get("random_seed", 0)
         self.z = self.grid.add_zeros("node", "topographic__elevation")
         noise_location = self.params.get("add_noise_to_all_nodes", False)
-        init_z_location = self.params.get("add_initial_elevation_to_all_nodes", True)
+        init_z_location = self.params.get(
+            "add_initial_elevation_to_all_nodes", True
+        )
 
         if init_z != 0.0:
             if init_z_location:
@@ -822,7 +832,9 @@ class ErosionModel(object):
                 self.outlet_node = 0
                 closed_boundaries = self.params.get("boundary_closed", False)
                 if closed_boundaries:
-                    self.grid.status_at_node[self.grid.boundary_nodes] = CLOSED_BOUNDARY
+                    self.grid.status_at_node[
+                        self.grid.boundary_nodes
+                    ] = CLOSED_BOUNDARY
 
         else:
             if "outlet_id" in self.params:
@@ -850,7 +862,8 @@ class ErosionModel(object):
             Name of grid field for read topography. Default value is
              topographic__elevation.
         halo : int, optional
-            Halo with which to pad DEM. Used only if file is an ESRI ASCII type.
+            Halo with which to pad DEM. Used only if file is an ESRI ASCII
+            type.
 
         Returns
         -------
@@ -872,8 +885,8 @@ class ErosionModel(object):
             except:
                 msg = (
                     "terrainbento ErosionModel base class: the parameter "
-                    "provided in 'DEM_filename' is not a valid ESRII ASCII file "
-                    "or NetCDF file."
+                    "provided in 'DEM_filename' is not a valid ESRII ASCII "
+                    "file or NetCDF file."
                 )
                 raise ValueError(msg)
 
@@ -898,9 +911,9 @@ class ErosionModel(object):
         >>> from landlab import HexModelGrid
         >>> from terrainbento import ErosionModel
 
-        Sometimes it makes sense to provide a parameter as an exponent (base 10).
-        If the string `"_exp"` is attached to the end of the name in the input
-        dictionary, this function can help.
+        Sometimes it makes sense to provide a parameter as an exponent
+        (base 10). If the string `"_exp"` is attached to the end of the name
+        in the input dictionary, this function can help.
 
         >>> params = {"model_grid" : "HexModelGrid",
         ...           "water_erodability_exp" : -3.,
@@ -922,17 +935,22 @@ class ErosionModel(object):
         >>> em = ErosionModel(params=params)
         >>> em._get_parameter_from_exponent("water_erodability")
         0.5
-
         """
-        if (param_name in self.params) and (param_name + "_exp" in self.params):
+        if (param_name in self.params) and (
+            param_name + "_exp" in self.params
+        ):
             raise ValueError(
                 "Parameter file includes both absolute value and"
                 "exponent version of:" + param_name
             )
 
-        if (param_name in self.params) and (param_name + "_exp" not in self.params):
+        if (param_name in self.params) and (
+            param_name + "_exp" not in self.params
+        ):
             param = self.params[param_name]
-        elif (param_name not in self.params) and (param_name + "_exp" in self.params):
+        elif (param_name not in self.params) and (
+            param_name + "_exp" in self.params
+        ):
             param = 10. ** float(self.params[param_name + "_exp"])
         else:
             if raise_error:
@@ -954,9 +972,10 @@ class ErosionModel(object):
     def write_output(self):
         """Write output to file as a netCDF.
 
-        Filenames will have the value of ``"output_filename"`` from the input
-        file or parameter dictionary as the first part of the file name and the
-        model run iteration as the second part of the filename.
+        Filenames will have the value of ``"output_filename"`` from the
+        input file or parameter dictionary as the first part of the file
+        name and the model run iteration as the second part of the
+        filename.
         """
         self.calculate_cumulative_change()
         filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
@@ -987,8 +1006,8 @@ class ErosionModel(object):
     def finalize__run_one_step(self, dt):
         """Finalize run_one_step method.
 
-        This base-class method increments model time and updates boundary
-        conditions.
+        This base-class method increments model time and updates
+        boundary conditions.
         """
         # calculate model time
         self._model_time += dt
@@ -997,10 +1016,10 @@ class ErosionModel(object):
         self.update_boundary_conditions(dt)
 
     def finalize(self):
-        """Finalize model
+        """Finalize model.
 
-        This base-class method does nothing. Derived classes can override
-        it to run any required finalization steps.
+        This base-class method does nothing. Derived classes can
+        override it to run any required finalization steps.
         """
         pass
 
@@ -1030,8 +1049,9 @@ class ErosionModel(object):
         """Run the model until complete.
 
         The model will run for the duration indicated by the input file or
-        dictionary parameter ``"run_duration"``, at a time step specified by the
-        parameter ``"dt"``, and create ouput at intervales of ``"output_duration"``.
+        dictionary parameter ``"run_duration"``, at a time step specified by
+        the parameter ``"dt"``, and create ouput at intervales of
+        ``"output_duration"``.
 
         Parameters
         ----------

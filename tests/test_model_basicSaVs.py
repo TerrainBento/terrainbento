@@ -1,8 +1,7 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 import numpy as np
-
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 from terrainbento import BasicSaVs
@@ -47,7 +46,10 @@ def test_diffusion_only():
         "n_sp": n,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # Construct and run model
@@ -131,7 +133,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "n_sp": n,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -186,7 +191,10 @@ def test_steady_Ksp_no_precip_changer():
         "m_sp": m,
         "n_sp": n,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -239,7 +247,7 @@ def test_with_precip_changer():
     }
 
     model = BasicSaVs(params=params)
-    assert np.array_equiv(model.eroder._K_unit_time, K) == True
+    assert np.array_equiv(model.eroder._K_unit_time, K) is True
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)

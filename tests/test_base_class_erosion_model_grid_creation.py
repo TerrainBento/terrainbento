@@ -1,15 +1,15 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 
 import os
+
 import numpy as np
-from numpy.testing import assert_array_equal
 import pytest
+from numpy.testing import assert_array_equal
 
 from landlab import HexModelGrid, RasterModelGrid
 from terrainbento import ErosionModel
 from terrainbento.utilities import *
-
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -53,7 +53,7 @@ def test_RasterModelGrid_default():
 def test_default_sythetic_topo():
     params = {"clock": CLOCK_01}
     em = ErosionModel(params=params)
-    assert np.array_equiv(em.z, 0.0) == True
+    assert np.array_equiv(em.z, 0.0) is True
 
 
 def test_no_noise_sythetic_topo():
@@ -61,7 +61,7 @@ def test_no_noise_sythetic_topo():
     em = ErosionModel(params=params)
     known_z = np.zeros(em.z.shape)
     known_z += 10.
-    assert np.array_equiv(em.z, known_z) == True
+    assert np.array_equiv(em.z, known_z) is True
 
 
 def test_no_noise_sythetic_topo_core_only():
@@ -74,7 +74,7 @@ def test_no_noise_sythetic_topo_core_only():
     em = ErosionModel(params=params)
     known_z = np.zeros(em.z.shape)
     known_z[em.grid.core_nodes] += 10.
-    assert np.array_equiv(em.z, known_z) == True
+    assert np.array_equiv(em.z, known_z) is True
 
 
 def test_no_noise_all_nodes_sythetic_topo_valueError():
@@ -193,9 +193,34 @@ def test_Hex_with_outlet():
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 9
-    assert em.opt_watershed == True
+    assert em.opt_watershed is True
     status = np.array(
-        [4, 4, 4, 4, 4, 0, 0, 0, 4, 1, 0, 0, 0, 0, 4, 4, 0, 0, 0, 4, 4, 4, 4, 4]
+        [
+            4,
+            4,
+            4,
+            4,
+            4,
+            0,
+            0,
+            0,
+            4,
+            1,
+            0,
+            0,
+            0,
+            0,
+            4,
+            4,
+            0,
+            0,
+            0,
+            4,
+            4,
+            4,
+            4,
+            4,
+        ]
     )
     assert_array_equal(status, em.grid.status_at_node)
 
@@ -210,9 +235,34 @@ def test_Hex_with_outlet_not_specified():
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
-    assert em.opt_watershed == False
+    assert em.opt_watershed is False
     status = np.array(
-        [1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1]
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+        ]
     )
     assert_array_equal(status, em.grid.status_at_node)
 
@@ -228,9 +278,34 @@ def test_Hex_with_boundaries():
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
-    assert em.opt_watershed == False
+    assert em.opt_watershed is False
     status = np.array(
-        [4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 0, 4, 4, 0, 0, 0, 4, 4, 4, 4, 4]
+        [
+            4,
+            4,
+            4,
+            4,
+            4,
+            0,
+            0,
+            0,
+            4,
+            4,
+            0,
+            0,
+            0,
+            0,
+            4,
+            4,
+            0,
+            0,
+            0,
+            4,
+            4,
+            4,
+            4,
+            4,
+        ]
     )
     assert_array_equal(status, em.grid.status_at_node)
 
@@ -246,8 +321,10 @@ def test_Raster_with_outlet():
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 3
-    assert em.opt_watershed == True
-    status = np.array([4, 4, 4, 1, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 4, 4, 4])
+    assert em.opt_watershed is True
+    status = np.array(
+        [4, 4, 4, 1, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 4, 4, 4, 4]
+    )
     assert_array_equal(status, em.grid.status_at_node)
 
 
@@ -261,8 +338,10 @@ def test_Raster_with_outlet_not_specified():
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
-    assert em.opt_watershed == False
-    status = np.array([1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1])
+    assert em.opt_watershed is False
+    status = np.array(
+        [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1]
+    )
     assert_array_equal(status, em.grid.status_at_node)
 
 
@@ -278,8 +357,10 @@ def test_Raster_with_boundaries():
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
-    assert em.opt_watershed == False
-    status = np.array([1, 1, 1, 1, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 1, 1, 1, 1])
+    assert em.opt_watershed is False
+    status = np.array(
+        [1, 1, 1, 1, 4, 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 4, 1, 1, 1, 1]
+    )
     assert_array_equal(status, em.grid.status_at_node)
 
 
@@ -306,12 +387,12 @@ def test_DEM_ascii():
     )
     assert em.outlet_node == 21
     assert em.z[em.outlet_node] == 0.0
-    assert em.opt_watershed == True
+    assert em.opt_watershed is True
 
 
 def test_bad_DEM_file():
     fp = os.path.join(_TEST_DATA_DIR, "bad_dem.txt")
-    params = {"DEM_filename": fp, "clock": CLOCK_01}
+    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -319,7 +400,7 @@ def test_bad_DEM_file():
 
 def test_DEM_two_possible_outlets():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
-    params = {"DEM_filename": fp, "clock": CLOCK_01}
+    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -334,7 +415,7 @@ def test_DEM_two_possible_outlets():
 def test_DEM_netcdf():
     """Test DEM."""
     fp = os.path.join(_TEST_DATA_DIR, "test_file.nc")
-    params = {"DEM_filename": fp, "clock": CLOCK_01}
+    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
 
     em = ErosionModel(params=params)
 
@@ -347,4 +428,4 @@ def test_DEM_netcdf():
     )
     assert em.outlet_node == 21
     assert em.z[em.outlet_node] == 0.0
-    assert em.opt_watershed == True
+    assert em.opt_watershed is True

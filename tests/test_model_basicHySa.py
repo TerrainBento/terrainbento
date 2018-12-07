@@ -1,9 +1,8 @@
 # coding: utf8
-#! /usr/env/python
-
-import pytest
+# !/usr/env/python
 
 import numpy as np
+import pytest
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 from terrainbento import BasicHySa
@@ -54,7 +53,10 @@ def test_steady_Ksp_no_precip_changer():
         "soil_production__decay_depth": soil_production__decay_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -124,7 +126,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -199,8 +204,12 @@ def test_with_precip_changer():
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K_sed, 5) == round(K_sed_sp * precip_testing_factor, 5)
-    assert round(model.eroder.K_br, 5) == round(K_rock_sp * precip_testing_factor, 5)
+    assert round(model.eroder.K_sed, 5) == round(
+        K_sed_sp * precip_testing_factor, 5
+    )
+    assert round(model.eroder.K_br, 5) == round(
+        K_rock_sp * precip_testing_factor, 5
+    )
 
 
 def test_stability_checker():
@@ -248,7 +257,10 @@ def test_stability_checker():
         "soil_production__decay_depth": soil_production__decay_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -319,8 +331,10 @@ def test_stability_checker():
 #         model.run_one_step(dt)
 #
 #
-#     predicted_z = (model.z[model.grid.core_nodes[reference_node]]-(U / (2. * D)) *
-#                ((model.grid.x_of_node - model.grid.x_of_node[model.grid.core_nodes[reference_node]])**2))
+#     predicted_z = (model.z[model.grid.core_nodes[reference_node]]-
+# (U / (2. * D)) *
+#                ((model.grid.x_of_node - model.grid.x_of_node
+# [model.grid.core_nodes[reference_node]])**2))
 #
 #     # assert actual and predicted elevations are the same.
 #     assert_array_almost_equal(predicted_z[model.grid.core_nodes],

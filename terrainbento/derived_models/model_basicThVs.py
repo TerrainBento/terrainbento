@@ -1,5 +1,5 @@
 # coding: utf8
-#! /usr/env/python
+# !/usr/env/python
 """terrainbento model **BasicThVs** program.
 
 Erosion model program using linear diffusion, stream power with a smoothed
@@ -14,7 +14,7 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import StreamPowerSmoothThresholdEroder, LinearDiffuser
+from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import ErosionModel
 
 
@@ -169,9 +169,9 @@ class BasicThVs(ErosionModel):
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
-        self.sat_param = (K_hydraulic_conductivity * soil_thickness * self.grid.dx) / (
-            recharge_rate
-        )
+        self.sat_param = (
+            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+        ) / (recharge_rate)
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
