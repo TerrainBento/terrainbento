@@ -24,13 +24,21 @@ def test_length_conversion_raises_error():
 
 def test_meters_to_feet_correct():
     # first meters_to_feet
-    params = {"model_grid": "HexModelGrid", "meters_to_feet": True, "clock": CLOCK_01}
+    params = {
+        "model_grid": "HexModelGrid",
+        "meters_to_feet": True,
+        "clock": CLOCK_01,
+    }
     em = ErosionModel(params=params)
     assert em._length_factor == 3.28084
 
 
 def test_feet_to_meters_correct():
-    params = {"model_grid": "HexModelGrid", "feet_to_meters": True, "clock": CLOCK_01}
+    params = {
+        "model_grid": "HexModelGrid",
+        "feet_to_meters": True,
+        "clock": CLOCK_01,
+    }
     em = ErosionModel(params=params)
     assert em._length_factor == 1.0 / 3.28084
 

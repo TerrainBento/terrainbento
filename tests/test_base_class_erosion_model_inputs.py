@@ -53,11 +53,17 @@ def test_both_node_rows_and_DEM():
 
 
 def test_no_required_params():
-    params = {"model_grid": "HexModelGrid", "clock": {"dt": 1, "output_interval": 2.}}
+    params = {
+        "model_grid": "HexModelGrid",
+        "clock": {"dt": 1, "output_interval": 2.},
+    }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
-    params = {"model_grid": "HexModelGrid", "clock": {"dt": 1, "run_duration": 10.}}
+    params = {
+        "model_grid": "HexModelGrid",
+        "clock": {"dt": 1, "run_duration": 10.},
+    }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 

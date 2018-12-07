@@ -166,5 +166,8 @@ def test_outlet_lowering_modify_other_nodes():
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
     with pytest.raises(ValueError):
         SingleNodeBaselevelHandler(
-            mg, outlet_id=node_id, lowering_file_path=file, modify_outlet_id=False
+            mg,
+            outlet_id=node_id,
+            lowering_file_path=file,
+            modify_outlet_id=False,
         )

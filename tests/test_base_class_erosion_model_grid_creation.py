@@ -57,7 +57,11 @@ def test_default_sythetic_topo():
 
 
 def test_no_noise_sythetic_topo():
-    params = {"initial_elevation": 10., "clock": CLOCK_01, "add_random_noise": False}
+    params = {
+        "initial_elevation": 10.,
+        "clock": CLOCK_01,
+        "add_random_noise": False,
+    }
     em = ErosionModel(params=params)
     known_z = np.zeros(em.z.shape)
     known_z += 10.
@@ -392,7 +396,12 @@ def test_DEM_ascii():
 
 def test_bad_DEM_file():
     fp = os.path.join(_TEST_DATA_DIR, "bad_dem.txt")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+    }
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -400,7 +409,12 @@ def test_bad_DEM_file():
 
 def test_DEM_two_possible_outlets():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+    }
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -415,7 +429,12 @@ def test_DEM_two_possible_outlets():
 def test_DEM_netcdf():
     """Test DEM."""
     fp = os.path.join(_TEST_DATA_DIR, "test_file.nc")
-    params = {"DEM_filename": fp, "dt": 1, "output_interval": 2., "run_duration": 10.}
+    params = {
+        "DEM_filename": fp,
+        "dt": 1,
+        "output_interval": 2.,
+        "run_duration": 10.,
+    }
 
     em = ErosionModel(params=params)
 

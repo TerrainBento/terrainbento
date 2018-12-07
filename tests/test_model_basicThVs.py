@@ -71,9 +71,9 @@ def test_Aeff():
     )
 
     # somewhat circular test to make sure slopes are below predicted upper bound
-    predicted_slopes_eff_upper = ((U + threshold) / (K * (model.eff_area ** m))) ** (
-        1. / n
-    )
+    predicted_slopes_eff_upper = (
+        (U + threshold) / (K * (model.eff_area ** m))
+    ) ** (1. / n)
 
     # somewhat circular test to make sure slopes are below predicted upper
     # bound

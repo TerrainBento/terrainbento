@@ -140,7 +140,11 @@ class BasicCv(ErosionModel):
         self.climate_factor = self.params["climate_factor"]
         self.climate_constant_date = self.params["climate_constant_date"]
 
-        time = [0, self.climate_constant_date, self.params["clock"]["run_duration"]]
+        time = [
+            0,
+            self.climate_constant_date,
+            self.params["clock"]["run_duration"],
+        ]
         K = [K_sp * self.climate_factor, K_sp, K_sp]
         self.K_through_time = interp1d(time, K)
 

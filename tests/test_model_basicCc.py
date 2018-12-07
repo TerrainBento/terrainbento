@@ -19,7 +19,11 @@ def test_steady_Ksp_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": run_time * dt},
+        "clock": {
+            "dt": 1,
+            "output_interval": 2.,
+            "run_duration": run_time * dt,
+        },
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,

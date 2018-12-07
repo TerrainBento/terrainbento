@@ -5,7 +5,7 @@ import os
 import numpy as np
 import pytest
 
-from terrainbento import StochasticErosionModel, BasicSt
+from terrainbento import BasicSt, StochasticErosionModel
 from terrainbento.utilities import *
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -119,13 +119,15 @@ def test_run_stochastic_opt_false():
     assert (
         np.array_equiv(
             dry_times,
-            params["clock"]["dt"] * (1. - params["rainfall_intermittency_factor"]),
+            params["clock"]["dt"]
+            * (1. - params["rainfall_intermittency_factor"]),
         )
         is True
     )
     assert (
         np.array_equiv(
-            wet_times, params["clock"]["dt"] * (params["rainfall_intermittency_factor"])
+            wet_times,
+            params["clock"]["dt"] * (params["rainfall_intermittency_factor"]),
         )
         is True
     )
@@ -291,9 +293,11 @@ def test_run_opt_false_with_changer():
         params["clock"]["run_duration"] - params["clock"]["dt"]
     )
 
-    predicted_intensity = params["rainfall__mean_rate"] + params["PrecipChanger"][
-        "rainfall__mean_rate_time_rate_of_change"
-    ] * (params["clock"]["run_duration"] - params["clock"]["dt"])
+    predicted_intensity = params["rainfall__mean_rate"] + params[
+        "PrecipChanger"
+    ]["rainfall__mean_rate_time_rate_of_change"] * (
+        params["clock"]["run_duration"] - params["clock"]["dt"]
+    )
 
     assert model.rainfall_intermittency_factor == predicted_intermittency
     assert model.rainfall__mean_rate == predicted_intensity
