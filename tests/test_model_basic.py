@@ -11,7 +11,7 @@ from terrainbento.utilities import filecmp
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def test_steady_Kss_no_precip_changer():
+def test_steady_Kss_no_precip_changer(clock_simple):
     U = 0.0001
     K = 0.001
     m = 1. / 3.
@@ -55,7 +55,7 @@ def test_steady_Kss_no_precip_changer():
     )
 
 
-def test_steady_Ksp_no_precip_changer():
+def test_steady_Ksp_no_precip_changer(clock_simple):
     U = 0.0001
     K = 0.001
     m = 0.5
@@ -99,7 +99,7 @@ def test_steady_Ksp_no_precip_changer():
     )
 
 
-def test_steady_Ksp_no_precip_changer_with_depression_finding():
+def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     U = 0.0001
     K = 0.001
     m = 0.5
@@ -144,7 +144,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     )
 
 
-def test_diffusion_only():
+def test_diffusion_only(clock_simple):
     total_time = 5.0e6
     U = 0.001
     D = 1
@@ -199,7 +199,7 @@ def test_diffusion_only():
     )
 
 
-def test_with_precip_changer():
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     K = 0.01
     params = {
         "model_grid": "RasterModelGrid",
@@ -226,7 +226,7 @@ def test_with_precip_changer():
     assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
 
 
-def test_steady_m_075():
+def test_steady_m_075(clock_simple):
     U = 0.0001
     K = 0.001
     m = 0.75
@@ -270,7 +270,7 @@ def test_steady_m_075():
     )
 
 
-def test_steady_m_025():
+def test_steady_m_025(clock_simple):
     U = 0.0001
     K = 0.001
     m = 0.25

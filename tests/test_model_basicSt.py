@@ -221,7 +221,7 @@ def test_diffusion_only():
     )
 
 
-def test_with_precip_changer():
+def test_with_precip_changer(simple_clock, precip_defaults, precip_testing_factor):
     pass  # this test should be testing the slope area relationship
 
 

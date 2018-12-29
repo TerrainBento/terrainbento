@@ -11,14 +11,14 @@ from terrainbento.utilities import filecmp
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def test_defaults():
+def test_defaults(clock_simple):
     params = {"clock": clock_simple}
     model = StochasticErosionModel(params=params)
     assert model.opt_stochastic_duration is False
     assert model.record_rain is False
 
 
-def test_init_record_opt_true():
+def test_init_record_opt_true(clock_simple):
     params = {"clock": clock_simple, "record_rain": True}
     model = StochasticErosionModel(params=params)
     assert model.record_rain is True
@@ -34,14 +34,14 @@ def test_init_record_opt_true():
         assert len(model.rain_record[f]) == 0
 
 
-def test_init_record_opt_false():
+def test_init_record_opt_false(clock_simple):
     params = {"clock": clock_simple, "record_rain": False}
     model = StochasticErosionModel(params=params)
     assert model.record_rain is False
     assert model.rain_record is None
 
 
-def test_run_stochastic_opt_true():
+def test_run_stochastic_opt_true(clock_04):
     params = {
         "opt_stochastic_duration": True,
         "clock": clock_04,
@@ -89,7 +89,7 @@ def test_run_stochastic_opt_true():
     )
 
 
-def test_run_stochastic_opt_false():
+def test_run_stochastic_opt_false(clock_05):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_05,
@@ -139,7 +139,7 @@ def test_run_stochastic_opt_false():
     )
 
 
-def test_freq_file_with_opt_duration_true():
+def test_freq_file_with_opt_duration_true(clock_simple):
     params = {
         "model_grid": "RasterModelGrid",
         "clock": clock_simple,
@@ -154,7 +154,7 @@ def test_freq_file_with_opt_duration_true():
         _ = StochasticErosionModel(params=params)
 
 
-def test_reset_random_seed_stochastic_duration_true():
+def test_reset_random_seed_stochastic_duration_true(clock_simple):
     params = {
         "opt_stochastic_duration": True,
         "clock": clock_simple,
@@ -205,7 +205,7 @@ def test_reset_random_seed_stochastic_duration_true():
     np.testing.assert_array_equal(precip_1, precip_2)
 
 
-def test_reset_random_seed_stochastic_duration_false():
+def test_reset_random_seed_stochastic_duration_false(clock_05):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_05,
@@ -243,7 +243,7 @@ def test_reset_random_seed_stochastic_duration_false():
     np.testing.assert_array_equal(depth_1, depth_2)
 
 
-def test_float_number_of_sub_time_steps():
+def test_float_number_of_sub_time_steps(clock_05):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_05,
@@ -263,7 +263,7 @@ def test_float_number_of_sub_time_steps():
         _ = BasicSt(params=params)
 
 
-def test_run_opt_false_with_changer():
+def test_run_opt_false_with_changer(clock_06):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_06,
@@ -303,7 +303,7 @@ def test_run_opt_false_with_changer():
     assert model.rainfall__mean_rate == predicted_intensity
 
 
-def test_opt_dur_true_with_changer():
+def test_opt_dur_true_with_changer(clock_02):
     params = {
         "opt_stochastic_duration": True,
         "clock": clock_02,
@@ -315,7 +315,7 @@ def test_opt_dur_true_with_changer():
         StochasticErosionModel(params=params)
 
 
-def test_not_specifying_record_rain():
+def test_not_specifying_record_rain(clock_05):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_05,
@@ -342,7 +342,7 @@ def test_not_specifying_record_rain():
         model.write_exceedance_frequency_file()
 
 
-def test_finalize_opt_duration_stochastic_false_too_short():
+def test_finalize_opt_duration_stochastic_false_too_short(clock_05):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_05,
@@ -368,7 +368,7 @@ def test_finalize_opt_duration_stochastic_false_too_short():
     os.remove("storm_sequence.txt")
 
 
-def test_finalize_opt_duration_stochastic_false_no_rain():
+def test_finalize_opt_duration_stochastic_false_no_rain(clock_07):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_07,
@@ -391,7 +391,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
         model.finalize()
 
 
-def test_finalize_opt_duration_stochastic_false():
+def test_finalize_opt_duration_stochastic_false(clock_07):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_07,
@@ -427,7 +427,7 @@ def test_finalize_opt_duration_stochastic_false():
     os.remove("exceedance_summary.txt")
 
 
-def test_finalize_opt_duration_stochastic_true():
+def test_finalize_opt_duration_stochastic_true(clock_07):
     params = {
         "opt_stochastic_duration": True,
         "clock": clock_07,
@@ -457,7 +457,7 @@ def test_finalize_opt_duration_stochastic_true():
     os.remove("storm_sequence.txt")
 
 
-def test_runoff_equals_zero():
+def test_runoff_equals_zero(clock_07):
     params = {
         "opt_stochastic_duration": False,
         "clock": clock_07,

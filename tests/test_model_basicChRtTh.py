@@ -217,7 +217,7 @@ def test_diffusion_only():
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)
 
 
-def test_with_precip_changer():
+def test_with_precip_changer(precip_defaults, precip_testing_factor):
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     Kr = 0.01

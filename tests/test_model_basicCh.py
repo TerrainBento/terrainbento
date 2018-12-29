@@ -14,7 +14,6 @@ def test_diffusion_only():
     K = 0.0
     m = 0.5
     n = 1.0
-    dt = 2
     D = 1.0
     S_c = 0.3
     dx = 10.0
@@ -23,7 +22,7 @@ def test_diffusion_only():
     # Construct dictionary. Note that stream power is turned off
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 2., "run_duration": 200.},
+        "clock": clock_09,
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": dx,
@@ -45,7 +44,7 @@ def test_diffusion_only():
     # Construct and run model
     model = BasicCh(params=params)
     for _ in range(runtime):
-        model.run_one_step(dt)
+        model.run_one_step(clock_09["dt"])
 
     # Construct actual and predicted slope at right edge of domain
     x = 8.5 * dx
@@ -67,17 +66,16 @@ def test_diffusion_only():
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)
 
 
-def test_steady_Ksp_no_precip_changer_with_depression_finding():
+def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_05):
     U = 0.0001
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 10.0
     run_time = 20000
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 2., "run_duration": 200.},
+        "clock": clock_05,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -100,7 +98,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct and run model
     model = BasicCh(params=params)
     for _ in range(run_time):
-        model.run_one_step(dt)
+        model.run_one_step(clock_05["dt"])
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -114,17 +112,16 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     )
 
 
-def test_steady_Ksp_no_precip_changer():
+def test_steady_Ksp_no_precip_changer(clock_02):
     U = 0.0001
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 10
     runtime = 20000
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
+        "clock": clock_02,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -146,7 +143,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct and run model
     model = BasicCh(params=params)
     for _ in range(runtime):
-        model.run_one_step(dt)
+        model.run_one_step(clock_02["dt"])
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -161,7 +158,7 @@ def test_steady_Ksp_no_precip_changer():
     )
 
 
-def test_with_precip_changer():
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     K = 0.01
     params = {
         "model_grid": "RasterModelGrid",

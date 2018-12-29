@@ -10,47 +10,47 @@ from terrainbento import ErosionModel
 from terrainbento.utilities import filecmp
 
 
-def test_length_conversion_raises_error():
+def test_length_conversion_raises_error(clock_simple):
     # test that passing both results in an error
     params = {
         "model_grid": "HexModelGrid",
         "meters_to_feet": True,
         "feet_to_meters": True,
-        "clock": clock_01,
+        "clock": clock_simple,
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
 
-def test_meters_to_feet_correct():
+def test_meters_to_feet_correct(clock_simple):
     # first meters_to_feet
     params = {
         "model_grid": "HexModelGrid",
         "meters_to_feet": True,
-        "clock": clock_01,
+        "clock": clock_simple,
     }
     em = ErosionModel(params=params)
     assert em._length_factor == 3.28084
 
 
-def test_feet_to_meters_correct():
+def test_feet_to_meters_correct(clock_simple):
     params = {
         "model_grid": "HexModelGrid",
         "feet_to_meters": True,
-        "clock": clock_01,
+        "clock": clock_simple,
     }
     em = ErosionModel(params=params)
     assert em._length_factor == 1.0 / 3.28084
 
 
-def test_no_units_correct():
-    params = {"model_grid": "HexModelGrid", "clock": clock_01}
+def test_no_units_correct(clock_simple):
+    params = {"model_grid": "HexModelGrid", "clock": clock_simple}
     em = ErosionModel(params=params)
     assert em._length_factor == 1.0
 
 
-def test_calc_cumulative_erosion():
-    params = {"model_grid": "HexModelGrid", "clock": clock_01}
+def test_calc_cumulative_erosion(clock_simple):
+    params = {"model_grid": "HexModelGrid", "clock": clock_simple}
     em = ErosionModel(params=params)
     assert np.array_equiv(em.z, 0.) is True
     em.z += 1.
@@ -61,23 +61,23 @@ def test_calc_cumulative_erosion():
     )
 
 
-def test_parameter_exponent_both_provided():
+def test_parameter_exponent_both_provided(clock_simple):
     """Test the _get_parameter_from_exponent function when both are
     provided."""
     params = {
         "model_grid": "HexModelGrid",
         "water_erodability_exp": -3.,
         "water_erodability": 0.01,
-        "clock": clock_01,
+        "clock": clock_simple,
     }
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):
         em._get_parameter_from_exponent("water_erodability")
 
 
-def test_parameter_exponent_neither_provided():
+def test_parameter_exponent_neither_provided(clock_simple):
     """Test the _get_parameter_from_exponent function when neither are provided."""
-    params = {"model_grid": "HexModelGrid", "clock": clock_01}
+    params = {"model_grid": "HexModelGrid", "clock": clock_simple}
     em = ErosionModel(params=params)
     with pytest.raises(ValueError):
         em._get_parameter_from_exponent("water_erodability")

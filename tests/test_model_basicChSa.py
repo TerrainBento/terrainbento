@@ -199,7 +199,7 @@ def test_steady_Ksp_no_precip_changer():
     )
 
 
-def test_with_precip_changer():
+def test_with_precip_changer(precip_defaults, precip_testing_factor):
     K = 0.01
     S_c = 0.2
     max_soil_production_rate = 0.002

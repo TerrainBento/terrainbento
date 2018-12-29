@@ -33,18 +33,18 @@ def test_no_inputs():
         ErosionModel()
 
 
-def test_both_inputs():
-    params = {"model_grid": "HexModelGrid", "clock": clock_01}
+def test_both_inputs(clock_simple):
+    params = {"model_grid": "HexModelGrid", "clock": clock_simple}
     fp = os.path.join(_TEST_DATA_DIR, "inputs.txt")
 
     with pytest.raises(ValueError):
         ErosionModel(params=params, input_file=fp)
 
 
-def test_both_node_rows_and_DEM():
+def test_both_node_rows_and_DEM(clock_simple):
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": 100},
+        "clock": clock_simple,
         "number_of_node_rows": 5,
         "DEM_filename": "foo.nc",
     }
@@ -115,8 +115,8 @@ def test_input_file():
     assert em._model_time == 0.
 
 
-def test_parameters():
-    params = {"model_grid": "HexModelGrid", "clock": clock_01}
+def test_parameters(clock_simple):
+    params = {"model_grid": "HexModelGrid", "clock": clock_simple}
     em = ErosionModel(params=params)
     assert isinstance(em.grid, HexModelGrid)
     assert em.grid.number_of_nodes == 56

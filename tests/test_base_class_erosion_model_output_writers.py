@@ -56,7 +56,7 @@ def cleanup_files(searchpath):
         os.remove(f)
 
 
-def test_one_function_writer():
+def test_one_function_writer(clock_08):
     params = {
         "save_first_timestep": False,
         "clock": clock_08,
@@ -83,7 +83,7 @@ def test_one_function_writer():
     cleanup_files("ow_func_a.*.txt")
 
 
-def test_one_class_writer():
+def test_one_class_writer(clock_08):
     params = {
         "save_first_timestep": False,
         "clock": clock_08,
@@ -110,7 +110,7 @@ def test_one_class_writer():
     cleanup_files("ow_class_a.*.txt")
 
 
-def test_two_function_writers():
+def test_two_function_writers(clock_08):
     params = {
         "save_first_timestep": False,
         "clock": clock_08,
@@ -143,7 +143,7 @@ def test_two_function_writers():
     cleanup_files("ow_func_*.txt")
 
 
-def test_two_class_writers():
+def test_two_class_writers(clock_08):
     params = {
         "save_first_timestep": False,
         "clock": clock_08,
@@ -176,7 +176,7 @@ def test_two_class_writers():
     cleanup_files("ow_class_*.txt")
 
 
-def test_all_four_writers():
+def test_all_four_writers(clock_08):
     params = {
         "save_first_timestep": False,
         "clock": clock_08,

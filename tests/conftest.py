@@ -56,6 +56,12 @@ def clock_08():
 
 
 @pytest.fixture()
+def clock_09():
+    clock_09 = {"dt": 2, "output_interval": 2., "run_duration": 200.}
+    return clock_09
+
+
+@pytest.fixture()
 def precip_defaults():
     precip_defaults = {
         "daily_rainfall__intermittency_factor": 0.5,

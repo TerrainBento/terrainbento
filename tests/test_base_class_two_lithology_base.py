@@ -14,7 +14,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 file_name = os.path.join(_TEST_DATA_DIR, "example_for_weight.asc")
 
 
-def test_no_contact_zone_width():
+def test_no_contact_zone_width(clock_simple):
 
     params = {
         "model_grid": "RasterModelGrid",
@@ -40,7 +40,7 @@ def test_no_contact_zone_width():
     assert_array_equal(model.erody_wt, truth)
 
 
-def test_contact_zone_width():
+def test_contact_zone_width(clock_simple):
     params = {
         "model_grid": "RasterModelGrid",
         "clock": clock_simple,

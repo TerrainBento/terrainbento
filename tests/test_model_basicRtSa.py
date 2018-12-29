@@ -288,7 +288,7 @@ def test_diffusion_only():
     assert_array_almost_equal(actual_profile, predicted_profile[1:-1])
 
 
-def test_with_precip_changer():
+def test_with_precip_changer(simple_clock, precip_defaults, precip_testing_factor):
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     Kr = 0.01

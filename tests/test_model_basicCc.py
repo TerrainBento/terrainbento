@@ -19,11 +19,7 @@ def test_steady_Ksp_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {
-            "dt": 1,
-            "output_interval": 2.,
-            "run_duration": run_time * dt,
-        },
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -48,6 +44,8 @@ def test_steady_Ksp_with_depression_finding():
     model = BasicCv(params=params)
     for _ in range(run_time):
         model.run_one_step(dt)
+
+    # XXX assertions.
 
 
 def test_diffusion_only():
@@ -109,7 +107,7 @@ def test_diffusion_only():
     )
 
 
-def test_with_precip_changer():
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     K = 0.01
     climate_factor = 0.5
     climate_constant_date = 10
@@ -137,4 +135,4 @@ def test_with_precip_changer():
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    # assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
+    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
