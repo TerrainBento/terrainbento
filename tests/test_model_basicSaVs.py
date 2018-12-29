@@ -215,7 +215,7 @@ def test_steady_Ksp_no_precip_changer():
     )
 
 
-def test_with_precip_changer(simple_clock, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     K = 0.01
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2

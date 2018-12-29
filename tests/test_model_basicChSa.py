@@ -9,12 +9,11 @@ from terrainbento.utilities import filecmp
 
 
 # test diffusion without stream power
-def test_diffusion_only():
+def test_diffusion_only(clock_08):
     U = 0.001
     K = 0.0
     m = 0.5
     n = 1.0
-    dt = 1
     dx = 10.0
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2
@@ -27,7 +26,7 @@ def test_diffusion_only():
     # Construct dictionary. Note that stream power is turned off
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 2., "run_duration": 200.},
+        "clock": clock_08,
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": dx,
@@ -53,7 +52,7 @@ def test_diffusion_only():
     # Construct and run model
     model = BasicChSa(params=params)
     for _ in range(runtime):
-        model.run_one_step(dt)
+        model.run_one_step(clock_08["dt"])
 
     # test steady state soil depth
     actual_depth = model.grid.at_node["soil__depth"][30]

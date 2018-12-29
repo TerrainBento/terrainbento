@@ -9,7 +9,7 @@ from terrainbento import BasicDd
 from terrainbento.utilities import filecmp
 
 
-def test_bad_n_sp():
+def test_bad_n_sp(clock_simple):
     params = {
         "model_grid": "RasterModelGrid",
         "clock": clock_simple,
@@ -68,7 +68,7 @@ def test_bad_n_sp():
 #                               predicted_slopes[model.grid.core_nodes[1:-1]])
 
 
-def test_steady_Ksp_no_precip_changer_no_thresh_change():
+def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple):
     U = 0.0001
     K = 0.001
     m = 0.5
@@ -130,7 +130,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change():
     )
 
 
-def test_steady_Ksp_no_precip_changer_with_thresh_change():
+def test_steady_Ksp_no_precip_changer_with_thresh_change(clock_simple):
     U = 0.0001
     K = 0.001
     m = 0.5
@@ -186,7 +186,7 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change():
     )
 
 
-def test_steady_Ksp_no_precip_changer():
+def test_steady_Ksp_no_precip_changer(clock_simple):
     U = 0.0001
     K = 0.001
     m = 0.5
@@ -237,7 +237,7 @@ def test_steady_Ksp_no_precip_changer():
     )
 
 
-def test_steady_Ksp_no_precip_changer_with_depression_finding():
+def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     U = 0.0001
     K = 0.001
     m = 0.5
@@ -289,7 +289,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     )
 
 
-def test_with_precip_changer(precip_defaults, precip_testing_factor):
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     K = 0.01
     threshold = 0.000001
     thresh_change_per_depth = 0
@@ -320,7 +320,7 @@ def test_with_precip_changer(precip_defaults, precip_testing_factor):
     assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
 
 
-def test_diffusion_only():
+def test_diffusion_only(clock_simple):
     total_time = 5.0e6
     U = 0.001
     D = 1

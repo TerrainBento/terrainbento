@@ -9,7 +9,7 @@ from terrainbento.utilities import filecmp
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def test_steady_Ksp_no_precip_changer():
+def test_steady_Ksp_no_precip_changer(clock_simple):
     U = 0.0001
     Kr = 0.001
     Kt = 0.005
@@ -83,7 +83,7 @@ def test_steady_Ksp_no_precip_changer():
     assert np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
 
 
-def test_steady_Ksp_no_precip_changer_with_depression_finding():
+def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     U = 0.0001
     Kr = 0.001
     Kt = 0.005
@@ -155,11 +155,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     assert np.all(actual_slopes[82:97] < till_predicted_slopes_upper[82:97])
 
 
-def test_diffusion_only():
+def test_diffusion_only(clock_09):
     U = 0.0005
     m = 0.5
     n = 1.0
-    dt = 2
     D = 1.0
     S_c = 0.3
     dx = 10.0
@@ -170,7 +169,7 @@ def test_diffusion_only():
     # Construct dictionary. Note that stream power is turned off
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 2., "run_duration": 200.},
+        "clock": clock_09,
         "number_of_node_rows": 21,
         "number_of_node_columns": 3,
         "node_spacing": dx,
@@ -197,7 +196,7 @@ def test_diffusion_only():
     # Construct and run model
     model = BasicChRtTh(params=params)
     for _ in range(runtime):
-        model.run_one_step(dt)
+        model.run_one_step(clock_09["dt"])
 
     # Construct actual and predicted slope at top edge of domain
     x = 8.5 * dx
@@ -217,7 +216,7 @@ def test_diffusion_only():
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)
 
 
-def test_with_precip_changer(precip_defaults, precip_testing_factor):
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     Kr = 0.01

@@ -67,7 +67,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 #     )
 
 
-def test_steady_Ksp_no_precip_changer():
+def test_steady_Ksp_no_precip_changer(clock_simple):
     U = 0.0001
     Kr = 0.001
     Kt = 0.005
@@ -121,7 +121,7 @@ def test_steady_Ksp_no_precip_changer():
     assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97])
 
 
-def test_steady_Ksp_no_precip_changer_with_depression_finding():
+def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     U = 0.0001
     Kr = 0.001
     Kt = 0.005
@@ -175,7 +175,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97])
 
 
-def test_diffusion_only():
+def test_diffusion_only(clock_simple):
     total_time = 5.0e6
     U = 0.001
     D = 1
@@ -237,7 +237,7 @@ def test_diffusion_only():
     )
 
 
-def test_with_precip_changer(precip_defaults, precip_testing_factor):
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     Kr = 0.01
