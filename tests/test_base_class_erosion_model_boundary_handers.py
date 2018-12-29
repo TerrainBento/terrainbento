@@ -16,7 +16,7 @@ from terrainbento.utilities import *
 
 
 def test_bad_boundary_condition_string():
-    params = {"clock": CLOCK_01, "BoundaryHandlers": "spam"}
+    params = {"clock": clock01, "BoundaryHandlers": "spam"}
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
@@ -59,7 +59,7 @@ def test_boundary_condition_handler_with_special_part_of_params():
 def test_boundary_condition_handler_with_bad_special_part_of_params():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_02,
+        "clock": clock02,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -87,7 +87,7 @@ def test_boundary_condition_handler_with_bad_special_part_of_params():
 
 def test_boundary_condition_handler_with_bad_special_part_of_params_single():
     params = {
-        "clock": CLOCK_03,
+        "clock": clock03,
         "number_of_node_rows": 10,
         "number_of_node_columns": 10,
         "outlet_id": 1,

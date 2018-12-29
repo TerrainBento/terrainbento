@@ -59,7 +59,7 @@ def cleanup_files(searchpath):
 def test_one_function_writer():
     params = {
         "save_first_timestep": False,
-        "clock": CLOCK_08,
+        "clock": clock08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
@@ -86,7 +86,7 @@ def test_one_function_writer():
 def test_one_class_writer():
     params = {
         "save_first_timestep": False,
-        "clock": CLOCK_08,
+        "clock": clock08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
@@ -113,7 +113,7 @@ def test_one_class_writer():
 def test_two_function_writers():
     params = {
         "save_first_timestep": False,
-        "clock": CLOCK_08,
+        "clock": clock08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
@@ -146,7 +146,7 @@ def test_two_function_writers():
 def test_two_class_writers():
     params = {
         "save_first_timestep": False,
-        "clock": CLOCK_08,
+        "clock": clock08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
@@ -179,7 +179,7 @@ def test_two_class_writers():
 def test_all_four_writers():
     params = {
         "save_first_timestep": False,
-        "clock": CLOCK_08,
+        "clock": clock08,
         "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,

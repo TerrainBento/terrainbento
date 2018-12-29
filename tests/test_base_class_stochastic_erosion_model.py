@@ -44,7 +44,7 @@ def test_init_record_opt_false():
 def test_run_stochastic_opt_true():
     params = {
         "opt_stochastic_duration": True,
-        "clock": CLOCK_04,
+        "clock": clock04,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -92,7 +92,7 @@ def test_run_stochastic_opt_true():
 def test_run_stochastic_opt_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_05,
+        "clock": clock05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -208,7 +208,7 @@ def test_reset_random_seed_stochastic_duration_true():
 def test_reset_random_seed_stochastic_duration_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_05,
+        "clock": clock05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -246,7 +246,7 @@ def test_reset_random_seed_stochastic_duration_false():
 def test_float_number_of_sub_time_steps():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_05,
+        "clock": clock05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -266,7 +266,7 @@ def test_float_number_of_sub_time_steps():
 def test_run_opt_false_with_changer():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_06,
+        "clock": clock06,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -306,7 +306,7 @@ def test_run_opt_false_with_changer():
 def test_opt_dur_true_with_changer():
     params = {
         "opt_stochastic_duration": True,
-        "clock": CLOCK_02,
+        "clock": clock02,
         "BoundaryHandlers": "PrecipChanger",
         "PrecipChanger": precip_defaults,
     }
@@ -318,7 +318,7 @@ def test_opt_dur_true_with_changer():
 def test_not_specifying_record_rain():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_05,
+        "clock": clock05,
         "record_rain": False,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -345,7 +345,7 @@ def test_not_specifying_record_rain():
 def test_finalize_opt_duration_stochastic_false_too_short():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_05,
+        "clock": clock05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -371,7 +371,7 @@ def test_finalize_opt_duration_stochastic_false_too_short():
 def test_finalize_opt_duration_stochastic_false_no_rain():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_07,
+        "clock": clock07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -394,7 +394,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
 def test_finalize_opt_duration_stochastic_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_07,
+        "clock": clock07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -430,7 +430,7 @@ def test_finalize_opt_duration_stochastic_false():
 def test_finalize_opt_duration_stochastic_true():
     params = {
         "opt_stochastic_duration": True,
-        "clock": CLOCK_07,
+        "clock": clock07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -460,7 +460,7 @@ def test_finalize_opt_duration_stochastic_true():
 def test_runoff_equals_zero():
     params = {
         "opt_stochastic_duration": False,
-        "clock": CLOCK_07,
+        "clock": clock07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
