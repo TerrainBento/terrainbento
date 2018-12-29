@@ -370,7 +370,11 @@ def test_Raster_with_boundaries(clock_simple):
 
 def test_DEM_and_rows(clock_simple):
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
-    params = {"DEM_filename": fp, "clock": clock_simple, "number_of_node_rows": 5}
+    params = {
+        "DEM_filename": fp,
+        "clock": clock_simple,
+        "number_of_node_rows": 5,
+    }
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -396,10 +400,7 @@ def test_DEM_ascii(clock_simple):
 
 def test_bad_DEM_file(clock_simple):
     fp = os.path.join(_TEST_DATA_DIR, "bad_dem.txt")
-    params = {
-        "DEM_filename": fp,
-        "clock": clock_simple
-    }
+    params = {"DEM_filename": fp, "clock": clock_simple}
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -407,10 +408,7 @@ def test_bad_DEM_file(clock_simple):
 
 def test_DEM_two_possible_outlets(clock_simple):
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
-    params = {
-        "DEM_filename": fp,
-        "clock": clock_simple
-    }
+    params = {"DEM_filename": fp, "clock": clock_simple}
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -425,10 +423,7 @@ def test_DEM_two_possible_outlets(clock_simple):
 def test_DEM_netcdf(clock_simple):
     """Test DEM."""
     fp = os.path.join(_TEST_DATA_DIR, "test_file.nc")
-    params = {
-        "DEM_filename": fp,
-        "clock": clock_simple
-    }
+    params = {"DEM_filename": fp, "clock": clock_simple}
 
     em = ErosionModel(params=params)
 

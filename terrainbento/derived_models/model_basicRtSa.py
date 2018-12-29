@@ -288,7 +288,7 @@ class BasicRtSa(TwoLithologyErosionModel):
             Increment of time for which the model is run.
         """
         # create and move water
-        self.create_and_move_water(dt)
+        self.create_and_move_water(step)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:

@@ -256,7 +256,7 @@ class BasicDdVs(ErosionModel):
             Increment of time for which the model is run.
         """
         # create and move water
-        self.create_and_move_water(dt)
+        self.create_and_move_water(step)
 
         # Update effective runoff ratio
         self._calc_effective_drainage_area()

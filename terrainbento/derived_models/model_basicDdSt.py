@@ -238,12 +238,12 @@ class BasicDdSt(StochasticErosionModel):
     def _pre_water_erosion_steps(self):
         self.update_threshold_field()
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """
-        Advance model for one time-step of duration dt.
+        Advance model for one time-step of duration step.
         """
         # create and move water
-        self.create_and_move_water(dt)
+        self.create_and_move_water(step)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:

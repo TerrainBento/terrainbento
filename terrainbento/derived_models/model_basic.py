@@ -17,7 +17,8 @@ import numpy as np
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import ErosionModel
 
-_REQUIRED_FIELDS = ['topographic__elevation']
+_REQUIRED_FIELDS = ["topographic__elevation"]
+
 
 class Basic(ErosionModel):
     r"""**Basic** model program.
@@ -59,15 +60,16 @@ class Basic(ErosionModel):
 
     """
 
-
-    def __init__(self,
-                 clock,
-                 grid,
-                 m_sp=0.5,
-                 n_sp=1.0,
-                 water_erodability=0.0001,
-                 regolith_transport_parameter=0.1,
-                 **kwargs):
+    def __init__(
+        self,
+        clock,
+        grid,
+        m_sp=0.5,
+        n_sp=1.0,
+        water_erodability=0.0001,
+        regolith_transport_parameter=0.1,
+        **kwargs
+    ):
         """
         Parameters
         ----------
@@ -108,16 +110,19 @@ class Basic(ErosionModel):
         # Call ErosionModel"s init
         super(Basic, self).__init__(clock, grid, **kwargs)
 
-
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (self._length_factor ** (1. - (2. * self.m)))
+        self.K = water_erodability * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
-        regolith_transport_parameter = (self._length_factor ** 2.) * regolith_transport_parameter
+        regolith_transport_parameter = (
+            self._length_factor ** 2.
+        ) * regolith_transport_parameter
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
@@ -156,7 +161,7 @@ class Basic(ErosionModel):
             Increment of time for which the model is run.
         """
         # create and move water
-        self.create_and_move_water(dt)
+        self.create_and_move_water(step)
 
         # Get IDs of flooded nodes, if any.
         if self.flow_accumulator.depression_finder is None:

@@ -57,7 +57,7 @@ from .derived_models import BasicChRtTh
 
 
 __all__ = [
-"Clock",
+    "Clock",
     "ModelTemplate",
     "Basic",
     "BasicTh",

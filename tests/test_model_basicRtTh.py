@@ -219,7 +219,9 @@ def test_diffusion_only():
     )
 
 
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(
+    clock_simple, precip_defaults, precip_testing_factor
+):
     Kr = 0.001
     Kt = 0.005
     Tr = 0.01

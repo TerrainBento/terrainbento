@@ -85,7 +85,9 @@ def test_boundary_condition_handler_with_bad_special_part_of_params(clock_02):
         BasicSt(params=params)
 
 
-def test_boundary_condition_handler_with_bad_special_part_of_params_single(clock_03):
+def test_boundary_condition_handler_with_bad_special_part_of_params_single(
+    clock_03
+):
     params = {
         "clock": clock_03,
         "number_of_node_rows": 10,
@@ -110,7 +112,7 @@ def test_boundary_condition_handler_with_bad_special_part_of_params_single(clock
 
 def test_single_node_blh_with_closed_boundaries(clock_simple):
     params = {
-        'clock': clock_simple,
+        "clock": clock_simple,
         "number_of_node_rows": 10,
         "number_of_node_columns": 10,
         "north_boundary_closed": True,
@@ -132,7 +134,9 @@ def test_single_node_blh_with_closed_boundaries(clock_simple):
     assert model.grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
 
 
-def test_boundary_condition_handler_without_special_part_of_params(clock_simple):
+def test_boundary_condition_handler_without_special_part_of_params(
+    clock_simple
+):
     U = 0.0001
     K = 0.001
     m = 1. / 3.

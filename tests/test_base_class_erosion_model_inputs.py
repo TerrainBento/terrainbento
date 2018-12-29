@@ -60,10 +60,7 @@ def test_no_required_params():
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
-    params = {
-        "model_grid": "HexModelGrid",
-        "clock": {"step": 1, "stop": 10.},
-    }
+    params = {"model_grid": "HexModelGrid", "clock": {"step": 1, "stop": 10.}}
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 

@@ -13,7 +13,7 @@ class SimpleRunoff(object):
             runoff_proportion * mg.at_node["rainfall__flux"]
         )
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """
         """
         pass

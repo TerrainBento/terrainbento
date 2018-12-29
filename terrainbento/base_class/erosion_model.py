@@ -126,11 +126,6 @@ from terrainbento.boundary_condition_handlers import (
     PrecipChanger,
     SingleNodeBaselevelHandler,
 )
-from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
-from terrainbento.runoff_generators import (
-    SimpleRunoff,
-    VariableSourceAreaRunoff,
-)
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
     "NormalFault",
@@ -180,12 +175,6 @@ def _setup_boundary_handlers(grid, name, params):
             )
         )
     return boundary_handler
-
-
-_SUPPORTED_PRECIPITATORS = []
-
-
-_SUPPORTED_RUNOFF_GENERATORS = []
 
 
 class ErosionModel(object):
@@ -254,16 +243,16 @@ class ErosionModel(object):
         grid,
         precipitator=None,
         runoff_generator=None,
-        boundary_handlers = {},
-        output_writers = [],
-        output_interval = 10,
-        save_first_timestep = True,
-        output_prefix = "terrainbento_output",
-        fields = ["topographic__elevation"],
-        feet_to_meters = False,
-        meters_to_feet = False,
-        depression_finder = None,
-        flow_director = "FlowDirectorSteepest",
+        boundary_handlers={},
+        output_writers=[],
+        output_interval=10,
+        save_first_timestep=True,
+        output_prefix="terrainbento_output",
+        fields=["topographic__elevation"],
+        feet_to_meters=False,
+        meters_to_feet=False,
+        depression_finder=None,
+        flow_director="FlowDirectorSteepest",
         **params
     ):
         """
@@ -300,7 +289,7 @@ class ErosionModel(object):
         # save output_information
         self.save_first_timestep = save_first_timestep
         self._out_file_name = output_prefix
-        self._fields = fields
+        self.output_fields = fields
         self._output_files = []
 
         # instantiate model time.
@@ -358,7 +347,6 @@ class ErosionModel(object):
     def model_time(self):
         """Return current time of model integration in model time units."""
         return self._model_time
-
 
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
@@ -443,19 +431,14 @@ class ErosionModel(object):
             self.run_one_step(step)
             elapsed_time += step
 
-    def run(self, output_fields=None):
+    def run(self):
         """Run the model until complete.
 
         The model will run for the duration indicated by the input file or
         dictionary parameter ``"stop"``, at a time step specified by
-        the parameter ``"step"``, and create ouput at intervales of
+        the parameter ``"step"``, and create ouput at intervals of
         ``"output_duration"``.
 
-        Parameters
-        ----------
-        output_fields : list of str, optional
-            List of model grid fields to write as output. Default is to write
-            out all fields.
         """
         self._itters = []
         if output_fields is None:
@@ -470,9 +453,9 @@ class ErosionModel(object):
             self.write_output()
         self.iteration = 1
         time_now = self._model_time
-        while time_now < self.clock.total_run_duration:
+        while time_now < self.clock.stop:
             next_run_pause = min(
-                time_now + self.clock.output_interval, self.clock.total_run_duration
+                time_now + self.output_interval, self.clock.stop
             )
             self.run_for(self.clock.step, next_run_pause - time_now)
             time_now = self._model_time
@@ -538,7 +521,7 @@ class ErosionModel(object):
 
         # add a time dimension
         time_array = (
-            np.asarray(self._itters) * self.clock.output_interval
+            np.asarray(self._itters) * self.output_interval
         )
         time = xr.DataArray(
             time_array,

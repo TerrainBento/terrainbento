@@ -24,7 +24,7 @@ class VariableSourceAreaRunoff(object):
             "hydraulic_conductivity"
         ]  # has units length per time
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """
         """
         # Get the transmissivity parameter

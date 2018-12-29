@@ -237,7 +237,9 @@ def test_diffusion_only(clock_simple):
     )
 
 
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(
+    clock_simple, precip_defaults, precip_testing_factor
+):
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
 
     Kr = 0.01

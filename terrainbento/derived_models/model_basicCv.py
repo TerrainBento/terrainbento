@@ -140,11 +140,7 @@ class BasicCv(ErosionModel):
         self.climate_factor = self.params["climate_factor"]
         self.climate_constant_date = self.params["climate_constant_date"]
 
-        time = [
-            0,
-            self.climate_constant_date,
-            self.params["clock"]["stop"],
-        ]
+        time = [0, self.climate_constant_date, self.params["clock"]["stop"]]
         K = [K_sp * self.climate_factor, K_sp, K_sp]
         self.K_through_time = interp1d(time, K)
 
@@ -188,7 +184,7 @@ class BasicCv(ErosionModel):
             Increment of time for which the model is run.
         """
         # create and move water
-        self.create_and_move_water(dt)
+        self.create_and_move_water(step)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:

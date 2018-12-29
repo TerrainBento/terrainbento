@@ -199,7 +199,9 @@ def test_diffusion_only(clock_simple):
     )
 
 
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(
+    clock_simple, precip_defaults, precip_testing_factor
+):
     K = 0.01
     params = {
         "model_grid": "RasterModelGrid",

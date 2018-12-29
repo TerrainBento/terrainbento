@@ -127,7 +127,8 @@ def test_run_stochastic_opt_false(clock_05):
     assert (
         np.array_equiv(
             wet_times,
-            params["clock"]["step"] * (params["rainfall_intermittency_factor"]),
+            params["clock"]["step"]
+            * (params["rainfall_intermittency_factor"]),
         )
         is True
     )

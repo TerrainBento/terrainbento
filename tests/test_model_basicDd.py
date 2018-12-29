@@ -289,7 +289,9 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     )
 
 
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(
+    clock_simple, precip_defaults, precip_testing_factor
+):
     K = 0.01
     threshold = 0.000001
     thresh_change_per_depth = 0

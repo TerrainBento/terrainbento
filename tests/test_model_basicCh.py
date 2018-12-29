@@ -158,7 +158,9 @@ def test_steady_Ksp_no_precip_changer(clock_02):
     )
 
 
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(
+    clock_simple, precip_defaults, precip_testing_factor
+):
     K = 0.01
     params = {
         "model_grid": "RasterModelGrid",

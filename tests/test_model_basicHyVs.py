@@ -324,7 +324,9 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     )
 
 
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(
+    clock_simple, precip_defaults, precip_testing_factor
+):
     K = 0.01
     v_sc = 0.001
     phi = 0.1
