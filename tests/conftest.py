@@ -2,56 +2,56 @@ import pytest
 
 
 @pytest.fixture()
-def simple_clock():
-    SIMPLE_CLOCK = {"dt": 1., "output_interval": 2., "run_duration": 200.}
-    return simple_clock
+def clock_simple():
+    clock_simple = {"dt": 1., "output_interval": 2., "run_duration": 200.}
+    return clock_simple
 
 
 @pytest.fixture()
 def clock_01():
-    clock01 = {"dt": 1., "output_interval": 2., "run_duration": 10.}
+    clock_01 = {"dt": 1., "output_interval": 2., "run_duration": 10.}
     return clock_01
 
 
 @pytest.fixture()
 def clock_02():
-    clock02 = {"dt": 10., "output_interval": 2., "run_duration": 1000.}
+    clock_02 = {"dt": 10., "output_interval": 2., "run_duration": 1000.}
     return clock_02
 
 
 @pytest.fixture()
 def clock_03():
-    clock03 = {"dt": 10., "output_interval": 1e3, "run_duration": 1e6}
+    clock_03 = {"dt": 10., "output_interval": 1e3, "run_duration": 1e6}
     return clock_03
 
 
 @pytest.fixture()
 def clock_04():
-    clock04 = {"dt": 10., "output_interval": 2., "run_duration": 100000.}
+    clock_04 = {"dt": 10., "output_interval": 2., "run_duration": 100000.}
     return clock_04
 
 
 @pytest.fixture()
 def clock_05():
-    clock05 = {"dt": 10., "output_interval": 2., "run_duration": 200.}
+    clock_05 = {"dt": 10., "output_interval": 2., "run_duration": 200.}
     return clock_05
 
 
 @pytest.fixture()
 def clock_06():
-    clock06 = {"dt": 1., "output_interval": 2., "run_duration": 3.}
+    clock_06 = {"dt": 1., "output_interval": 2., "run_duration": 3.}
     return clock_06
 
 
 @pytest.fixture()
 def clock_07():
-    clock07 = {"dt": 10., "output_interval": 2., "run_duration": 10000.}
+    clock_07 = {"dt": 10., "output_interval": 2., "run_duration": 10000.}
     return clock_07
 
 
 @pytest.fixture()
 def clock_08():
-    clock08 = {"dt": 1., "output_interval": 20., "run_duration": 20.}
+    clock_08 = {"dt": 1., "output_interval": 20., "run_duration": 20.}
     return clock_08
 
 

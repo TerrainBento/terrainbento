@@ -9,7 +9,7 @@ from numpy.testing import assert_array_equal
 
 from landlab import HexModelGrid, RasterModelGrid
 from terrainbento import ErosionModel
-from terrainbento.utilities import *
+from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -30,7 +30,7 @@ at_node_fields = [
 
 
 def test_HexModelGrid_default():
-    params = {"model_grid": "HexModelGrid", "clock": clock01}
+    params = {"model_grid": "HexModelGrid", "clock": clock_01}
     em = ErosionModel(params=params)
     assert isinstance(em.grid, HexModelGrid)
     assert em.grid.number_of_nodes == 56
@@ -39,7 +39,7 @@ def test_HexModelGrid_default():
 
 
 def test_RasterModelGrid_default():
-    params = {"clock": clock01}
+    params = {"clock": clock_01}
     em = ErosionModel(params=params)
     assert isinstance(em.grid, RasterModelGrid)
     assert em.grid.number_of_nodes == 20
@@ -51,7 +51,7 @@ def test_RasterModelGrid_default():
 
 
 def test_default_sythetic_topo():
-    params = {"clock": clock01}
+    params = {"clock": clock_01}
     em = ErosionModel(params=params)
     assert np.array_equiv(em.z, 0.0) is True
 
@@ -59,7 +59,7 @@ def test_default_sythetic_topo():
 def test_no_noise_sythetic_topo():
     params = {
         "initial_elevation": 10.,
-        "clock": clock01,
+        "clock": clock_01,
         "add_random_noise": False,
     }
     em = ErosionModel(params=params)
@@ -71,7 +71,7 @@ def test_no_noise_sythetic_topo():
 def test_no_noise_sythetic_topo_core_only():
     params = {
         "initial_elevation": 10.,
-        "clock": clock01,
+        "clock": clock_01,
         "add_random_noise": False,
         "add_initial_elevation_to_all_nodes": False,
     }
@@ -84,7 +84,7 @@ def test_no_noise_sythetic_topo_core_only():
 def test_no_noise_all_nodes_sythetic_topo_valueError():
     params = {
         "initial_elevation": 10.,
-        "clock": clock01,
+        "clock": clock_01,
         "add_random_noise": False,
         "add_noise_to_all_nodes": True,
         "initial_noise_std": 2.0,
@@ -96,7 +96,7 @@ def test_no_noise_all_nodes_sythetic_topo_valueError():
 def test_noise_all_nodes_sythetic_topo():
     params = {
         "initial_elevation": 10.,
-        "clock": clock01,
+        "clock": clock_01,
         "add_random_noise": True,
         "add_noise_to_all_nodes": True,
         "initial_noise_std": 2.0,
@@ -112,7 +112,7 @@ def test_noise_all_nodes_sythetic_topo():
 def test_noise_all_nodes_sythetic_topo_init_elevation_only_core():
     params = {
         "initial_elevation": 10.,
-        "clock": clock01,
+        "clock": clock_01,
         "add_random_noise": True,
         "add_noise_to_all_nodes": True,
         "initial_noise_std": 2.0,
@@ -135,7 +135,7 @@ def test_synthetic_topo_noise_with_bad_std():
         "add_random_noise": True,
         "initial_elevation": 10.,
         "initial_noise_std": -1.,
-        "clock": clock01,
+        "clock": clock_01,
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -146,7 +146,7 @@ def test_synthetic_topo_noise_with_zero_std():
         "add_random_noise": True,
         "initial_elevation": 10.,
         "initial_noise_std": 0.,
-        "clock": clock01,
+        "clock": clock_01,
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -157,7 +157,7 @@ def test_synthetic_topo_default_seed():
         "add_random_noise": True,
         "initial_elevation": 10.,
         "initial_noise_std": 2.,
-        "clock": clock01,
+        "clock": clock_01,
         "add_initial_elevation_to_all_nodes": False,
     }
     em = ErosionModel(params=params)
@@ -174,7 +174,7 @@ def test_synthetic_topo_set_seed():
         "add_random_noise": True,
         "initial_elevation": 10.,
         "initial_noise_std": 2.,
-        "clock": clock01,
+        "clock": clock_01,
         "random_seed": 42,
         "add_initial_elevation_to_all_nodes": False,
     }
@@ -193,7 +193,7 @@ def test_Hex_with_outlet():
         "number_of_node_columns": 4,
         "node_spacing": 10,
         "outlet_id": 9,
-        "clock": clock01,
+        "clock": clock_01,
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 9
@@ -235,7 +235,7 @@ def test_Hex_with_outlet_not_specified():
         "number_of_node_rows": 5,
         "number_of_node_columns": 4,
         "node_spacing": 10,
-        "clock": clock01,
+        "clock": clock_01,
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
@@ -278,7 +278,7 @@ def test_Hex_with_boundaries():
         "number_of_node_columns": 4,
         "node_spacing": 10,
         "boundary_closed": True,
-        "clock": clock01,
+        "clock": clock_01,
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
@@ -321,7 +321,7 @@ def test_Raster_with_outlet():
         "number_of_node_columns": 4,
         "node_spacing": 10,
         "outlet_id": 3,
-        "clock": clock01,
+        "clock": clock_01,
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 3
@@ -338,7 +338,7 @@ def test_Raster_with_outlet_not_specified():
         "number_of_node_rows": 5,
         "number_of_node_columns": 4,
         "node_spacing": 10,
-        "clock": clock01,
+        "clock": clock_01,
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
@@ -357,7 +357,7 @@ def test_Raster_with_boundaries():
         "east_boundary_closed": True,
         "west_boundary_closed": True,
         "node_spacing": 10,
-        "clock": clock01,
+        "clock": clock_01,
     }
     em = ErosionModel(params=params)
     assert em.outlet_node == 0
@@ -370,7 +370,7 @@ def test_Raster_with_boundaries():
 
 def test_DEM_and_rows():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
-    params = {"DEM_filename": fp, "clock": clock01, "number_of_node_rows": 5}
+    params = {"DEM_filename": fp, "clock": clock_01, "number_of_node_rows": 5}
 
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -378,7 +378,7 @@ def test_DEM_and_rows():
 
 def test_DEM_ascii():
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3.asc")
-    params = {"DEM_filename": fp, "clock": clock01}
+    params = {"DEM_filename": fp, "clock": clock_01}
 
     em = ErosionModel(params=params)
 
@@ -420,7 +420,7 @@ def test_DEM_two_possible_outlets():
         ErosionModel(params=params)
 
     fp = os.path.join(_TEST_DATA_DIR, "test_4_x_3_two_zeros.asc")
-    params = {"DEM_filename": fp, "outlet_id": 22, "clock": clock01}
+    params = {"DEM_filename": fp, "outlet_id": 22, "clock": clock_01}
 
     em = ErosionModel(params=params)
     assert em.outlet_node == 22

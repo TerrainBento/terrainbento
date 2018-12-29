@@ -6,13 +6,13 @@ import pytest
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 from terrainbento import BasicTh
-from terrainbento.utilities import *
+from terrainbento.utilities import filecmp
 
 
 def test_bad_n_sp():
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "water_erosion_rule__threshold": 0.001,
         "water_erodability": 0.001,
         "n_sp": 1.01,
@@ -33,7 +33,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -139,7 +139,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -184,7 +184,7 @@ def test_with_precip_changer():
     threshold = 0.000001
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -220,7 +220,7 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": 100.0,

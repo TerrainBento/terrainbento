@@ -4,7 +4,7 @@
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicCv
-from terrainbento.utilities import *
+from terrainbento.utilities import filecmp
 
 
 def test_steady_Ksp_with_depression_finding():
@@ -115,7 +115,7 @@ def test_with_precip_changer():
     climate_constant_date = 10
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,

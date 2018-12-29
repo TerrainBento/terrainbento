@@ -4,7 +4,7 @@
 import numpy as np
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
-from terrainbento.utilities import *
+from terrainbento.utilities import filecmp
 
 
 # test diffusion without stream power
@@ -210,7 +210,7 @@ def test_with_precip_changer():
     soil_transport_decay_depth = 0.5
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,

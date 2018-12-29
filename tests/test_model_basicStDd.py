@@ -21,7 +21,7 @@ def test_steady_without_stochastic_duration():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 6,
         "node_spacing": 100.0,
@@ -130,7 +130,7 @@ def test_diffusion_only():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": 100.0,

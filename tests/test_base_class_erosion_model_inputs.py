@@ -8,7 +8,7 @@ import pytest
 from landlab import HexModelGrid
 from landlab.components import FlowAccumulator
 from terrainbento import ErosionModel
-from terrainbento.utilities import *
+from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -34,7 +34,7 @@ def test_no_inputs():
 
 
 def test_both_inputs():
-    params = {"model_grid": "HexModelGrid", "clock": clock01}
+    params = {"model_grid": "HexModelGrid", "clock": clock_01}
     fp = os.path.join(_TEST_DATA_DIR, "inputs.txt")
 
     with pytest.raises(ValueError):
@@ -116,7 +116,7 @@ def test_input_file():
 
 
 def test_parameters():
-    params = {"model_grid": "HexModelGrid", "clock": clock01}
+    params = {"model_grid": "HexModelGrid", "clock": clock_01}
     em = ErosionModel(params=params)
     assert isinstance(em.grid, HexModelGrid)
     assert em.grid.number_of_nodes == 56

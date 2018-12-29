@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicChRtTh
-from terrainbento.utilities import *
+from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -23,7 +23,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 8,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -97,7 +97,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 8,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -225,7 +225,7 @@ def test_with_precip_changer():
     Sc = 0.1
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 21,
         "number_of_node_columns": 3,
         "node_spacing": 100.0,

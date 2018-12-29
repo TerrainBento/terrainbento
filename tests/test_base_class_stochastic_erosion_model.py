@@ -6,20 +6,20 @@ import numpy as np
 import pytest
 
 from terrainbento import BasicSt, StochasticErosionModel
-from terrainbento.utilities import *
+from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_defaults():
-    params = {"clock": SIMPLE_CLOCK}
+    params = {"clock": clock_simple}
     model = StochasticErosionModel(params=params)
     assert model.opt_stochastic_duration is False
     assert model.record_rain is False
 
 
 def test_init_record_opt_true():
-    params = {"clock": SIMPLE_CLOCK, "record_rain": True}
+    params = {"clock": clock_simple, "record_rain": True}
     model = StochasticErosionModel(params=params)
     assert model.record_rain is True
     assert isinstance(model.rain_record, dict)
@@ -35,7 +35,7 @@ def test_init_record_opt_true():
 
 
 def test_init_record_opt_false():
-    params = {"clock": SIMPLE_CLOCK, "record_rain": False}
+    params = {"clock": clock_simple, "record_rain": False}
     model = StochasticErosionModel(params=params)
     assert model.record_rain is False
     assert model.rain_record is None
@@ -44,7 +44,7 @@ def test_init_record_opt_false():
 def test_run_stochastic_opt_true():
     params = {
         "opt_stochastic_duration": True,
-        "clock": clock04,
+        "clock": clock_04,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -92,7 +92,7 @@ def test_run_stochastic_opt_true():
 def test_run_stochastic_opt_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock05,
+        "clock": clock_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -142,7 +142,7 @@ def test_run_stochastic_opt_false():
 def test_freq_file_with_opt_duration_true():
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": 100.0,
@@ -157,7 +157,7 @@ def test_freq_file_with_opt_duration_true():
 def test_reset_random_seed_stochastic_duration_true():
     params = {
         "opt_stochastic_duration": True,
-        "clock": SIMPLE_CLOCK,
+        "clock": clock_simple,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -208,7 +208,7 @@ def test_reset_random_seed_stochastic_duration_true():
 def test_reset_random_seed_stochastic_duration_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock05,
+        "clock": clock_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -246,7 +246,7 @@ def test_reset_random_seed_stochastic_duration_false():
 def test_float_number_of_sub_time_steps():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock05,
+        "clock": clock_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -266,7 +266,7 @@ def test_float_number_of_sub_time_steps():
 def test_run_opt_false_with_changer():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock06,
+        "clock": clock_06,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -306,7 +306,7 @@ def test_run_opt_false_with_changer():
 def test_opt_dur_true_with_changer():
     params = {
         "opt_stochastic_duration": True,
-        "clock": clock02,
+        "clock": clock_02,
         "BoundaryHandlers": "PrecipChanger",
         "PrecipChanger": precip_defaults,
     }
@@ -318,7 +318,7 @@ def test_opt_dur_true_with_changer():
 def test_not_specifying_record_rain():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock05,
+        "clock": clock_05,
         "record_rain": False,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -345,7 +345,7 @@ def test_not_specifying_record_rain():
 def test_finalize_opt_duration_stochastic_false_too_short():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock05,
+        "clock": clock_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -371,7 +371,7 @@ def test_finalize_opt_duration_stochastic_false_too_short():
 def test_finalize_opt_duration_stochastic_false_no_rain():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock07,
+        "clock": clock_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -394,7 +394,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
 def test_finalize_opt_duration_stochastic_false():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock07,
+        "clock": clock_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -430,7 +430,7 @@ def test_finalize_opt_duration_stochastic_false():
 def test_finalize_opt_duration_stochastic_true():
     params = {
         "opt_stochastic_duration": True,
-        "clock": clock07,
+        "clock": clock_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
@@ -460,7 +460,7 @@ def test_finalize_opt_duration_stochastic_true():
 def test_runoff_equals_zero():
     params = {
         "opt_stochastic_duration": False,
-        "clock": clock07,
+        "clock": clock_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
