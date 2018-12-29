@@ -199,7 +199,11 @@ class BasicChSa(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+            self.grid,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
+            discharge_name="surface_water__discharge",
         )
 
         # Instantiate a weathering component
@@ -246,9 +250,8 @@ class BasicChSa(ErosionModel):
         step : float
             Increment of time for which the model is run.
         """
-
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+        # create and move water
+        self.create_and_move_water(dt)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:

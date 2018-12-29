@@ -182,7 +182,7 @@ class BasicStTh(StochasticErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             threshold_sp=threshold,
-            use_Q=self.discharge,
+            use_Q="surface_water__discharge",
         )
 
         # Instantiate a LinearDiffuser component
@@ -190,11 +190,12 @@ class BasicStTh(StochasticErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def run_one_step(self, step):
-        """Advance model for one time-step of duration step."""
-
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+    def run_one_step(self, dt):
+        """
+        Advance model for one time-step of duration dt.
+        """
+        # create and move water
+        self.create_and_move_water(dt)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:

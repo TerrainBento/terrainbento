@@ -180,7 +180,7 @@ class BasicThVs(ErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             threshold_sp=threshold,
-            use_Q=self.eff_area,
+            use_Q="surface_water__discharge",
         )
 
         # Instantiate a LinearDiffuser component
@@ -225,9 +225,8 @@ class BasicThVs(ErosionModel):
         step : float
             Increment of time for which the model is run.
         """
-
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+        # create and move water
+        self.create_and_move_water(dt)
 
         # Update effective runoff ratio
         self._calc_effective_drainage_area()

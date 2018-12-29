@@ -215,6 +215,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
             threshold_sp=self.threshold,
             m_sp=self.m,
             n_sp=self.n,
+            use_Q="surface_water__discharge",
         )
 
         # Instantiate a LinearDiffuser component
@@ -255,8 +256,8 @@ class BasicChRtTh(TwoLithologyErosionModel):
         step : float
             Increment of time for which the model is run.
         """
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+        # create and move water
+        self.create_and_move_water(dt)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:

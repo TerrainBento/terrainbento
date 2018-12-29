@@ -126,6 +126,11 @@ from terrainbento.boundary_condition_handlers import (
     PrecipChanger,
     SingleNodeBaselevelHandler,
 )
+from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
+from terrainbento.runoff_generators import (
+    SimpleRunoff,
+    VariableSourceAreaRunoff,
+)
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
     "NormalFault",
@@ -175,6 +180,12 @@ def _setup_boundary_handlers(grid, name, params):
             )
         )
     return boundary_handler
+
+
+_SUPPORTED_PRECIPITATORS = []
+
+
+_SUPPORTED_RUNOFF_GENERATORS = []
 
 
 class ErosionModel(object):

@@ -201,10 +201,12 @@ class BasicHySt(StochasticErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def run_one_step(self, step):
-        """Advance model for one time-step of duration step."""
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+    def run_one_step(self, dt):
+        """
+        Advance model for one time-step of duration dt.
+        """
+        # create and move water
+        self.create_and_move_water(dt)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
