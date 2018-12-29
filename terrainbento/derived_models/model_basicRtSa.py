@@ -173,9 +173,9 @@ class BasicRtSa(TwoLithologyErosionModel):
         Set up a parameters variable.
 
         >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"dt": 1,
+        ...           "clock": {"step": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.},
+        ...                     "stop": 200.},
         ...           "number_of_node_rows" : 6,
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
@@ -253,8 +253,8 @@ class BasicRtSa(TwoLithologyErosionModel):
             soil_production__decay_depth=soil_production_decay_depth,
         )
 
-    def run_one_step(self, dt):
-        """Advance model **BasicRtSa** for one time-step of duration dt.
+    def run_one_step(self, step):
+        """Advance model **BasicRtSa** for one time-step of duration step.
 
         The **run_one_step** method does the following:
 
@@ -276,11 +276,11 @@ class BasicRtSa(TwoLithologyErosionModel):
 
         7. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``dt`` and increments model time by ``dt``.
+           by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Increment of time for which the model is run.
         """
         # Direct and accumulate flow
@@ -299,7 +299,7 @@ class BasicRtSa(TwoLithologyErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         self.eroder.run_one_step(
-            dt, flooded_nodes=flooded, K_if_used=self.erody
+            step, flooded_nodes=flooded, K_if_used=self.erody
         )
 
         # We must also now erode the bedrock where relevant. If water erosion
@@ -313,10 +313,10 @@ class BasicRtSa(TwoLithologyErosionModel):
         self.weatherer.calc_soil_prod_rate()
 
         # Generate and move soil around
-        self.diffuser.run_one_step(dt)
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
 
 def main():  # pragma: no cover

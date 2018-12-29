@@ -244,11 +244,11 @@ def test_generic_bch(clock_simple):
     assert "GenericFuncBaselevelHandler" in model.boundary_handler
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
 
-    dt = 10.
-    model.run_one_step(dt)
+    step = 10.
+    model.run_one_step(step)
 
     dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
-    truth_z = -1. * dzdt * dt
+    truth_z = -1. * dzdt * step
     assert_array_equal(
         model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes]
     )

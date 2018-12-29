@@ -105,9 +105,9 @@ class BasicHy(ErosionModel):
         Set up a parameters variable.
 
         >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"dt": 1,
+        ...           "clock": {"step": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.},
+        ...                     "stop": 200.},
         ...           "number_of_node_rows" : 6,
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
@@ -174,8 +174,8 @@ class BasicHy(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def run_one_step(self, dt):
-        """Advance model **BasicHy** for one time-step of duration dt.
+    def run_one_step(self, step):
+        """Advance model **BasicHy** for one time-step of duration step.
 
         The **run_one_step** method does the following:
 
@@ -193,11 +193,11 @@ class BasicHy(ErosionModel):
 
         6. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``dt`` and increments model time by ``dt``.
+           by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Increment of time for which the model is run.
         """
 
@@ -214,25 +214,25 @@ class BasicHy(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
+        if "PrecipChanger" in self.boundary_handlers:
             self.eroder.K = (
                 self.K
-                * self.boundary_handler[
+                * self.boundary_handlers[
                     "PrecipChanger"
                 ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(
-            dt,
+            step,
             flooded_nodes=flooded,
             dynamic_dt=True,
             flow_director=self.flow_accumulator.flow_director,
         )
 
         # Do some soil creep
-        self.diffuser.run_one_step(dt)
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
 
 def main():  # pragma: no cover

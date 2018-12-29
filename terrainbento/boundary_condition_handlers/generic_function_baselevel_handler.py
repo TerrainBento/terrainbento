@@ -181,7 +181,7 @@ class GenericFuncBaselevelHandler(object):
             self.nodes_to_lower = self._grid.status_at_node != 0
             self.prefactor = 1.0
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """Run **GenericFuncBaselevelHandler** forward and update elevations.
 
         The **run_one_step** method provides a consistent interface to update
@@ -196,14 +196,14 @@ class GenericFuncBaselevelHandler(object):
 
         Parameters
         ----------
-        dt : float
+        step : float
             Duration of model time to advance forward.
         """
         self.dzdt = self.function(self._grid, self.model_time)
 
         # calculate lowering amount and subtract
         self.z[self.nodes_to_lower] += (
-            self.prefactor * self.dzdt[self.nodes_to_lower] * dt
+            self.prefactor * self.dzdt[self.nodes_to_lower] * step
         )
 
         # if bedrock__elevation exists as a field, lower it also
@@ -211,8 +211,8 @@ class GenericFuncBaselevelHandler(object):
         for of in other_fields:
             if of in self._grid.at_node:
                 self._grid.at_node[of][self.nodes_to_lower] += (
-                    self.prefactor * self.dzdt[self.nodes_to_lower] * dt
+                    self.prefactor * self.dzdt[self.nodes_to_lower] * step
                 )
 
         # increment model time
-        self.model_time += dt
+        self.model_time += step

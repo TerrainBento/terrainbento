@@ -59,7 +59,7 @@ def test_run_stochastic_opt_true(clock_04):
 
     model = BasicSt(params=params)
     assert model.opt_stochastic_duration == True
-    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
+    model.run_for(params["clock"]["step"], params["clock"]["stop"])
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(
         decimals=5
@@ -108,7 +108,7 @@ def test_run_stochastic_opt_false(clock_05):
 
     model = BasicSt(params=params)
     assert model.opt_stochastic_duration == False
-    model.run_for(params["clock"]["dt"], 10000.)
+    model.run_for(params["clock"]["step"], 10000.)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"])
     event_duration = np.asarray(model.rain_record["event_duration"])
@@ -119,7 +119,7 @@ def test_run_stochastic_opt_false(clock_05):
     assert (
         np.array_equiv(
             dry_times,
-            params["clock"]["dt"]
+            params["clock"]["step"]
             * (1. - params["rainfall_intermittency_factor"]),
         )
         is True
@@ -127,7 +127,7 @@ def test_run_stochastic_opt_false(clock_05):
     assert (
         np.array_equiv(
             wet_times,
-            params["clock"]["dt"] * (params["rainfall_intermittency_factor"]),
+            params["clock"]["step"] * (params["rainfall_intermittency_factor"]),
         )
         is True
     )
@@ -171,10 +171,10 @@ def test_reset_random_seed_stochastic_duration_true(clock_simple):
     }
 
     model = BasicSt(params=params)
-    dt = 1
+    step = 1
     runtime = 200
 
-    model.rain_generator.delta_t = dt
+    model.rain_generator.delta_t = step
     model.rain_generator.run_time = runtime
     model.reset_random_seed()
     duration_1 = []
@@ -187,7 +187,7 @@ def test_reset_random_seed_stochastic_duration_true(clock_simple):
         precip_1.append(p)
         duration_1.append(tr)
 
-    model.rain_generator.delta_t = dt
+    model.rain_generator.delta_t = step
     model.rain_generator.run_time = runtime
     model.reset_random_seed()
 
@@ -284,19 +284,19 @@ def test_run_opt_false_with_changer(clock_06):
 
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
+    model.run_for(params["clock"]["step"], params["clock"]["stop"])
     assert "PrecipChanger" in model.boundary_handler
 
     predicted_intermittency = params["rainfall_intermittency_factor"] + params[
         "PrecipChanger"
     ]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (
-        params["clock"]["run_duration"] - params["clock"]["dt"]
+        params["clock"]["stop"] - params["clock"]["step"]
     )
 
     predicted_intensity = params["rainfall__mean_rate"] + params[
         "PrecipChanger"
     ]["rainfall__mean_rate_time_rate_of_change"] * (
-        params["clock"]["run_duration"] - params["clock"]["dt"]
+        params["clock"]["stop"] - params["clock"]["step"]
     )
 
     assert model.rainfall_intermittency_factor == predicted_intermittency
@@ -334,7 +334,7 @@ def test_not_specifying_record_rain(clock_05):
 
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
+    model.run_for(params["clock"]["step"], params["clock"]["stop"])
     with pytest.raises(ValueError):
         model.write_storm_sequence_to_file()
 
@@ -361,7 +361,7 @@ def test_finalize_opt_duration_stochastic_false_too_short(clock_05):
 
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
+    model.run_for(params["clock"]["step"], params["clock"]["stop"])
     with pytest.raises(RuntimeError):
         model.finalize()
 
@@ -386,7 +386,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain(clock_07):
     }
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
+    model.run_for(params["clock"]["step"], params["clock"]["stop"])
     with pytest.raises(ValueError):
         model.finalize()
 
@@ -409,7 +409,7 @@ def test_finalize_opt_duration_stochastic_false(clock_07):
     }
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
+    model.run_for(params["clock"]["step"], params["clock"]["stop"])
     model.finalize()
 
     # assert that these are correct
@@ -445,7 +445,7 @@ def test_finalize_opt_duration_stochastic_true(clock_07):
 
     model = BasicSt(params=params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["dt"], params["clock"]["run_duration"])
+    model.run_for(params["clock"]["step"], params["clock"]["stop"])
     model.finalize()
 
     # assert that these are correct

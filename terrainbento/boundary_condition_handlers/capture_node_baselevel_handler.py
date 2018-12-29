@@ -42,12 +42,12 @@ class CaptureNodeBaselevelHandler(object):
             model run.
         capture_incision_rate : float, optional
             Rate of capture node elevation change.  Units are implied by the
-            model grids spatial scale and the time units of ``dt``. Negative
+            model grids spatial scale and the time units of ``step``. Negative
             values mean the outlet lowers. Default value is -0.01.
         post_capture_incision_rate : float, optional
             Rate of captured node elevation change after capture ceases.  Units
             are implied by the model grids spatial scale and the time units of
-            ``dt``. Negative values mean the outlet lowers. Default value is 0.
+            ``step``. Negative values mean the outlet lowers. Default value is 0.
 
         Examples
         --------
@@ -140,7 +140,7 @@ class CaptureNodeBaselevelHandler(object):
 
         self._grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """Run **CaptureNodeBaselevelHandler** to update captured node
         elevation.
 
@@ -156,17 +156,17 @@ class CaptureNodeBaselevelHandler(object):
 
         Parameters
         ----------
-        dt : float
+        step : float
             Duration of model time to advance forward.
         """
         # lower the correct amount.
         if self.model_time >= self.start:
             if self.capture_ends:
                 if self.model_time < self.stop:
-                    self.z[self.node] += self.rate * dt
+                    self.z[self.node] += self.rate * step
                 else:
-                    self.z[self.node] += self.post_capture_incision_rate * dt
+                    self.z[self.node] += self.post_capture_incision_rate * step
             else:
-                self.z[self.node] += self.rate * dt
+                self.z[self.node] += self.rate * step
         # increment model time
-        self.model_time += dt
+        self.model_time += step

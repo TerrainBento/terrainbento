@@ -15,7 +15,7 @@ def test_steady_Ksp_no_precip_changer():
     Kt = 0.005
     m = 0.5
     n = 1.0
-    dt = 10
+    step = 10
     v_sc = 0.001
     phi = 0.1
     F_f = 0.0
@@ -51,7 +51,7 @@ def test_steady_Ksp_no_precip_changer():
 
     model = BasicHyRt(params=params)
     for _ in range(2000):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -86,7 +86,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     Kt = 0.005
     m = 1. / 3.
     n = 2. / 3.
-    dt = 10
+    step = 10
     v_sc = 0.001
     phi = 0.1
     F_f = 0.0
@@ -123,7 +123,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
 
     model = BasicHyRt(params=params)
     for _ in range(2000):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -159,7 +159,7 @@ def test_diffusion_only():
     D = 1
     m = 0.75
     n = 1.0
-    dt = 1000
+    step = 1000
     v_sc = 0.001
     phi = 0.1
     F_f = 0.0
@@ -193,13 +193,13 @@ def test_diffusion_only():
             "lowering_rate": -U,
         },
     }
-    nts = int(total_time / dt)
+    nts = int(total_time / step)
 
     reference_node = 9
     # construct and run model
     model = BasicHyRt(params=params)
     for _ in range(nts):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
         U / (2. * D)

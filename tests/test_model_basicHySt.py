@@ -17,7 +17,7 @@ def test_steady_without_stochastic_duration():
     vs = 1.0e-9
     m = 1.0
     n = 1.0
-    dt = 1.0
+    step = 1.0
 
     # construct dictionary. note that D is turned off here
     params = {
@@ -51,7 +51,7 @@ def test_steady_without_stochastic_duration():
     # construct and run model
     model = BasicHySt(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
@@ -73,12 +73,12 @@ def test_stochastic_duration_rainfall_means():
     vs = 1.0e-9
     m = 1.0
     n = 1.0
-    dt = 200.0
+    step = 200.0
 
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 401., "run_duration": 400.},
+        "clock": {"step": step, "output_interval": 401., "stop": 400.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 6,
         "node_spacing": 100.0,
@@ -129,7 +129,7 @@ def test_diffusion_only():
     vs = 1.0e-9
     m = 0.75
     n = 1.0
-    dt = 1000
+    step = 1000
 
     # construct dictionary. note that D is turned off here
     params = {
@@ -160,13 +160,13 @@ def test_diffusion_only():
             "lowering_rate": -U,
         },
     }
-    nts = int(total_time / dt)
+    nts = int(total_time / step)
 
     reference_node = 9
     # construct and run model
     model = BasicHySt(params=params)
     for _ in range(nts):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
         U / (2. * D)

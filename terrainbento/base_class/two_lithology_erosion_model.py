@@ -154,8 +154,8 @@ class TwoLithologyErosionModel(ErosionModel):
 
     def _update_Ks_with_precip(self):
         # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
-            erode_factor = self.boundary_handler[
+        if "PrecipChanger" in self.boundary_handlers:
+            erode_factor = self.boundary_handlers[
                 "PrecipChanger"
             ].get_erodability_adjustment_factor()
             self.till_erody = self.K_till * erode_factor

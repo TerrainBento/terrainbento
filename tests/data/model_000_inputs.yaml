@@ -1,9 +1,9 @@
 output_filename : "model_000_output"
 model_grid: "RasterModelGrid"
 clock:
-  dt: 1
+  step: 1
   output_interval: 2.
-  run_duration: 200.
+  stop: 200.
 number_of_node_rows : 3
 number_of_node_columns : 20
 node_spacing : 100.0

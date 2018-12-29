@@ -7,6 +7,8 @@ new models. Derived models are models that have inherited from the
 that have been designed to modify model boundary conditions during a model run.
 """
 
+from .clock import Clock
+
 from .base_class import ErosionModel
 from .base_class import StochasticErosionModel
 from .base_class import TwoLithologyErosionModel
@@ -50,6 +52,7 @@ from .derived_models import BasicChRtTh
 
 
 __all__ = [
+"Clock",
     "ModelTemplate",
     "Basic",
     "BasicTh",

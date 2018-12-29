@@ -44,7 +44,7 @@ def test_diffusion_only():
     # Construct and run model
     model = BasicCh(params=params)
     for _ in range(runtime):
-        model.run_one_step(clock_09["dt"])
+        model.run_one_step(clock_09["step"])
 
     # Construct actual and predicted slope at right edge of domain
     x = 8.5 * dx
@@ -98,7 +98,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_05):
     # construct and run model
     model = BasicCh(params=params)
     for _ in range(run_time):
-        model.run_one_step(clock_05["dt"])
+        model.run_one_step(clock_05["step"])
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -143,7 +143,7 @@ def test_steady_Ksp_no_precip_changer(clock_02):
     # construct and run model
     model = BasicCh(params=params)
     for _ in range(runtime):
-        model.run_one_step(clock_02["dt"])
+        model.run_one_step(clock_02["step"])
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]

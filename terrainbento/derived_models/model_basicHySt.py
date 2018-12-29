@@ -104,9 +104,9 @@ class BasicHySt(StochasticErosionModel):
         Set up a parameters variable.
 
         >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"dt": 1,
+        ...           "clock": {"step": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.},
+        ...                     "stop": 200.},
         ...           "number_of_node_rows" : 6,
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
@@ -201,8 +201,8 @@ class BasicHySt(StochasticErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def run_one_step(self, dt):
-        """Advance model for one time-step of duration dt."""
+    def run_one_step(self, step):
+        """Advance model for one time-step of duration step."""
         # Direct and accumulate flow
         self.flow_accumulator.run_one_step()
 
@@ -215,13 +215,13 @@ class BasicHySt(StochasticErosionModel):
             )[0]
 
         # Handle water erosion
-        self.handle_water_erosion(dt, flooded)
+        self.handle_water_erosion(step, flooded)
 
         # Do some soil creep
-        self.diffuser.run_one_step(dt)
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
 
 def main():  # pragma: no cover

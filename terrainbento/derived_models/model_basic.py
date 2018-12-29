@@ -17,9 +17,10 @@ import numpy as np
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import ErosionModel
 
+_REQUIRED_FIELDS = ['topographic__elevation']
 
 class Basic(ErosionModel):
-    """**Basic** model program.
+    r"""**Basic** model program.
 
     **Basic** is a model program that evolves a topographic surface described
     by :math:`\eta` with the following governing equation:
@@ -52,31 +53,26 @@ class Basic(ErosionModel):
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
 
+
+    Required at-node grid fields:
+
+
     """
 
 
     def __init__(self,
-                 modelgrid,
                  clock,
-                 precipitator=None,
-                 runoff_generator=None,
-                 boundaryhandler=None,
-                 outputwriters=None,
-                 m_sp=0.1,
-                 n_sp=0.1
-                 water_erodability=3):
+                 grid,
+                 m_sp=0.5,
+                 n_sp=1.0,
+                 water_erodability=0.0001,
+                 regolith_transport_parameter=0.1,
+                 **kwargs):
         """
         Parameters
         ----------
-        input_file : str
-            Path to model input file. See wiki for discussion of input file
-            formatting. One of input_file or params is required.
-        params : dict
-            Dictionary containing the input file. One of input_file or params is
-            required.
-        OutputWriters : class, function, or list of classes and/or functions, optional
-            Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot).
+
+
 
         Returns
         -------
@@ -85,31 +81,21 @@ class Basic(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **Basic**. Note that a YAML input file can be used instead of
-        a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the terrainbento tutorials.
+        of model **Basic**. For more detailed examples, including steady-state
+        test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
-        >>> from terrainbento import Basic
-
-        Set up a parameters variable.
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"dt": 1,
-        ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0}
+        >>> from landlab import RasterModelGrid
+        >>> from landlab.values import random
+        >>> from terrainbento import Clock, Basic
+        >>> clock = Clock(start=0, stop=100, step=1)
+        >>> grid = RasterModelGrid((5,5))
+        >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
 
-        >>> model = Basic(params=params)
+        >>> model = Basic(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -120,22 +106,18 @@ class Basic(ErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(Basic, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
-        )
+        super(Basic, self).__init__(clock, grid, **kwargs)
+
+
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
 
         # Get Parameters:
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-        self.K = self._get_parameter_from_exponent("water_erodability") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.m = m_sp
+        self.n = n_sp
+        self.K = water_erodability * (self._length_factor ** (1. - (2. * self.m)))
 
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
+        regolith_transport_parameter = (self._length_factor ** 2.) * regolith_transport_parameter
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
@@ -147,8 +129,8 @@ class Basic(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def run_one_step(self, dt):
-        """Advance model **Basic** for one time-step of duration dt.
+    def run_one_step(self, step):
+        """Advance model **Basic** for one time-step of duration step.
 
         The **run_one_step** method does the following:
 
@@ -166,11 +148,11 @@ class Basic(ErosionModel):
 
         6. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``dt`` and increments model time by ``dt``.
+           by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Increment of time for which the model is run.
         """
         # Direct and accumulate flow
@@ -185,22 +167,22 @@ class Basic(ErosionModel):
             )[0]
 
         # If a PrecipChanger is being used, update the eroder"s K value.
-        if "PrecipChanger" in self.boundary_handler:
+        if "PrecipChanger" in self.boundary_handlers:
             self.eroder.K = (
                 self.K
-                * self.boundary_handler[
+                * self.boundary_handlers[
                     "PrecipChanger"
                 ].get_erodability_adjustment_factor()
             )
 
         # Do some water erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(dt, flooded_nodes=flooded)
+        self.eroder.run_one_step(step, flooded_nodes=flooded)
 
         # Do some soil creep
-        self.diffuser.run_one_step(dt)
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
 
 def main():  # pragma: no cover

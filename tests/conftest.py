@@ -3,61 +3,61 @@ import pytest
 
 @pytest.fixture()
 def clock_simple():
-    clock_simple = {"dt": 1., "output_interval": 2., "run_duration": 200.}
+    clock_simple = {"step": 1., "output_interval": 2., "stop": 200.}
     return clock_simple
 
 
 @pytest.fixture()
 def clock_01():
-    clock_01 = {"dt": 1., "output_interval": 2., "run_duration": 10.}
+    clock_01 = {"step": 1., "output_interval": 2., "stop": 10.}
     return clock_01
 
 
 @pytest.fixture()
 def clock_02():
-    clock_02 = {"dt": 10., "output_interval": 2., "run_duration": 1000.}
+    clock_02 = {"step": 10., "output_interval": 2., "stop": 1000.}
     return clock_02
 
 
 @pytest.fixture()
 def clock_03():
-    clock_03 = {"dt": 10., "output_interval": 1e3, "run_duration": 1e6}
+    clock_03 = {"step": 10., "output_interval": 1e3, "stop": 1e6}
     return clock_03
 
 
 @pytest.fixture()
 def clock_04():
-    clock_04 = {"dt": 10., "output_interval": 2., "run_duration": 100000.}
+    clock_04 = {"step": 10., "output_interval": 2., "stop": 100000.}
     return clock_04
 
 
 @pytest.fixture()
 def clock_05():
-    clock_05 = {"dt": 10., "output_interval": 2., "run_duration": 200.}
+    clock_05 = {"step": 10., "output_interval": 2., "stop": 200.}
     return clock_05
 
 
 @pytest.fixture()
 def clock_06():
-    clock_06 = {"dt": 1., "output_interval": 2., "run_duration": 3.}
+    clock_06 = {"step": 1., "output_interval": 2., "stop": 3.}
     return clock_06
 
 
 @pytest.fixture()
 def clock_07():
-    clock_07 = {"dt": 10., "output_interval": 2., "run_duration": 10000.}
+    clock_07 = {"step": 10., "output_interval": 2., "stop": 10000.}
     return clock_07
 
 
 @pytest.fixture()
 def clock_08():
-    clock_08 = {"dt": 1., "output_interval": 20., "run_duration": 20.}
+    clock_08 = {"step": 1., "output_interval": 20., "stop": 20.}
     return clock_08
 
 
 @pytest.fixture()
 def clock_09():
-    clock_09 = {"dt": 2, "output_interval": 2., "run_duration": 200.}
+    clock_09 = {"step": 2, "output_interval": 2., "stop": 200.}
     return clock_09
 
 

@@ -14,7 +14,7 @@ def test_Aeff():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
     threshold = 0.01
     hydraulic_conductivity = 0.1
     soil__initial_thickness = 0.1
@@ -47,7 +47,7 @@ def test_Aeff():
 
     model = BasicThVs(params=params)
     for _ in range(200):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -132,7 +132,7 @@ def test_diffusion_only():
     K = 0.0
     m = 1. / 3.
     n = 1.0
-    dt = 1000
+    step = 1000
     total_time = 5.0e6
     D = 1.0
     params = {
@@ -161,13 +161,13 @@ def test_diffusion_only():
         },
     }
 
-    nts = int(total_time / dt)
+    nts = int(total_time / step)
 
     reference_node = 9
     # construct and run model
     model = BasicThVs(params=params)
     for _ in range(nts):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
         U / (2. * D)
@@ -192,7 +192,7 @@ def test_steady_Ksp_no_precip_changer():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
     threshold = 0.01
     # construct dictionary. note that D is turned off here
     params = {
@@ -222,7 +222,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct and run model
     model = BasicThVs(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     # note that since we have a smooth threshold, we do not have a true
@@ -255,7 +255,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
     threshold = 0.000001
     # construct dictionary. note that D is turned off here
     params = {
@@ -286,7 +286,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct and run model
     model = BasicThVs(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]

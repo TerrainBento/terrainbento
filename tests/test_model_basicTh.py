@@ -28,7 +28,7 @@ def test_steady_Ksp_no_precip_changer():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
     threshold = 0.01
     # construct dictionary. note that D is turned off here
     params = {
@@ -55,7 +55,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct and run model
     model = BasicTh(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     # note that since we have a smooth threshold, we do not have a true
@@ -88,14 +88,14 @@ def test_steady_Ksp_no_precip_changer():
 #     K = 0.001
 #     m = 0.5
 #     n = 1.0
-#     dt = 1000
+#     step = 1000
 #     threshold = 0.
 #     # construct dictionary. note that D is turned off here
 #     params = {
 #         "model_grid": "RasterModelGrid",
-#         "clock": {"dt": 1,
+#         "clock": {"step": 1,
 #         "output_interval": 2.,
-#         "run_duration": 200.},
+#         "stop": 200.},
 #         "number_of_node_rows": 3,
 #         "number_of_node_columns": 20,
 #         "node_spacing": 100.0,
@@ -115,7 +115,7 @@ def test_steady_Ksp_no_precip_changer():
 #     # construct and run model
 #     model = BasicTh(params=params)
 #     for _ in range(100):
-#         model.run_one_step(dt)
+#         model.run_one_step(step)
 #
 #     # construct actual and predicted slopes
 #     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -134,7 +134,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
     threshold = 0.000001
     # construct dictionary. note that D is turned off here
     params = {
@@ -162,7 +162,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct and run model
     model = BasicTh(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -214,7 +214,7 @@ def test_diffusion_only():
     D = 1
     m = 0.75
     n = 1.0
-    dt = 1000
+    step = 1000
     threshold = 0.01
 
     # construct dictionary. note that D is turned off here
@@ -239,13 +239,13 @@ def test_diffusion_only():
             "lowering_rate": -U,
         },
     }
-    nts = int(total_time / dt)
+    nts = int(total_time / step)
 
     reference_node = 9
     # construct and run model
     model = BasicTh(params=params)
     for _ in range(nts):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
         U / (2. * D)

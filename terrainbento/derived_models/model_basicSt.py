@@ -78,8 +78,8 @@ class BasicSt(StochasticErosionModel):
     **run_one_step** is called, storm intensity is generated at random from an
     exponential distribution with mean given by the parameter
     ``rainfall__mean_rate``. The stream power component is run for only a
-    fraction of the time step duration dt, as specified by the parameter
-    ``rainfall_intermittency_factor``. For example, if ``dt`` is 10 years and
+    fraction of the time step duration step, as specified by the parameter
+    ``rainfall_intermittency_factor``. For example, if ``step`` is 10 years and
     the intermittency factor is 0.25, then the stream power component is run
     for only 2.5 years.
 
@@ -130,9 +130,9 @@ class BasicSt(StochasticErosionModel):
         Set up a parameters variable.
 
         >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"dt": 1,
+        ...           "clock": {"step": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.},
+        ...                     "stop": 200.},
         ...           "number_of_node_rows" : 6,
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
@@ -207,8 +207,8 @@ class BasicSt(StochasticErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def run_one_step(self, dt):
-        """Advance model ``Basic`` for one time-step of duration dt.
+    def run_one_step(self, step):
+        """Advance model ``Basic`` for one time-step of duration step.
 
         The **run_one_step** method does the following:
 
@@ -224,11 +224,11 @@ class BasicSt(StochasticErosionModel):
 
         5. Finalizes the step using the ``ErosionModel`` base class function
         **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+        by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Increment of time for which the model is run.
         """
 
@@ -244,13 +244,13 @@ class BasicSt(StochasticErosionModel):
             )[0]
 
         # Handle water erosion
-        self.handle_water_erosion(dt, flooded)
+        self.handle_water_erosion(step, flooded)
 
         # Do some soil creep
-        self.diffuser.run_one_step(dt)
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
 
 def main():  # pragma: no cover

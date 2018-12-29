@@ -32,7 +32,7 @@ mean_storm_depth : float
     Average depth of precipitation events.
 
 If ``opt_stochastic_duration=False`` then the duration indicated by the
-parameter ``dt`` will first be split into a series of sub-timesteps based on
+parameter ``step`` will first be split into a series of sub-timesteps based on
 the parameter ``number_of_sub_time_steps``, and then each of these
 sub-timesteps will experience a duration of rain and no-rain based on the value
 of ``rainfall_intermittency_factor``. The duration of rain and no-rain
@@ -128,7 +128,7 @@ class StochasticErosionModel(ErosionModel):
 
         # verify that opt_stochastic_duration and PrecipChanger are consistent
         if self.opt_stochastic_duration and (
-            "PrecipChanger" in self.boundary_handler
+            "PrecipChanger" in self.boundary_handlers
         ):
             msg = (
                 "terrainbento StochasticErosionModel: setting "
@@ -139,9 +139,9 @@ class StochasticErosionModel(ErosionModel):
 
         self.seed = int(self.params.get("random_seed", 0))
         # initialize record for storms. Depending on how this model is run
-        # (stochastic time, number_time_steps>1, more manually) the dt may
+        # (stochastic time, number_time_steps>1, more manually) the step may
         # change. Thus, rather than writing routines to reconstruct the time
-        # series of precipitation from the dt could change based on users use,
+        # series of precipitation from the step could change based on users use,
         # we"ll record this with the model run instead of re-running.
 
         # make this the non-default option.
@@ -194,7 +194,7 @@ class StochasticErosionModel(ErosionModel):
         self.discharge[:] = runoff * self.area
         return runoff
 
-    def run_for_stochastic(self, dt, runtime):
+    def run_for_stochastic(self, step, runtime):
         """**Run_for** with stochastic duration.
 
         Run model without interruption for a specified time period, using
@@ -202,16 +202,16 @@ class StochasticErosionModel(ErosionModel):
 
         **run_for_stochastic** runs the model for the duration ``runtime`` with
         model time steps given by the PrecipitationDistribution component.
-        Model run steps will not exceed the duration given by ``dt``.
+        Model run steps will not exceed the duration given by ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Model run timestep,
         runtime : float
             Total duration for which to run model.
         """
-        self.rain_generator.delta_t = dt
+        self.rain_generator.delta_t = step
         self.rain_generator.run_time = runtime
         for (
             tr,
@@ -230,8 +230,8 @@ class StochasticErosionModel(ErosionModel):
                     "mean_interstorm_duration"
                 ],
                 mean_storm_depth=self.params["mean_storm_depth"],
-                total_t=self.params["clock"]["run_duration"],
-                delta_t=self.params["clock"]["dt"],
+                total_t=self.params["clock"]["stop"],
+                delta_t=self.clock.step,
                 random_seed=self.seed,
             )
             self.run_for = self.run_for_stochastic  # override base method
@@ -283,7 +283,7 @@ class StochasticErosionModel(ErosionModel):
         """
         pass
 
-    def handle_water_erosion(self, dt, flooded):
+    def handle_water_erosion(self, step, flooded):
         """Handle water erosion for stochastic models.
 
         If we are running stochastic duration, then self.rain_rate will
@@ -310,14 +310,14 @@ class StochasticErosionModel(ErosionModel):
 
         Parameters
         ----------
-        dt : float
+        step : float
             Model run timestep.
         flooded_nodes : ndarray of int (optional)
             IDs of nodes that are flooded and should have no erosion.
         """
         # (if we're varying precipitation parameters through time, update them)
-        if "PrecipChanger" in self.boundary_handler:
-            self.rainfall_intermittency_factor, self.rainfall__mean_rate = self.boundary_handler[
+        if "PrecipChanger" in self.boundary_handlers:
+            self.rainfall_intermittency_factor, self.rainfall__mean_rate = self.boundary_handlers[
                 "PrecipChanger"
             ].get_current_precip_params()
 
@@ -328,22 +328,22 @@ class StochasticErosionModel(ErosionModel):
             runoff = self.calc_runoff_and_discharge()
 
             self.eroder.run_one_step(
-                dt, flooded_nodes=flooded, rainfall_intensity_if_used=runoff
+                step, flooded_nodes=flooded, rainfall_intensity_if_used=runoff
             )
             if self.record_rain:
                 # save record into the rain record
                 self.record_rain_event(
-                    self.model_time, dt, self.rain_rate, runoff
+                    self.model_time, step, self.rain_rate, runoff
                 )
 
         elif self.opt_stochastic_duration and self.rain_rate <= 0.0:
             # calculate and record the time with no rain:
             if self.record_rain:
-                self.record_rain_event(self.model_time, dt, 0, 0)
+                self.record_rain_event(self.model_time, step, 0, 0)
 
         elif not self.opt_stochastic_duration:
 
-            dt_water = (dt * self.rainfall_intermittency_factor) / float(
+            dt_water = (step * self.rainfall_intermittency_factor) / float(
                 self.n_sub_steps
             )
             for i in range(self.n_sub_steps):
@@ -371,7 +371,7 @@ class StochasticErosionModel(ErosionModel):
             if self.record_rain:
 
                 # calculate dry time
-                dt_dry = dt * (1 - self.rainfall_intermittency_factor)
+                dt_dry = step * (1 - self.rainfall_intermittency_factor)
 
                 # if dry time is greater than zero, record.
                 if dt_dry > 0:

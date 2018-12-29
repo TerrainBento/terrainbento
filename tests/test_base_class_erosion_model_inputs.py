@@ -55,21 +55,21 @@ def test_both_node_rows_and_DEM(clock_simple):
 def test_no_required_params():
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1, "output_interval": 2.},
+        "clock": {"step": 1, "output_interval": 2.},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1, "run_duration": 10.},
+        "clock": {"step": 1, "stop": 10.},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"output_interval": 2, "run_duration": 10.},
+        "clock": {"output_interval": 2, "stop": 10.},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
@@ -78,21 +78,21 @@ def test_no_required_params():
 def test_bad_req_params():
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": "spam", "output_interval": 2., "run_duration": 10.},
+        "clock": {"step": "spam", "output_interval": 2., "stop": 10.},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1, "output_interval": "eggs", "run_duration": 10.},
+        "clock": {"step": 1, "output_interval": "eggs", "stop": 10.},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)
 
     params = {
         "model_grid": "HexModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": "wooo"},
+        "clock": {"step": 1, "output_interval": 2., "stop": "wooo"},
     }
     with pytest.raises(ValueError):
         ErosionModel(params=params)

@@ -16,7 +16,7 @@ def test_steady_Kss_no_precip_changer():
     m = 1. / 3.
     n = 2. / 3.
     Sc = 0.1
-    dt = 1000
+    step = 1000
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
@@ -47,7 +47,7 @@ def test_steady_Kss_no_precip_changer():
     # construct and run model
     model = BasicChRt(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
@@ -74,7 +74,7 @@ def test_steady_Ksp_no_precip_changer(clock_simple):
     m = 0.5
     n = 1.0
     Sc = 0.1
-    dt = 1000
+    step = 1000
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
@@ -105,7 +105,7 @@ def test_steady_Ksp_no_precip_changer(clock_simple):
     # construct and run model
     model = BasicChRt(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
@@ -131,7 +131,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     Kt = 0.005
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
     Sc = 0.1
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
@@ -164,7 +164,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     # construct and run model
     model = BasicChRt(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
@@ -188,7 +188,7 @@ def test_diffusion_only():
     U = 0.0005
     m = 0.5
     n = 1.0
-    dt = 2
+    step = 2
     D = 1.0
     S_c = 0.3
     dx = 10.0
@@ -199,7 +199,7 @@ def test_diffusion_only():
     # Construct dictionary. Note that stream power is turned off
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 2., "run_duration": 200.},
+        "clock": {"step": step, "output_interval": 2., "stop": 200.},
         "number_of_node_rows": 21,
         "number_of_node_columns": 3,
         "node_spacing": dx,
@@ -224,7 +224,7 @@ def test_diffusion_only():
     # Construct and run model
     model = BasicChRt(params=params)
     for _ in range(runtime):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # Construct actual and predicted slope at top edge of domain
     x = 8.5 * dx

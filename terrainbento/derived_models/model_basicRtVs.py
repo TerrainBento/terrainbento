@@ -155,9 +155,9 @@ class BasicRtVs(TwoLithologyErosionModel):
         Set up a parameters variable.
 
         >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"dt": 1,
+        ...           "clock": {"step": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.},
+        ...                     "stop": 200.},
         ...           "number_of_node_rows" : 6,
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
@@ -242,8 +242,8 @@ class BasicRtVs(TwoLithologyErosionModel):
             np.exp(-self.sat_param * slope[cores] / area[cores])
         )
 
-    def run_one_step(self, dt):
-        """Advance model **BasicRtVs** for one time-step of duration dt.
+    def run_one_step(self, step):
+        """Advance model **BasicRtVs** for one time-step of duration step.
 
         The **run_one_step** method does the following:
 
@@ -266,11 +266,11 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         7. Finalizes the step using the **ErosionModel** base class function
            **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``dt`` and increments model time by ``dt``.
+           by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Increment of time for which the model is run.
         """
         # Direct and accumulate flow
@@ -294,13 +294,13 @@ class BasicRtVs(TwoLithologyErosionModel):
         self._update_erodability_field()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(dt)
+        self.eroder.run_one_step(step)
 
         # Do some soil creep
-        self.diffuser.run_one_step(dt)
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
 
 def main():  # pragma: no cover

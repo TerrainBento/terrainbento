@@ -13,7 +13,7 @@ def test_Aeff():
     K = 0.001
     m = 1. / 3.
     n = 2. / 3.
-    dt = 1000
+    step = 1000
     hydraulic_conductivity = 0.1
     soil__initial_thickness = 0.1
     recharge_rate = 0.5
@@ -45,7 +45,7 @@ def test_Aeff():
 
     model = BasicVs(params=params)
     for _ in range(200):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -86,7 +86,7 @@ def test_steady_Ksp_no_precip_changer():
     K = 0.001
     m = 1. / 3.
     n = 2. / 3.
-    dt = 1000
+    step = 1000
 
     # construct dictionary. note that D is turned off here
     params = {
@@ -115,7 +115,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct and run model
     model = BasicVs(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -134,7 +134,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.001
     m = 1. / 3.
     n = 2. / 3.
-    dt = 1000
+    step = 1000
 
     # construct dictionary. note that D is turned off here
     params = {
@@ -164,7 +164,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct and run model
     model = BasicVs(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -183,7 +183,7 @@ def test_diffusion_only():
     K = 0.0
     m = 1. / 3.
     n = 2. / 3.
-    dt = 1000
+    step = 1000
     total_time = 5.0e6
     D = 1.0
     params = {
@@ -211,13 +211,13 @@ def test_diffusion_only():
         },
     }
 
-    nts = int(total_time / dt)
+    nts = int(total_time / step)
 
     reference_node = 9
     # construct and run model
     model = BasicVs(params=params)
     for _ in range(nts):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
         U / (2. * D)

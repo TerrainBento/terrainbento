@@ -18,7 +18,7 @@ def test_steady_Kss_no_precip_changer():
     Kt = 0.005
     m = 1. / 3.
     n = 2. / 3.
-    dt = 1000
+    step = 1000
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
@@ -48,7 +48,7 @@ def test_steady_Kss_no_precip_changer():
     # construct and run model
     model = BasicRt(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
@@ -74,7 +74,7 @@ def test_steady_Ksp_no_precip_changer():
     Kt = 0.005
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
@@ -104,7 +104,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct and run model
     model = BasicRt(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
@@ -130,7 +130,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     Kt = 0.005
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
 
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
     # construct dictionary. note that D is turned off here
@@ -161,7 +161,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct and run model
     model = BasicRt(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
@@ -187,7 +187,7 @@ def test_diffusion_only():
     D = 1
     m = 0.5
     n = 1.0
-    dt = 1000
+    step = 1000
 
     # construct dictionary. note that D is turned off here
     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
@@ -214,13 +214,13 @@ def test_diffusion_only():
             "lowering_rate": -U,
         },
     }
-    nts = int(total_time / dt)
+    nts = int(total_time / step)
 
     reference_node = 9
     # construct and run model
     model = BasicRt(params=params)
     for _ in range(nts):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
         U / (2. * D)

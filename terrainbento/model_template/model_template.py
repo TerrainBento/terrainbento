@@ -87,9 +87,9 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         Set up a parameters variable.
 
         >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"dt": 1,
+        ...           "clock": {"step": 1,
         ...                     "output_interval": 2.,
-        ...                     "run_duration": 200.},}
+        ...                     "stop": 200.},}
 
         Construct the model.
 
@@ -104,19 +104,19 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
         # put all actions needed to initialize the model below this line.
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """Run each component for one time step.
 
         Put any additional information about **run_one_step** here.
         Importantly, **run_one_step** should only take on parameter,
-        ``dt``.
+        ``step``.
         """
         # write here all actions needed to run the model forward for a time
-        # increment `dt`.
+        # increment `step`.
 
         # end with finalize__run_one_step which does things at the end of
         # run_one_step that are required by all models.
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
     # if you have additional class functions, you can define them here.
     def my_internal_function(self):

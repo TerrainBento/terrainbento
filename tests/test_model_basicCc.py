@@ -12,7 +12,7 @@ def test_steady_Ksp_with_depression_finding():
     K = 0.001
     m = 0.5
     n = 1.0
-    dt = 10
+    step = 10
     climate_factor = 0.5
     climate_constant_date = 10
     run_time = 100
@@ -43,7 +43,7 @@ def test_steady_Ksp_with_depression_finding():
     # construct and run model
     model = BasicCv(params=params)
     for _ in range(run_time):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # XXX assertions.
 
@@ -54,14 +54,14 @@ def test_diffusion_only():
     D = 1
     m = 0.75
     n = 1.0
-    dt = 1000
+    step = 1000
     climate_factor = 0.5
     climate_constant_date = 10
 
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": 1, "output_interval": 2., "run_duration": total_time},
+        "clock": {"step": 1, "output_interval": 2., "stop": total_time},
         "number_of_node_rows": 3,
         "number_of_node_columns": 21,
         "node_spacing": 100.0,
@@ -81,13 +81,13 @@ def test_diffusion_only():
             "lowering_rate": -U,
         },
     }
-    nts = int(total_time / dt)
+    nts = int(total_time / step)
 
     reference_node = 9
     # construct and run model
     model = BasicCv(params=params)
     for _ in range(nts):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
         U / (2. * D)

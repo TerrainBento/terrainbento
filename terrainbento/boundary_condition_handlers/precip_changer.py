@@ -338,7 +338,7 @@ class PrecipChanger(object):
         ``infiltration_capacity`` are all assumed to be the same.
 
         The value passed by ``time_unit`` is assumed to be consistent with
-        the time units of `dt`.
+        the time units of `step`.
 
         The length units are assumed to be consistent with the model grid
         definition.
@@ -581,7 +581,7 @@ class PrecipChanger(object):
             # if before starting time, return 1.0
             return 1.0
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """Run **PrecipChanger** forward and update model time.
 
         The **run_one_step** method provides a consistent interface to update
@@ -592,7 +592,7 @@ class PrecipChanger(object):
 
         Parameters
         ----------
-        dt : float
+        step : float
             Duration of model time to advance forward.
         """
-        self.model_time += dt
+        self.model_time += step

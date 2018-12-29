@@ -49,12 +49,12 @@ class NotCoreNodeBaselevelHandler(object):
         lowering_rate : float, optional
             Lowering rate of the outlet node. One of ``lowering_rate`` and
             ``lowering_file_path`` is required. Units are implied by the
-            model grids spatial scale and the time units of ``dt``. Negative
+            model grids spatial scale and the time units of ``step``. Negative
             values mean that the outlet lowers.
         lowering_file_path : str, optional
             Lowering history file path. One of ``lowering_rate``
             and `lowering_file_path` is required. Units are implied by
-            the model grids spatial scale and the time units of ``dt``.
+            the model grids spatial scale and the time units of ``step``.
             This file should be readable with
             ``np.loadtxt(filename, skiprows=1, delimiter=",")``
             Its first column is time and its second colum is the elevation
@@ -208,7 +208,7 @@ class NotCoreNodeBaselevelHandler(object):
                     )
                 )
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """Run **NotCoreNodeBaselevelHandler** forward and update elevations.
 
         The **run_one_step** method provides a consistent interface to update
@@ -223,7 +223,7 @@ class NotCoreNodeBaselevelHandler(object):
 
         Parameters
         ----------
-        dt : float
+        step : float
             Duration of model time to advance forward.
         """
         # next, lower the correct nodes the desired amount
@@ -232,7 +232,7 @@ class NotCoreNodeBaselevelHandler(object):
 
             # calculate lowering amount and subtract
             self.z[self.nodes_to_lower] += (
-                self.prefactor * self.lowering_rate * dt
+                self.prefactor * self.lowering_rate * step
             )
 
             # if bedrock__elevation exists as a field, lower it also
@@ -243,7 +243,7 @@ class NotCoreNodeBaselevelHandler(object):
             for of in other_fields:
                 if of in self._grid.at_node:
                     self._grid.at_node[of][self.nodes_to_lower] += (
-                        self.prefactor * self.lowering_rate * dt
+                        self.prefactor * self.lowering_rate * step
                     )
 
         # if there is an outlet elevation object
@@ -272,4 +272,4 @@ class NotCoreNodeBaselevelHandler(object):
             self.z[self.nodes_to_lower] -= self.topo_change
 
         # increment model time
-        self.model_time += dt
+        self.model_time += step

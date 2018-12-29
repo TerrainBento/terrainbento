@@ -14,7 +14,7 @@ def test_diffusion_only():
     K = 0.0
     m = 0.5
     n = 1.0
-    dt = 10
+    step = 10
     dx = 10.0
 
     max_soil_production_rate = 0.002
@@ -28,7 +28,7 @@ def test_diffusion_only():
     # Construct dictionary. Note that stream power is turned off
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 2., "run_duration": 200.},
+        "clock": {"step": step, "output_interval": 2., "stop": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": number_of_node_columns,
         "node_spacing": dx,
@@ -55,7 +55,7 @@ def test_diffusion_only():
     # Construct and run model
     model = BasicSaVs(params=params)
     for _ in range(100000):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # test steady state soil depth
     actual_depth = model.grid.at_node["soil__depth"][30]
@@ -103,7 +103,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     K = 0.01
     m = 0.5
     n = 1.0
-    dt = 1000.
+    step = 1000.
     dx = 100.0
     max_soil_production_rate = 0.0
     soil_production_decay_depth = 0.2
@@ -115,7 +115,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 2., "run_duration": 200.},
+        "clock": {"step": step, "output_interval": 2., "stop": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": dx,
@@ -142,7 +142,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     # construct and run model
     model = BasicSaVs(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
@@ -162,7 +162,7 @@ def test_steady_Ksp_no_precip_changer():
     K = 0.01
     m = 0.5
     n = 1.0
-    dt = 1000.
+    step = 1000.
     dx = 100.0
     max_soil_production_rate = 0.0
     soil_production_decay_depth = 0.2
@@ -174,7 +174,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct dictionary. note that D is turned off here
     params = {
         "model_grid": "RasterModelGrid",
-        "clock": {"dt": dt, "output_interval": 2., "run_duration": 200.},
+        "clock": {"step": step, "output_interval": 2., "stop": 200.},
         "number_of_node_rows": 3,
         "number_of_node_columns": 20,
         "node_spacing": dx,
@@ -200,7 +200,7 @@ def test_steady_Ksp_no_precip_changer():
     # construct and run model
     model = BasicSaVs(params=params)
     for _ in range(100):
-        model.run_one_step(dt)
+        model.run_one_step(step)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
