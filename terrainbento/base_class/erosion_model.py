@@ -161,10 +161,8 @@ class ErosionModel(object):
 
         runoff_generator : terrainbento runoff_generator, optional
 
-        boundary_handlers : optional
 
-        outputwriters : optional
-        boundary_handlers : str or list of str, optional
+        boundary_handlers : dictionary, optional
             terrainbento provides the ability for an arbitrary number of boundary
             condition handler classes to operate on the model grid each time step in order
             to handle time-variable boundary conditions such as: changing a watershed
@@ -178,8 +176,9 @@ class ErosionModel(object):
             dictionary with the name of the boundary handler that contains its own
             parameter dictionary. If this is the case, the handler-specific dictionary
             is passed to instantiate the boundary handler.
-        output_writers :
-
+        outputwriters : class, function, or list, optional
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot).
         flow_director : str, optional
             String name of a Landlab FlowDirector. All options that the Landlab
             FlowAccumulator is compatible with are permitted. Default is
