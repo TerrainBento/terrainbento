@@ -201,7 +201,9 @@ class BasicDdRt(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicDdRt, self).__init__(clock, grid, **kwargs)
 
-        self.threshold_value = self._length_factor * water_erosion_rule__threshold
+        self.threshold_value = (
+            self._length_factor * water_erosion_rule__threshold
+        )
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
@@ -223,7 +225,9 @@ class BasicDdRt(TwoLithologyErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
+        self.thresh_change_per_depth = (
+            water_erosion_rule__thresh_depth_derivative
+        )
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

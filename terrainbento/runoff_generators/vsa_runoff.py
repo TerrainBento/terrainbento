@@ -20,7 +20,9 @@ class VariableSourceAreaRunoff(object):
 
         self.H = mg.at_node["soil__depth"]
 
-        self.K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
+        self.K_hydraulic_conductivity = (
+            self._length_factor
+        ) * hydraulic_conductivity
 
     def run_one_step(self, step):
         """

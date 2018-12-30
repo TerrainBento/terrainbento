@@ -163,8 +163,7 @@ class BasicDd(ErosionModel):
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
         self.threshold_value = (
-            self._length_factor
-            * water_erosion_rule__threshold
+            self._length_factor * water_erosion_rule__threshold
         )
 
         # Create a field for the (initial) erosion threshold
@@ -184,7 +183,9 @@ class BasicDd(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
+        self.thresh_change_per_depth = (
+            water_erosion_rule__thresh_depth_derivative
+        )
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

@@ -81,7 +81,7 @@ class BasicHySt(StochasticErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
-        solver='basic',
+        solver="basic",
         **kwargs
     ):
         """
@@ -160,8 +160,7 @@ class BasicHySt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = (water_erodability_stochastic
-        ) * (
+        self.K = (water_erodability_stochastic) * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 

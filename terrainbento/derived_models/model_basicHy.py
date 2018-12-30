@@ -83,7 +83,7 @@ class BasicHy(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
-        solver='basic',
+        solver="basic",
         **kwargs
     ):
         """

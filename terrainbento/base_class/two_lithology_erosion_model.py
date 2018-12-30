@@ -67,9 +67,13 @@ class TwoLithologyErosionModel(ErosionModel):
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-        self.K_rock = water_erodability_lower * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_rock = water_erodability_lower * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
-        self.K_till = water_erodability_upper * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_till = water_erodability_upper * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock

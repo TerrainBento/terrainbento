@@ -170,22 +170,18 @@ class BasicDdSt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = (water_erodability_stochastic
-        ) * (
+        self.K = (water_erodability_stochastic) * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * (regolith_transport_parameter
+        regolith_transport_parameter = (self._length_factor ** 2.) * (
+            regolith_transport_parameter
         )
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
         self.threshold_value = (
-            self._length_factor
-            * water_erosion_rule__threshold
-            )
-
+            self._length_factor * water_erosion_rule__threshold
+        )
 
         # Get the parameter for rate of threshold increase with erosion depth
         self.thresh_change_per_depth = thresh_change_per_depth

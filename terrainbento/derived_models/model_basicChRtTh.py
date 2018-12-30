@@ -214,7 +214,6 @@ class BasicChRtTh(TwoLithologyErosionModel):
         self.rock_thresh = water_erosion_rule_lower__threshold
         self.till_thresh = water_erosion_rule_upper__threshold
 
-
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()
 

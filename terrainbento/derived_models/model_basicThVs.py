@@ -166,7 +166,9 @@ class BasicThVs(ErosionModel):
 
         recharge_rate = (self._length_factor) * recharge_rate
         soil_thickness = (self._length_factor) * soil__initial_thickness
-        K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
+        K_hydraulic_conductivity = (
+            self._length_factor
+        ) * hydraulic_conductivity
 
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")

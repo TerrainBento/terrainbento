@@ -177,10 +177,18 @@ class BasicSa(ErosionModel):
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
-        initial_soil_thickness = (self._length_factor) * soil__initial_thickness
-        soil_transport_decay_depth = (self._length_factor) * soil_transport_decay_depth
-        max_soil_production_rate = (self._length_factor) * soil_production__maximum_rate
-        soil_production_decay_depth = (self._length_factor) * soil_production__decay_depth
+        initial_soil_thickness = (
+            self._length_factor
+        ) * soil__initial_thickness
+        soil_transport_decay_depth = (
+            self._length_factor
+        ) * soil_transport_decay_depth
+        max_soil_production_rate = (
+            self._length_factor
+        ) * soil_production__maximum_rate
+        soil_production_decay_depth = (
+            self._length_factor
+        ) * soil_production__decay_depth
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(

@@ -115,7 +115,7 @@ class BasicHySa(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
-        solver='basic',
+        solver="basic",
         **kwargs
     ):
         """
@@ -194,23 +194,29 @@ class BasicHySa(ErosionModel):
 
         self.m = m_sp
         self.n = n_sp
-        self.K_br = (water_erodability_rock
-        ) * (self._length_factor ** (1. - (2. * self.m)))
-        self.K_sed = (water_erodability_sediment
-        ) * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_br = (water_erodability_rock) * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
+        self.K_sed = (water_erodability_sediment) * (
+            self._length_factor ** (1. - (2. * self.m))
+        )
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-        initial_soil_thickness = (self._length_factor) *  soil__initial_thickness
+        initial_soil_thickness = (
+            self._length_factor
+        ) * soil__initial_thickness
 
-
-        soil_transport_decay_depth = (self._length_factor) * soil_transport_decay_depth
-        max_soil_production_rate = (self._length_factor) * soil_production__maximum_rate
-        soil_production_decay_depth = (self._length_factor) * soil_production__decay_dept
-
-
-
+        soil_transport_decay_depth = (
+            self._length_factor
+        ) * soil_transport_decay_depth
+        max_soil_production_rate = (
+            self._length_factor
+        ) * soil_production__maximum_rate
+        soil_production_decay_depth = (
+            self._length_factor
+        ) * soil_production__decay_dept
 
         # Instantiate a SPACE component
         self.eroder = Space(

@@ -176,7 +176,9 @@ class BasicStVs(StochasticErosionModel):
         ) * regolith_transport_parameter
 
         soil_thickness = (self._length_factor) * soil__initial_thickness
-        K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
+        K_hydraulic_conductivity = (
+            self._length_factor
+        ) * hydraulic_conductivity
 
         # instantiate rain generator
         self.instantiate_rain_generator()

@@ -179,14 +179,14 @@ class BasicDdVs(ErosionModel):
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-
         recharge_rate = (self._length_factor) * recharge_rate
         soil_thickness = (self._length_factor) * soil__initial_thickness
-        K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
-        self.threshold_value = (
+        K_hydraulic_conductivity = (
             self._length_factor
-            * water_erosion_rule__threshold
-            )
+        ) * hydraulic_conductivity
+        self.threshold_value = (
+            self._length_factor * water_erosion_rule__threshold
+        )
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
@@ -212,7 +212,9 @@ class BasicDdVs(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
+        self.thresh_change_per_depth = (
+            water_erosion_rule__thresh_depth_derivative
+        )
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
