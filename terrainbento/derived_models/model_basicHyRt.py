@@ -203,7 +203,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicHyRt, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         settling_velocity = self._get_parameter_from_exponent(

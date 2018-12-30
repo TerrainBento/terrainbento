@@ -119,7 +119,7 @@ class StochasticErosionModel(ErosionModel):
         """
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         self.opt_stochastic_duration = self.params.get(

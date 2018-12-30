@@ -130,7 +130,7 @@ class BasicTh(ErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicTh, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         if float(self.params["n_sp"]) != 1.0:

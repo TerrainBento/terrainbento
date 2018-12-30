@@ -200,7 +200,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicDdRt, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         self.threshold_value = (

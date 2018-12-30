@@ -220,7 +220,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicRtSa, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         # Set up rock-till boundary and associated grid fields.

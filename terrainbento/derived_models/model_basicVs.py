@@ -147,7 +147,7 @@ class BasicVs(ErosionModel):
 
         # Call ErosionModel"s init
         super(BasicVs, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
         # Get Parameters:
         self.m = self.params["m_sp"]

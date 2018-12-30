@@ -142,7 +142,7 @@ class BasicCv(ErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicCv, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]

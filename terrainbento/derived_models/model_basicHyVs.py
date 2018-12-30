@@ -161,7 +161,7 @@ class BasicHyVs(ErosionModel):
 
         # Call ErosionModel"s init
         super(BasicHyVs, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         self.m = self.params["m_sp"]

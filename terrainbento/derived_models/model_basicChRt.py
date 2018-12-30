@@ -125,6 +125,8 @@ class BasicChRt(TwoLithologyErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        critical_slope=0.3,
+        number_of_taylor_terms=3,
         **kwargs
     ):
         """
@@ -192,7 +194,7 @@ class BasicChRt(TwoLithologyErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicChRt, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         # Set up rock-till boundary and associated grid fields.

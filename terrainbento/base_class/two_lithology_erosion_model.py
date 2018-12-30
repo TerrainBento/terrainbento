@@ -59,7 +59,7 @@ class TwoLithologyErosionModel(ErosionModel):
         """
         # Call ErosionModel"s init
         super(TwoLithologyErosionModel, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         # Get all common parameters

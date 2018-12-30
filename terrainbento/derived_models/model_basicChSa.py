@@ -105,6 +105,8 @@ class BasicChSa(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        critical_slope=0.3,
+        number_of_taylor_terms=3,
         **kwargs
     ):
         """
@@ -175,7 +177,7 @@ class BasicChSa(ErosionModel):
 
         # Call ErosionModel"s init
         super(BasicChSa, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         self.m = self.params["m_sp"]

@@ -200,7 +200,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicRtVs, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         recharge_rate = (self._length_factor) * self.params[

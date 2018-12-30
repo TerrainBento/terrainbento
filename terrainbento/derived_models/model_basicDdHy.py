@@ -170,7 +170,7 @@ class BasicDdHy(ErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicDdHy, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         # Get Parameters and convert units if necessary:

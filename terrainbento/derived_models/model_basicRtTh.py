@@ -197,7 +197,7 @@ class BasicRtTh(TwoLithologyErosionModel):
         """
         # Call ErosionModel"s init
         super(BasicRtTh, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
+            clock, grid, **kwargs
         )
 
         # Save the threshold values for rock and till
