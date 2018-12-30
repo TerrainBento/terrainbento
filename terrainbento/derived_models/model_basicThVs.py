@@ -150,7 +150,7 @@ class BasicThVs(ErosionModel):
         # Call ErosionModel"s init
         super(BasicThVs, self).__init__(clock, grid, **kwargs)
 
-        if float(self.params["n_sp"]) != 1.0:
+        if float(self.n) != 1.0:
             raise ValueError("Model BasicThVs only supports n = 1.")
 
         self.m = m_sp

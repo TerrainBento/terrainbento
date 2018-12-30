@@ -228,7 +228,7 @@ class StochasticErosionModel(ErosionModel):
                     "mean_interstorm_duration"
                 ],
                 mean_storm_depth=self.params["mean_storm_depth"],
-                total_t=self.params["clock"]["stop"],
+                total_t=self.clock.stop,
                 delta_t=self.clock.step,
                 random_seed=self.seed,
             )
@@ -238,7 +238,7 @@ class StochasticErosionModel(ErosionModel):
 
             rainfall__mean_rate = (self._length_factor) * self.params[
                 "rainfall__mean_rate"
-            ]  
+            ]
             rainfall_intermittency_factor = self.params[
                 "rainfall_intermittency_factor"
             ]

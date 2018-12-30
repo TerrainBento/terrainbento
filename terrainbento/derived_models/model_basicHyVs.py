@@ -171,23 +171,17 @@ class BasicHyVs(ErosionModel):
 
         regolith_transport_parameter = (
             self._length_factor ** 2
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )
+        ) * regolith_transport_parameter
 
-        recharge_rate = self._length_factor * self.params["recharge_rate"]
+        recharge_rate = self._length_factor * recharge_rate
 
         soil_thickness = (
-            self._length_factor * self.params["soil__initial_thickness"]
+            self._length_factor * soil__initial_thickness
         )  # L
 
         K_hydraulic_conductivity = (
-            self._length_factor * self.params["hydraulic_conductivity"]
+            self._length_factor * hydraulic_conductivity
         )
-
-        v_sc = self._get_parameter_from_exponent(
-            "v_sc"
-        )  # normalized settling velocity. Unitless.
 
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
@@ -197,15 +191,12 @@ class BasicHyVs(ErosionModel):
             K_hydraulic_conductivity * soil_thickness * self.grid.dx
         ) / recharge_rate
 
-
-
-
         # Instantiate a SPACE component
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
-            F_f=self.params["fraction_fines"],
-            phi=self.params["sediment_porosity"],
+            F_f=fraction_fines,
+            phi=sediment_porosity,
             v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,

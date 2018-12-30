@@ -169,8 +169,8 @@ class BasicHy(ErosionModel):
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
-            phi=self.params["sediment_porosity"],
-            F_f=self.params["fraction_fines"],
+            phi=sediment_porosity,
+            F_f=fraction_fines,
             v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,

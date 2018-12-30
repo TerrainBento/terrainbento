@@ -212,7 +212,7 @@ class BasicChRt(TwoLithologyErosionModel):
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
             linear_diffusivity=self.regolith_transport_parameter,
-            slope_crit=self.params["critical_slope"],
+            slope_crit=critical_slope,
             nterms=number_of_taylor_terms,
         )
 

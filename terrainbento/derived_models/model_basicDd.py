@@ -146,7 +146,7 @@ class BasicDd(ErosionModel):
         # Call ErosionModel"s init
         super(BasicDd, self).__init__(clock, grid, **kwargs)
 
-        if float(self.params["n_sp"]) != 1.0:
+        if float(self.n) != 1.0:
             raise ValueError("Model BasicDd only supports n equals 1.")
 
         # Get Parameters and convert units if necessary:
@@ -165,7 +165,7 @@ class BasicDd(ErosionModel):
         self.threshold_value = (
             self._length_factor
             * water_erosion_rule__threshold
-        )  
+        )
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros(
@@ -184,9 +184,7 @@ class BasicDd(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params[
-            "water_erosion_rule__thresh_depth_derivative"
-        ]
+        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
