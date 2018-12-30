@@ -19,6 +19,8 @@ from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import TwoLithologyErosionModel
 
 
+_REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
+
 class BasicRtTh(TwoLithologyErosionModel):
     """**BasicRtTh** model program.
 

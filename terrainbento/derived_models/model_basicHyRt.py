@@ -19,6 +19,8 @@ from landlab.components import ErosionDeposition, LinearDiffuser
 from terrainbento.base_class import TwoLithologyErosionModel
 
 
+_REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
+
 class BasicHyRt(TwoLithologyErosionModel):
     """**BasicHyRt** model program.
 

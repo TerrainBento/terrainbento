@@ -17,6 +17,8 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import ErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation"]
+
 
 class BasicVs(ErosionModel):
     """**BasicVs** model program.

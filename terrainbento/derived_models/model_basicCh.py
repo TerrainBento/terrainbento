@@ -18,6 +18,8 @@ import numpy as np
 from landlab.components import FastscapeEroder, TaylorNonLinearDiffuser
 from terrainbento.base_class import ErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation"]
+
 
 class BasicCh(ErosionModel):
     """**BasicCh** model program.

@@ -18,6 +18,8 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import TwoLithologyErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
+
 
 class BasicRtVs(TwoLithologyErosionModel):
     """**BasicRtVs** model program.

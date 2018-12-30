@@ -23,6 +23,8 @@ from landlab.components import (
 )
 from terrainbento.base_class import TwoLithologyErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation", "soil__depth", "bedrock__elevation", "lithology_contact__elevation"]
+
 
 class BasicRtSa(TwoLithologyErosionModel):
     """**BasicRtSa** model program.

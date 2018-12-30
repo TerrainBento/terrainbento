@@ -20,6 +20,8 @@ import numpy as np
 from landlab.components import ErosionDeposition, LinearDiffuser
 from terrainbento.base_class import StochasticErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation"]
+
 
 class BasicHySt(StochasticErosionModel):
     """

@@ -23,6 +23,8 @@ from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import StochasticErosionModel
 
 
+_REQUIRED_FIELDS = ["topographic__elevation"]
+
 class BasicStVs(StochasticErosionModel):
     """
     **BasicStVs** model program.

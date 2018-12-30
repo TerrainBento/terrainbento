@@ -18,6 +18,8 @@ import numpy as np
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import TwoLithologyErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
+
 
 class BasicRt(TwoLithologyErosionModel):
     """**BasicRt** model program.

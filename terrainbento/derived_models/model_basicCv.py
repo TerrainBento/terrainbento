@@ -18,6 +18,8 @@ from scipy.interpolate import interp1d
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import ErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation"]
+
 
 class BasicCv(ErosionModel):
     """**BasicCv** model program.

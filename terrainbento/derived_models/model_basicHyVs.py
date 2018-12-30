@@ -19,6 +19,8 @@ from landlab.components import ErosionDeposition, LinearDiffuser
 from terrainbento.base_class import ErosionModel
 
 
+_REQUIRED_FIELDS = ["topographic__elevation"]
+
 class BasicHyVs(ErosionModel):
     """**BasicVs** model program.
 

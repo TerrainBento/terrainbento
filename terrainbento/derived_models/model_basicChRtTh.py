@@ -21,6 +21,8 @@ from landlab.components import (
 )
 from terrainbento.base_class import TwoLithologyErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
+
 
 class BasicChRtTh(TwoLithologyErosionModel):
     """**BasicChRtTh** model program.

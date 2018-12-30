@@ -22,6 +22,8 @@ from landlab.components import (
 )
 from terrainbento.base_class import ErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
+
 
 class BasicSaVs(ErosionModel):
     """**BasicSaVs** model program.
