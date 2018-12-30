@@ -193,7 +193,7 @@ class BasicDd(ErosionModel):
         )
 
     def update_erosion_threshold_values(self):
-        """Update the erosion threshold at each node based on cumulative
+        r"""Update the erosion threshold at each node based on cumulative
         incision so far using:
 
         .. math::

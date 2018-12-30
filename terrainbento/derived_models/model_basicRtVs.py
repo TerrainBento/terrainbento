@@ -122,7 +122,6 @@ class BasicRtVs(TwoLithologyErosionModel):
     **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
     modify both the ``topographic__elevation`` and the ``bedrock__elevation``
     fields.
-
     """
 
     def __init__(
@@ -232,7 +231,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         )
 
     def _calc_effective_drainage_area(self):
-        """Calculate and store effective drainage area.
+        r"""Calculate and store effective drainage area.
 
         Effective drainage area is defined as:
 

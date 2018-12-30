@@ -27,7 +27,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
 
 
 class BasicHySa(ErosionModel):
-    """Model **BasicHySa** program.
+    r"""**BasicHySa** program.
 
     Model **BasicHySa** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:
