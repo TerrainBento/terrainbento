@@ -4,100 +4,6 @@
 
 The **ErosionModel** is a base class that contains all of the functionality
 shared by the terrainbento models.
-
-
-Input File or Dictionary Parameters
------------------------------------
-The following are parameters found in the parameters input file or dictionary.
-Depending on how the model is initialized, some of them are optional or not
-used.
-
-Clock Parameters
-^^^^^^^^^^^^^^^^
-The required parameters control how long a model will run, the duration of a
-model timestep, and the interval at which output is written.
-
-stop : float
-    Duration of entire model run.
-step : float
-    Increment of time at which the model is run (i.e., time-step duration).
-output_interval : float
-    Increment of model time at which model output is written.
-
-
-Model Grid Creation
-^^^^^^^^^^^^^^^^^^^
-
-
-
-Boundary Condition Handlers
-^^^^^^^^^^^^^^^^^^^^^
-terrainbento provides the ability for an arbitrary number of boundary
-condition handler classes to operate on the model grid each time step in order
-to handle time-variable boundary conditions such as: changing a watershed
-outlet elevation, modifying precipitation parameters through time, or
-simulating external drainage capture.
-
-Boundary condition handlers are styled after Landlab components. terrainbento
-presently has four built-in boundary condition handlers, and supports the use
-of the Landlab NormalFault component as a fifth. Over time the developers
-anticipate extending the boundary handler library to include other Landlab
-components and other options within terrainbento. If these present
-capabilities do not fit your needs, we recommend that you make an issue
-describing the functionality you would like to use in your work.
-
-BoundaryHandlers : str or list of str, optional
-    Strings containing the names of classes used to handle boundary conditions.
-    Valid options are currently: "NormalFault", "PrecipChanger",
-    "CaptureNodeBaselevelHandler", "NotCoreNodeBaselevelHandler", and
-    "SingleNodeBaselevelHandler". These BoundaryHandlers are instantiated with
-    the entire parameter set unless there is an entry in the parameter
-    dictionary with the name of the boundary handler that contains its own
-    parameter dictionary. If this is the case, the handler-specific dictionary
-    is passed to instantiate the boundary handler.
-
-Parameters that control units
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-These courtesy options exist to support the case in which a model must be run
-in one type of units (e.g. feet) but the scientific literature  provides
-information about parameter values in a different unit (e.g. meters). If both
-are set to ``True`` a ``ValueError`` will be raised.
-
-Using these parameters **ONLY** impacts the units of model parameters like
-``water_erodability`` or ``water_erosion_rule__threshold``. These parameters do
-not impact the rates or elevations used in boundary condition handlers.
-
-meters_to_feet : boolean, optional
-    Default value is False.
-feet_to_meters : boolean, optional
-    Default value is False.
-
-Parameters that control surface hydrology
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-terrainbento uses the Landlab FlowAccumulator component to manage surface
-hydrology. These parameters control options associated with this component.
-
-flow_director : str, optional
-    String name of a Landlab FlowDirector. All options that the Landlab
-    FlowAccumulator is compatible with are permitted. Default is
-    "FlowDirectorSteepest".
-depression_finder : str, optional
-    String name of a Landlab depression finder. Default is None.
-
-Parameters that control output
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-In addition to the required parameter ``output_interval``, the following
-parameters control when and how output is written.
-
-save_first_timestep : bool, optional
-    Indicates whether model output should be saved at time zero.  Default is
-    True.
-output_filename : str, optional
-    String prefix for names of output netCDF files. Default is
-    ``"terrainbento_output"``.
-
-Note also that the **run** method takes as a parameter ``output_fields``, which
-is a list of model grid fields to write as output.
 """
 
 import os
@@ -164,7 +70,7 @@ def _setup_boundary_handlers(grid, name, params):
     if name in _SUPPORTED_BOUNDARY_HANDLERS:
         # Instantiate handler
         handler_func = _HANDLER_METHODS[name]
-        boundary_handler[name] = handler_func(grid, **params)
+        boundary_handler = handler_func(grid, **params)
     # Raise an error if the handler is not supported.
     else:
         raise ValueError(
@@ -202,26 +108,24 @@ class ErosionModel(object):
         return cls.from_dict(dict)
 
     @classmethod
-    def from_dict(cls, dictionary, outputwriters=None):
+    def from_dict(cls, params, outputwriters=None):
         """
         model = ErosionModel.from_dict(dict-like)
         """
-        params = yaml.load(filename)
-
         cls._validate(params)
 
         grid = create_grid(**params.pop("grid"))
         clock = Clock.from_dict(**params.pop("clock"))
-        boundary_handlers_input = params.pop("boundary_handlers")
-        boundary_handlers = {}
-        for name in boundary_handlers_input.keys():
-            params = boundary_handlers_input[name]
-            boundary_handlers[name] = _setup_boundary_handlers(grid, name, params)
+        boundary_handlers = params.pop("boundary_handlers", {})
+        bh.list = []
+        for name in boundary_handlers_input:
+            bh_params = boundary_handlers[name]
+            bhlist.append(_setup_boundary_handlers(grid, name, bh_params))
 
         return cls(
             clock,
             grid,
-            boundary_handlers,
+            bhlist,
             outputwriters,
             **params
         )
@@ -245,25 +149,73 @@ class ErosionModel(object):
         runoff_generator=None,
         boundary_handlers={},
         output_writers=[],
-        output_interval=10,
+        flow_director="FlowDirectorSteepest",
+        depression_finder=None,
+        output_interval=None,
         save_first_timestep=True,
         output_prefix="terrainbento_output",
         fields=["topographic__elevation"],
         feet_to_meters=False,
         meters_to_feet=False,
-        depression_finder=None,
-        flow_director="FlowDirectorSteepest",
         **params
     ):
         """
         Parameters
         ----------
-        clock=None,
-        grid=None,
-        precipitator=None,
-        runoff_generator=None,
-        boundary_handlers=None,
-        outputwriters=None,
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            Correct fields must be created.
+        precipitator : terrainbento precipitator, optional
+
+        runoff_generator : terrainbento runoff_generator, optional
+
+        boundary_handlers : optional
+
+        outputwriters : optional
+        boundary_handlers : str or list of str, optional
+            terrainbento provides the ability for an arbitrary number of boundary
+            condition handler classes to operate on the model grid each time step in order
+            to handle time-variable boundary conditions such as: changing a watershed
+            outlet elevation, modifying precipitation parameters through time, or
+            simulating external drainage capture.
+            Strings containing the names of classes used to handle boundary conditions.
+            Valid options are currently: "NormalFault", "PrecipChanger",
+            "CaptureNodeBaselevelHandler", "NotCoreNodeBaselevelHandler", and
+            "SingleNodeBaselevelHandler". These BoundaryHandlers are instantiated with
+            the entire parameter set unless there is an entry in the parameter
+            dictionary with the name of the boundary handler that contains its own
+            parameter dictionary. If this is the case, the handler-specific dictionary
+            is passed to instantiate the boundary handler.
+        output_writers :
+
+        flow_director : str, optional
+            String name of a Landlab FlowDirector. All options that the Landlab
+            FlowAccumulator is compatible with are permitted. Default is
+            "FlowDirectorSteepest".
+        depression_finder : str, optional
+            String name of a Landlab depression finder. Default is None.
+        save_first_timestep : bool, optional
+            Indicates whether model output should be saved at time zero.  Default is
+            True.
+        output_filename : str, optional
+            String prefix for names of output netCDF files. Default is
+            ``"terrainbento_output"``.
+        output_interval : float, optional
+            Default is the Clock's stop time.
+        meters_to_feet : boolean, optional
+            These courtesy options exist to support the case in which a model must be run
+            in one type of units (e.g. feet) but the scientific literature  provides
+            information about parameter values in a different unit (e.g. meters). If both
+            are set to ``True`` a ``ValueError`` will be raised.
+
+            Using these parameters **ONLY** impacts the units of model parameters like
+            ``water_erodability`` or ``water_erosion_rule__threshold``. These parameters do
+            not impact the rates or elevations used in boundary condition handlers.
+            Default value is False.
+        feet_to_meters : boolean, optional
+            Default value is False.
+        **kwargs :
+            Any kwargs to pass to the FlowAccumulator.
 
         Returns
         -------
@@ -291,6 +243,9 @@ class ErosionModel(object):
         self._out_file_name = output_prefix
         self.output_fields = fields
         self._output_files = []
+        if output_interval is None:
+            output_interval = clock.stop
+        self.output_interval = output_interval
 
         # instantiate model time.
         self._model_time = 0.
@@ -354,6 +309,10 @@ class ErosionModel(object):
             self.grid.at_node["topographic__elevation"]
             - self.grid.at_node["initial_topographic__elevation"]
         )
+
+    def create_and_move_water(self, step):
+        """ """
+        self.flow_accumulator.run_one_step()
 
     def write_output(self):
         """Write output to file as a netCDF.
@@ -483,8 +442,8 @@ class ErosionModel(object):
             Timestep in unit of model time.
         """
         # Run each of the baselevel handlers.
-        for handler_name in self.boundary_handlers:
-            self.boundary_handlers[handler_name].run_one_step(step)
+        for handler in self.boundary_handlers:
+            handler.run_one_step(step)
 
     def to_xarray_dataset(
         self,

@@ -6,42 +6,32 @@ import os
 from numpy.testing import assert_array_almost_equal  # assert_array_equal,
 
 from terrainbento import Basic
+from terrainbento import NotCoreNodeBaselevelHandler
 from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def test_steady_Kss_no_precip_changer(clock_simple):
+def test_steady_Kss_no_precip_changer(clock_simple, grid_1):
     U = 0.0001
     K = 0.001
     m = 1. / 3.
     n = 2. / 3.
-    step = 1000
-    # construct dictionary. note that D is turned off here
+    ncnblh = NotCoreNodeBaselevelHandler(grid_1, modify_core_nodes=True, lowering_rate=-U)
     params = {
-        "model_grid": "RasterModelGrid",
+        "grid": grid_1,
         "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
         "water_erodability": K,
         "m_sp": m,
         "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
+        "boundary_handlers": [ncnblh]
+        }
 
     # construct and run model
-    model = Basic(params=params)
+    model = Basic(**params)
     for _ in range(100):
-        model.run_one_step(step)
+        model.run_one_step(1000)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]

@@ -59,29 +59,3 @@ def test_calc_cumulative_erosion(clock_simple):
         np.array_equiv(em.grid.at_node["cumulative_elevation_change"], 1.)
         is True
     )
-
-
-def test_parameter_exponent_both_provided(clock_simple):
-    """Test the _get_parameter_from_exponent function when both are
-    provided."""
-    params = {
-        "model_grid": "HexModelGrid",
-        "water_erodability_exp": -3.,
-        "water_erodability": 0.01,
-        "clock": clock_simple,
-    }
-    em = ErosionModel(params=params)
-    with pytest.raises(ValueError):
-        em._get_parameter_from_exponent("water_erodability")
-
-
-def test_parameter_exponent_neither_provided(clock_simple):
-    """Test the _get_parameter_from_exponent function when neither are provided."""
-    params = {"model_grid": "HexModelGrid", "clock": clock_simple}
-    em = ErosionModel(params=params)
-    with pytest.raises(ValueError):
-        em._get_parameter_from_exponent("water_erodability")
-    val = em._get_parameter_from_exponent(
-        "water_erodability", raise_error=False
-    )
-    assert val is None
