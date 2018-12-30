@@ -166,8 +166,8 @@ class BasicStVs(StochasticErosionModel):
         # Call ErosionModel"s init
         super(BasicStVs, self).__init__(clock, grid, **kwargs)
         # Get Parameters:
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
+        self.m = m_sp
+        self.n = n_sp
         self.K = self._get_parameter_from_exponent(
             "water_erodability~stochastic"
         ) * (

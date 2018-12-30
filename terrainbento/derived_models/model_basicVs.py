@@ -148,9 +148,9 @@ class BasicVs(ErosionModel):
         # Call ErosionModel"s init
         super(BasicVs, self).__init__(clock, grid, **kwargs)
         # Get Parameters:
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-        self.K = self._get_parameter_from_exponent("water_erodability") * (
+        self.m = m_sp
+        self.n = n_sp
+        self.K = water_erodability * (
             self._length_factor ** (1. - (2. * self.m))
         )
 

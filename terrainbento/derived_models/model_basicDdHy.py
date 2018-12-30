@@ -172,9 +172,9 @@ class BasicDdHy(ErosionModel):
         super(BasicDdHy, self).__init__(clock, grid, **kwargs)
 
         # Get Parameters and convert units if necessary:
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-        self.K = self._get_parameter_from_exponent("water_erodability") * (
+        self.m = m_sp
+        self.n = n_sp
+        self.K = water_erodability * (
             self._length_factor ** (1. - (2. * self.m))
         )
 

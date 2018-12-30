@@ -79,13 +79,13 @@ class BasicChRtTh(TwoLithologyErosionModel):
     +--------------------+-----------------------------------------+
     |:math:`n`           | ``n_sp``                                |
     +--------------------+-----------------------------------------+
-    |:math:`K_{1}`       | ``water_erodability~upper``             |
+    |:math:`K_{1}`       | ``water_erodability_upper``             |
     +--------------------+-----------------------------------------+
-    |:math:`K_{2}`       | ``water_erodability~lower``             |
+    |:math:`K_{2}`       | ``water_erodability_lower``             |
     +--------------------+-----------------------------------------+
-    |:math:`\omega_{c1}` | ``water_erosion_rule~upper__threshold`` |
+    |:math:`\omega_{c1}` | ``water_erosion_rule_upper__threshold`` |
     +--------------------+-----------------------------------------+
-    |:math:`\omega_{c2}` | ``water_erosion_rule~lower__threshold`` |
+    |:math:`\omega_{c2}` | ``water_erosion_rule_lower__threshold`` |
     +--------------------+-----------------------------------------+
     |:math:`W_{c}`       | ``contact_zone__width``                 |
     +--------------------+-----------------------------------------+
@@ -185,10 +185,10 @@ class BasicChRtTh(TwoLithologyErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability~lower": 0.001,
-        ...           "water_erodability~upper": 0.01,
-        ...           "water_erosion_rule~upper__threshold": 0.1,
-        ...           "water_erosion_rule~lower__threshold": 0.2,
+        ...           "water_erodability_lower": 0.001,
+        ...           "water_erodability_upper": 0.01,
+        ...           "water_erosion_rule_upper__threshold": 0.1,
+        ...           "water_erosion_rule_lower__threshold": 0.2,
         ...           "contact_zone__width": 1.0,
         ...           "lithology_contact_elevation__file_name": "tests/data/example_contact_elevation.asc",
         ...           "m_sp": 0.5,
@@ -212,10 +212,10 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         # Save the threshold values for rock and till
         self.rock_thresh = self._get_parameter_from_exponent(
-            "water_erosion_rule~lower__threshold"
+            "water_erosion_rule_lower__threshold"
         )
         self.till_thresh = self._get_parameter_from_exponent(
-            "water_erosion_rule~upper__threshold"
+            "water_erosion_rule_upper__threshold"
         )
 
         # get taylor terms

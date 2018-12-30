@@ -77,9 +77,9 @@ class BasicDdRt(TwoLithologyErosionModel):
     +--------------------+-------------------------------------------------+
     |:math:`n`           | ``n_sp``                                        |
     +--------------------+-------------------------------------------------+
-    |:math:`K_{1}`       | ``water_erodability~upper``                     |
+    |:math:`K_{1}`       | ``water_erodability_upper``                     |
     +--------------------+-------------------------------------------------+
-    |:math:`K_{2}`       | ``water_erodability~lower``                     |
+    |:math:`K_{2}`       | ``water_erodability_lower``                     |
     +--------------------+-------------------------------------------------+
     |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               |
     +--------------------+-------------------------------------------------+
@@ -177,8 +177,8 @@ class BasicDdRt(TwoLithologyErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability~lower": 0.001,
-        ...           "water_erodability~upper": 0.01,
+        ...           "water_erodability_lower": 0.001,
+        ...           "water_erodability_upper": 0.01,
         ...           "water_erosion_rule__threshold": 0.2,
         ...           "water_erosion_rule__thresh_depth_derivative": 0.001,
         ...           "contact_zone__width": 1.0,

@@ -191,8 +191,8 @@ class BasicHySa(ErosionModel):
         # Call ErosionModel"s init
         super(BasicHySa, self).__init__(clock, grid, **kwargs)
 
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
+        self.m = m_sp
+        self.n = n_sp
         self.K_br = self._get_parameter_from_exponent(
             "water_erodability~rock"
         ) * (self._length_factor ** (1. - (2. * self.m)))

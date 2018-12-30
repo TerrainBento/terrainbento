@@ -72,9 +72,9 @@ class BasicHyRt(TwoLithologyErosionModel):
     +------------------+----------------------------------+
     |:math:`n`         | ``n_sp``                         |
     +------------------+----------------------------------+
-    |:math:`K_{1}`     | ``water_erodability~upper``      |
+    |:math:`K_{1}`     | ``water_erodability_upper``      |
     +------------------+----------------------------------+
-    |:math:`K_{2}`     | ``water_erodability~lower``      |
+    |:math:`K_{2}`     | ``water_erodability_lower``      |
     +------------------+----------------------------------+
     |:math:`W_{c}`     | ``contact_zone__width``          |
     +------------------+----------------------------------+
@@ -179,8 +179,8 @@ class BasicHyRt(TwoLithologyErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability~lower": 0.001,
-        ...           "water_erodability~upper": 0.01,
+        ...           "water_erodability_lower": 0.001,
+        ...           "water_erodability_upper": 0.01,
         ...           "contact_zone__width": 1.0,
         ...           "lithology_contact_elevation__file_name": "tests/data/example_contact_elevation.asc",
         ...           "m_sp": 0.5,

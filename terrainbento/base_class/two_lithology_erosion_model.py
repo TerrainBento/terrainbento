@@ -65,19 +65,17 @@ class TwoLithologyErosionModel(ErosionModel):
             "contact_zone__width"
         ]  # has units length
 
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
 
         self.regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent("regolith_transport_parameter")
+        ) * regolith_transport_parameter
 
         self.K_rock = self._get_parameter_from_exponent(
-            "water_erodability~lower"
+            "water_erodability_lower"
         ) * (self._length_factor ** (1. - (2. * self.m)))
 
         self.K_till = self._get_parameter_from_exponent(
-            "water_erodability~upper"
+            "water_erodability_upper"
         ) * (self._length_factor ** (1. - (2. * self.m)))
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
