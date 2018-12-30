@@ -17,9 +17,7 @@ import six
 import xarray as xr
 import yaml
 
-from landlab import CLOSED_BOUNDARY, load_params
-from landlab import create_grid, ModelGrid
-
+from landlab import CLOSED_BOUNDARY, ModelGrid, create_grid, load_params
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io import read_esri_ascii
@@ -117,18 +115,12 @@ class ErosionModel(object):
         grid = create_grid(**params.pop("grid"))
         clock = Clock.from_dict(**params.pop("clock"))
         boundary_handlers = params.pop("boundary_handlers", {})
-        bh.list = []
+        bh_dict = {}
         for name in boundary_handlers_input:
             bh_params = boundary_handlers[name]
-            bhlist.append(_setup_boundary_handlers(grid, name, bh_params))
+            bh_dict[name] = _setup_boundary_handlers(grid, name, bh_params)
 
-        return cls(
-            clock,
-            grid,
-            bhlist,
-            outputwriters,
-            **params
-        )
+        return cls(clock, grid, bh_dict, outputwriters, **params)
 
     @classmethod
     def _validate(cls, params):
@@ -237,6 +229,9 @@ class ErosionModel(object):
         # save the grid, clock, and parameters.
         self.grid = grid
         self.clock = clock
+
+        # save reference to elevation
+        self.z = grid.at_node["topographic__elevation"]
 
         # save output_information
         self.save_first_timestep = save_first_timestep
@@ -442,8 +437,8 @@ class ErosionModel(object):
             Timestep in unit of model time.
         """
         # Run each of the baselevel handlers.
-        for handler in self.boundary_handlers:
-            handler.run_one_step(step)
+        for name in self.boundary_handlers:
+            self.boundary_handlers[name].run_one_step(step)
 
     def to_xarray_dataset(
         self,
@@ -479,9 +474,7 @@ class ErosionModel(object):
         )
 
         # add a time dimension
-        time_array = (
-            np.asarray(self._itters) * self.output_interval
-        )
+        time_array = np.asarray(self._itters) * self.output_interval
         time = xr.DataArray(
             time_array,
             dims=("nt"),

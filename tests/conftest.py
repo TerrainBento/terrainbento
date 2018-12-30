@@ -1,13 +1,16 @@
 import pytest
+
 from landlab import RasterModelGrid
 from terrainbento import Clock
 
 
 @pytest.fixture()
 def grid_1():
-    grid = RasterModelGrid((3, 20), xy_spacing=100.)
-    grid.add_zeros('node',  'topographic__elevation')
+    grid = RasterModelGrid((3, 21), xy_spacing=100.)
+    grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
+    grid.add_zeros("node", "topographic__elevation")
     return grid
+
 
 @pytest.fixture()
 def clock_simple():

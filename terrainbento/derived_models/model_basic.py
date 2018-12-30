@@ -120,18 +120,22 @@ class Basic(ErosionModel):
             self._length_factor ** (1. - (2. * self.m))
         )
 
-        regolith_transport_parameter = (
+        self.regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+            self.grid,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
+            discharge_name="surface_water__discharge",
         )
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self.grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def run_one_step(self, step):

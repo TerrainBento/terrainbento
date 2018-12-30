@@ -50,23 +50,14 @@ class Clock(object):
         try:
             self.start = float(start)
         except ValueError:
-            msg = (
-                "Required parameter *start* is not "
-                "compatible with type float."
-            )
+            msg = "Required parameter *start* is not " "compatible with type float."
 
         try:
             self.step = float(step)
         except ValueError:
-            msg = (
-                "Required parameter *step* is not "
-                "compatible with type float."
-            )
+            msg = "Required parameter *step* is not " "compatible with type float."
 
         try:
             self.stop = float(stop)
         except ValueError:
-            msg = (
-                "Required parameter *stop* is not "
-                "compatible with type float."
-            )
+            msg = "Required parameter *stop* is not " "compatible with type float."
