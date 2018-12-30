@@ -102,7 +102,8 @@ class ErosionModel(object):
         """
         model = ErosionModel.from_file("file.yaml")
         """
-        dict = yaml.load(filename)
+        with open(filename, 'r') as f:
+            dict = yaml.load(f)
         return cls.from_dict(dict)
 
     @classmethod

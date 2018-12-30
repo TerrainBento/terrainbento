@@ -9,17 +9,17 @@ class Clock(object):
     @classmethod
     def from_file(cls, filename):
         """
-        clock = Clock.from_file("file.yaml")
+        clock = Clock.from_file(yaml-file-like)
         """
-        dict = yaml.load(filename)
+        with open(filename, 'r') as f:
+            dict = yaml.load(f)
         return cls.from_dict(dict)
 
     @classmethod
-    def from_dict(cls, dictionary, outputwriters=None):
+    def from_dict(cls, param):
         """
         clock = Clock.from_dict(dict-like)
         """
-        params = yaml.load(filename)
         return cls(**param)
 
     def __init__(self, start=0., step=10., stop=100.):
@@ -47,14 +47,24 @@ class Clock(object):
         try:
             self.start = float(start)
         except ValueError:
-            msg = "Required parameter *start* is not " "compatible with type float."
+            msg = ("Clock: Required parameter *start* is "
+                   "not compatible with type float.")
+            raise ValueError(msg)
 
         try:
             self.step = float(step)
         except ValueError:
-            msg = "Required parameter *step* is not " "compatible with type float."
+            msg = ("Clock: Required parameter *step* is "
+                   "not compatible with type float.")
+            raise ValueError(msg)
 
         try:
             self.stop = float(stop)
         except ValueError:
-            msg = "Required parameter *stop* is not " "compatible with type float."
+            msg = ("Clock: Required parameter *stop* is "
+                   "not compatible with type float.")
+            raise ValueError(msg)
+
+        if self.start > self.stop:
+            msg = "Clock: *start* is larger than *stop*."
+            raise ValueError(msg)
