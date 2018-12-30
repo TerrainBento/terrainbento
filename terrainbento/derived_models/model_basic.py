@@ -99,7 +99,6 @@ class Basic(ErosionModel):
 
         >>> model = Basic(clock, grid)
 
-
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
