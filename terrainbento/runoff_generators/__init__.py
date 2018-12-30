@@ -1,8 +1,4 @@
-"""
-Runoff-generators in the terrainbento package.
-
-
-"""
+"""Runoff-generators in the terrainbento package."""
 
 from .simple_runoff import SimpleRunoff
 from .vsa_runoff import VariableSourceAreaRunoff

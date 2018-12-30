@@ -195,9 +195,7 @@ class BasicStTh(StochasticErosionModel):
         )
 
     def run_one_step(self, step):
-        """
-        Advance model for one time-step of duration step.
-        """
+        """Advance model for one time-step of duration step."""
         # create and move water
         self.create_and_move_water(step)
 

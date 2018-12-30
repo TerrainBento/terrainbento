@@ -1,14 +1,11 @@
-"""
-"""
+""""""
 
 
 class VariableSourceAreaRunoff(object):
-    """
-    """
+    """"""
 
     def __init__(self, mg):
-        """
-        """
+        """"""
 
         self.grid = mg
 
@@ -25,8 +22,7 @@ class VariableSourceAreaRunoff(object):
         ) * hydraulic_conductivity
 
     def run_one_step(self, step):
-        """
-        """
+        """"""
         # Get the transmissivity parameter
         # transmissivity is hydraulic condiuctivity times soil thickness
         self.tlam = self.K_hydraulic_conductivity * self.H * self.grid._dx

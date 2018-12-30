@@ -1,13 +1,10 @@
-"""
-"""
+""""""
 
 import yaml
 
 
 class Clock(object):
-    """terrainbento clock.
-
-    """
+    """terrainbento clock."""
 
     @classmethod
     def from_file(cls, filename):

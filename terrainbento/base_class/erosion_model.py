@@ -2,8 +2,8 @@
 # !/usr/env/python
 """Base class for common functions of all terrainbento erosion models.
 
-The **ErosionModel** is a base class that contains all of the functionality
-shared by the terrainbento models.
+The **ErosionModel** is a base class that contains all of the
+functionality shared by the terrainbento models.
 """
 
 import os
@@ -124,8 +124,7 @@ class ErosionModel(object):
 
     @classmethod
     def _validate(cls, params):
-        """Make sure necessary things for a model grid and a clock are here.
-        """
+        """Make sure necessary things for a model grid and a clock are here."""
         if "grid" not in params:
             msg = ""
             raise ValueError(msg)
@@ -287,7 +286,7 @@ class ErosionModel(object):
         self.output_writers = output_writers
 
     def _verify_fields(self, required_fields):
-        """  """
+        """"""
         for field in required_fields:
             if field not in self.grid.at_node:
                 raise ValueError
@@ -305,7 +304,7 @@ class ErosionModel(object):
         )
 
     def create_and_move_water(self, step):
-        """ """
+        """"""
         self.flow_accumulator.run_one_step()
 
     def write_output(self):
@@ -387,11 +386,10 @@ class ErosionModel(object):
     def run(self):
         """Run the model until complete.
 
-        The model will run for the duration indicated by the input file or
-        dictionary parameter ``"stop"``, at a time step specified by
+        The model will run for the duration indicated by the input file
+        or dictionary parameter ``"stop"``, at a time step specified by
         the parameter ``"step"``, and create ouput at intervals of
         ``"output_duration"``.
-
         """
         self._itters = []
         if output_fields is None:
