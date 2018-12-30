@@ -53,7 +53,7 @@ class BasicHySt(StochasticErosionModel):
     +------------------+----------------------------------+
     |:math:`n`         | ``n_sp``                         |
     +------------------+----------------------------------+
-    |:math:`K_q`       | ``water_erodability~stochastic`` |
+    |:math:`K_q`       | ``water_erodability_stochastic`` |
     +------------------+----------------------------------+
     |:math:`V_s`       | ``v_s``                          |
     +------------------+----------------------------------+
@@ -82,6 +82,7 @@ class BasicHySt(StochasticErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        solver='basic',
         **kwargs
     ):
         """
@@ -127,7 +128,7 @@ class BasicHySt(StochasticErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability~stochastic": 0.001,
+        ...           "water_erodability_stochastic": 0.001,
         ...           "m_sp": 0.5,
         ...           "n_sp": 1.0,
         ...           "opt_stochastic_duration": False,
@@ -160,21 +161,16 @@ class BasicHySt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = self._get_parameter_from_exponent(
-            "water_erodability~stochastic"
+        self.K = (water_erodability_stochastic
         ) * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # L^2/T
+        ) * regolith_transport_parameter
 
-        v_s = (self._length_factor) * self._get_parameter_from_exponent(
-            "v_s"
-        )  # has units length per time
+        v_s = (self._length_factor) * v_s
 
         # instantiate rain generator
         self.instantiate_rain_generator()
@@ -183,10 +179,8 @@ class BasicHySt(StochasticErosionModel):
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        # has units length per time
-        self.infilt = (self._length_factor) * self.params[
-            "infiltration_capacity"
-        ]
+
+        self.infilt = self._length_factor * infiltration_capacity
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
@@ -194,15 +188,12 @@ class BasicHySt(StochasticErosionModel):
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
 
-        # Handle solver option
-        solver = self.params.get("solver", "basic")
-
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
-            F_f=self.params["fraction_fines"],
-            phi=self.params["sediment_porosity"],
+            F_f=fraction_fines,
+            phi=sediment_porosity,
             v_s=v_s,
             m_sp=self.m,
             n_sp=self.n,

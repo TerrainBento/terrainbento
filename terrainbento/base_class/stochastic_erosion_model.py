@@ -238,7 +238,7 @@ class StochasticErosionModel(ErosionModel):
 
             rainfall__mean_rate = (self._length_factor) * self.params[
                 "rainfall__mean_rate"
-            ]  # has units length per time
+            ]  
             rainfall_intermittency_factor = self.params[
                 "rainfall_intermittency_factor"
             ]

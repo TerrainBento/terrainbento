@@ -158,18 +158,14 @@ class BasicDd(ErosionModel):
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
+        ) * regolith_transport_parameter
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
         self.threshold_value = (
             self._length_factor
-            * self._get_parameter_from_exponent(
-                "water_erosion_rule__threshold"
-            )
-        )  # has units length/time
+            * water_erosion_rule__threshold
+        )  
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros(

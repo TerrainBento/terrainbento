@@ -97,6 +97,7 @@ class BasicDdHy(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        solver="basic",
         **kwargs
     ):
         """
@@ -180,16 +181,8 @@ class BasicDdHy(ErosionModel):
 
         regolith_transport_parameter = (
             self._length_factor ** 2
-        ) * self._get_parameter_from_exponent(  # L2/T
-            "regolith_transport_parameter"
-        )
-        v_s = self._get_parameter_from_exponent("v_sc")  # unitless
-        self.sp_crit = (
-            self._length_factor
-            * self._get_parameter_from_exponent(  # L/T
-                "water_erosion_rule__threshold"
-            )
-        )
+        ) * regolith_transport_parameter
+        self.sp_crit = self._length_factor * water_erosion_rule__threshold
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros(
@@ -197,16 +190,13 @@ class BasicDdHy(ErosionModel):
         )
         self.threshold[:] = self.sp_crit  # starting value
 
-        # Handle solver option
-        solver = self.params.get("solver", "basic")
-
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
             F_f=self.params["fraction_fines"],
             phi=self.params["sediment_porosity"],
-            v_s=v_s,
+            v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,
             sp_crit="water_erosion_rule__threshold",
@@ -215,9 +205,7 @@ class BasicDdHy(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params[
-            "water_erosion_rule__thresh_depth_derivative"
-        ]
+        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

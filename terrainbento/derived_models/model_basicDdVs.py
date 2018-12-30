@@ -166,7 +166,7 @@ class BasicDdVs(ErosionModel):
         # Call ErosionModel"s init
         super(BasicDdVs, self).__init__(clock, grid, **kwargs)
 
-        if float(self.params["n_sp"]) != 1.0:
+        if float(n_sp) != 1.0:
             raise ValueError("Model BasicDdVs only supports n = 1.")
 
         self.m = m_sp
@@ -177,27 +177,16 @@ class BasicDdVs(ErosionModel):
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
+        ) * regolith_transport_parameter
 
-        recharge_rate = (self._length_factor) * self.params[
-            "recharge_rate"
-        ]  # has units length per time
-        soil_thickness = (self._length_factor) * self.params[
-            "soil__initial_thickness"
-        ]  # has units length
-        K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "hydraulic_conductivity"
-        ]  # has units length per time
 
+        recharge_rate = (self._length_factor) * recharge_rate
+        soil_thickness = (self._length_factor) * soil__initial_thickness
+        K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
         self.threshold_value = (
             self._length_factor
-            * self._get_parameter_from_exponent(
-                "water_erosion_rule__threshold"
+            * water_erosion_rule__threshold
             )
-        )  # has units length/time
-
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
@@ -223,8 +212,7 @@ class BasicDdVs(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = self.params[
-            "water_erosion_rule__thresh_depth_derivative"
+        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
         ]
 
         # Instantiate a LinearDiffuser component

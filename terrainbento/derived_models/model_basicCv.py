@@ -151,10 +151,10 @@ class BasicCv(ErosionModel):
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-        self.climate_factor = self.params["climate_factor"]
-        self.climate_constant_date = self.params["climate_constant_date"]
+        self.climate_factor = climate_factor
+        self.climate_constant_date = climate_constant_date
 
-        time = [0, self.climate_constant_date, self.params["clock"]["stop"]]
+        time = [0, self.climate_constant_date, self.clock.stop]
         K = [K_sp * self.climate_factor, K_sp, K_sp]
         self.K_through_time = interp1d(time, K)
 

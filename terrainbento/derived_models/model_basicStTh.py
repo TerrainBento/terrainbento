@@ -53,7 +53,7 @@ class BasicStTh(StochasticErosionModel):
     +------------------+----------------------------------+
     |:math:`n`         | ``n_sp``                         |
     +------------------+----------------------------------+
-    |:math:`K_q`       | ``water_erodability~stochastic`` |
+    |:math:`K_q`       | ``water_erodability_stochastic`` |
     +------------------+----------------------------------+
     |:math:`\omega_c`  | ``water_erosion_rule__threshold``|
     +------------------+----------------------------------+
@@ -122,7 +122,7 @@ class BasicStTh(StochasticErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability~stochastic": 0.001,
+        ...           "water_erodability_stochastic": 0.001,
         ...           "water_erosion_rule__threshold": 0.2,
         ...           "m_sp": 0.5,
         ...           "n_sp": 1.0,
@@ -152,23 +152,17 @@ class BasicStTh(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = self._get_parameter_from_exponent(
-            "water_erodability~stochastic"
-        ) * (
+        self.K = water_erodability_stochastic * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
+        ) * regolith_transport_parameter
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
-        threshold = self._length_factor * self._get_parameter_from_exponent(
-            "water_erosion_rule__threshold"
-        )  # has units length/time
+        threshold = self._length_factor * water_erosion_rule__threshold
 
         # instantiate rain generator
         self.instantiate_rain_generator()
@@ -177,10 +171,8 @@ class BasicStTh(StochasticErosionModel):
         self.discharge = self.grid.at_node["surface_water__discharge"]
 
         # Get the infiltration-capacity parameter
-        # has units length per time
-        self.infilt = (self._length_factor) * self.params[
-            "infiltration_capacity"
-        ]
+
+        self.infilt = (self._length_factor) * infiltration_capacity
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]

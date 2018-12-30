@@ -91,6 +91,7 @@ class BasicHyVs(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        solver='basic',
         **kwargs
     ):
         """
@@ -172,7 +173,7 @@ class BasicHyVs(ErosionModel):
             self._length_factor ** 2
         ) * self._get_parameter_from_exponent(
             "regolith_transport_parameter"
-        )  # has units length^2/time
+        )
 
         recharge_rate = self._length_factor * self.params["recharge_rate"]
 
@@ -182,7 +183,7 @@ class BasicHyVs(ErosionModel):
 
         K_hydraulic_conductivity = (
             self._length_factor * self.params["hydraulic_conductivity"]
-        )  # has units length per time
+        )
 
         v_sc = self._get_parameter_from_exponent(
             "v_sc"
@@ -196,8 +197,8 @@ class BasicHyVs(ErosionModel):
             K_hydraulic_conductivity * soil_thickness * self.grid.dx
         ) / recharge_rate
 
-        # Handle solver option
-        solver = self.params.get("solver", "basic")
+
+
 
         # Instantiate a SPACE component
         self.eroder = ErosionDeposition(

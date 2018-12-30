@@ -65,7 +65,7 @@ class BasicStVs(StochasticErosionModel):
     +------------------+----------------------------------+
     |:math:`n`         | ``n_sp``                         |
     +------------------+----------------------------------+
-    |:math:`K_q`       | ``water_erodability~stochastic`` |
+    |:math:`K_q`       | ``water_erodability_stochastic`` |
     +------------------+----------------------------------+
     |:math:`H`         | ``soil__initial_thickness``      |
     +------------------+----------------------------------+
@@ -138,7 +138,7 @@ class BasicStVs(StochasticErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability~stochastic": 0.001,
+        ...           "water_erodability_stochastic": 0.001,
         ...           "m_sp": 0.5,
         ...           "n_sp": 1.0,
         ...           "opt_stochastic_duration": False,
@@ -168,24 +168,16 @@ class BasicStVs(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = self._get_parameter_from_exponent(
-            "water_erodability~stochastic"
-        ) * (
+        self.K = water_erodability_stochastic * (
             self._length_factor ** ((3. * self.m) - 1)
         )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
+        ) * regolith_transport_parameter
 
-        soil_thickness = (self._length_factor) * self.params[
-            "soil__initial_thickness"
-        ]  # has units length
-        K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "hydraulic_conductivity"
-        ]  # has units length per time
+        soil_thickness = (self._length_factor) * soil__initial_thickness
+        K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
 
         # instantiate rain generator
         self.instantiate_rain_generator()

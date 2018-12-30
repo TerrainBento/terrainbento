@@ -161,22 +161,12 @@ class BasicThVs(ErosionModel):
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
-        threshold = self._length_factor * self._get_parameter_from_exponent(
-            "water_erosion_rule__threshold"
-        )  # has units length/time
+        ) * regolith_transport_parameter
+        threshold = self._length_factor * water_erosion_rule__threshold
 
-        recharge_rate = (self._length_factor) * self.params[
-            "recharge_rate"
-        ]  # has units length per time
-        soil_thickness = (self._length_factor) * self.params[
-            "soil__initial_thickness"
-        ]  # has units length
-        K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "hydraulic_conductivity"
-        ]  # has units length per time
+        recharge_rate = (self._length_factor) * recharge_rate
+        soil_thickness = (self._length_factor) * soil__initial_thickness
+        K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
 
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")

@@ -75,9 +75,9 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`n`         | ``n_sp``                          |
     +------------------+-----------------------------------+
-    |:math:`K_r`       | ``water_erodability~rock``        |
+    |:math:`K_r`       | ``water_erodability_rock``        |
     +------------------+-----------------------------------+
-    |:math:`K_s`       | ``water_erodability~sediment``    |
+    |:math:`K_s`       | ``water_erodability_sediment``    |
     +------------------+-----------------------------------+
     |:math:`D`         | ``regolith_transport_parameter``  |
     +------------------+-----------------------------------+
@@ -115,6 +115,7 @@ class BasicHySa(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        solver='basic',
         **kwargs
     ):
         """
@@ -160,8 +161,8 @@ class BasicHySa(ErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability~rock": 0.001,
-        ...           "water_erodability~sediment": 0.001,
+        ...           "water_erodability_rock": 0.001,
+        ...           "water_erodability_sediment": 0.001,
         ...           "sp_crit_br": 0,
         ...           "sp_crit_sed": 0,
         ...           "m_sp": 0.5,
@@ -193,54 +194,34 @@ class BasicHySa(ErosionModel):
 
         self.m = m_sp
         self.n = n_sp
-        self.K_br = self._get_parameter_from_exponent(
-            "water_erodability~rock"
+        self.K_br = (water_erodability_rock
         ) * (self._length_factor ** (1. - (2. * self.m)))
-        self.K_sed = self._get_parameter_from_exponent(
-            "water_erodability~sediment"
+        self.K_sed = (water_erodability_sediment
         ) * (self._length_factor ** (1. - (2. * self.m)))
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
-        v_sc = self._get_parameter_from_exponent(
-            "v_sc"
-        )  # normalized settling velocity. Unitless.
+        ) * regolith_transport_parameter
 
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
+        initial_soil_thickness = (self._length_factor) soil__initial_thickness
 
-        initial_soil_thickness = (self._length_factor) * self.params[
-            "soil__initial_thickness"
-        ]  # has units length
 
-        soil_transport_decay_depth = (self._length_factor) * self.params[
-            "soil_transport_decay_depth"
-        ]  # has units length
-        max_soil_production_rate = (self._length_factor) * self.params[
-            "soil_production__maximum_rate"
-        ]  # has units length per time
-        soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production__decay_depth"
-        ]  # has units length
+        soil_transport_decay_depth = (self._length_factor) * soil_transport_decay_depth
+        max_soil_production_rate = (self._length_factor) * soil_production__maximum_rate
+        soil_production_decay_depth = (self._length_factor) * soil_production__decay_dept
 
-        # Handle solver option
-        solver = self.params.get("solver", "basic")
+
+
 
         # Instantiate a SPACE component
         self.eroder = Space(
             self.grid,
             K_sed=self.K_sed,
             K_br=self.K_br,
-            sp_crit_br=self.params["sp_crit_br"],
-            sp_crit_sed=self.params["sp_crit_sed"],
-            F_f=self.params["fraction_fines"],
-            phi=self.params["sediment_porosity"],
-            H_star=self.params["roughness__length_scale"],
+            sp_crit_br=sp_crit_br,
+            sp_crit_sed=sp_crit_sed,
+            F_f=fraction_fines,
+            phi=sediment_porosity,
+            H_star=roughness__length_scale,
             v_s=v_sc,
             m_sp=self.m,
             n_sp=self.n,

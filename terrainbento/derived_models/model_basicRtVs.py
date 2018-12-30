@@ -201,16 +201,9 @@ class BasicRtVs(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicRtVs, self).__init__(clock, grid, **kwargs)
 
-        recharge_rate = (self._length_factor) * self.params[
-            "recharge_rate"
-        ]  # has units length per time
-        soil_thickness = (self._length_factor) * self.params[
-            "soil__initial_thickness"
-        ]  # has units length
-        K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "hydraulic_conductivity"
-        ]  # has units length per time
-
+        recharge_rate = (self._length_factor) * recharge_rate
+        soil_thickness = (self._length_factor) * soil__initial_thickness
+        K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 

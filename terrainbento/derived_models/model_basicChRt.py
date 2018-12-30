@@ -127,7 +127,7 @@ class BasicChRt(TwoLithologyErosionModel):
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
         critical_slope=0.3,
-        number_of_taylor_terms=3,
+        number_of_taylor_terms=7,
         **kwargs
     ):
         """
@@ -199,9 +199,6 @@ class BasicChRt(TwoLithologyErosionModel):
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 
-        # get taylor terms
-        nterms = self.params.get("number_of_taylor_terms", 7)
-
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
             self.grid,
@@ -216,7 +213,7 @@ class BasicChRt(TwoLithologyErosionModel):
             self.grid,
             linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
-            nterms=nterms,
+            nterms=number_of_taylor_terms,
         )
 
     def run_one_step(self, step):

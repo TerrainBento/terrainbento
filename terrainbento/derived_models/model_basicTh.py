@@ -143,15 +143,11 @@ class BasicTh(ErosionModel):
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
+        ) * regolith_transport_parameter
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
-        threshold = self._length_factor * self._get_parameter_from_exponent(
-            "water_erosion_rule__threshold"
-        )  # has units length/time
+        threshold = self._length_factor * water_erosion_rule__threshold
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(

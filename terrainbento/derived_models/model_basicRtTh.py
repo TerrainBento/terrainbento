@@ -199,12 +199,8 @@ class BasicRtTh(TwoLithologyErosionModel):
         super(BasicRtTh, self).__init__(clock, grid, **kwargs)
 
         # Save the threshold values for rock and till
-        self.rock_thresh = self._get_parameter_from_exponent(
-            "water_erosion_rule_lower__threshold"
-        )
-        self.till_thresh = self._get_parameter_from_exponent(
-            "water_erosion_rule_upper__threshold"
-        )
+        self.rock_thresh = water_erosion_rule_lower__threshold
+        self.till_thresh = water_erosion_rule_upper__threshold
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()

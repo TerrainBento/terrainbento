@@ -183,29 +183,15 @@ class BasicSaVs(ErosionModel):
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
-        initial_soil_thickness = (self._length_factor) * self.params[
-            "soil__initial_thickness"
-        ]  # has units length
+        ) * regolith_transport_parameter
+        initial_soil_thickness = (self._length_factor) * soil__initial_thickness
 
-        soil_transport_decay_depth = (self._length_factor) * self.params[
-            "soil_transport_decay_depth"
-        ]  # has units length
-        max_soil_production_rate = (self._length_factor) * self.params[
-            "soil_production__maximum_rate"
-        ]  # has units length per time
-        soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production__decay_depth"
-        ]  # has units length
+        soil_transport_decay_depth = (self._length_factor) * soil_transport_decay_depth
+        max_soil_production_rate = (self._length_factor) * soil_production__maximum_rate
+        soil_production_decay_depth = (self._length_factor) * soil_production__decay_depth
 
-        recharge_rate = (self._length_factor) * self.params[
-            "recharge_rate"
-        ]  # has units length per time
-        K_hydraulic_conductivity = (self._length_factor) * self.params[
-            "hydraulic_conductivity"
-        ]  # has units length per time
+        recharge_rate = (self._length_factor) * recharge_rate
+        K_hydraulic_conductivity = (self._length_factor) * hydraulic_conductivity
 
         # Create soil thickness (a.k.a. depth) field
         soil_thickness = self.grid.add_zeros("node", "soil__depth")

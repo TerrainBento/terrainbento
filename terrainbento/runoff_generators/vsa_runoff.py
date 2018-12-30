@@ -22,7 +22,7 @@ class VariableSourceAreaRunoff(object):
 
         self.K_hydraulic_conductivity = (self._length_factor) * self.params[
             "hydraulic_conductivity"
-        ]  # has units length per time
+        ]  
 
     def run_one_step(self, step):
         """

@@ -61,22 +61,17 @@ class TwoLithologyErosionModel(ErosionModel):
         super(TwoLithologyErosionModel, self).__init__(clock, grid, **kwargs)
 
         # Get all common parameters
-        self.contact_width = (self._length_factor) * self.params[
-            "contact_zone__width"
-        ]  # has units length
+        self.contact_width = (self._length_factor) * contact_zone__width
+        ]  
 
 
         self.regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-        self.K_rock = self._get_parameter_from_exponent(
-            "water_erodability_lower"
-        ) * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_rock = water_erodability_lower * (self._length_factor ** (1. - (2. * self.m)))
 
-        self.K_till = self._get_parameter_from_exponent(
-            "water_erodability_upper"
-        ) * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_till = water_erodability_upper * (self._length_factor ** (1. - (2. * self.m)))
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock

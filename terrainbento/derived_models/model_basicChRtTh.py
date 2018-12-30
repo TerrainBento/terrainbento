@@ -139,7 +139,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
         critical_slope=0.3,
-        number_of_taylor_terms=3,
+        number_of_taylor_terms=7,
         **kwargs
     ):
         """
@@ -211,15 +211,9 @@ class BasicChRtTh(TwoLithologyErosionModel):
         super(BasicChRtTh, self).__init__(clock, grid, **kwargs)
 
         # Save the threshold values for rock and till
-        self.rock_thresh = self._get_parameter_from_exponent(
-            "water_erosion_rule_lower__threshold"
-        )
-        self.till_thresh = self._get_parameter_from_exponent(
-            "water_erosion_rule_upper__threshold"
-        )
+        self.rock_thresh = water_erosion_rule_lower__threshold
+        self.till_thresh = water_erosion_rule_upper__threshold
 
-        # get taylor terms
-        nterms = self.params.get("number_of_taylor_terms", 7)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()
@@ -239,7 +233,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
             self.grid,
             linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=self.params["critical_slope"],
-            nterms=nterms,
+            nterms=number_of_taylor_terms,
         )
 
     def run_one_step(self, step):

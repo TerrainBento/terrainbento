@@ -106,7 +106,7 @@ class BasicChSa(ErosionModel):
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
         critical_slope=0.3,
-        number_of_taylor_terms=3,
+        number_of_taylor_terms=11,
         **kwargs
     ):
         """
@@ -185,27 +185,11 @@ class BasicChSa(ErosionModel):
         )
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
-        initial_soil_thickness = (self._length_factor) * self.params[
-            "soil__initial_thickness"
-        ]  # has units length
-        soil_transport_decay_depth = (self._length_factor) * self.params[
-            "soil_transport_decay_depth"
-        ]  # has units length
-        max_soil_production_rate = (self._length_factor) * self.params[
-            "soil_production__maximum_rate"
-        ]  # has units length per time
-        soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production__decay_depth"
-        ]  # has units length
-
-        # get taylor terms
-        nterms = self.params.get("number_of_taylor_terms", 11)
-
-        # Create soil thickness (a.k.a. depth) field
-        soil_thickness = self.grid.add_zeros("node", "soil__depth")
+        ) * regolith_transport_parameter 
+        initial_soil_thickness = (self._length_factor) * soil__initial_thickness
+        soil_transport_decay_depth = (self._length_factor) * soil_transport_decay_depth
+        max_soil_production_rate = (self._length_factor) * soil_production__maximum_rate
+        soil_production_decay_depth = (self._length_factor) * soil_production__decay_depth
 
         # Create bedrock elevation field
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
@@ -233,9 +217,9 @@ class BasicChSa(ErosionModel):
         self.diffuser = DepthDependentTaylorDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            slope_crit=self.params["critical_slope"],
+            slope_crit=critical_slope,
             soil_transport_decay_depth=soil_transport_decay_depth,
-            nterms=nterms,
+            nterms=number_of_taylor_terms,
         )
 
     def run_one_step(self, step):

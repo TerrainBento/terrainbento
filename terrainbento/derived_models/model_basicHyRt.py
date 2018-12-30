@@ -134,6 +134,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        solver='basic',
         **kwargs
     ):
         """
@@ -204,9 +205,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicHyRt, self).__init__(clock, grid, **kwargs)
 
-        settling_velocity = self._get_parameter_from_exponent(
-            "settling_velocity"
-        )  # normalized settling velocity. Unitless.
+        settling_velocity = settling_velocity
 
         # Save the threshold values for rock and till
         self.rock_thresh = 0.
@@ -215,15 +214,12 @@ class BasicHyRt(TwoLithologyErosionModel):
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()
 
-        # Handle solver option
-        solver = self.params.get("solver", "basic")
-
         # Instantiate an ErosionDeposition ("hybrid") component
         self.eroder = ErosionDeposition(
             self.grid,
             K="substrate__erodability",
-            F_f=self.params["fraction_fines"],
-            phi=self.params["sediment_porosity"],
+            F_f=fraction_fines,
+            phi=sediment_porosity,
             v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,

@@ -83,6 +83,7 @@ class BasicHy(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        solver='basic',
         **kwargs
     ):
         """
@@ -163,12 +164,6 @@ class BasicHy(ErosionModel):
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
-
-        # Normalized settling velocity (dimensionless)
-        v_sc = self._get_parameter_from_exponent("v_sc")
-
-        # Handle solver option
-        solver = self.params.get("solver", "basic")
 
         # Instantiate a Space component
         self.eroder = ErosionDeposition(
