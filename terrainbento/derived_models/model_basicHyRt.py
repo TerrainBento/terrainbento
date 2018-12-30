@@ -22,7 +22,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
 
 
 class BasicHyRt(TwoLithologyErosionModel):
-    """**BasicHyRt** model program.
+    r"""**BasicHyRt** model program.
 
     **BasicHyRt** is a model program that combines the **BasicRt** and
     **BasicHy** programs by allowing for two lithologies, an "upper" layer and a

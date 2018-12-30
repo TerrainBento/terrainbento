@@ -22,7 +22,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicDd(ErosionModel):
-    """**BasicDd** model program.
+    r"""**BasicDd** model program.
 
     **BasicDd** is a model program that evolves a topographic surface described
     by :math:`\eta` with the following governing equation:

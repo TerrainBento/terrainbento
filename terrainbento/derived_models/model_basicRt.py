@@ -22,7 +22,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
 
 
 class BasicRt(TwoLithologyErosionModel):
-    """**BasicRt** model program.
+    r"""**BasicRt** model program.
 
     **BasicRt** is a model program that improves upon the **Basic** program by
     allowing for two lithologies, an "upper" layer and a "lower" layer. Given a

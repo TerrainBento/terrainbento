@@ -23,8 +23,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicStTh(StochasticErosionModel):
-    """
-    **BasicStTh** model program.
+    r"""**BasicStTh** model program.
 
     **BasicStTh** is a model program that uses a stochastic treatment of runoff
     and discharge, and includes an erosion threshold in the water erosion law.

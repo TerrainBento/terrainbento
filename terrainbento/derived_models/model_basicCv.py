@@ -22,7 +22,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicCv(ErosionModel):
-    """**BasicCv** model program.
+    r"""**BasicCv** model program.
 
     **BasicCv** is a model program that evolves a topographic surface described
     by :math:`\eta` with the following governing equation:

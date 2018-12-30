@@ -32,7 +32,7 @@ _REQUIRED_FIELDS = [
 
 
 class BasicRtSa(TwoLithologyErosionModel):
-    """**BasicRtSa** model program.
+    r"""**BasicRtSa** model program.
 
     **BasicRtSa** combines the **BasicRt** and **BasicSa** programs by allowing
     for two lithologies, an "upper" layer and a "lower" layer and explicitly

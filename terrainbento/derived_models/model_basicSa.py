@@ -27,7 +27,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
 
 
 class BasicSa(ErosionModel):
-    """**BasicSa** model program.
+    r"""**BasicSa** model program.
 
     **BasicSa** is a model program that explicitly resolves a soil layer. This
     soil layer is produced by weathering that decays exponentially with soil

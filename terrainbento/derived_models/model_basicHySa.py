@@ -202,7 +202,7 @@ class BasicHySa(ErosionModel):
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-        initial_soil_thickness = (self._length_factor) soil__initial_thickness
+        initial_soil_thickness = (self._length_factor) *  soil__initial_thickness
 
 
         soil_transport_decay_depth = (self._length_factor) * soil_transport_decay_depth

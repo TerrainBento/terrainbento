@@ -26,8 +26,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicStVs(StochasticErosionModel):
-    """
-    **BasicStVs** model program.
+    r"""**BasicStVs** model program.
 
     **BasicStVs** is a model program that uses a stochastic treatment of runoff
     and discharge, using a variable source area runoff generation model.

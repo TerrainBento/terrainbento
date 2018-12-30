@@ -62,8 +62,6 @@ class TwoLithologyErosionModel(ErosionModel):
 
         # Get all common parameters
         self.contact_width = (self._length_factor) * contact_zone__width
-        ]  
-
 
         self.regolith_transport_parameter = (
             self._length_factor ** 2.

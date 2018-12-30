@@ -24,8 +24,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicDdSt(StochasticErosionModel):
-    """
-    **BasicDdSt** model program.
+    r"""**BasicDdSt** model program.
 
     **BasicDdSt** is a model program that uses a stochastic treatment of runoff
     and discharge, and includes an erosion threshold in the water erosion law.

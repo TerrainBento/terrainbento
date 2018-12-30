@@ -22,7 +22,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicDdHy(ErosionModel):
-    """**BasicDdHy** model program.
+    r"""**BasicDdHy** model program.
 
     **BasicDdHy** is a model program that evolves a topographic surface
     described by :math:`\eta` with the following governing equation:

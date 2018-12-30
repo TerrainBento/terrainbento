@@ -24,8 +24,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicHySt(StochasticErosionModel):
-    """
-    **BasicHySt** model program.
+    r"""**BasicHySt** model program.
 
     **BasicHySt** is a model program that uses a stochastic treatment of runoff
     and discharge, and includes an erosion threshold in the water erosion law.

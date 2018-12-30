@@ -21,7 +21,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicThVs(ErosionModel):
-    """**BasicThVs** model program.
+    r"""**BasicThVs** model program.
 
     **BasicThVs** is a model program that evolves a topographic surface described
     by :math:`\eta` with the following governing equations:

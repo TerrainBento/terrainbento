@@ -22,7 +22,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
 class BasicDdVs(ErosionModel):
-    """**BasicDdVs** model program.
+    r"""**BasicDdVs** model program.
 
     **BasicDdVs** is a model program that evolves a topographic surface described
     by :math:`\eta` with the following governing equations:
@@ -213,7 +213,6 @@ class BasicDdVs(ErosionModel):
 
         # Get the parameter for rate of threshold increase with erosion depth
         self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
-        ]
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(

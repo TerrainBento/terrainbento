@@ -26,7 +26,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
 
 
 class BasicSaVs(ErosionModel):
-    """**BasicSaVs** model program.
+    r"""**BasicSaVs** model program.
 
     Given a spatially varying soil thickness :math:`H` and a spatially varying
     bedrock elevation :math:`\eta_b`, model **BasicSaVs** evolves a topographic

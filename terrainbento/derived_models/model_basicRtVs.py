@@ -22,7 +22,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
 
 
 class BasicRtVs(TwoLithologyErosionModel):
-    """**BasicRtVs** model program.
+    r"""**BasicRtVs** model program.
 
     **BasicRtVs** is a model program that combines the **BasicRt** and
     **BasicVs** programs by allowing for two lithologies, an "upper" layer and a

@@ -23,7 +23,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
 
 
 class BasicDdRt(TwoLithologyErosionModel):
-    """**BasicDdRt** model program.
+    r"""**BasicDdRt** model program.
 
     **BasicRtTh** is a model program that combines the **BasicRt** and
     **BasicDd** programs by allowing for two lithologies, an "upper" layer and a

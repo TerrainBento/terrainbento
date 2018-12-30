@@ -27,7 +27,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
 
 
 class BasicChSa(ErosionModel):
-    """ **BasicChSa** model program.
+    r"""**BasicChSa** model program.
 
 
     **BasicChSa** is a model program that explicitly resolves a soil layer. This
@@ -185,7 +185,7 @@ class BasicChSa(ErosionModel):
         )
         regolith_transport_parameter = (
             self._length_factor ** 2.
-        ) * regolith_transport_parameter 
+        ) * regolith_transport_parameter
         initial_soil_thickness = (self._length_factor) * soil__initial_thickness
         soil_transport_decay_depth = (self._length_factor) * soil_transport_decay_depth
         max_soil_production_rate = (self._length_factor) * soil_production__maximum_rate

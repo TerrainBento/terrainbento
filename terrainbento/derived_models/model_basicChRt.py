@@ -22,7 +22,7 @@ _REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
 
 
 class BasicChRt(TwoLithologyErosionModel):
-    """**BasicChRt** model program.
+    r"""**BasicChRt** model program.
 
     **BasicChRt** is a model program that combines the **BasicRt** and
     **BasicCh** programs by allowing for two lithologies, an "upper" layer and a
