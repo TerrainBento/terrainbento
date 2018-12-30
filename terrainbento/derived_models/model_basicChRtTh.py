@@ -208,9 +208,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicChRtTh, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicChRtTh, self).__init__(clock, grid, **kwargs)
 
         # Save the threshold values for rock and till
         self.rock_thresh = self._get_parameter_from_exponent(

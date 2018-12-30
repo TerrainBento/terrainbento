@@ -165,9 +165,7 @@ class BasicDdSt(StochasticErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicDdSt, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicDdSt, self).__init__(clock, grid, **kwargs)
 
         # Get Parameters:
         # Get Parameters:

@@ -58,9 +58,7 @@ class TwoLithologyErosionModel(ErosionModel):
         usage.
         """
         # Call ErosionModel"s init
-        super(TwoLithologyErosionModel, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(TwoLithologyErosionModel, self).__init__(clock, grid, **kwargs)
 
         # Get all common parameters
         self.contact_width = (self._length_factor) * self.params[

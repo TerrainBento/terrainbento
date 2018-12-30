@@ -199,9 +199,7 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicRtVs, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicRtVs, self).__init__(clock, grid, **kwargs)
 
         recharge_rate = (self._length_factor) * self.params[
             "recharge_rate"

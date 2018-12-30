@@ -18,8 +18,8 @@ import numpy as np
 from landlab.components import ErosionDeposition, LinearDiffuser
 from terrainbento.base_class import TwoLithologyErosionModel
 
-
 _REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
+
 
 class BasicHyRt(TwoLithologyErosionModel):
     """**BasicHyRt** model program.
@@ -202,9 +202,7 @@ class BasicHyRt(TwoLithologyErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicHyRt, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicHyRt, self).__init__(clock, grid, **kwargs)
 
         settling_velocity = self._get_parameter_from_exponent(
             "settling_velocity"

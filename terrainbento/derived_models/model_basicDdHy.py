@@ -169,9 +169,7 @@ class BasicDdHy(ErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicDdHy, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicDdHy, self).__init__(clock, grid, **kwargs)
 
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]

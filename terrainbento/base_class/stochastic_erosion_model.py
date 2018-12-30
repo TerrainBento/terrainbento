@@ -118,9 +118,7 @@ class StochasticErosionModel(ErosionModel):
         usage.
         """
         # Call StochasticErosionModel init
-        super(StochasticErosionModel, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(StochasticErosionModel, self).__init__(clock, grid, **kwargs)
 
         self.opt_stochastic_duration = self.params.get(
             "opt_stochastic_duration", False

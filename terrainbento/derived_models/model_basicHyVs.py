@@ -18,8 +18,8 @@ import numpy as np
 from landlab.components import ErosionDeposition, LinearDiffuser
 from terrainbento.base_class import ErosionModel
 
-
 _REQUIRED_FIELDS = ["topographic__elevation"]
+
 
 class BasicHyVs(ErosionModel):
     """**BasicVs** model program.
@@ -160,9 +160,7 @@ class BasicHyVs(ErosionModel):
         """
 
         # Call ErosionModel"s init
-        super(BasicHyVs, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicHyVs, self).__init__(clock, grid, **kwargs)
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]

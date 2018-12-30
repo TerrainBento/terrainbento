@@ -165,9 +165,7 @@ class BasicSa(ErosionModel):
         """
 
         # Call ErosionModel"s init
-        super(BasicSa, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicSa, self).__init__(clock, grid, **kwargs)
 
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]

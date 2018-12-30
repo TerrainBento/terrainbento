@@ -20,6 +20,7 @@ from terrainbento.base_class import TwoLithologyErosionModel
 
 _REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
 
+
 class BasicChRt(TwoLithologyErosionModel):
     """**BasicChRt** model program.
 
@@ -193,9 +194,7 @@ class BasicChRt(TwoLithologyErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicChRt, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicChRt, self).__init__(clock, grid, **kwargs)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

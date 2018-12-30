@@ -129,9 +129,7 @@ class BasicTh(ErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicTh, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicTh, self).__init__(clock, grid, **kwargs)
 
         if float(self.params["n_sp"]) != 1.0:
             raise ValueError("Model BasicTh only supports n equals 1.")

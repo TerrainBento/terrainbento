@@ -182,9 +182,7 @@ class BasicRt(TwoLithologyErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicRt, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicRt, self).__init__(clock, grid, **kwargs)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

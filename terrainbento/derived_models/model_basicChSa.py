@@ -176,9 +176,7 @@ class BasicChSa(ErosionModel):
         """
 
         # Call ErosionModel"s init
-        super(BasicChSa, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicChSa, self).__init__(clock, grid, **kwargs)
 
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]

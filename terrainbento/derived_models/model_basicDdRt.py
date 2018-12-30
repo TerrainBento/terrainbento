@@ -19,8 +19,8 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import TwoLithologyErosionModel
 
+_REQUIRED_FIELDS = ["topographic__elevation", "lithology_contact__elevation"]
 
-_REQUIRED_FIELDS = ["topographic__elevation",   "lithology_contact__elevation"]
 
 class BasicDdRt(TwoLithologyErosionModel):
     """**BasicDdRt** model program.
@@ -199,9 +199,7 @@ class BasicDdRt(TwoLithologyErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicDdRt, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicDdRt, self).__init__(clock, grid, **kwargs)
 
         self.threshold_value = (
             self._length_factor

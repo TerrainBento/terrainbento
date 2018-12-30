@@ -144,9 +144,7 @@ class BasicDd(ErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicDd, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicDd, self).__init__(clock, grid, **kwargs)
 
         if float(self.params["n_sp"]) != 1.0:
             raise ValueError("Model BasicDd only supports n equals 1.")

@@ -141,9 +141,7 @@ class BasicCv(ErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicCv, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicCv, self).__init__(clock, grid, **kwargs)
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
         K_sp = self._get_parameter_from_exponent("water_erodability") * (

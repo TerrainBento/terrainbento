@@ -22,8 +22,8 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import StochasticErosionModel
 
-
 _REQUIRED_FIELDS = ["topographic__elevation"]
+
 
 class BasicStVs(StochasticErosionModel):
     """
@@ -164,9 +164,7 @@ class BasicStVs(StochasticErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicStVs, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicStVs, self).__init__(clock, grid, **kwargs)
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]

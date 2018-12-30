@@ -155,9 +155,7 @@ class BasicHySt(StochasticErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicHySt, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicHySt, self).__init__(clock, grid, **kwargs)
 
         # Get Parameters:
         self.m = self.params["m_sp"]

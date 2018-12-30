@@ -19,8 +19,8 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import StochasticErosionModel
 
-
 _REQUIRED_FIELDS = ["topographic__elevation"]
+
 
 class BasicStTh(StochasticErosionModel):
     """
@@ -147,9 +147,7 @@ class BasicStTh(StochasticErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicStTh, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicStTh, self).__init__(clock, grid, **kwargs)
 
         # Get Parameters:
         self.m = self.params["m_sp"]

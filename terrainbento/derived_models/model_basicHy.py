@@ -150,9 +150,7 @@ class BasicHy(ErosionModel):
         """
 
         # Call ErosionModel"s init
-        super(BasicHy, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicHy, self).__init__(clock, grid, **kwargs)
 
         # Get Parameters and convert units if necessary:
         self.m = self.params["m_sp"]

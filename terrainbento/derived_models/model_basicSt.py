@@ -177,9 +177,7 @@ class BasicSt(StochasticErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicSt, self).__init__(
-            clock, grid, **kwargs
-        )
+        super(BasicSt, self).__init__(clock, grid, **kwargs)
         # Get Parameters:
         self.m = self.params["m_sp"]
         self.n = self.params["n_sp"]
