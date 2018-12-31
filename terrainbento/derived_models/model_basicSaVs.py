@@ -78,11 +78,7 @@ class BasicSaVs(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`K_{sat}`   | ``hydraulic_conductivity``        |
     +------------------+-----------------------------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``       |
-    +------------------+-----------------------------------+
     |:math:`R_m`       | ``recharge_rate``                 |
-    +------------------+-----------------------------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``       |
     +------------------+-----------------------------------+
     |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
     +------------------+-----------------------------------+
@@ -148,7 +144,6 @@ class BasicSaVs(ErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "soil__initial_thickness": 0.0,
         ...           "soil_transport_decay_depth": 0.2,
         ...           "soil_production__maximum_rate": 0.001,
         ...           "soil_production__decay_depth": 0.1,
@@ -156,7 +151,6 @@ class BasicSaVs(ErosionModel):
         ...           "m_sp": 0.5,
         ...           "n_sp": 1.0,
         ...           "recharge_rate": 0.5,
-        ...           "soil__initial_thickness": 2.0,
         ...           "hydraulic_conductivity": 0.1}
 
         Construct the model.
@@ -184,9 +178,6 @@ class BasicSaVs(ErosionModel):
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
-        initial_soil_thickness = (
-            self._length_factor
-        ) * soil__initial_thickness
 
         soil_transport_decay_depth = (
             self._length_factor

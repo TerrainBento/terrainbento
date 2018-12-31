@@ -105,8 +105,6 @@ class BasicRtSa(TwoLithologyErosionModel):
     +------------------+-----------------------------------+
     |:math:`D`         | ``regolith_transport_parameter``  |
     +------------------+-----------------------------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``       |
-    +------------------+-----------------------------------+
     |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
@@ -206,7 +204,6 @@ class BasicRtSa(TwoLithologyErosionModel):
         ...           "lithology_contact_elevation__file_name": "tests/data/example_contact_elevation.asc",
         ...           "m_sp": 0.5,
         ...           "n_sp": 1.0,
-        ...           "soil__initial_thickness": 2,
         ...           "soil_transport_decay_depth": 1.5,
         ...           "soil_production__maximum_rate": 0.001,
         ...           "soil_production__decay_depth": 0.7}
@@ -238,16 +235,10 @@ class BasicRtSa(TwoLithologyErosionModel):
             discharge_name="surface_water__discharge",
         )
 
-        # Create soil thickness (a.k.a. depth) field
-        soil_thickness = self.grid.add_zeros("node", "soil__depth")
+        initial_soil_thickness = self.grid.at_node["soil_depth"]
 
-        # Create bedrock elevation field
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
-
-        # Set soil thickness and bedrock elevation
-        initial_soil_thickness = (
-            self._length_factor
-        ) * soil__initial_thickness
+        bedrock_elev[:] = self.z - soil_depth
 
         soil_transport_decay_depth = (
             self._length_factor
@@ -259,7 +250,6 @@ class BasicRtSa(TwoLithologyErosionModel):
             self._length_factor
         ) * soil_production__decay_depth
 
-        soil_thickness[:] = initial_soil_thickness
         bedrock_elev[:] = self.z - initial_soil_thickness
 
         # Instantiate diffusion and weathering components

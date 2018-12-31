@@ -79,8 +79,6 @@ class BasicChSa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`D`         | ``regolith_transport_parameter``  |
     +------------------+-----------------------------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``       |
-    +------------------+-----------------------------------+
     |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
@@ -107,6 +105,9 @@ class BasicChSa(ErosionModel):
         regolith_transport_parameter=0.1,
         critical_slope=0.3,
         number_of_taylor_terms=11,
+        soil_production__maximum_rate=0.001,
+        soil_production__decay_depth=0.5
+        soil_transport__decay_depth=0.5,
         **kwargs
     ):
         """
@@ -128,43 +129,16 @@ class BasicChSa(ErosionModel):
 
         >>> from landlab import RasterModelGrid
         >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from terrainbento import Clock, BasicChSa
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
+        >>> _ = random(grid, "soil__depth")
+
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-        1.0
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "soil__initial_thickness": 0.0,
-        ...           "soil_transport_decay_depth": 0.2,
-        ...           "soil_production__maximum_rate": 0.001,
-        ...           "soil_production__decay_depth": 0.1,
-        ...           "soil__initial_thickness": 1.0,
-        ...           "critical_slope": 0.2,
-        ...           "water_erodability": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0}
-
-        Construct the model.
-
-        >>> model = BasicChSa(params=params)
+        >>> model = BasicChSa(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -186,9 +160,6 @@ class BasicChSa(ErosionModel):
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
-        initial_soil_thickness = (
-            self._length_factor
-        ) * soil__initial_thickness
         soil_transport_decay_depth = (
             self._length_factor
         ) * soil_transport_decay_depth
@@ -200,10 +171,9 @@ class BasicChSa(ErosionModel):
         ) * soil_production__decay_depth
 
         # Create bedrock elevation field
+        soil_thickness = self.grid.at_node["soil_depth"]
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
-
-        soil_thickness[:] = initial_soil_thickness
-        bedrock_elev[:] = self.z - initial_soil_thickness
+        bedrock_elev[:] = self.z - soil_depth
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(

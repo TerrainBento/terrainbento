@@ -87,8 +87,6 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`\phi`      | ``sediment_porosity``             |
     +------------------+-----------------------------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``       |
-    +------------------+-----------------------------------+
     |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
@@ -174,8 +172,7 @@ class BasicHySa(ErosionModel):
         ...           "solver": "basic",
         ...           "soil_transport_decay_depth": 1,
         ...           "soil_production__maximum_rate": 0.0001,
-        ...           "soil_production__decay_depth": 0.5,
-        ...           "soil__initial_thickness": 1.0}
+        ...           "soil_production__decay_depth": 0.5}
 
         Construct the model.
 
@@ -204,10 +201,6 @@ class BasicHySa(ErosionModel):
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-        initial_soil_thickness = (
-            self._length_factor
-        ) * soil__initial_thickness
-
         soil_transport_decay_depth = (
             self._length_factor
         ) * soil_transport_decay_depth
@@ -235,15 +228,9 @@ class BasicHySa(ErosionModel):
             solver=solver,
         )
 
-        # Get soil thickness (a.k.a. depth) field
-        soil_thickness = self.grid.at_node["soil__depth"]
-
-        # Get bedrock elevation field
-        bedrock_elev = self.grid.at_node["bedrock__elevation"]
-
-        # Set soil thickness and bedrock elevation
-        soil_thickness[:] = initial_soil_thickness
-        bedrock_elev[:] = self.z - initial_soil_thickness
+        soil_thickness = self.grid.at_node["soil_depth"]
+        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        bedrock_elev[:] = self.z - soil_depth
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(

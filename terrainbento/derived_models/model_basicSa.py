@@ -77,8 +77,6 @@ class BasicSa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`D`         | ``regolith_transport_parameter``  |
     +------------------+-----------------------------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``       |
-    +------------------+-----------------------------------+
     |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
@@ -143,7 +141,6 @@ class BasicSa(ErosionModel):
         ...           "number_of_node_columns" : 9,
         ...           "node_spacing" : 10.0,
         ...           "regolith_transport_parameter": 0.001,
-        ...           "soil__initial_thickness": 0.0,
         ...           "soil_transport_decay_depth": 0.2,
         ...           "soil_production__maximum_rate": 0.001,
         ...           "soil_production__decay_depth": 0.1,
@@ -177,9 +174,6 @@ class BasicSa(ErosionModel):
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
-        initial_soil_thickness = (
-            self._length_factor
-        ) * soil__initial_thickness
         soil_transport_decay_depth = (
             self._length_factor
         ) * soil_transport_decay_depth
@@ -199,15 +193,9 @@ class BasicSa(ErosionModel):
             discharge_name="surface_water__discharge",
         )
 
-        # Create soil thickness (a.k.a. depth) field
-        soil_thickness = self.grid.add_zeros("node", "soil__depth")
-
-        # Create bedrock elevation field
+        soil_thickness = self.grid.at_node["soil_depth"]
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
-
-        # Set soil thickness and bedrock elevation
-        soil_thickness[:] = initial_soil_thickness
-        bedrock_elev[:] = self.z - initial_soil_thickness
+        bedrock_elev[:] = self.z - soil_depth
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(

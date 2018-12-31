@@ -79,8 +79,6 @@ class BasicDdVs(ErosionModel):
     +--------------------+-------------------------------------------------+
     |:math:`K_{sat}`     | ``hydraulic_conductivity``                      |
     +--------------------+-------------------------------------------------+
-    |:math:`H_{init}`    | ``soil__initial_thickness``                     |
-    +--------------------+-------------------------------------------------+
     |:math:`R_m`         | ``recharge_rate``                               |
     +--------------------+-------------------------------------------------+
 
@@ -148,7 +146,6 @@ class BasicDdVs(ErosionModel):
         ...           "m_sp": 0.5,
         ...           "n_sp": 1.0,
         ...           "recharge_rate": 0.5,
-        ...           "soil__initial_thickness": 2.0,
         ...           "hydraulic_conductivity": 0.1}
 
         Construct the model.
@@ -175,12 +172,14 @@ class BasicDdVs(ErosionModel):
             self._length_factor ** (1. - (2. * self.m))
         )
 
+        soil_thickness = self.grid.at_node["soil_depth"]
+
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
         recharge_rate = (self._length_factor) * recharge_rate
-        soil_thickness = (self._length_factor) * soil__initial_thickness
+
         K_hydraulic_conductivity = (
             self._length_factor
         ) * hydraulic_conductivity

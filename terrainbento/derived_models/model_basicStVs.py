@@ -66,10 +66,6 @@ class BasicStVs(StochasticErosionModel):
     +------------------+----------------------------------+
     |:math:`K_q`       | ``water_erodability_stochastic`` |
     +------------------+----------------------------------+
-    |:math:`H`         | ``soil__initial_thickness``      |
-    +------------------+----------------------------------+
-    |:math:`H`         | ``soil__initial_thickness``      |
-    +------------------+----------------------------------+
     |:math:`K_s`       | ``hydraulic_conductivity``       |
     +------------------+----------------------------------+
 
@@ -147,7 +143,6 @@ class BasicStVs(StochasticErosionModel):
         ...           "rainfall__shape_factor": 1.0,
         ...           "infiltration_capacity": 1.0,
         ...           "random_seed": 0,
-        ...           "soil__initial_thickness": 2.0,
         ...           "hydraulic_conductivity": 0.1}
 
         Construct the model.
@@ -175,7 +170,8 @@ class BasicStVs(StochasticErosionModel):
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-        soil_thickness = (self._length_factor) * soil__initial_thickness
+        soil_thickness = self.grid.at_node["soil_depth"]
+
         K_hydraulic_conductivity = (
             self._length_factor
         ) * hydraulic_conductivity
