@@ -67,6 +67,7 @@ class BasicTh(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        water_erosion_rule__threshold=1.,
         **kwargs
     ):
         """
@@ -96,29 +97,6 @@ class BasicTh(ErosionModel):
         Construct the model.
 
         >>> model = Basic(clock, grid)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "water_erosion_rule__threshold": 0.01}
-
-        Construct the model.
-
-        >>> model = BasicTh(params=params)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.

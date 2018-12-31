@@ -89,6 +89,7 @@ class BasicStVs(StochasticErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        hydraulic_conductivity=0.1,
         **kwargs
     ):
         """
@@ -114,6 +115,7 @@ class BasicStVs(StochasticErosionModel):
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
+        >>> _ = random(grid, "soil__depth")
 
         Construct the model.
 

@@ -149,7 +149,7 @@ class ErosionModel(object):
         fields=["topographic__elevation"],
         feet_to_meters=False,
         meters_to_feet=False,
-        **params
+        **kwargs
     ):
         """
         Parameters
@@ -232,6 +232,10 @@ class ErosionModel(object):
         # save reference to elevation
         self.z = grid.at_node["topographic__elevation"]
 
+        self.grid.add_zeros("node", "cumulative_elevation_change")
+
+        self.grid.add_field("node", "initial_topographic__elevation", self.z.copy())
+
         # save output_information
         self.save_first_timestep = save_first_timestep
         self._out_file_name = output_prefix
@@ -257,16 +261,16 @@ class ErosionModel(object):
             flow_director == "FlowDirectorSteepest"
         ):
             self.flow_accumulator = FlowAccumulator(
-                self.grid, routing="D4", **params
+                self.grid, routing="D4", **kwargs
             )
         else:
-            self.flow_accumulator = FlowAccumulator(self.grid, **params)
+            self.flow_accumulator = FlowAccumulator(self.grid, **kwargs)
 
         ###################################################################
         # get internal length scale adjustement
         ###################################################################
-        feet_to_meters = params.get("feet_to_meters", False)
-        meters_to_feet = params.get("meters_to_feet", False)
+        feet_to_meters = kwargs.get("feet_to_meters", False)
+        meters_to_feet = kwargs.get("meters_to_feet", False)
         if feet_to_meters and meters_to_feet:
             raise ValueError(
                 "Both 'feet_to_meters' and 'meters_to_feet' are"
@@ -285,6 +289,11 @@ class ErosionModel(object):
         ###################################################################
         self.boundary_handlers = boundary_handlers
         self.output_writers = output_writers
+
+
+        if len(kwargs) > 0:
+            msg  = ("")
+            raise ValueError(msg)
 
     def _verify_fields(self, required_fields):
         """"""

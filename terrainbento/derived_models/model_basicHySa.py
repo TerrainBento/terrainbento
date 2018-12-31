@@ -91,7 +91,7 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
     +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
+    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
     +------------------+-----------------------------------+
     |:math:`H_{*}`     | ``roughness__length_scale``       |
     +------------------+-----------------------------------+
@@ -111,9 +111,19 @@ class BasicHySa(ErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodability_sediment=0.001,
+        water_erodability_rock=0.0001,
         regolith_transport_parameter=0.1,
+        settling_velocity=0.001,
+        sediment_porosity=0.3,
+        fraction_fines=0.5,
+        roughness__length_scale=0.5,
         solver="basic",
+        soil_production__maximum_rate=0.001,
+        soil_production__decay_depth=0.5,
+        soil_transport_decay_depth=0.5,
+        sp_crit_br=0,
+        sp_crit_sed=0,
         **kwargs
     ):
         """
@@ -135,48 +145,15 @@ class BasicHySa(ErosionModel):
 
         >>> from landlab import RasterModelGrid
         >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from terrainbento import Clock, BasicHySa
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
+        >>> _ = random(grid, "soil__depth")
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-        1.0
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability_rock": 0.001,
-        ...           "water_erodability_sediment": 0.001,
-        ...           "sp_crit_br": 0,
-        ...           "sp_crit_sed": 0,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "v_sc": 0.01,
-        ...           "sediment_porosity": 0,
-        ...           "fraction_fines": 0,
-        ...           "roughness__length_scale": 0.1,
-        ...           "solver": "basic",
-        ...           "soil_transport_decay_depth": 1,
-        ...           "soil_production__maximum_rate": 0.0001,
-        ...           "soil_production__decay_depth": 0.5}
-
-        Construct the model.
-
-        >>> model = BasicHySa(params=params)
+        >>> model = BasicHySa(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -192,6 +169,10 @@ class BasicHySa(ErosionModel):
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 
+        soil_thickness = self.grid.at_node["soil__depth"]
+        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        bedrock_elev[:] = self.z - soil_thickness
+
         self.m = m_sp
         self.n = n_sp
         self.K_br = (water_erodability_rock) * (
@@ -203,7 +184,7 @@ class BasicHySa(ErosionModel):
         regolith_transport_parameter = (
             self._length_factor ** 2.
         ) * regolith_transport_parameter
-
+        roughness__length_scale = roughness__length_scale * self._length_factor
         soil_transport_decay_depth = (
             self._length_factor
         ) * soil_transport_decay_depth
@@ -212,7 +193,7 @@ class BasicHySa(ErosionModel):
         ) * soil_production__maximum_rate
         soil_production_decay_depth = (
             self._length_factor
-        ) * soil_production__decay_dept
+        ) * soil_production__decay_depth
 
         # Instantiate a SPACE component
         self.eroder = Space(
@@ -224,16 +205,12 @@ class BasicHySa(ErosionModel):
             F_f=fraction_fines,
             phi=sediment_porosity,
             H_star=roughness__length_scale,
-            v_s=v_sc,
+            v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
             solver=solver,
         )
-
-        soil_thickness = self.grid.at_node["soil__depth"]
-        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
-        bedrock_elev[:] = self.z - soil_thickness
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(

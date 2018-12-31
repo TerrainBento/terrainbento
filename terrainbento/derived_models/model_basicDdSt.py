@@ -93,6 +93,8 @@ class BasicDdSt(StochasticErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        water_erosion_rule__threshold=1.,
+        water_erosion_rule__thresh_depth_derivative=0.,
         **kwargs
     ):
         """

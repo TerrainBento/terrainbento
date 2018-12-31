@@ -109,7 +109,7 @@ class BasicRtSa(TwoLithologyErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
     +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
+    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
     +------------------+-----------------------------------+
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
@@ -179,6 +179,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
+        >>> _ = random(grid, "soil__depth")
 
         Construct the model.
 

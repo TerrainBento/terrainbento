@@ -83,7 +83,7 @@ class BasicChSa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
     +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
+    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
     +------------------+-----------------------------------+
     |:math:`S_c`       | ``critical_slope``                |
     +------------------+-----------------------------------+
@@ -107,7 +107,7 @@ class BasicChSa(ErosionModel):
         number_of_taylor_terms=11,
         soil_production__maximum_rate=0.001,
         soil_production__decay_depth=0.5,
-        soil_transport__decay_depth=0.5,
+        soil_transport_decay_depth=0.5,
         **kwargs
     ):
         """
@@ -134,7 +134,6 @@ class BasicChSa(ErosionModel):
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
         >>> _ = random(grid, "soil__depth")
-
 
         Construct the model.
 
@@ -165,7 +164,7 @@ class BasicChSa(ErosionModel):
         ) * regolith_transport_parameter
         soil_transport_decay_depth = (
             self._length_factor
-        ) * soil_transport__decay_depth
+        ) * soil_transport_decay_depth
         max_soil_production_rate = (
             self._length_factor
         ) * soil_production__maximum_rate

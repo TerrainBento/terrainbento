@@ -84,7 +84,7 @@ class BasicSaVs(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
     +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
+    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
     +------------------+-----------------------------------+
 
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
@@ -100,6 +100,11 @@ class BasicSaVs(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        soil_production__maximum_rate=0.001,
+        soil_production__decay_depth=0.5,
+        soil_transport_decay_depth=0.5,
+        recharge_rate=0.5,
+        hydraulic_conductivity=0.1,
         **kwargs
     ):
         """
@@ -121,41 +126,15 @@ class BasicSaVs(ErosionModel):
 
         >>> from landlab import RasterModelGrid
         >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from terrainbento import Clock, BasicSaVs
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
+        >>> _ = random(grid, "soil__depth")
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "soil_transport_decay_depth": 0.2,
-        ...           "soil_production__maximum_rate": 0.001,
-        ...           "soil_production__decay_depth": 0.1,
-        ...           "water_erodability": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "recharge_rate": 0.5,
-        ...           "hydraulic_conductivity": 0.1}
-
-        Construct the model.
-
-        >>> model = BasicSaVs(params=params)
+        >>> model = BasicSaVs(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -197,14 +176,9 @@ class BasicSaVs(ErosionModel):
             self._length_factor
         ) * hydraulic_conductivity
 
-        # Create soil thickness (a.k.a. depth) field
-        soil_thickness = self.grid.add_zeros("node", "soil__depth")
-
-        # Create bedrock elevation field
+        soil_thickness = self.grid.at_node["soil__depth"]
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
-
-        soil_thickness[:] = initial_soil_thickness
-        bedrock_elev[:] = self.z - initial_soil_thickness
+        bedrock_elev[:] = self.z - soil_thickness
 
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")

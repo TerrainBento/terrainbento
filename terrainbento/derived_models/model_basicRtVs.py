@@ -155,6 +155,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
+        >>> _ = random(grid, "soil__depth")
 
         Construct the model.
 
@@ -245,7 +246,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         slope = self.grid.at_node["topographic__steepest_slope"]
         cores = self.grid.core_nodes
         self.eff_area[cores] = area[cores] * (
-            np.exp(-self.sat_param * slope[cores] / area[cores])
+            np.exp(-self.sat_param[cores] * slope[cores] / area[cores])
         )
 
     def run_one_step(self, step):

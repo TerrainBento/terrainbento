@@ -140,6 +140,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         regolith_transport_parameter=0.1,
         critical_slope=0.3,
         number_of_taylor_terms=7,
+        water_erosion_rule__threshold=1.,
         **kwargs
     ):
         """

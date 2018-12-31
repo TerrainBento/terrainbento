@@ -6,7 +6,7 @@ $f$ , {\tt climate\_factor} ,model_climate_factor,,parameter,model_climate_facto
 $F_f$ , {\tt F\_f} ,sediment~fine,,fraction,sediment~fine___fraction,fraction_fines,, -,
 $F$ , {\tt intermittency\_factor} ,atmosphere_water,,precipitation_intermittency_factor,atmosphere_water___precipitation_intermittency_factor,rainfall_intermittency_factor,, -,
 $H_*$ , {\tt H\_star} ,sediment_entrainment,,length_scale,sediment_entrainment___length_scale,sediment_entrainment__length_scale,, $L$,
-$H_0$ , {\tt soil\_transport\_decay\_depth} ,soil_transport,,decay_depth,soil_transport___decay_depth,soil_transport__decay_depth,, $L$,
+$H_0$ , {\tt soil\_transport\_decay\_depth} ,soil_transport,,decay_depth,soil_transport___decay_depth,soil_transport_decay_depth,, $L$,
 $H_{init}$ , {\tt initial\_soil\_thickness} ,soil,,initial_thickness,soil___initial_thickness,soil__initial_thickness,, $L$,
 $H_s$ , {\tt soil\_production\_decay\_depth} ,soil_production,,decay_depth,soil_production___decay_depth,soil_production__decay_depth ,, $L$,
 $I_m$ , {\tt infiltration\_capacity} ,soil_surface_water,,infiltration_volume_flux,soil_surface_water___infiltration_volume_flux,infiltration_capacity,, $LT^{-1}$,

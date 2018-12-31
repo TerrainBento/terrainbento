@@ -80,6 +80,8 @@ class BasicDd(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        water_erosion_rule__threshold=1.,
+        water_erosion_rule__thresh_depth_derivative=0.,
         **kwargs
     ):
         """
@@ -101,14 +103,14 @@ class BasicDd(ErosionModel):
 
         >>> from landlab import RasterModelGrid
         >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from terrainbento import Clock, BasicDd
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
+        >>> model = BasicDd(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -116,32 +118,6 @@ class BasicDd(ErosionModel):
         >>> model.run_one_step(1.)
         >>> model.model_time
         1.0
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "water_erosion_rule__threshold": 0.01,
-        ...           "water_erosion_rule__thresh_depth_derivative": 0.01}
-
-        Construct the model.
-
-        >>> model = BasicDd(params=params)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-        1.0
-
         """
         # Call ErosionModel"s init
         super(BasicDd, self).__init__(clock, grid, **kwargs)
@@ -149,15 +125,15 @@ class BasicDd(ErosionModel):
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 
-        if float(self.n) != 1.0:
-            raise ValueError("Model BasicDd only supports n equals 1.")
-
         # Get Parameters and convert units if necessary:
         self.m = m_sp
         self.n = n_sp
         self.K = water_erodability * (
             self._length_factor ** (1. - (2. * self.m))
         )
+
+        if float(self.n) != 1.0:
+            raise ValueError("Model BasicDd only supports n equals 1.")
 
         regolith_transport_parameter = (
             self._length_factor ** 2.
