@@ -102,7 +102,7 @@ class ErosionModel(object):
         """
         model = ErosionModel.from_file("file.yaml")
         """
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             dict = yaml.load(f)
         return cls.from_dict(dict)
 
@@ -234,7 +234,9 @@ class ErosionModel(object):
 
         self.grid.add_zeros("node", "cumulative_elevation_change")
 
-        self.grid.add_field("node", "initial_topographic__elevation", self.z.copy())
+        self.grid.add_field(
+            "node", "initial_topographic__elevation", self.z.copy()
+        )
 
         # save output_information
         self.save_first_timestep = save_first_timestep
@@ -290,9 +292,8 @@ class ErosionModel(object):
         self.boundary_handlers = boundary_handlers
         self.output_writers = output_writers
 
-
         if len(kwargs) > 0:
-            msg  = ("")
+            msg = ""
             raise ValueError(msg)
 
     def _verify_fields(self, required_fields):

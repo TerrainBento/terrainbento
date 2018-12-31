@@ -89,14 +89,14 @@ class BasicTh(ErosionModel):
 
         >>> from landlab import RasterModelGrid
         >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from terrainbento import Clock, BasicTh
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
+        >>> model = BasicTh(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -112,15 +112,15 @@ class BasicTh(ErosionModel):
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 
-        if float(self.n) != 1.0:
-            raise ValueError("Model BasicTh only supports n equals 1.")
-
         # Get Parameters and convert units if necessary:
         self.m = m_sp
         self.n = n_sp
         self.K = water_erodability * (
             self._length_factor ** (1. - (2. * self.m))
         )
+
+        if float(self.n) != 1.0:
+            raise ValueError("Model BasicTh only supports n equals 1.")
 
         regolith_transport_parameter = (
             self._length_factor ** 2.

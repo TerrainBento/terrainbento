@@ -11,7 +11,7 @@ class Clock(object):
         """
         clock = Clock.from_file(yaml-file-like)
         """
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             dict = yaml.load(f)
         return cls.from_dict(dict)
 
@@ -47,22 +47,28 @@ class Clock(object):
         try:
             self.start = float(start)
         except ValueError:
-            msg = ("Clock: Required parameter *start* is "
-                   "not compatible with type float.")
+            msg = (
+                "Clock: Required parameter *start* is "
+                "not compatible with type float."
+            )
             raise ValueError(msg)
 
         try:
             self.step = float(step)
         except ValueError:
-            msg = ("Clock: Required parameter *step* is "
-                   "not compatible with type float.")
+            msg = (
+                "Clock: Required parameter *step* is "
+                "not compatible with type float."
+            )
             raise ValueError(msg)
 
         try:
             self.stop = float(stop)
         except ValueError:
-            msg = ("Clock: Required parameter *stop* is "
-                   "not compatible with type float.")
+            msg = (
+                "Clock: Required parameter *stop* is "
+                "not compatible with type float."
+            )
             raise ValueError(msg)
 
         if self.start > self.stop:

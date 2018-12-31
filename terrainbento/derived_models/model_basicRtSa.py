@@ -23,12 +23,7 @@ from landlab.components import (
 )
 from terrainbento.base_class import TwoLithologyErosionModel
 
-_REQUIRED_FIELDS = [
-    "topographic__elevation",
-    "soil__depth",
-    "bedrock__elevation",
-    "lithology_contact__elevation",
-]
+_REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
 
 
 class BasicRtSa(TwoLithologyErosionModel):
@@ -150,10 +145,10 @@ class BasicRtSa(TwoLithologyErosionModel):
         self,
         clock,
         grid,
-        m_sp=0.5,
-        n_sp=1.0,
-        water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        soil_production__maximum_rate=0.001,
+        soil_production__decay_depth=0.5,
+        soil_transport_decay_depth=0.5,
         **kwargs
     ):
         """
@@ -174,44 +169,17 @@ class BasicRtSa(TwoLithologyErosionModel):
         To begin, import the model class.
 
         >>> from landlab import RasterModelGrid
-        >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from landlab.values import random, constant
+        >>> from terrainbento import Clock, BasicRtSa
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
         >>> _ = random(grid, "soil__depth")
+        >>> _ = constant(grid, "lithology_contact__elevation", constant=-10.)
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability_lower": 0.001,
-        ...           "water_erodability_upper": 0.01,
-        ...           "contact_zone__width": 1.0,
-        ...           "lithology_contact_elevation__file_name": "tests/data/example_contact_elevation.asc",
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "soil_transport_decay_depth": 1.5,
-        ...           "soil_production__maximum_rate": 0.001,
-        ...           "soil_production__decay_depth": 0.7}
-
-        Construct the model.
-
-        >>> model = BasicRtSa(params=params)
+        >>> model = BasicRtSa(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -239,7 +207,7 @@ class BasicRtSa(TwoLithologyErosionModel):
             discharge_name="surface_water__discharge",
         )
 
-        initial_soil_thickness = self.grid.at_node["soil__depth"]
+        soil_thickness = self.grid.at_node["soil__depth"]
 
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
         bedrock_elev[:] = self.z - soil_thickness
@@ -253,8 +221,6 @@ class BasicRtSa(TwoLithologyErosionModel):
         soil_production_decay_depth = (
             self._length_factor
         ) * soil_production__decay_depth
-
-        bedrock_elev[:] = self.z - initial_soil_thickness
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(

@@ -11,6 +11,8 @@ import numpy as np
 from landlab.io import read_esri_ascii
 from terrainbento.base_class import ErosionModel
 
+_REQUIRED_FIELDS = ["lithology_contact__elevation"]
+
 
 class TwoLithologyErosionModel(ErosionModel):
     """Base class for two lithology terrainbento models.
@@ -33,19 +35,22 @@ class TwoLithologyErosionModel(ErosionModel):
     by a halo of size 1.
     """
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+    def __init__(
+        self,
+        clock,
+        grid,
+        m_sp=0.5,
+        n_sp=1.0,
+        water_erodability_lower=0.0001,
+        water_erodability_upper=0.001,
+        regolith_transport_parameter=0.1,
+        contact_zone__width=1.,
+        **kwargs
+    ):
         """
         Parameters
         ----------
-        input_file : str
-            Path to model input file. See wiki for discussion of input file
-            formatting. One of input_file or params is required.
-        params : dict
-            Dictionary containing the input file. One of input_file or params
-            is required.
-        OutputWriters : class, function, or list of classes and/or functions,
-            optional classes or functions used to write incremental output
-            (e.g. make a diagnostic plot).
+        gr
 
         Returns
         -------
@@ -60,8 +65,14 @@ class TwoLithologyErosionModel(ErosionModel):
         # Call ErosionModel"s init
         super(TwoLithologyErosionModel, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
+        self.m = m_sp
+        self.n = n_sp
+
         # Get all common parameters
-        self.contact_width = (self._length_factor) * contact_zone__width
+        self.contact_width = self._length_factor * contact_zone__width
 
         self.regolith_transport_parameter = (
             self._length_factor ** 2.
@@ -79,16 +90,6 @@ class TwoLithologyErosionModel(ErosionModel):
         self.rock_erody = self.K_rock
         self.till_erody = self.K_till
 
-    def _setup_contact_elevation(self):
-        file_name = self.params["lithology_contact_elevation__file_name"]
-
-        # Read input data on rock-till contact elevation
-        read_esri_ascii(
-            file_name,
-            grid=self.grid,
-            halo=1,
-            name="lithology_contact__elevation",
-        )
         self.rock_till_contact = self.grid.at_node[
             "lithology_contact__elevation"
         ]
@@ -96,8 +97,6 @@ class TwoLithologyErosionModel(ErosionModel):
     def _setup_rock_and_till(self):
         """Set up fields to handle for two layers with different
         erodability."""
-        # Get a reference to the rock-till field
-        self._setup_contact_elevation()
 
         # Create field for erodability
         self.erody = self.grid.add_zeros("node", "substrate__erodability")
@@ -112,8 +111,6 @@ class TwoLithologyErosionModel(ErosionModel):
     def _setup_rock_and_till_with_threshold(self):
         """Set up fields to handle for two layers with different
         erodability."""
-        # Get a reference to the rock-till field\
-        self._setup_contact_elevation()
 
         # Create field for erodability
         self.erody = self.grid.add_zeros("node", "substrate__erodability")
