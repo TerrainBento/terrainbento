@@ -110,12 +110,7 @@ class BasicRt(TwoLithologyErosionModel):
 
     """
 
-    def __init__(
-        self,
-        clock,
-        grid,
-        **kwargs
-    ):
+    def __init__(self, clock, grid, **kwargs):
         """
         Parameters
         ----------
