@@ -223,6 +223,9 @@ class BasicRtSa(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicRtSa, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 

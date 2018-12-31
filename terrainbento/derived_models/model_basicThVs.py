@@ -147,6 +147,9 @@ class BasicThVs(ErosionModel):
         # Call ErosionModel"s init
         super(BasicThVs, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
         if float(self.n) != 1.0:
             raise ValueError("Model BasicThVs only supports n = 1.")
 

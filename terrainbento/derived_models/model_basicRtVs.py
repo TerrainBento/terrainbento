@@ -197,6 +197,9 @@ class BasicRtVs(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicRtVs, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
         recharge_rate = (self._length_factor) * recharge_rate
         soil_thickness = self.grid.at_node["soil_depth"]
         K_hydraulic_conductivity = (

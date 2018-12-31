@@ -201,6 +201,9 @@ class BasicDdRt(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicDdRt, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
         self.threshold_value = (
             self._length_factor * water_erosion_rule__threshold
         )

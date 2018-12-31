@@ -106,7 +106,7 @@ class BasicChSa(ErosionModel):
         critical_slope=0.3,
         number_of_taylor_terms=11,
         soil_production__maximum_rate=0.001,
-        soil_production__decay_depth=0.5
+        soil_production__decay_depth=0.5,
         soil_transport__decay_depth=0.5,
         **kwargs
     ):
@@ -151,6 +151,9 @@ class BasicChSa(ErosionModel):
 
         # Call ErosionModel"s init
         super(BasicChSa, self).__init__(clock, grid, **kwargs)
+
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
 
         self.m = m_sp
         self.n = n_sp

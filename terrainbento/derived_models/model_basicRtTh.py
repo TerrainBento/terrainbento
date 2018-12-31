@@ -198,6 +198,9 @@ class BasicRtTh(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicRtTh, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
         # Save the threshold values for rock and till
         self.rock_thresh = water_erosion_rule_lower__threshold
         self.till_thresh = water_erosion_rule_upper__threshold

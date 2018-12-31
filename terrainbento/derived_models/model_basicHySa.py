@@ -189,6 +189,9 @@ class BasicHySa(ErosionModel):
         # Call ErosionModel"s init
         super(BasicHySa, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
         self.m = m_sp
         self.n = n_sp
         self.K_br = (water_erodability_rock) * (

@@ -163,6 +163,9 @@ class BasicDdVs(ErosionModel):
         # Call ErosionModel"s init
         super(BasicDdVs, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
         if float(n_sp) != 1.0:
             raise ValueError("Model BasicDdVs only supports n = 1.")
 

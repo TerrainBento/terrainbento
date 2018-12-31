@@ -153,6 +153,9 @@ class BasicHy(ErosionModel):
         # Call ErosionModel"s init
         super(BasicHy, self).__init__(clock, grid, **kwargs)
 
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
+
         # Get Parameters and convert units if necessary:
         self.m = m_sp
         self.n = n_sp

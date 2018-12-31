@@ -205,7 +205,8 @@ class BasicHyRt(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicHyRt, self).__init__(clock, grid, **kwargs)
 
-        settling_velocity = settling_velocity
+        # verify correct fields are present.
+        self._verify_fields(_REQUIRED_FIELDS)
 
         # Save the threshold values for rock and till
         self.rock_thresh = 0.
