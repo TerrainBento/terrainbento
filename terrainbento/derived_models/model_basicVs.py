@@ -164,7 +164,7 @@ class BasicVs(ErosionModel):
             self._length_factor
         ) * hydraulic_conductivity
 
-        soil_thickness = self.grid.at_node["soil_depth"]
+        soil_thickness = self.grid.at_node["soil__depth"]
 
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")

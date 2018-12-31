@@ -175,7 +175,7 @@ class BasicDdVs(ErosionModel):
             self._length_factor ** (1. - (2. * self.m))
         )
 
-        soil_thickness = self.grid.at_node["soil_depth"]
+        soil_thickness = self.grid.at_node["soil__depth"]
 
         regolith_transport_parameter = (
             self._length_factor ** 2.

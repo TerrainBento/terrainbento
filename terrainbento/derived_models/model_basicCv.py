@@ -77,6 +77,8 @@ class BasicCv(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
+        climate_factor=0.5,
+        climate_constant_date=0.,
         **kwargs
     ):
         """
@@ -98,39 +100,14 @@ class BasicCv(ErosionModel):
 
         >>> from landlab import RasterModelGrid
         >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from terrainbento import Clock, BasicCv
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-        1.0
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability": 0.001,
-        ...           "climate_factor": 1.0,
-        ...           "climate_constant_date": 1.0,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0}
-
-        Construct the model.
-
-        >>> model = BasicCv(params=params)
+        >>> model = BasicCv(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.

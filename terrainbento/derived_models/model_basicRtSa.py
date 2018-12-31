@@ -238,10 +238,10 @@ class BasicRtSa(TwoLithologyErosionModel):
             discharge_name="surface_water__discharge",
         )
 
-        initial_soil_thickness = self.grid.at_node["soil_depth"]
+        initial_soil_thickness = self.grid.at_node["soil__depth"]
 
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
-        bedrock_elev[:] = self.z - soil_depth
+        bedrock_elev[:] = self.z - soil_thickness
 
         soil_transport_decay_depth = (
             self._length_factor

@@ -201,7 +201,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         self._verify_fields(_REQUIRED_FIELDS)
 
         recharge_rate = (self._length_factor) * recharge_rate
-        soil_thickness = self.grid.at_node["soil_depth"]
+        soil_thickness = self.grid.at_node["soil__depth"]
         K_hydraulic_conductivity = (
             self._length_factor
         ) * hydraulic_conductivity

@@ -165,7 +165,7 @@ class BasicChSa(ErosionModel):
         ) * regolith_transport_parameter
         soil_transport_decay_depth = (
             self._length_factor
-        ) * soil_transport_decay_depth
+        ) * soil_transport__decay_depth
         max_soil_production_rate = (
             self._length_factor
         ) * soil_production__maximum_rate
@@ -174,9 +174,9 @@ class BasicChSa(ErosionModel):
         ) * soil_production__decay_depth
 
         # Create bedrock elevation field
-        soil_thickness = self.grid.at_node["soil_depth"]
+        soil_thickness = self.grid.at_node["soil__depth"]
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
-        bedrock_elev[:] = self.z - soil_depth
+        bedrock_elev[:] = self.z - soil_thickness
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(

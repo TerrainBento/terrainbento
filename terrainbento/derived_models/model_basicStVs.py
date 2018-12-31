@@ -174,7 +174,7 @@ class BasicStVs(StochasticErosionModel):
             self._length_factor ** 2.
         ) * regolith_transport_parameter
 
-        soil_thickness = self.grid.at_node["soil_depth"]
+        soil_thickness = self.grid.at_node["soil__depth"]
 
         K_hydraulic_conductivity = (
             self._length_factor
