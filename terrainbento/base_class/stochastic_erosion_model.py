@@ -93,7 +93,23 @@ class StochasticErosionModel(ErosionModel):
      existing **run_for**, **run**, and **finalize** methods.
     """
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+    def __init__(self,
+                 clock,
+                 grid,
+                 random_seed=0,
+                 storm_sequence_filename=None,
+                 frequency_filename=None,
+                 record_rain=False,
+                 opt_stochastic_duration=False,
+                 mean_storm_duration=1,
+                 mean_interstorm_duration=1,
+                 mean_storm_depth=1,
+                 rainfall__shape_factor=1,
+                 number_of_sub_time_steps=1,
+                 rainfall_intermittency_factor=1,
+                 rainfall__mean_rate=1,
+                 **kwargs,
+                 ):
         """
         Parameters
         ----------
@@ -120,9 +136,7 @@ class StochasticErosionModel(ErosionModel):
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(clock, grid, **kwargs)
 
-        self.opt_stochastic_duration = self.params.get(
-            "opt_stochastic_duration", False
-        )
+        self.opt_stochastic_duration = opt_stochastic_duration
 
         # verify that opt_stochastic_duration and PrecipChanger are consistent
         if self.opt_stochastic_duration and (
@@ -135,7 +149,18 @@ class StochasticErosionModel(ErosionModel):
             )
             raise ValueError(msg)
 
-        self.seed = int(self.params.get("random_seed", 0))
+        self.seed = int(random_seed)
+
+        self.random_seed = random_seed
+        self.frequency_filename = frequency_filename
+        self.storm_sequence_filename = storm_sequence_filename
+        self.mean_storm_duration = mean_storm_duration
+        self.mean_interstorm_duration =  mean_interstorm_duration
+        self.mean_storm_depth =mean_storm_depth
+        self.shape_factor =rainfall__shape_factor
+        self.number_of_sub_time_steps =number_of_sub_time_steps
+        self.rainfall_intermittency_factor =rainfall_intermittency_factor
+        self.rainfall__mean_rate =rainfall__mean_rate
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the step may
         # change. Thus, rather than writing routines to reconstruct the time
@@ -144,15 +169,16 @@ class StochasticErosionModel(ErosionModel):
 
         # make this the non-default option.
 
+
         # First test for consistency between filenames and boolean parameters
         if (
-            (self.params.get("storm_sequence_filename") is not None)
-            or (self.params.get("frequency_filename") is not None)
-        ) and (self.params.get("record_rain") is not True):
-            self.params["record_rain"] = True
+            (storm_sequence_filename is not None)
+            or (frequency_filename is not None)
+        ) and (record_rain is not True):
+            record_rain = True
 
         # Second, test that
-        if self.params.get("record_rain", False):
+        if record_rain:
             self.record_rain = True
             self.rain_record = {
                 "event_start_time": [],
@@ -169,7 +195,7 @@ class StochasticErosionModel(ErosionModel):
         # exceedance frequencies is not super sensible. So make a warning that
         # it won"t be done.
         if (self.opt_stochastic_duration is True) and (
-            self.params.get("frequency_filename")
+            frequency_filename
         ):
             raise ValueError(
                 (
@@ -223,11 +249,9 @@ class StochasticErosionModel(ErosionModel):
         # Handle option for duration.
         if self.opt_stochastic_duration:
             self.rain_generator = PrecipitationDistribution(
-                mean_storm_duration=self.params["mean_storm_duration"],
-                mean_interstorm_duration=self.params[
-                    "mean_interstorm_duration"
-                ],
-                mean_storm_depth=self.params["mean_storm_depth"],
+                mean_storm_duration=self.mean_storm_duration,
+                mean_interstorm_duration=self.mean_interstorm_duration,
+                mean_storm_depth=self.mean_storm_depth,
                 total_t=self.clock.stop,
                 delta_t=self.clock.step,
                 random_seed=self.seed,
@@ -236,12 +260,8 @@ class StochasticErosionModel(ErosionModel):
         else:
             from scipy.special import gamma
 
-            rainfall__mean_rate = (self._length_factor) * self.params[
-                "rainfall__mean_rate"
-            ]
-            rainfall_intermittency_factor = self.params[
-                "rainfall_intermittency_factor"
-            ]
+            self.rainfall__mean_rate = (self._length_factor) * self.rainfall__mean_rate
+            self.rainfall_intermittency_factor = self.rainfall_intermittency_factor
 
             self.rain_generator = PrecipitationDistribution(
                 mean_storm_duration=1.0,
@@ -249,16 +269,13 @@ class StochasticErosionModel(ErosionModel):
                 mean_storm_depth=1.0,
                 random_seed=self.seed,
             )
-            self.rainfall_intermittency_factor = rainfall_intermittency_factor
-            self.rainfall__mean_rate = rainfall__mean_rate
-            self.shape_factor = self.params["rainfall__shape_factor"]
+
             self.scale_factor = self.rainfall__mean_rate / gamma(
                 1.0 + (1.0 / self.shape_factor)
             )
 
             if (
-                isinstance(
-                    self.params["number_of_sub_time_steps"], (int, np.integer)
+                isinstance(self.number_of_sub_time_steps, (int, np.integer)
                 )
                 is False
             ):
@@ -266,7 +283,7 @@ class StochasticErosionModel(ErosionModel):
                     ("number_of_sub_time_steps must be of type integer.")
                 )
 
-            self.n_sub_steps = int(self.params["number_of_sub_time_steps"])
+            self.n_sub_steps = self.number_of_sub_time_steps
 
     def reset_random_seed(self):
         """Reset the random number generation sequence."""
@@ -388,20 +405,14 @@ class StochasticErosionModel(ErosionModel):
         """
         # if rain was recorded, write it out.
         if self.record_rain:
-            filename = self.params.get(
-                "storm_sequence_filename", "storm_sequence.txt"
-            )
-            self.write_storm_sequence_to_file(filename=filename)
+            self.write_storm_sequence_to_file(filename=self.storm_sequence_filename)
 
             if self.opt_stochastic_duration is False:
                 # if opt_stochastic_duration is False, calculate exceedance
                 # frequencies and write out.
-                frequency_filename = self.params.get(
-                    "frequency_filename", "exceedance_summary.txt"
-                )
                 try:
                     self.write_exceedance_frequency_file(
-                        filename=frequency_filename
+                        filename=self.frequency_filename
                     )
                 except IndexError:
                     msg = (
