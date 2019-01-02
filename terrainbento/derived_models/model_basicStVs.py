@@ -87,9 +87,10 @@ class BasicStVs(StochasticErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodability_stochastic=0.0001,
         regolith_transport_parameter=0.1,
         hydraulic_conductivity=0.1,
+        infiltration_capacity=0.5,
         **kwargs
     ):
         """
@@ -111,7 +112,7 @@ class BasicStVs(StochasticErosionModel):
 
         >>> from landlab import RasterModelGrid
         >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from terrainbento import Clock, BasicStVs
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
@@ -119,37 +120,7 @@ class BasicStVs(StochasticErosionModel):
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability_stochastic": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "opt_stochastic_duration": False,
-        ...           "number_of_sub_time_steps": 1,
-        ...           "rainfall_intermittency_factor": 0.5,
-        ...           "rainfall__mean_rate": 1.0,
-        ...           "rainfall__shape_factor": 1.0,
-        ...           "infiltration_capacity": 1.0,
-        ...           "random_seed": 0,
-        ...           "hydraulic_conductivity": 0.1}
-
-        Construct the model.
-
-        >>> model = BasicStVs(params=params)
+        >>> model = BasicStVs(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -195,7 +166,7 @@ class BasicStVs(StochasticErosionModel):
         # transmissivity is hydraulic condiuctivity times soil thickness
         self.trans = K_hydraulic_conductivity * soil_thickness
 
-        if self.trans <= 0.0:
+        if np.any(self.trans) <= 0.0:
             raise ValueError("BasicStVs: Transmissivity must be > 0")
 
         self.tlam = self.trans * self.grid._dx  # assumes raster
@@ -227,13 +198,16 @@ class BasicStVs(StochasticErosionModel):
         # Here"s the total (surface + subsurface) discharge
         pa = self.rain_rate * self.area
 
+        # slope > 0
+        active_nodes = np.where(self.slope > 0.0)[0]
+
         # Transmissivity x lambda x slope = subsurface discharge capacity
-        tls = self.tlam * self.slope[np.where(self.slope > 0.0)[0]]
+        tls = self.tlam[active_nodes] * self.slope[active_nodes]
 
         # Subsurface discharge: zero where slope is flat
-        self.qss[np.where(self.slope <= 0.0)[0]] = 0.0
-        self.qss[np.where(self.slope > 0.0)[0]] = tls * (
-            1.0 - np.exp(-pa[np.where(self.slope > 0.0)[0]] / tls)
+        self.qss[active_nodes] = 0.0
+        self.qss[active_nodes] = tls * (
+            1.0 - np.exp(-pa[active_nodes] / tls)
         )
 
         # Surface discharge = total minus subsurface

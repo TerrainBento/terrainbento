@@ -79,9 +79,10 @@ class BasicHySt(StochasticErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodability_stochastic=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
+        infiltration_capacity=0.5,
         sediment_porosity=0.3,
         fraction_fines=0.5,
         solver="basic",
@@ -106,48 +107,14 @@ class BasicHySt(StochasticErosionModel):
 
         >>> from landlab import RasterModelGrid
         >>> from landlab.values import random
-        >>> from terrainbento import Clock, Basic
+        >>> from terrainbento import Clock, BasicHySt
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
 
-        >>> model = Basic(clock, grid)
-
-        Running the model with ``model.run()`` would create output, so here we
-        will just run it one step.
-
-        >>> model.run_one_step(1.)
-        >>> model.model_time
-        1.0
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "clock": {"step": 1,
-        ...                     "output_interval": 2.,
-        ...                     "stop": 200.},
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability_stochastic": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "opt_stochastic_duration": False,
-        ...           "number_of_sub_time_steps": 1,
-        ...           "rainfall_intermittency_factor": 0.5,
-        ...           "rainfall__mean_rate": 1.0,
-        ...           "rainfall__shape_factor": 1.0,
-        ...           "infiltration_capacity": 1.0,
-        ...           "random_seed": 0,
-        ...           "v_s": 0.01,
-        ...           "fraction_fines": 0.1,
-        ...           "sediment_porosity": 0.3,
-        ...           "solver": "adaptive"}
-
-        Construct the model.
-
-        >>> model = BasicHySt(params=params)
+        >>> model = BasicHySt(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -174,7 +141,7 @@ class BasicHySt(StochasticErosionModel):
             self._length_factor ** 2
         ) * regolith_transport_parameter
 
-        v_s = (self._length_factor) * v_s
+        v_s = (self._length_factor) * settling_velocity
 
         # instantiate rain generator
         self.instantiate_rain_generator()
