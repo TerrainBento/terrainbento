@@ -5,6 +5,16 @@ from terrainbento import Clock
 
 
 @pytest.fixture()
+def U():
+    U = 0.0001
+    return U
+
+@pytest.fixture()
+def K():
+    K = 0.01
+    return K
+
+@pytest.fixture()
 def grid_1():
     grid = RasterModelGrid((3, 21), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
@@ -14,7 +24,7 @@ def grid_1():
 
 @pytest.fixture()
 def clock_simple():
-    clock_simple = Clock(step=1., stop=200.)
+    clock_simple = Clock(step=1000., stop=5.1e6)
     return clock_simple
 
 

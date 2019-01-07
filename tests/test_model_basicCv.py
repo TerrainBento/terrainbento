@@ -1,10 +1,10 @@
 # coding: utf8
 # !/usr/env/python
-
 import pytest
+
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import Basic, NotCoreNodeBaselevelHandler, PrecipChanger
+from terrainbento import BasicCv, NotCoreNodeBaselevelHandler, PrecipChanger
 
 
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
@@ -26,10 +26,12 @@ def test_basic_steady_no_precip_changer(
         "depression_finder": depression_finder,
         "m_sp": m_sp,
         "n_sp": n_sp,
+        "climate_factor": 0.5,
+        "climate_constant_date": 10,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
-    model = Basic(**params)
+    model = BasicCv(**params)
     for _ in range(200):
         model.run_one_step(1000)
 
@@ -61,7 +63,7 @@ def test_diffusion_only(clock_simple, grid_1, U):
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
-    model = Basic(**params)
+    model = BasicCv(**params)
 
     nts = int(total_time / step)
     for _ in range(nts):
@@ -83,24 +85,3 @@ def test_diffusion_only(clock_simple, grid_1, U):
         model.z[model.grid.core_nodes],
         decimal=2,
     )
-
-
-def test_with_precip_changer(
-    clock_simple, grid_1, precip_defaults, precip_testing_factor, K
-):
-    precip_changer = PrecipChanger(grid_1, **precip_defaults)
-    params = {
-        "grid": grid_1,
-        "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "boundary_handlers": {"PrecipChanger": precip_changer},
-    }
-    model = Basic(**params)
-    assert model.eroder.K == K
-    assert "PrecipChanger" in model.boundary_handlers
-    model.run_one_step(1.0)
-    model.run_one_step(1.0)
-    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)

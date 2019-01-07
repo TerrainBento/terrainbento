@@ -128,7 +128,7 @@ class BasicCv(ErosionModel):
         self.climate_factor = climate_factor
         self.climate_constant_date = climate_constant_date
 
-        time = [0, self.climate_constant_date, self.clock.stop]
+        time = [0, self.climate_constant_date, self.clock.stop+self.clock.step]
         K = [water_erodability * self.climate_factor, water_erodability, water_erodability]
         self.K_through_time = interp1d(time, K)
 
