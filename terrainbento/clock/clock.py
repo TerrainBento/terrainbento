@@ -1,4 +1,4 @@
-""""""
+"""Clock sets the run duration and timestep in terrainbento model runs."""
 
 import yaml
 
@@ -7,20 +7,58 @@ class Clock(object):
     """terrainbento clock."""
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, filelike):
+        """Construct a Clock from a yaml file.
+
+        Parameters
+        ----------
+        filelike : file-like
+
+        Examples
+        --------
+        >>> from six import StringIO
+        >>> from terrainbento import Clock
+        >>> filelike = StringIO('''
+        ... start: 0
+        ... step: 10
+        ... stop: 100
+        ... ''')
+        >>> clock = Clock.from_file(filelike)
+        >>> clock.start
+        0.0
+        >>> clock.stop
+        100.0
+        >>> clock.step
+        10.0
         """
-        clock = Clock.from_file(yaml-file-like)
-        """
-        with open(filename, "r") as f:
-            dict = yaml.load(f)
-        return cls.from_dict(dict)
+        try:
+            with open(filelike, "r") as f:
+                params = yaml.load(f)
+        except TypeError:
+            params = yaml.load(filelike)
+        return cls.from_dict(params)
 
     @classmethod
-    def from_dict(cls, param):
+    def from_dict(cls, params):
+        """Construct a Clock from a dictionary.
+
+        Parameters
+        ----------
+        param : dict-like
+
+        Examples
+        --------
+        >>> from terrainbento import Clock
+        >>> params = {"start": 0, "step": 10, "stop": 100}
+        >>> clock = Clock.from_dict(params)
+        >>> clock.start
+        0.0
+        >>> clock.stop
+        100.0
+        >>> clock.step
+        10.0
         """
-        clock = Clock.from_dict(dict-like)
-        """
-        return cls(**param)
+        return cls(**params)
 
     def __init__(self, start=0., step=10., stop=100.):
         """
