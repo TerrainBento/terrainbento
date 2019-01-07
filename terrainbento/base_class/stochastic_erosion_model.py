@@ -260,9 +260,6 @@ class StochasticErosionModel(ErosionModel):
         else:
             from scipy.special import gamma
 
-            self.rainfall__mean_rate = (self._length_factor) * self.rainfall__mean_rate
-            self.rainfall_intermittency_factor = self.rainfall_intermittency_factor
-
             self.rain_generator = PrecipitationDistribution(
                 mean_storm_duration=1.0,
                 mean_interstorm_duration=1.0,

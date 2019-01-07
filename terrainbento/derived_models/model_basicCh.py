@@ -134,13 +134,9 @@ class BasicCh(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.K = water_erodability
 
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
+        regolith_transport_parameter = regolith_transport_parameter
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(

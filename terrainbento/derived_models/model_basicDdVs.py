@@ -149,30 +149,17 @@ class BasicDdVs(ErosionModel):
 
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.K = water_erodability
+        self.threshold_value = water_erosion_rule__threshold
 
         soil_thickness = self.grid.at_node["soil__depth"]
 
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
-
-        recharge_rate = (self._length_factor) * recharge_rate
-
-        K_hydraulic_conductivity = (
-            self._length_factor
-        ) * hydraulic_conductivity
-        self.threshold_value = (
-            self._length_factor * water_erosion_rule__threshold
-        )
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
         self.sat_param = (
-            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+            hydraulic_conductivity * soil_thickness * self.grid.dx
         ) / (recharge_rate)
 
         # Create a field for the (initial) erosion threshold

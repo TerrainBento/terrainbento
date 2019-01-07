@@ -132,17 +132,10 @@ class BasicHy(ErosionModel):
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 
-        # Get Parameters and convert units if necessary:
+        # Get Parameters
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
-        # Unit conversion for linear_diffusivity, with units L^2/T
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
+        self.K = water_erodability
 
         # Instantiate a Space component
         self.eroder = ErosionDeposition(

@@ -130,18 +130,7 @@ class BasicVs(ErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
-
-        recharge_rate = (self._length_factor) * recharge_rate
-        K_hydraulic_conductivity = (
-            self._length_factor
-        ) * hydraulic_conductivity
+        self.K = water_erodability
 
         soil_thickness = self.grid.at_node["soil__depth"]
 
@@ -150,7 +139,7 @@ class BasicVs(ErosionModel):
 
         # Get the effective-area parameter
         self.sat_param = (
-            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+            hydraulic_conductivity * soil_thickness * self.grid.dx
         ) / (recharge_rate)
 
         # Instantiate a FastscapeEroder component

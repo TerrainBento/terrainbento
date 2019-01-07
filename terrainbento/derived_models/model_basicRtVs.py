@@ -174,11 +174,8 @@ class BasicRtVs(TwoLithologyErosionModel):
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 
-        recharge_rate = (self._length_factor) * recharge_rate
         soil_thickness = self.grid.at_node["soil__depth"]
-        K_hydraulic_conductivity = (
-            self._length_factor
-        ) * hydraulic_conductivity
+
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 
@@ -187,7 +184,7 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         # Get the effective-area parameter
         self.sat_param = (
-            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+            hydraulic_conductivity * soil_thickness * self.grid.dx
         ) / (recharge_rate)
 
         # Instantiate a FastscapeEroder component

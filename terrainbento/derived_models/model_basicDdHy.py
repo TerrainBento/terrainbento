@@ -149,14 +149,8 @@ class BasicDdHy(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2
-        ) * regolith_transport_parameter
-        self.sp_crit = self._length_factor * water_erosion_rule__threshold
+        self.K = water_erodability
+        self.sp_crit = water_erosion_rule__threshold
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros(

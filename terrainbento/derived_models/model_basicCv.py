@@ -125,18 +125,11 @@ class BasicCv(ErosionModel):
 
         self.m = m_sp
         self.n = n_sp
-        K_sp = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
-
         self.climate_factor = climate_factor
         self.climate_constant_date = climate_constant_date
 
         time = [0, self.climate_constant_date, self.clock.stop]
-        K = [K_sp * self.climate_factor, K_sp, K_sp]
+        K = [water_erodability * self.climate_factor, water_erodability, water_erodability]
         self.K_through_time = interp1d(time, K)
 
         # Instantiate a FastscapeEroder component

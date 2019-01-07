@@ -269,24 +269,6 @@ class ErosionModel(object):
             self.flow_accumulator = FlowAccumulator(self.grid, **kwargs)
 
         ###################################################################
-        # get internal length scale adjustement
-        ###################################################################
-        feet_to_meters = kwargs.get("feet_to_meters", False)
-        meters_to_feet = kwargs.get("meters_to_feet", False)
-        if feet_to_meters and meters_to_feet:
-            raise ValueError(
-                "Both 'feet_to_meters' and 'meters_to_feet' are"
-                "set as True. This is not realistic."
-            )
-        else:
-            if feet_to_meters:
-                self._length_factor = 1.0 / 3.28084
-            elif meters_to_feet:
-                self._length_factor = 3.28084
-            else:
-                self._length_factor = 1.0
-
-        ###################################################################
         # Boundary Conditions and Output Writers
         ###################################################################
         self.boundary_handlers = boundary_handlers

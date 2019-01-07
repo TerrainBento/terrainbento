@@ -156,21 +156,7 @@ class BasicChSa(ErosionModel):
 
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
-        soil_transport_decay_depth = (
-            self._length_factor
-        ) * soil_transport_decay_depth
-        max_soil_production_rate = (
-            self._length_factor
-        ) * soil_production__maximum_rate
-        soil_production_decay_depth = (
-            self._length_factor
-        ) * soil_production__decay_depth
+        self.K = water_erodability
 
         # Create bedrock elevation field
         soil_thickness = self.grid.at_node["soil__depth"]
@@ -189,8 +175,8 @@ class BasicChSa(ErosionModel):
         # Instantiate a weathering component
         self.weatherer = ExponentialWeatherer(
             self.grid,
-            soil_production__maximum_rate=max_soil_production_rate,
-            soil_production__decay_depth=soil_production_decay_depth,
+            soil_production__maximum_rate=soil_production__maximum_rate,
+            soil_production__decay_depth=soil_production__decay_depth,
         )
 
         # Instantiate a soil-transport component

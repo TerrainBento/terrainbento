@@ -153,28 +153,7 @@ class BasicSaVs(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
-
-        soil_transport_decay_depth = (
-            self._length_factor
-        ) * soil_transport_decay_depth
-        max_soil_production_rate = (
-            self._length_factor
-        ) * soil_production__maximum_rate
-        soil_production_decay_depth = (
-            self._length_factor
-        ) * soil_production__decay_depth
-
-        recharge_rate = (self._length_factor) * recharge_rate
-        K_hydraulic_conductivity = (
-            self._length_factor
-        ) * hydraulic_conductivity
+        self.K = water_erodability
 
         soil_thickness = self.grid.at_node["soil__depth"]
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
@@ -184,7 +163,7 @@ class BasicSaVs(ErosionModel):
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-length parameter
-        self.sat_len = (K_hydraulic_conductivity * self.grid.dx) / (
+        self.sat_len = (hydraulic_conductivity * self.grid.dx) / (
             recharge_rate
         )
 
@@ -206,8 +185,8 @@ class BasicSaVs(ErosionModel):
 
         self.weatherer = ExponentialWeatherer(
             self.grid,
-            soil_production__maximum_rate=max_soil_production_rate,
-            soil_production__decay_depth=soil_production_decay_depth,
+            soil_production__maximum_rate=soil_production__maximum_rate,
+            soil_production__decay_depth=soil_production__decay_depth,
         )
 
     def _calc_effective_drainage_area(self):

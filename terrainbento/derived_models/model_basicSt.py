@@ -156,17 +156,8 @@ class BasicSt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability_stochastic * (
-            self._length_factor ** ((3. * self.m) - 1)
-        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
-
-        # Get the infiltration-capacity parameter
-
-        self.infilt = (self._length_factor) * infiltration_capacity
+        self.K = water_erodability_stochastic
+        self.infilt = infiltration_capacity
 
         # instantiate rain generator
         self.instantiate_rain_generator()

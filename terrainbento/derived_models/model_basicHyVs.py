@@ -143,26 +143,16 @@ class BasicHyVs(ErosionModel):
 
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2
-        ) * regolith_transport_parameter
-
-        recharge_rate = self._length_factor * recharge_rate
+        self.K = water_erodability
 
         soil_thickness = self.grid.at_node["soil__depth"]
-
-        K_hydraulic_conductivity = self._length_factor * hydraulic_conductivity
 
         # Add a field for effective drainage area
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
         self.sat_param = (
-            K_hydraulic_conductivity * soil_thickness * self.grid.dx
+            hydraulic_conductivity * soil_thickness * self.grid.dx
         ) / recharge_rate
 
         # Instantiate a SPACE component

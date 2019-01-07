@@ -291,7 +291,6 @@ class PrecipChanger(object):
         m_sp=0.5,
         precipchanger_start_time=0,
         precipchanger_stop_time=None,
-        length_factor=1.0,
         **kwargs
     ):
         """
@@ -326,10 +325,6 @@ class PrecipChanger(object):
         precipchanger_stop_time : float, optional
             Model time at which changing the precipitation statistics should
             end. Default is no end time.
-        length_factor : float, optional
-            terrainbento model internal length factor conversion related to
-            ``meters_to_feet`` and ``feet_to_meters`` input parameters. Default
-            is 1.0.
 
         Notes
         -----
@@ -435,7 +430,6 @@ class PrecipChanger(object):
             raise ValueError(msg)
 
         self.model_time = 0.0
-        self._length_factor = length_factor
 
         if precipchanger_stop_time is None:
             self.no_stop_time = True
@@ -449,16 +443,11 @@ class PrecipChanger(object):
             daily_rainfall__intermittency_factor_time_rate_of_change
         )
 
-        self.starting_daily_mean_depth = (
-            rainfall__mean_rate * self._length_factor
-        )
-        self.mean_depth_rate_of_change = (
-            rainfall__mean_rate_time_rate_of_change * self._length_factor
-        )
+        self.starting_daily_mean_depth = rainfall__mean_rate
+        self.mean_depth_rate_of_change = rainfall__mean_rate_time_rate_of_change
 
         self.rainfall__shape_factor = rainfall__shape_factor
-        self.infilt_cap = infiltration_capacity * self._length_factor
-
+        self.infilt_cap = infiltration_capacity
         self.m = m_sp
 
         self.starting_psi = self.calculate_starting_psi()

@@ -126,17 +126,10 @@ class BasicStTh(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability_stochastic * (
-            self._length_factor ** ((3. * self.m) - 1)
-        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
+        self.K = water_erodability_stochastic
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
-        threshold = self._length_factor * water_erosion_rule__threshold
 
         # instantiate rain generator
         self.instantiate_rain_generator()
@@ -146,7 +139,7 @@ class BasicStTh(StochasticErosionModel):
 
         # Get the infiltration-capacity parameter
 
-        self.infilt = (self._length_factor) * infiltration_capacity
+        self.infilt = infiltration_capacity
 
         # Keep a reference to drainage area
         self.area = self.grid.at_node["drainage_area"]
@@ -160,7 +153,7 @@ class BasicStTh(StochasticErosionModel):
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
-            threshold_sp=threshold,
+            threshold_sp=water_erosion_rule__threshold,
             use_Q="surface_water__discharge",
         )
 

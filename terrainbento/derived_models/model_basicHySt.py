@@ -133,15 +133,7 @@ class BasicHySt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = (water_erodability_stochastic) * (
-            self._length_factor ** ((3. * self.m) - 1)
-        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2
-        ) * regolith_transport_parameter
-
-        v_s = (self._length_factor) * settling_velocity
+        self.K = water_erodability_stochastic
 
         # instantiate rain generator
         self.instantiate_rain_generator()
@@ -151,7 +143,7 @@ class BasicHySt(StochasticErosionModel):
 
         # Get the infiltration-capacity parameter
 
-        self.infilt = self._length_factor * infiltration_capacity
+        self.infilt = infiltration_capacity
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
@@ -165,7 +157,7 @@ class BasicHySt(StochasticErosionModel):
             K=self.K,
             F_f=fraction_fines,
             phi=sediment_porosity,
-            v_s=v_s,
+            v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",

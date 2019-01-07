@@ -143,8 +143,8 @@ class BasicDdRt(TwoLithologyErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicDdRt**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicDdRt**. For more detailed examples, including steady-
+        state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -173,9 +173,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 
-        self.threshold_value = (
-            self._length_factor * water_erosion_rule__threshold
-        )
+        self.threshold_value = water_erosion_rule__threshold
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

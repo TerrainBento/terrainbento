@@ -139,19 +139,9 @@ class BasicStVs(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability_stochastic * (
-            self._length_factor ** ((3. * self.m) - 1)
-        )  # K stochastic has units of [=] T^{m-1}/L^{3m-1}
-
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
+        self.K = water_erodability_stochastic
 
         soil_thickness = self.grid.at_node["soil__depth"]
-
-        K_hydraulic_conductivity = (
-            self._length_factor
-        ) * hydraulic_conductivity
 
         # instantiate rain generator
         self.instantiate_rain_generator()
@@ -164,7 +154,7 @@ class BasicStVs(StochasticErosionModel):
 
         # Get the transmissivity parameter
         # transmissivity is hydraulic condiuctivity times soil thickness
-        self.trans = K_hydraulic_conductivity * soil_thickness
+        self.trans = hydraulic_conductivity * soil_thickness
 
         if np.any(self.trans) <= 0.0:
             raise ValueError("BasicStVs: Transmissivity must be > 0")

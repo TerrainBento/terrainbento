@@ -116,13 +116,9 @@ class Basic(ErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.K = water_erodability
 
-        self.regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * regolith_transport_parameter
+        self.regolith_transport_parameter = regolith_transport_parameter
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
@@ -162,7 +158,6 @@ class Basic(ErosionModel):
         Parameters
         ----------
         step : float
-            Increment of time for which the model is run.
         """
         # create and move water
         self.create_and_move_water(step)
