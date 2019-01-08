@@ -220,10 +220,10 @@ class ErosionModel(object):
         """
         # type checking
         if isinstance(clock, Clock) is False:
-            raise ValueError
+            raise ValueError("Provided Clock is not valid.")
 
         if isinstance(grid, ModelGrid) is False:
-            raise ValueError
+            raise ValueError("Provided Grid is not valid.")
 
         # save the grid, clock, and parameters.
         self.grid = grid

@@ -11,13 +11,12 @@ def test_diffusion_only(clock_09, grid_4, Model):
     K = 0.0
     D = 1.0
     S_c = 0.3
-    runtime = 30000
+    nsteps = 30000
 
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_4, modify_core_nodes=True, lowering_rate=-U
     )
 
-    # Construct dictionary. Note that stream power is turned off
     params = {
         "grid": grid_4,
         "clock": clock_09,
@@ -30,7 +29,7 @@ def test_diffusion_only(clock_09, grid_4, Model):
 
     # Construct and run model
     model = Model(**params)
-    for _ in range(runtime):
+    for _ in range(nsteps):
         model.run_one_step(clock_09.step)
 
     # Construct actual and predicted slope at right edge of domain
@@ -48,5 +47,4 @@ def test_diffusion_only(clock_09, grid_4, Model):
     # print(predicted_slope)
 
     actual_slope = np.abs(model.grid.at_node["topographic__steepest_slope"][7])
-    # print model.grid.at_node["topographic__steepest_slope"]
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)
