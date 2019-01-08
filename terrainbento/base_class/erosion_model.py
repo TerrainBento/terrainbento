@@ -276,7 +276,7 @@ class ErosionModel(object):
 
         if len(kwargs) > 0:
             msg = ""
-            raise ValueError(msg)
+            raise ValueError(kwargs)
 
     def _verify_fields(self, required_fields):
         """"""

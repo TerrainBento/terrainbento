@@ -15,12 +15,34 @@ def K():
     return K
 
 @pytest.fixture()
+def Kr():
+    Kr = 0.001
+    return Kr
+
+@pytest.fixture()
+def Kt():
+    Kt = 0.005
+    return Kt
+
+@pytest.fixture()
 def grid_1():
     grid = RasterModelGrid((3, 21), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
+    grid.add_zeros("node", "soil__depth")
     return grid
 
+
+@pytest.fixture()
+def grid_2():
+    grid = RasterModelGrid((8, 20), xy_spacing=100.)
+    grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
+    grid.add_zeros("node", "topographic__elevation")
+    grid.add_zeros("node", "soil__depth")
+    lith = grid.add_zeros("node", "lithology_contact__elevation")
+    lith[:59] = -10000.
+    lith[60:] = 10
+    return grid
 
 @pytest.fixture()
 def clock_simple():

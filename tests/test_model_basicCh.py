@@ -1,14 +1,14 @@
 # coding: utf8
 # !/usr/env/python
 
+import pytest
+
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import BasicCh
-from terrainbento.utilities import filecmp
+from terrainbento import BasicCh, NotCoreNodeBaselevelHandler
 
 
-# test diffusion without stream power
 def test_diffusion_only():
     U = 0.0005
     K = 0.0
@@ -64,125 +64,3 @@ def test_diffusion_only():
     )
     # print model.grid.at_node["topographic__steepest_slope"]
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)
-
-
-def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_05):
-    U = 0.0001
-    K = 0.001
-    m = 0.5
-    n = 1.0
-    run_time = 20000
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_05,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.0,
-        "water_erodability": K,
-        "critical_slope": 0.2,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "depression_finder": "DepressionFinderAndRouter",
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    # construct and run model
-    model = BasicCh(params=params)
-    for _ in range(run_time):
-        model.run_one_step(clock_05["step"])
-
-    # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = (U / (K * (actual_areas ** m))) ** (1. / n)
-
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
-    )
-
-
-def test_steady_Ksp_no_precip_changer(clock_02):
-    U = 0.0001
-    K = 0.001
-    m = 0.5
-    n = 1.0
-    runtime = 20000
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_02,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "critical_slope": 0.2,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    # construct and run model
-    model = BasicCh(params=params)
-    for _ in range(runtime):
-        model.run_one_step(clock_02["step"])
-
-    # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = (U / (K * (actual_areas ** m))) ** (1. / n)
-
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
-        decimal=4,
-    )
-
-
-def test_with_precip_changer(
-    clock_simple, precip_defaults, precip_testing_factor
-):
-    K = 0.01
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "critical_slope": 0.2,
-        "water_erodability": K,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "random_seed": 3141,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults,
-    }
-
-    model = BasicCh(params=params)
-    assert model.eroder.K == K
-    assert "PrecipChanger" in model.boundary_handler
-    model.run_one_step(1.0)
-    model.run_one_step(1.0)
-    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
