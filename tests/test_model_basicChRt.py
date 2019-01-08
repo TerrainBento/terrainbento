@@ -37,7 +37,10 @@ def test_diffusion_only():
         "lithology_contact_elevation__file_name": file_name,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # Construct and run model

@@ -87,7 +87,10 @@ def test_steady_without_stochastic_duration():
         "rainfall__shape_factor": 1.0,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -140,7 +143,10 @@ def test_stochastic_duration_rainfall_means():
         "mean_storm_depth": 1.0,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -157,57 +163,3 @@ def test_stochastic_duration_rainfall_means():
     fs = glob.glob(model._out_file_name + "*.nc")
     for f in fs:
         os.remove(f)
-
-
-def test_diffusion_only():
-    total_time = 5.0e6
-    U = 0.001
-    D = 1
-    m = 0.75
-    n = 1.0
-    step = 1000
-
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 21,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "west_boundary_closed": False,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": D,
-        "water_erodability_stochastic": 0.0,
-        "water_erosion_rule__threshold": 1.0e-9,
-        "m_sp": m,
-        "n_sp": n,
-        "number_of_sub_time_steps": 100,
-        "infiltration_capacity": 1.0,
-        "rainfall_intermittency_factor": 1.0,
-        "rainfall__mean_rate": 1.0,
-        "rainfall__shape_factor": 1.0,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
-    }
-    nts = int(total_time / step)
-
-    reference_node = 9
-    # construct and run model
-    model = BasicStTh(params=params)
-    for _ in range(nts):
-        model.run_one_step(step)
-
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
-        (
-            model.grid.x_of_node
-            - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
-        )
-        ** 2
-    )
-
-    # assert actual and predicted elevations are the same.
-    assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
-    )

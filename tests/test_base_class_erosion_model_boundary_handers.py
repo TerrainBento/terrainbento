@@ -45,7 +45,9 @@ def test_single_node_blh_with_closed_boundaries(clock_simple):
     assert model.grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
 
 
-def test_boundary_condition_handler_without_special_part_of_params(clock_simple):
+def test_boundary_condition_handler_without_special_part_of_params(
+    clock_simple
+):
     U = 0.0001
     K = 0.001
     m = 1. / 3.
@@ -104,7 +106,10 @@ def test_pass_two_boundary_handlers(clock_simple):
             "NotCoreNodeBaselevelHandler",
             "SingleNodeBaselevelHandler",
         ],
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
         "SingleNodeBaselevelHandler": {"lowering_rate": -U},
     }
     model = Basic(params=params)
@@ -142,7 +147,9 @@ def test_generic_bch(clock_simple):
         "BoundaryHandlers": "GenericFuncBaselevelHandler",
         "GenericFuncBaselevelHandler": {
             "modify_core_nodes": True,
-            "function": lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0 * t)),
+            "function": lambda grid, t: -(
+                grid.x_of_node + grid.y_of_node + (0 * t)
+            ),
         },  # returns a rate in meters/year
     }
     model = Basic(params=params)
@@ -157,7 +164,9 @@ def test_generic_bch(clock_simple):
 
     dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
     truth_z = -1. * dzdt * step
-    assert_array_equal(model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes])
+    assert_array_equal(
+        model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes]
+    )
 
 
 def test_capture_node(clock_simple):
@@ -195,6 +204,10 @@ def test_capture_node(clock_simple):
     model.run_one_step(10.)
     assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == 0
     model.run_one_step(10)
-    assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == -30.
+    assert (
+        model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == -30.
+    )
     model.run_one_step(10)
-    assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == -31.
+    assert (
+        model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == -31.
+    )

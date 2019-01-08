@@ -53,7 +53,10 @@ def test_steady_Ksp_no_precip_changer():
         "soil_production__decay_depth": soil_production__decay_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -123,7 +126,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -148,7 +154,9 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     )
 
 
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(
+    clock_simple, precip_defaults, precip_testing_factor
+):
     K_rock_sp = 0.001
     K_sed_sp = 0.01
     sp_crit_br = 0
@@ -198,8 +206,12 @@ def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_facto
     assert "PrecipChanger" in model.boundary_handler
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K_sed, 5) == round(K_sed_sp * precip_testing_factor, 5)
-    assert round(model.eroder.K_br, 5) == round(K_rock_sp * precip_testing_factor, 5)
+    assert round(model.eroder.K_sed, 5) == round(
+        K_sed_sp * precip_testing_factor, 5
+    )
+    assert round(model.eroder.K_br, 5) == round(
+        K_rock_sp * precip_testing_factor, 5
+    )
 
 
 def test_stability_checker():
@@ -247,7 +259,10 @@ def test_stability_checker():
         "soil_production__decay_depth": soil_production__decay_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -255,77 +270,3 @@ def test_stability_checker():
         model = BasicHySa(params=params)
         for _ in range(800):
             model.run_one_step(step)
-
-
-# =============================================================================
-# def test_diffusion_only():
-#     total_time = 500
-#     U = 0.0001
-#     K_rock_sp = 0
-#     K_sed_sp = 0
-#     sp_crit_br = 0
-#     sp_crit_sed = 0
-#     D = 0.001
-#     m = 0.75
-#     n = 1.0
-#     step = 1
-#     v_sc = 0.001
-#     phi = 0.1
-#     F_f = 0.1
-#     H_star = 0.1
-#     initial_soil_thickness = 100
-#     soil_transport_decay_depth = 0.1
-#     soil_production__maximum_rate = 0
-#     soil_production__decay_depth = 0.1
-#
-#     # construct dictionary. note that D is turned off here
-#     params = {"model_grid": "RasterModelGrid",
-#               "clock":{"step": step,
-#               "output_interval": 2.,
-#               "stop": 200.},
-#               "number_of_node_rows" : 3,
-#               "number_of_node_columns" : 21,
-#               "node_spacing" : 100.0,
-#               "north_boundary_closed": True,
-#               "west_boundary_closed": False,
-#               "south_boundary_closed": True,
-#               "regolith_transport_parameter": D,
-#               "water_erodability_rock": K_rock_sp,
-#               "water_erodability_sediment": K_sed_sp,
-#               "sp_crit_br": sp_crit_br,
-#               "sp_crit_sed": sp_crit_sed,
-#               "m_sp": m,
-#               "n_sp": n,
-#               "v_sc": v_sc,
-#               "sediment_porosity": phi,
-#               "fraction_fines":F_f,
-#               "H_star": H_star,
-#               "solver": "basic",
-#               "soil__initial_thickness": initial_soil_thickness,
-#               "soil_transport_decay_depth": soil_transport_decay_depth,
-#               "soil_production__maximum_rate": soil_production__maximum_rate,
-#               "soil_production__decay_depth": soil_production__decay_depth,
-#               "random_seed": 3141,
-#               "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-#               "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
-#                                               "lowering_rate": -U}}
-#     nts = int(total_time/step)
-#
-#     reference_node = 9
-#     # construct and run model
-#     model = BasicHySa(params=params)
-#     for _ in range(nts):
-#         model.run_one_step(step)
-#
-#
-#     predicted_z = (model.z[model.grid.core_nodes[reference_node]]-
-# (U / (2. * D)) *
-#                ((model.grid.x_of_node - model.grid.x_of_node
-# [model.grid.core_nodes[reference_node]])**2))
-#
-#     # assert actual and predicted elevations are the same.
-#     assert_array_almost_equal(predicted_z[model.grid.core_nodes],
-#                               model.z[model.grid.core_nodes],
-#                               decimal=2)
-#
-# =============================================================================

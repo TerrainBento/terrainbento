@@ -40,7 +40,10 @@ def test_steady_Ksp_no_precip_changer_no_thresh():
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -96,7 +99,10 @@ def test_steady_Ksp_no_precip_changer_no_solver_given():
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -154,7 +160,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -176,106 +185,4 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         actual_slopes[model.grid.core_nodes[1:-1]],
         predicted_slopes[model.grid.core_nodes[1:-1]],
         decimal=4,
-    )
-
-
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
-    K = 0.01
-    v_sc = 0.001
-    phi = 0.1
-    F_f = 0.0
-    threshold = 0.000001
-    thresh_change_per_depth = 0
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "v_sc": v_sc,
-        "sediment_porosity": phi,
-        "fraction_fines": F_f,
-        "solver": "basic",
-        "water_erosion_rule__threshold": threshold,
-        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
-        "random_seed": 3141,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults,
-    }
-
-    model = BasicDdHy(params=params)
-    assert model.eroder.K[0] == K
-    assert "PrecipChanger" in model.boundary_handler
-    model.run_one_step(1.0)
-    model.run_one_step(1.0)
-    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
-
-
-def test_diffusion_only():
-    total_time = 5.0e6
-    U = 0.001
-    D = 1
-    m = 0.75
-    n = 1.0
-    step = 1000
-    v_sc = 0.001
-    phi = 0.1
-    F_f = 0.1
-    threshold = 0.01
-    thresh_change_per_depth = 0
-
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 21,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "west_boundary_closed": False,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": D,
-        "water_erodability": 0.0,
-        "m_sp": m,
-        "n_sp": n,
-        "v_sc": v_sc,
-        "sediment_porosity": phi,
-        "fraction_fines": F_f,
-        "solver": "basic",
-        "water_erosion_rule__threshold": threshold,
-        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
-    }
-    nts = int(total_time / step)
-
-    reference_node = 9
-    # construct and run model
-    model = BasicDdHy(params=params)
-    for _ in range(nts):
-        model.run_one_step(step)
-
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
-        (
-            model.grid.x_of_node
-            - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
-        )
-        ** 2
-    )
-
-    # assert actual and predicted elevations are the same.
-    assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
-    )
-
-    # assert actual and predicted elevations are the same.
-    assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )

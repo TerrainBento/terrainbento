@@ -95,7 +95,8 @@ class Clock(object):
             self.step = float(step)
         except ValueError:
             msg = (
-                "Clock: Required parameter *step* is " "not compatible with type float."
+                "Clock: Required parameter *step* is "
+                "not compatible with type float."
             )
             raise ValueError(msg)
 
@@ -103,7 +104,8 @@ class Clock(object):
             self.stop = float(stop)
         except ValueError:
             msg = (
-                "Clock: Required parameter *stop* is " "not compatible with type float."
+                "Clock: Required parameter *stop* is "
+                "not compatible with type float."
             )
             raise ValueError(msg)
 

@@ -43,7 +43,10 @@ def test_diffusion_only(clock_08):
         "n_sp": n,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # Construct and run model
@@ -75,6 +78,8 @@ def test_diffusion_only(clock_08):
     predicted_slope = np.abs(np.real(p_roots[-1]))
     # print(predicted_slope)
 
-    actual_slope = np.abs(model.grid.at_node["topographic__steepest_slope"][39])
+    actual_slope = np.abs(
+        model.grid.at_node["topographic__steepest_slope"][39]
+    )
     # print model.grid.at_node["topographic__steepest_slope"]
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)

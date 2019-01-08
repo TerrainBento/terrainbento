@@ -41,7 +41,10 @@ def test_steady_Ksp_no_precip_changer(clock_simple):
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -55,11 +58,19 @@ def test_steady_Ksp_no_precip_changer(clock_simple):
     # note that since we have a smooth threshold, we do not have a true
     # analytical solution, but a bracket within wich we expect the actual
     # slopes to fall.
-    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (1. / n)
+    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (
+        1. / n
+    )
+    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (
+        1. / n
+    )
 
-    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (1. / n)
+    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (
+        1. / n
+    )
+    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (
+        1. / n
+    )
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
@@ -105,7 +116,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
         "depression_finder": "DepressionFinderAndRouter",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -119,11 +133,19 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     # note that since we have a smooth threshold, we do not have a true
     # analytical solution, but a bracket within wich we expect the actual
     # slopes to fall.
-    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (1. / n)
+    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (
+        1. / n
+    )
+    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (
+        1. / n
+    )
 
-    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (1. / n)
+    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (
+        1. / n
+    )
+    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (
+        1. / n
+    )
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
@@ -165,7 +187,10 @@ def test_diffusion_only(clock_09):
         "lithology_contact_elevation__file_name": file_name,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # Construct and run model

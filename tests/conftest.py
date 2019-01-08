@@ -33,7 +33,8 @@ def grid_1():
     grid = RasterModelGrid((3, 21), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
-    grid.add_zeros("node", "soil__depth")
+    grid.add_ones("node", "soil__depth")
+    grid.add_zeros("node", "lithology_contact__elevation")
     return grid
 
 
@@ -42,7 +43,7 @@ def grid_2():
     grid = RasterModelGrid((8, 20), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
-    grid.add_zeros("node", "soil__depth")
+    grid.add_ones("node", "soil__depth")
     lith = grid.add_zeros("node", "lithology_contact__elevation")
     lith[:80] = 10
     lith[80:] = -10000.
@@ -54,7 +55,7 @@ def grid_3():
     grid = RasterModelGrid((21, 3), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
-    grid.add_zeros("node", "soil__depth")
+    grid.add_ones("node", "soil__depth")
     lith = grid.add_zeros("node", "lithology_contact__elevation")
     lith[grid.core_nodes[:9]] = -100000.
     lith[grid.core_nodes[9:]] = 100000.

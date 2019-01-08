@@ -46,7 +46,10 @@ def test_diffusion_only():
         "n_sp": n,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # Construct and run model
@@ -130,7 +133,10 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "n_sp": n,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -185,7 +191,10 @@ def test_steady_Ksp_no_precip_changer():
         "m_sp": m,
         "n_sp": n,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
+        "NotCoreNodeBaselevelHandler": {
+            "modify_core_nodes": True,
+            "lowering_rate": -U,
+        },
     }
 
     # construct and run model
@@ -206,7 +215,9 @@ def test_steady_Ksp_no_precip_changer():
     )
 
 
-def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
+def test_with_precip_changer(
+    clock_simple, precip_defaults, precip_testing_factor
+):
     K = 0.01
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2

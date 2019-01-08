@@ -163,7 +163,9 @@ class BasicSaVs(ErosionModel):
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-length parameter
-        self.sat_len = (hydraulic_conductivity * self.grid.dx) / (recharge_rate)
+        self.sat_len = (hydraulic_conductivity * self.grid.dx) / (
+            recharge_rate
+        )
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(

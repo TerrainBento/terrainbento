@@ -23,7 +23,12 @@ def test_init_record_opt_true(clock_simple):
     model = StochasticErosionModel(params=params)
     assert model.record_rain is True
     assert isinstance(model.rain_record, dict)
-    fields = ["event_start_time", "event_duration", "rainfall_rate", "runoff_rate"]
+    fields = [
+        "event_start_time",
+        "event_duration",
+        "rainfall_rate",
+        "runoff_rate",
+    ]
     for f in fields:
         assert f in model.rain_record
         assert len(model.rain_record[f]) == 0
@@ -56,8 +61,12 @@ def test_run_stochastic_opt_true(clock_04):
     assert model.opt_stochastic_duration == True
     model.run_for(params["clock"]["step"], params["clock"]["stop"])
 
-    rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(decimals=5)
-    event_duration = np.asarray(model.rain_record["event_duration"]).round(decimals=5)
+    rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(
+        decimals=5
+    )
+    event_duration = np.asarray(model.rain_record["event_duration"]).round(
+        decimals=5
+    )
 
     dry_times = event_duration[rainfall_rate == 0]
     wet_times = event_duration[rainfall_rate > 0]
@@ -110,14 +119,16 @@ def test_run_stochastic_opt_false(clock_05):
     assert (
         np.array_equiv(
             dry_times,
-            params["clock"]["step"] * (1. - params["rainfall_intermittency_factor"]),
+            params["clock"]["step"]
+            * (1. - params["rainfall_intermittency_factor"]),
         )
         is True
     )
     assert (
         np.array_equiv(
             wet_times,
-            params["clock"]["step"] * (params["rainfall_intermittency_factor"]),
+            params["clock"]["step"]
+            * (params["rainfall_intermittency_factor"]),
         )
         is True
     )
@@ -170,7 +181,10 @@ def test_reset_random_seed_stochastic_duration_true(clock_simple):
     duration_1 = []
     precip_1 = []
 
-    for (tr, p) in model.rain_generator.yield_storm_interstorm_duration_intensity():
+    for (
+        tr,
+        p,
+    ) in model.rain_generator.yield_storm_interstorm_duration_intensity():
         precip_1.append(p)
         duration_1.append(tr)
 
@@ -181,7 +195,10 @@ def test_reset_random_seed_stochastic_duration_true(clock_simple):
     duration_2 = []
     precip_2 = []
 
-    for (tr, p) in model.rain_generator.yield_storm_interstorm_duration_intensity():
+    for (
+        tr,
+        p,
+    ) in model.rain_generator.yield_storm_interstorm_duration_intensity():
         precip_2.append(p)
         duration_2.append(tr)
 
@@ -277,9 +294,11 @@ def test_run_opt_false_with_changer(clock_06):
         params["clock"]["stop"] - params["clock"]["step"]
     )
 
-    predicted_intensity = params["rainfall__mean_rate"] + params["PrecipChanger"][
-        "rainfall__mean_rate_time_rate_of_change"
-    ] * (params["clock"]["stop"] - params["clock"]["step"])
+    predicted_intensity = params["rainfall__mean_rate"] + params[
+        "PrecipChanger"
+    ]["rainfall__mean_rate_time_rate_of_change"] * (
+        params["clock"]["stop"] - params["clock"]["step"]
+    )
 
     assert model.rainfall_intermittency_factor == predicted_intermittency
     assert model.rainfall__mean_rate == predicted_intensity
@@ -395,10 +414,14 @@ def test_finalize_opt_duration_stochastic_false(clock_07):
     model.finalize()
 
     # assert that these are correct
-    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt")
+    truth_file = os.path.join(
+        _TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt"
+    )
     assert filecmp("storm_sequence.txt", truth_file) is True
 
-    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt")
+    truth_file = os.path.join(
+        _TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt"
+    )
     assert filecmp("exceedance_summary.txt", truth_file) is True
 
     os.remove("storm_sequence.txt")
@@ -427,7 +450,9 @@ def test_finalize_opt_duration_stochastic_true(clock_07):
     model.finalize()
 
     # assert that these are correct
-    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt")
+    truth_file = os.path.join(
+        _TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt"
+    )
     assert filecmp("storm_sequence.txt", truth_file) is True
 
     os.remove("storm_sequence.txt")
