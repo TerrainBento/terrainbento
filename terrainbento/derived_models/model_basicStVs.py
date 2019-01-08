@@ -196,9 +196,7 @@ class BasicStVs(StochasticErosionModel):
 
         # Subsurface discharge: zero where slope is flat
         self.qss[active_nodes] = 0.0
-        self.qss[active_nodes] = tls * (
-            1.0 - np.exp(-pa[active_nodes] / tls)
-        )
+        self.qss[active_nodes] = tls * (1.0 - np.exp(-pa[active_nodes] / tls))
 
         # Surface discharge = total minus subsurface
         #

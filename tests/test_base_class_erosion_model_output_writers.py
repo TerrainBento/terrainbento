@@ -31,9 +31,7 @@ class output_writer_class_a(object):
 
     def run_one_step(self):
         average_change = np.mean(self.change[self.model.grid.core_nodes])
-        with open(
-            "ow_class_a." + str(self.model.model_time) + ".txt", "w"
-        ) as f:
+        with open("ow_class_a." + str(self.model.model_time) + ".txt", "w") as f:
             f.write(str(average_change))
 
 
@@ -44,9 +42,7 @@ class output_writer_class_b(object):
 
     def run_one_step(self):
         min_change = np.min(self.change[self.model.grid.core_nodes])
-        with open(
-            "ow_class_b." + str(self.model.model_time) + ".txt", "w"
-        ) as f:
+        with open("ow_class_b." + str(self.model.model_time) + ".txt", "w") as f:
             f.write(str(min_change))
 
 
@@ -66,10 +62,7 @@ def test_one_function_writer(clock_08):
         "m_sp": 0.5,
         "n_sp": 1.0,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -1},
     }
     # construct and run model
     model = Basic(params=params, OutputWriters=output_writer_function_a)
@@ -93,10 +86,7 @@ def test_one_class_writer(clock_08):
         "m_sp": 0.5,
         "n_sp": 1.0,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -1},
     }
     # construct and run model
     model = Basic(params=params, OutputWriters=output_writer_class_a)
@@ -120,10 +110,7 @@ def test_two_function_writers(clock_08):
         "m_sp": 0.5,
         "n_sp": 1.0,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -1},
     }
     # construct and run model
     model = Basic(
@@ -153,15 +140,11 @@ def test_two_class_writers(clock_08):
         "m_sp": 0.5,
         "n_sp": 1.0,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -1},
     }
     # construct and run model
     model = Basic(
-        params=params,
-        OutputWriters=[output_writer_class_a, output_writer_class_b],
+        params=params, OutputWriters=[output_writer_class_a, output_writer_class_b]
     )
     model.run()
 
@@ -186,10 +169,7 @@ def test_all_four_writers(clock_08):
         "m_sp": 0.5,
         "n_sp": 1.0,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -1},
     }
     # construct and run model
     model = Basic(

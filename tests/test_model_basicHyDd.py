@@ -40,10 +40,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh():
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -99,10 +96,7 @@ def test_steady_Ksp_no_precip_changer_no_solver_given():
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -160,10 +154,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -188,9 +179,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     )
 
 
-def test_with_precip_changer(
-    clock_simple, precip_defaults, precip_testing_factor
-):
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     K = 0.01
     v_sc = 0.001
     phi = 0.1
@@ -263,10 +252,7 @@ def test_diffusion_only():
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
     nts = int(total_time / step)
 
@@ -276,9 +262,7 @@ def test_diffusion_only():
     for _ in range(nts):
         model.run_one_step(step)
 
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-        U / (2. * D)
-    ) * (
+    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
         (
             model.grid.x_of_node
             - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
@@ -288,14 +272,10 @@ def test_diffusion_only():
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes],
-        model.z[model.grid.core_nodes],
-        decimal=2,
+        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes],
-        model.z[model.grid.core_nodes],
-        decimal=2,
+        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )

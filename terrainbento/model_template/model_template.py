@@ -51,14 +51,16 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     Expand on this table to include all required parameters.
     """
 
-    def __init__(self,
-                clock,
-                grid,
-                m_sp=0.5,
-                n_sp=1.0,
-                water_erodability_stochastic=0.0001,
-                regolith_transport_parameter=0.1,
-                **kwargs):
+    def __init__(
+        self,
+        clock,
+        grid,
+        m_sp=0.5,
+        n_sp=1.0,
+        water_erodability_stochastic=0.0001,
+        regolith_transport_parameter=0.1,
+        **kwargs
+    ):
         """
         Parameters
         ----------

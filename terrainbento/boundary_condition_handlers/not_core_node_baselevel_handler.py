@@ -166,9 +166,7 @@ class NotCoreNodeBaselevelHandler(object):
                     time = elev_change_df[:, 0]
                     elev_change = elev_change_df[:, 1]
 
-                    model_start_elevation = np.mean(
-                        self.z[self.nodes_to_lower]
-                    )
+                    model_start_elevation = np.mean(self.z[self.nodes_to_lower])
 
                     if model_end_elevation is None:
                         self.scaling_factor = 1.0
@@ -178,14 +176,10 @@ class NotCoreNodeBaselevelHandler(object):
                         ) / np.abs(elev_change[0] - elev_change[-1])
 
                     outlet_elevation = (
-                        self.scaling_factor
-                        * self.prefactor
-                        * elev_change_df[:, 1]
+                        self.scaling_factor * self.prefactor * elev_change_df[:, 1]
                     ) + model_start_elevation
 
-                    self.outlet_elevation_obj = interp1d(
-                        time, outlet_elevation
-                    )
+                    self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
                 else:
                     raise ValueError(
@@ -231,15 +225,10 @@ class NotCoreNodeBaselevelHandler(object):
         if self.outlet_elevation_obj is None:
 
             # calculate lowering amount and subtract
-            self.z[self.nodes_to_lower] += (
-                self.prefactor * self.lowering_rate * step
-            )
+            self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * step
 
             # if bedrock__elevation exists as a field, lower it also
-            other_fields = [
-                "bedrock__elevation",
-                "lithology_contact__elevation",
-            ]
+            other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
             for of in other_fields:
                 if of in self._grid.at_node:
                     self._grid.at_node[of][self.nodes_to_lower] += (
@@ -254,19 +243,12 @@ class NotCoreNodeBaselevelHandler(object):
             # bedrock elevation exists, and must be done before the topography
             # is lowered
             mean_z = np.mean(self.z[self.nodes_to_lower])
-            self.topo_change = mean_z - self.outlet_elevation_obj(
-                self.model_time
-            )
+            self.topo_change = mean_z - self.outlet_elevation_obj(self.model_time)
 
-            other_fields = [
-                "bedrock__elevation",
-                "lithology_contact__elevation",
-            ]
+            other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
             for of in other_fields:
                 if of in self._grid.at_node:
-                    self._grid.at_node[of][
-                        self.nodes_to_lower
-                    ] -= self.topo_change
+                    self._grid.at_node[of][self.nodes_to_lower] -= self.topo_change
 
             # lower topography
             self.z[self.nodes_to_lower] -= self.topo_change

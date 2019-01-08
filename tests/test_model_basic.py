@@ -39,7 +39,5 @@ def test_diffusion_only(clock_simple, grid_1, U):
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes],
-        model.z[model.grid.core_nodes],
-        decimal=2,
+        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )

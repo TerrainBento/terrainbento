@@ -2,9 +2,7 @@
 # !/usr/env/python
 
 from landlab import HexModelGrid, RasterModelGrid
-from terrainbento.boundary_condition_handlers import (
-    CaptureNodeBaselevelHandler
-)
+from terrainbento.boundary_condition_handlers import CaptureNodeBaselevelHandler
 
 
 def test_hex():

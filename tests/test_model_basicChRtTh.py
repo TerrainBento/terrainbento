@@ -41,10 +41,7 @@ def test_steady_Ksp_no_precip_changer(clock_simple):
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -58,19 +55,11 @@ def test_steady_Ksp_no_precip_changer(clock_simple):
     # note that since we have a smooth threshold, we do not have a true
     # analytical solution, but a bracket within wich we expect the actual
     # slopes to fall.
-    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (
-        1. / n
-    )
-    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (
-        1. / n
-    )
+    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (1. / n)
+    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (1. / n)
 
-    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (
-        1. / n
-    )
-    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (
-        1. / n
-    )
+    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (1. / n)
+    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
@@ -116,10 +105,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
         "depression_finder": "DepressionFinderAndRouter",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -133,19 +119,11 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     # note that since we have a smooth threshold, we do not have a true
     # analytical solution, but a bracket within wich we expect the actual
     # slopes to fall.
-    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (
-        1. / n
-    )
-    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (
-        1. / n
-    )
+    rock_predicted_slopes_upper = ((U + Tr) / (Kr * (actual_areas ** m))) ** (1. / n)
+    till_predicted_slopes_upper = ((U + Tt) / (Kt * (actual_areas ** m))) ** (1. / n)
 
-    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (
-        1. / n
-    )
-    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (
-        1. / n
-    )
+    rock_predicted_slopes_lower = ((U + 0.) / (Kr * (actual_areas ** m))) ** (1. / n)
+    till_predicted_slopes_lower = ((U + 0.) / (Kt * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
@@ -187,10 +165,7 @@ def test_diffusion_only(clock_09):
         "lithology_contact_elevation__file_name": file_name,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # Construct and run model
@@ -214,57 +189,3 @@ def test_diffusion_only(clock_09):
     actual_slope = np.abs(model.grid.at_node["topographic__steepest_slope"][7])
     # print model.grid.at_node["topographic__steepest_slope"]
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)
-
-
-def test_with_precip_changer(
-    clock_simple, precip_defaults, precip_testing_factor
-):
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
-
-    Kr = 0.01
-    Kt = 0.001
-    Sc = 0.1
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 21,
-        "number_of_node_columns": 3,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability_lower": Kr,
-        "water_erodability_upper": Kt,
-        "water_erosion_rule_upper__threshold": 0.1,
-        "water_erosion_rule_lower__threshold": 0.1,
-        "lithology_contact_elevation__file_name": file_name,
-        "contact_zone__width": 1.,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "critical_slope": Sc,
-        "random_seed": 3141,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults,
-    }
-
-    model = BasicChRtTh(params=params)
-    model._update_erodability_and_threshold_fields()
-    assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
-    )
-    assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
-    )
-
-    assert "PrecipChanger" in model.boundary_handler
-    model.run_one_step(1.0)
-    model.run_one_step(1.0)
-
-    assert_array_almost_equal(
-        model.eroder.K[model.grid.core_nodes[:8]],
-        Kt * precip_testing_factor * np.ones((8)),
-    )
-    assert_array_almost_equal(
-        model.eroder.K[model.grid.core_nodes[10:]],
-        Kr * precip_testing_factor * np.ones((9)),
-    )

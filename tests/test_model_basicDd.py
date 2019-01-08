@@ -93,10 +93,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple):
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -110,12 +107,8 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple):
     # slopes to fall.
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (
-        1. / n
-    )
-    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (
-        1. / n
-    )
+    predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m))) ** (1. / n)
+    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are in the correct range for the
     # slopes.
@@ -155,10 +148,7 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change(clock_simple):
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -174,9 +164,7 @@ def test_steady_Ksp_no_precip_changer_with_thresh_change(clock_simple):
     # steeper than the lower bound.
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (
-        1. / n
-    )
+    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are in the correct range for the
     # slopes.
@@ -211,10 +199,7 @@ def test_steady_Ksp_no_precip_changer(clock_simple):
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -225,9 +210,7 @@ def test_steady_Ksp_no_precip_changer(clock_simple):
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = ((U / K + threshold) / ((actual_areas ** m))) ** (
-        1. / n
-    )
+    predicted_slopes = ((U / K + threshold) / ((actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(
@@ -263,10 +246,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -277,9 +257,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = ((U / K + threshold) / ((actual_areas ** m))) ** (
-        1. / n
-    )
+    predicted_slopes = ((U / K + threshold) / ((actual_areas ** m))) ** (1. / n)
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(
@@ -289,9 +267,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
     )
 
 
-def test_with_precip_changer(
-    clock_simple, precip_defaults, precip_testing_factor
-):
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     K = 0.01
     threshold = 0.000001
     thresh_change_per_depth = 0
@@ -350,10 +326,7 @@ def test_diffusion_only(clock_simple):
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
     nts = int(total_time / step)
 
@@ -363,9 +336,7 @@ def test_diffusion_only(clock_simple):
     for _ in range(nts):
         model.run_one_step(step)
 
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-        U / (2. * D)
-    ) * (
+    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
         (
             model.grid.x_of_node
             - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
@@ -375,14 +346,10 @@ def test_diffusion_only(clock_simple):
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes],
-        model.z[model.grid.core_nodes],
-        decimal=2,
+        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes],
-        model.z[model.grid.core_nodes],
-        decimal=2,
+        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )

@@ -164,11 +164,8 @@ class BasicDdSt(StochasticErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
-            "node", "water_erosion_rule__threshold"
-        )
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.threshold_value
-
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
@@ -188,15 +185,11 @@ class BasicDdSt(StochasticErosionModel):
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
         cum_ero = self.grid.at_node["cumulative_elevation_change"]
-        cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
-        )
+        cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero
         )
-        self.threshold[
-            self.threshold < self.threshold_value
-        ] = self.threshold_value
+        self.threshold[self.threshold < self.threshold_value] = self.threshold_value
 
     def _pre_water_erosion_steps(self):
         self.update_threshold_field()

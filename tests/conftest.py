@@ -9,20 +9,24 @@ def U():
     U = 0.0001
     return U
 
+
 @pytest.fixture()
 def K():
     K = 0.01
     return K
 
+
 @pytest.fixture()
 def Kr():
-    Kr = 0.001
+    Kr = 0.01
     return Kr
+
 
 @pytest.fixture()
 def Kt():
-    Kt = 0.005
+    Kt = 0.02
     return Kt
+
 
 @pytest.fixture()
 def grid_1():
@@ -40,9 +44,22 @@ def grid_2():
     grid.add_zeros("node", "topographic__elevation")
     grid.add_zeros("node", "soil__depth")
     lith = grid.add_zeros("node", "lithology_contact__elevation")
-    lith[:59] = -10000.
-    lith[60:] = 10
+    lith[:80] = 10
+    lith[80:] = -10000.
     return grid
+
+
+@pytest.fixture()
+def grid_3():
+    grid = RasterModelGrid((21, 3), xy_spacing=100.)
+    grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
+    grid.add_zeros("node", "topographic__elevation")
+    grid.add_zeros("node", "soil__depth")
+    lith = grid.add_zeros("node", "lithology_contact__elevation")
+    lith[grid.core_nodes[:9]] = -100000.
+    lith[grid.core_nodes[9:]] = 100000.
+    return grid
+
 
 @pytest.fixture()
 def clock_simple():

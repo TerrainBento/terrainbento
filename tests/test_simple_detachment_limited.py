@@ -3,14 +3,25 @@ import pytest
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import NotCoreNodeBaselevelHandler, PrecipChanger, Basic, BasicCv, BasicCh,  BasicChSa, BasicSa, BasicSt, BasicRt, BasicChRt, BasicChRtTh
+from terrainbento import (
+    NotCoreNodeBaselevelHandler,
+    PrecipChanger,
+    Basic,
+    BasicCv,
+    BasicCh,
+    BasicChSa,
+    BasicSa,
+    BasicSt,
+    BasicRt,
+    BasicChRt,
+    BasicRtSa,
+)
 
-@pytest.mark.parametrize("Model", [BasicRt, BasicChRt, BasicChRtTh])
+
+@pytest.mark.parametrize("Model", [BasicRt, BasicChRt, BasicRtSa])
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 def test_rock_till_steady_no_precip_changer(
     clock_simple, grid_2, m_sp, n_sp, depression_finder, U, Kr, Kt, Model
 ):
@@ -41,20 +52,15 @@ def test_rock_till_steady_no_precip_changer(
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
-    assert_array_almost_equal(
-        actual_slopes[22:37], rock_predicted_slopes[22:37]
-    )
+    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
 
-    assert_array_almost_equal(
-        actual_slopes[82:97], till_predicted_slopes[82:97]
-    )
+    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
+
 
 @pytest.mark.parametrize("Model", [Basic, BasicCv, BasicCh, BasicChSa, BasicSa])
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 def test_detachment_steady_no_precip_changer(
     clock_simple, grid_1, m_sp, n_sp, depression_finder, U, K, Model
 ):
@@ -73,7 +79,7 @@ def test_detachment_steady_no_precip_changer(
     }
     # construct and run model
     model = Model(**params)
-    for _ in range(200):
+    for _ in range(250):
         model.run_one_step(1000)
 
     # construct actual and predicted slopes
@@ -88,6 +94,7 @@ def test_detachment_steady_no_precip_changer(
         actual_slopes[model.grid.core_nodes[1:-1]],
         predicted_slopes[model.grid.core_nodes[1:-1]],
     )
+
 
 # VSAs
 

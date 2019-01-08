@@ -43,10 +43,7 @@ def test_Aeff():
         "recharge_rate": recharge_rate,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     model = BasicHyVs(params=params)
@@ -58,14 +55,9 @@ def test_Aeff():
     actual_areas = model.grid.at_node["drainage_area"]
 
     alpha = (
-        hydraulic_conductivity
-        * soil__initial_thickness
-        * node_spacing
-        / recharge_rate
+        hydraulic_conductivity * soil__initial_thickness * node_spacing / recharge_rate
     )
-    A_eff_predicted = actual_areas * np.exp(
-        -(-alpha * actual_slopes) / actual_areas
-    )
+    A_eff_predicted = actual_areas * np.exp(-(-alpha * actual_slopes) / actual_areas)
 
     # assert aeff internally calculated correclty
     # assert_array_almost_equal(model.eff_area[model.grid.core_nodes],
@@ -119,10 +111,7 @@ def test_steady_Kss_no_precip_changer():
         "n_sp": n,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -178,10 +167,7 @@ def test_steady_Ksp_no_precip_changer():
         "solver": "basic",
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -236,10 +222,7 @@ def test_steady_Ksp_no_precip_changer_no_solver_given():
         "fraction_fines": F_f,
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -296,10 +279,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         "random_seed": 3141,
         "depression_finder": "DepressionFinderAndRouter",
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
 
     # construct and run model
@@ -324,9 +304,7 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
     )
 
 
-def test_with_precip_changer(
-    clock_simple, precip_defaults, precip_testing_factor
-):
+def test_with_precip_changer(clock_simple, precip_defaults, precip_testing_factor):
     K = 0.01
     v_sc = 0.001
     phi = 0.1
@@ -397,10 +375,7 @@ def test_diffusion_only():
         "solver": "basic",
         "random_seed": 3141,
         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True, "lowering_rate": -U},
     }
     nts = int(total_time / step)
 
@@ -410,9 +385,7 @@ def test_diffusion_only():
     for _ in range(nts):
         model.run_one_step(step)
 
-    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-        U / (2. * D)
-    ) * (
+    predicted_z = model.z[model.grid.core_nodes[reference_node]] - (U / (2. * D)) * (
         (
             model.grid.x_of_node
             - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
@@ -422,7 +395,5 @@ def test_diffusion_only():
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes],
-        model.z[model.grid.core_nodes],
-        decimal=2,
+        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
     )

@@ -234,9 +234,7 @@ class ErosionModel(object):
 
         self.grid.add_zeros("node", "cumulative_elevation_change")
 
-        self.grid.add_field(
-            "node", "initial_topographic__elevation", self.z.copy()
-        )
+        self.grid.add_field("node", "initial_topographic__elevation", self.z.copy())
 
         # save output_information
         self.save_first_timestep = save_first_timestep
@@ -262,9 +260,7 @@ class ErosionModel(object):
         if (depression_finder is not None) and (
             flow_director == "FlowDirectorSteepest"
         ):
-            self.flow_accumulator = FlowAccumulator(
-                self.grid, routing="D4", **kwargs
-            )
+            self.flow_accumulator = FlowAccumulator(self.grid, routing="D4", **kwargs)
         else:
             self.flow_accumulator = FlowAccumulator(self.grid, **kwargs)
 
@@ -398,9 +394,7 @@ class ErosionModel(object):
         self.iteration = 1
         time_now = self._model_time
         while time_now < self.clock.stop:
-            next_run_pause = min(
-                time_now + self.output_interval, self.clock.stop
-            )
+            next_run_pause = min(time_now + self.output_interval, self.clock.stop)
             self.run_for(self.clock.step, next_run_pause - time_now)
             time_now = self._model_time
             self.iteration += 1
