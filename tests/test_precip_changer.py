@@ -28,7 +28,8 @@ from terrainbento import (
     PrecipChanger,
 )
 
-@pytest.mark.parametrize("Model",[BasicSaVs])
+
+@pytest.mark.parametrize("Model", [BasicSaVs])
 def test_soil_precip_changer(
     clock_simple, grid_1, precip_defaults, precip_testing_factor, Model, K
 ):
@@ -65,7 +66,6 @@ def test_soil_precip_changer(
         BasicThVs,
         BasicHyVs,
         BasicVs,
-
     ],
 )
 def test_simple_precip_changer(

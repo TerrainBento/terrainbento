@@ -1,55 +1,41 @@
-import os
-
 import numpy as np
+import pytest
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import BasicChRt
+from terrainbento import BasicChRt, BasicChRtTh, NotCoreNodeBaselevelHandler
 
 
-def test_diffusion_only():
+@pytest.mark.parametrize("Model", [BasicChRt, BasicChRtTh])
+def test_diffusion_only(clock_09, grid_4, Model):
     U = 0.0005
-    m = 0.5
-    n = 1.0
-    step = 2
+    K = 0.0
     D = 1.0
     S_c = 0.3
-    dx = 10.0
     runtime = 30000
 
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_diffusion.asc")
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid_4, modify_core_nodes=True, lowering_rate=-U
+    )
 
     # Construct dictionary. Note that stream power is turned off
     params = {
-        "model_grid": "RasterModelGrid",
-        "clock": {"step": step, "output_interval": 2., "stop": 200.},
-        "number_of_node_rows": 21,
-        "number_of_node_columns": 3,
-        "node_spacing": dx,
-        "east_boundary_closed": True,
-        "west_boundary_closed": True,
+        "grid": grid_4,
+        "clock": clock_09,
         "regolith_transport_parameter": D,
         "water_erodability_lower": 0,
         "water_erodability_upper": 0,
-        "contact_zone__width": 1.0,
-        "m_sp": m,
-        "n_sp": n,
         "critical_slope": S_c,
-        "lithology_contact_elevation__file_name": file_name,
-        "depression_finder": "DepressionFinderAndRouter",
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
     # Construct and run model
-    model = BasicChRt(params=params)
+    model = Model(**params)
     for _ in range(runtime):
-        model.run_one_step(step)
+        model.run_one_step(clock_09.step)
 
-    # Construct actual and predicted slope at top edge of domain
-    x = 8.5 * dx
+    # Construct actual and predicted slope at right edge of domain
+    x = 8.5 * grid_4.dx
+
     qs = U * x
     nterms = 11
     p = np.zeros(2 * nterms - 1)
