@@ -11,6 +11,7 @@ from terrainbento import (
     BasicDdHy,
     BasicDdRt,
     BasicDdSt,
+    BasicDdVs,
     BasicHy,
     BasicHyRt,
     BasicHySt,
@@ -21,6 +22,8 @@ from terrainbento import (
     BasicSt,
     BasicStTh,
     BasicStVs,
+    BasicTh,
+    BasicThVs,
     BasicVs,
     NotCoreNodeBaselevelHandler,
 )
@@ -68,7 +71,19 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
 
 
 @pytest.mark.parametrize(
-    "Model", [Basic, BasicCv, BasicDd, BasicHy, BasicDdHy, BasicHyVs, BasicVs]
+    "Model",
+    [
+        Basic,
+        BasicCv,
+        BasicDd,
+        BasicHy,
+        BasicDdHy,
+        BasicHyVs,
+        BasicVs,
+        BasicDdVs,
+        BasicTh,
+        BasicThVs,
+    ],
 )
 def test_diffusion_only(clock_simple, grid_1, U, Model):
     total_time = 5.0e6

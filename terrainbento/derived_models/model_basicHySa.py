@@ -91,7 +91,7 @@ class BasicHySa(ErosionModel):
     +------------------+-----------------------------------+
     |:math:`H_{s}`     | ``soil_production__decay_depth``  |
     +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
+    |:math:`H_{0}`     | ``soil_transport_decay_depth``    |
     +------------------+-----------------------------------+
     |:math:`H_{*}`     | ``roughness__length_scale``       |
     +------------------+-----------------------------------+

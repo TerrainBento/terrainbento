@@ -176,35 +176,3 @@ def test_steady_Ksp_no_precip_changer_with_depression_finding():
         actual_slopes[model.grid.core_nodes[1:-1]],
         predicted_slopes[model.grid.core_nodes[1:-1]],
     )
-
-
-def test_with_precip_changer(
-    clock_simple, precip_defaults, precip_testing_factor
-):
-    K = 0.01
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "hydraulic_conductivity": 0.0,
-        "soil__initial_thickness": 0.1,
-        "recharge_rate": 0.5,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "random_seed": 3141,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults,
-    }
-
-    model = BasicVs(params=params)
-    assert "PrecipChanger" in model.boundary_handler
-    model.run_one_step(1.0)
-    model.run_one_step(1.0)
-    # assert model.eroder.K == K
-    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)

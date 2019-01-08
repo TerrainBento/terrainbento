@@ -286,7 +286,7 @@ def test_run_opt_false_with_changer(clock_06):
     model = BasicSt(params=params)
     model.reset_random_seed()
     model.run_for(params["clock"]["step"], params["clock"]["stop"])
-    assert "PrecipChanger" in model.boundary_handler
+    assert "PrecipChanger" in model.boundary_handlers
 
     predicted_intermittency = params["rainfall_intermittency_factor"] + params[
         "PrecipChanger"
