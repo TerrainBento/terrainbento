@@ -82,7 +82,7 @@ class BasicHySt(StochasticErosionModel):
         water_erodability_stochastic=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
-        infiltration_capacity=0.5,
+        infiltration_capacity=1.0,
         sediment_porosity=0.3,
         fraction_fines=0.5,
         solver="basic",
@@ -134,22 +134,13 @@ class BasicHySt(StochasticErosionModel):
         self.m = m_sp
         self.n = n_sp
         self.K = water_erodability_stochastic
+        self.infilt = infiltration_capacity
 
         # instantiate rain generator
         self.instantiate_rain_generator()
 
-        # Add a field for discharge
-        self.discharge = self.grid.at_node["surface_water__discharge"]
-
-        # Get the infiltration-capacity parameter
-
-        self.infilt = infiltration_capacity
-
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
-
-        # Keep a reference to drainage area
-        self.area = self.grid.at_node["drainage_area"]
 
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(

@@ -95,7 +95,7 @@ class BasicDdSt(StochasticErosionModel):
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
         water_erosion_rule__thresh_depth_derivative=0.,
-        infiltration_capacity=0.5,
+        infiltration_capacity=1.0,
         **kwargs
     ):
         """
@@ -148,6 +148,7 @@ class BasicDdSt(StochasticErosionModel):
         self.thresh_change_per_depth = (
             water_erosion_rule__thresh_depth_derivative
         )
+        self.infilt = infiltration_capacity
 
         if float(self.n) != 1.0:
             raise ValueError("Model only supports n equals 1.")
@@ -155,15 +156,6 @@ class BasicDdSt(StochasticErosionModel):
         # instantiate rain generator
         self.instantiate_rain_generator()
 
-        # Add a field for discharge
-        self.discharge = self.grid.at_node["surface_water__discharge"]
-
-        # Get the infiltration-capacity parameter
-
-        self.infilt = infiltration_capacity
-
-        # Keep a reference to drainage area
-        self.area = self.grid.at_node["drainage_area"]
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()

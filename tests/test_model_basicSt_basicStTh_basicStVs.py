@@ -82,7 +82,7 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     m = 1.0
     n = 1.0
 
-    grid = RasterModelGrid((3, 6), xy_spacing=100.)
+    grid = RasterModelGrid((3, 8), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
     s = grid.add_zeros("node", "soil__depth")
@@ -122,7 +122,7 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"][ic]
     actual_areas = model.grid.at_node["drainage_area"][ic]
-    predicted_slopes = (2 * U / (K * (actual_areas ** m))) ** (1. / n)
+    predicted_slopes = (2 * U / (K * (actual_areas)))
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(actual_slopes, predicted_slopes)

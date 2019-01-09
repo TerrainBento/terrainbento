@@ -153,8 +153,10 @@ class StochasticErosionModel(ErosionModel):
         self.seed = int(random_seed)
 
         self.random_seed = random_seed
+
         self.frequency_filename = frequency_filename
         self.storm_sequence_filename = storm_sequence_filename
+
         self.mean_storm_duration = mean_storm_duration
         self.mean_interstorm_duration = mean_interstorm_duration
         self.mean_storm_depth = mean_storm_depth
@@ -162,6 +164,7 @@ class StochasticErosionModel(ErosionModel):
         self.number_of_sub_time_steps = number_of_sub_time_steps
         self.rainfall_intermittency_factor = rainfall_intermittency_factor
         self.rainfall__mean_rate = rainfall__mean_rate
+
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the step may
         # change. Thus, rather than writing routines to reconstruct the time
@@ -193,7 +196,7 @@ class StochasticErosionModel(ErosionModel):
                 runoff = 0  # pragma: no cover
         else:
             runoff = self.rain_rate
-        self.discharge[:] = runoff * self.area
+        self.grid.at_node['surface_water__discharge'][:] = runoff * self.grid.at_node['drainage_area']
         return runoff
 
     def run_for_stochastic(self, step, runtime):

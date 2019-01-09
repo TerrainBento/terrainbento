@@ -90,7 +90,7 @@ class BasicStVs(StochasticErosionModel):
         water_erodability_stochastic=0.0001,
         regolith_transport_parameter=0.1,
         hydraulic_conductivity=0.1,
-        infiltration_capacity=0.5,
+        infiltration_capacity=1.0,
         **kwargs
     ):
         """
@@ -146,9 +146,6 @@ class BasicStVs(StochasticErosionModel):
         # instantiate rain generator
         self.instantiate_rain_generator()
 
-        # Add a field for discharge
-        self.discharge = self.grid.at_node["surface_water__discharge"]
-
         # Add a field for subsurface discharge
         self.qss = self.grid.add_zeros("node", "subsurface_water__discharge")
 
@@ -202,8 +199,8 @@ class BasicStVs(StochasticErosionModel):
         #
         # Note that roundoff errors can sometimes produce a tiny negative
         # value when qss and pa are close; make sure these are set to 0
-        self.discharge[:] = pa - self.qss
-        self.discharge[self.discharge < 0.0] = 0.0
+        self.grid.at_node['surface_water__discharge'][:] = pa - self.qss
+        self.grid.at_node['surface_water__discharge'][self.grid.at_node['surface_water__discharge'] < 0.0] = 0.0
 
         return np.nan
 

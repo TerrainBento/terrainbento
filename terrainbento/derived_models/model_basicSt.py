@@ -107,7 +107,7 @@ class BasicSt(StochasticErosionModel):
         n_sp=1.0,
         water_erodability_stochastic=0.0001,
         regolith_transport_parameter=0.1,
-        infiltration_capacity=0.5,
+        infiltration_capacity=1.0,
         **kwargs
     ):
         """
@@ -162,11 +162,6 @@ class BasicSt(StochasticErosionModel):
         # instantiate rain generator
         self.instantiate_rain_generator()
 
-        # Add a field for discharge
-        self.discharge = self.grid.at_node["surface_water__discharge"]
-
-        # Keep a reference to drainage area
-        self.area = self.grid.at_node["drainage_area"]
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
