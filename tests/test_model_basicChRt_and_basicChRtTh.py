@@ -8,10 +8,8 @@ from terrainbento import BasicChRt, BasicChRtTh, NotCoreNodeBaselevelHandler
 @pytest.mark.parametrize("Model", [BasicChRt, BasicChRtTh])
 def test_diffusion_only(clock_09, grid_4, Model):
     U = 0.0005
-    K = 0.0
     D = 1.0
     S_c = 0.3
-    nsteps = 30000
 
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_4, modify_core_nodes=True, lowering_rate=-U
@@ -29,14 +27,14 @@ def test_diffusion_only(clock_09, grid_4, Model):
 
     # Construct and run model
     model = Model(**params)
-    for _ in range(nsteps):
+    for _ in range(30000):
         model.run_one_step(clock_09.step)
 
     # Construct actual and predicted slope at right edge of domain
     x = 8.5 * grid_4.dx
 
     qs = U * x
-    nterms = 11
+    nterms = 7
     p = np.zeros(2 * nterms - 1)
     for k in range(1, nterms + 1):
         p[2 * k - 2] = D * (1 / (S_c ** (2 * (k - 1))))

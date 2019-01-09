@@ -10,10 +10,8 @@ from terrainbento import BasicCh, NotCoreNodeBaselevelHandler
 
 def test_diffusion_only(clock_09, grid_4):
     U = 0.0005
-    K = 0.0
     D = 1.0
     S_c = 0.3
-    runtime = 30000
 
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_4, modify_core_nodes=True, lowering_rate=-U
@@ -31,7 +29,7 @@ def test_diffusion_only(clock_09, grid_4):
 
     # Construct and run model
     model = BasicCh(**params)
-    for _ in range(runtime):
+    for _ in range(30000):
         model.run_one_step(clock_09.step)
 
     # Construct actual and predicted slope at right edge of domain
