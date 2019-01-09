@@ -180,6 +180,9 @@ class BasicChRtTh(TwoLithologyErosionModel):
         # Call ErosionModel"s init
         super(BasicChRtTh, self).__init__(clock, grid, **kwargs)
 
+        if float(self.n) != 1.0:
+            raise ValueError("Model only supports n equals 1.")
+
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 

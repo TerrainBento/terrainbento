@@ -128,6 +128,9 @@ class BasicStTh(StochasticErosionModel):
         self.n = n_sp
         self.K = water_erodability_stochastic
 
+        if float(self.n) != 1.0:
+            raise ValueError("Model only supports n equals 1.")
+
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects
 

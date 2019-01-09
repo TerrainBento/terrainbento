@@ -1,173 +1,49 @@
-import os
+# coding: utf8
+# !/usr/env/python
 
 import numpy as np
+import pytest
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import BasicDdRt
-from terrainbento.utilities import filecmp
-
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
-
-# def test_steady_Ksp_no_precip_changer_no_thresh():
-#     U = 0.0001
-#     Kr = 0.001
-#     Kt = 0.005
-#     T = 0.0
-#     dTdz = 0.0
-#     m = 0.5
-#     n = 1.0
-#     step = 1000
-#
-#     file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
-#     # construct dictionary. note that D is turned off here
-#     params = {
-#         "model_grid": "RasterModelGrid",
-#         "clock": {"step": 1,
-#         "output_interval": 2.,
-#         "stop": 200.},
-#         "number_of_node_rows": 8,
-#         "number_of_node_columns": 20,
-#         "node_spacing": 100.0,
-#         "north_boundary_closed": True,
-#         "south_boundary_closed": True,
-#         "regolith_transport_parameter": 0.,
-#         "water_erodability_lower": Kr,
-#         "water_erodability_upper": Kt,
-#         "water_erosion_rule__threshold": T,
-#         "water_erosion_rule__thresh_depth_derivative": dTdz,
-#         "lithology_contact_elevation__file_name": file_name,
-#         "contact_zone__width": 1.,
-#         "m_sp": m,
-#         "n_sp": n,
-#         "random_seed": 3141,
-#         "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-#         "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
-# "lowering_rate": -U},
-#     }
-#
-#     # construct and run model
-#     model = BasicDdRt(params=params)
-#     for _ in range(100):
-#         model.run_one_step(step)
-#
-#     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-#     actual_areas = model.grid.at_node["drainage_area"]
-#     rock_predicted_slopes = (U / (Kr * (actual_areas ** m))) ** (1. / n)
-#     till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
-#
-#     # assert slopes are correct
-#     assert_array_almost_equal(
-#         actual_slopes[model.grid.core_nodes[22:37]],
-#         predicted_slopes[model.grid.core_nodes[22:37]],
-#     )
-#
-#     assert_array_almost_equal(
-#         actual_slopes[model.grid.core_nodes[82:97]],
-#         predicted_slopes[model.grid.core_nodes[82:97]],
-#     )
+from terrainbento import BasicDdRt, NotCoreNodeBaselevelHandler
 
 
-def test_steady_Ksp_no_precip_changer(clock_simple):
-    U = 0.0001
-    Kr = 0.001
-    Kt = 0.005
-    T = 0.001
-    dTdz = 0.005
-    m = 0.5
-    n = 1.0
+@pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
+@pytest.mark.parametrize("n_sp", [1.])
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
+@pytest.mark.parametrize("threshold", [0.1])
+@pytest.mark.parametrize("thresh_change_per_depth", [0.])
+def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, Kr, Kt, m_sp, n_sp, depression_finder, threshold, thresh_change_per_depth):
+
     step = 1000
-
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
-    # construct dictionary. note that D is turned off here
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid_2, modify_core_nodes=True, lowering_rate=-U
+    )
     params = {
-        "model_grid": "RasterModelGrid",
+        "grid": grid_2,
         "clock": clock_simple,
-        "number_of_node_rows": 8,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
         "water_erodability_lower": Kr,
         "water_erodability_upper": Kt,
-        "water_erosion_rule__threshold": T,
-        "water_erosion_rule__thresh_depth_derivative": dTdz,
-        "lithology_contact_elevation__file_name": file_name,
-        "contact_zone__width": 1.,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "water_erosion_rule__threshold": threshold,
+        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
+        "m_sp": m_sp,
+        "n_sp": n_sp,
+        "depression_finder": depression_finder,
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh}
     }
 
     # construct and run model
-    model = BasicDdRt(params=params)
+    model = BasicDdRt(**params)
     for _ in range(100):
-        model.run_one_step(step)
+        model.run_one_step(1000)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
-    rock_predicted_slopes = (U / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
-
-    # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37])
-
-    # assert actual slopes are steeper than simple stream power prediction
-    assert np.all(actual_slopes[82:97] > till_predicted_slopes[82:97])
-
-
-def test_steady_Ksp_no_precip_changer_with_depression_finding(clock_simple):
-    U = 0.0001
-    Kr = 0.001
-    Kt = 0.005
-    T = 0.001
-    dTdz = 0.005
-    m = 0.5
-    n = 1.0
-    step = 1000
-
-    file_name = os.path.join(_TEST_DATA_DIR, "example_contact_unit.asc")
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 8,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability_lower": Kr,
-        "water_erodability_upper": Kt,
-        "water_erosion_rule__threshold": T,
-        "water_erosion_rule__thresh_depth_derivative": dTdz,
-        "lithology_contact_elevation__file_name": file_name,
-        "contact_zone__width": 1.,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "depression_finder": "DepressionFinderAndRouter",
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    # construct and run model
-    model = BasicDdRt(params=params)
-    for _ in range(100):
-        model.run_one_step(step)
-
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    rock_predicted_slopes = (U / (Kr * (actual_areas ** m))) ** (1. / n)
-    till_predicted_slopes = (U / (Kt * (actual_areas ** m))) ** (1. / n)
+    rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1. / n_sp)
+    till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1. / n_sp)
 
     # assert actual slopes are steeper than simple stream power prediction
     assert np.all(actual_slopes[22:37] > rock_predicted_slopes[22:37])

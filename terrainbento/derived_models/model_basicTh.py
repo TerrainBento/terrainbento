@@ -118,7 +118,7 @@ class BasicTh(ErosionModel):
         self.K = water_erodability
 
         if float(self.n) != 1.0:
-            raise ValueError("Model BasicTh only supports n equals 1.")
+            raise ValueError("Model only supports n equals 1.")
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(

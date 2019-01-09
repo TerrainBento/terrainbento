@@ -149,6 +149,9 @@ class BasicDdSt(StochasticErosionModel):
             water_erosion_rule__thresh_depth_derivative
         )
 
+        if float(self.n) != 1.0:
+            raise ValueError("Model only supports n equals 1.")
+
         # instantiate rain generator
         self.instantiate_rain_generator()
 

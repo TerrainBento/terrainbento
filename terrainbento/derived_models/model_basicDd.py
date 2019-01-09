@@ -131,7 +131,7 @@ class BasicDd(ErosionModel):
         self.K = water_erodability
 
         if float(self.n) != 1.0:
-            raise ValueError("Model BasicDd only supports n equals 1.")
+            raise ValueError("Model only supports n equals 1.")
 
         #  threshold has units of  Length per Time which is what
         # StreamPowerSmoothThresholdEroder expects

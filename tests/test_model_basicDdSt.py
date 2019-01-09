@@ -8,16 +8,6 @@ from numpy.testing import assert_array_almost_equal
 from terrainbento import BasicDdSt, NotCoreNodeBaselevelHandler
 
 
-def test_bad_n_sp(clock_simple, grid_1):
-    params = {
-        "grid": grid_1,
-        "clock": clock_simple,
-        "n_sp": 1.01,
-    }
-
-    with pytest.raises(ValueError):
-        BasicDdSt(**params)
-
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
 @pytest.mark.parametrize("n_sp", [1.])
 @pytest.mark.parametrize(

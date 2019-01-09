@@ -173,6 +173,9 @@ class BasicDdRt(TwoLithologyErosionModel):
         # verify correct fields are present.
         self._verify_fields(_REQUIRED_FIELDS)
 
+        if float(self.n) != 1.0:
+            raise ValueError("Model only supports n equals 1.")
+
         self.threshold_value = water_erosion_rule__threshold
 
         # Set up rock-till boundary and associated grid fields.

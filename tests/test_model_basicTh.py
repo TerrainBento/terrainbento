@@ -9,20 +9,6 @@ from terrainbento import BasicTh
 from terrainbento.utilities import filecmp
 
 
-def test_bad_n_sp():
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "water_erosion_rule__threshold": 0.001,
-        "water_erodability": 0.001,
-        "n_sp": 1.01,
-        "regolith_transport_parameter": 0.001,
-    }
-
-    with pytest.raises(ValueError):
-        BasicTh(params=params)
-
-
 def test_steady_Ksp_no_precip_changer():
     U = 0.0001
     K = 0.001

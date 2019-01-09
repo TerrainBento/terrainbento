@@ -1,63 +1,58 @@
 # coding: utf8
 # !/usr/env/python
+import pytest
 
 import numpy as np
-from numpy.testing import assert_array_almost_equal  # assert_array_equal,
+from numpy.testing import assert_array_almost_equal
 
-from terrainbento import BasicDdHy
-from terrainbento.utilities import filecmp
+from terrainbento import BasicDdHy, NotCoreNodeBaselevelHandler
 
 
-def test_steady_Ksp_no_precip_changer_no_thresh():
-    U = 0.001
-    K = 0.001
-    m = 0.5
-    n = 1.0
-    step = 10
-    v_sc = 0.001
+@pytest.mark.parametrize("threshold", [0.0, 0.00001])
+@pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
+@pytest.mark.parametrize("n_sp", [2. / 3., 1.])
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
+@pytest.mark.parametrize("solver", ["basic", "adaptive"])
+def test_stream_DdHy(clock_simple, grid_2, m_sp, n_sp, depression_finder, U, K, solver, threshold):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid_2, modify_core_nodes=True, lowering_rate=-U
+    )
     phi = 0.1
     F_f = 0.0
-    threshold = 0
+    v_sc = 0.001
     thresh_change_per_depth = 0
     # construct dictionary. note that D is turned off here
     params = {
-        "model_grid": "RasterModelGrid",
+        "grid": grid_2,
         "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
         "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "v_sc": v_sc,
+        "settling_velocity": v_sc,
         "sediment_porosity": phi,
         "fraction_fines": F_f,
-        "solver": "basic",
         "water_erosion_rule__threshold": threshold,
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "solver": solver,
+        "m_sp": m_sp,
+        "n_sp": n_sp,
+        "depression_finder": depression_finder,
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
     # construct and run model
-    model = BasicDdHy(params=params)
-    for _ in range(1000):
-        model.run_one_step(step)
+    model = BasicDdHy(**params)
+    for _ in range(2000):
+        model.run_one_step(10)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
+    actual_areas = model.grid.at_node["surface_water__discharge"]
     predicted_slopes = np.power(
-        ((U * v_sc) / (K * np.power(actual_areas, m)))
-        + (U / (K * np.power(actual_areas, m))),
-        1. / n,
+        ((U * v_sc) / (K * np.power(actual_areas, m_sp)))
+        + (U / (K * np.power(actual_areas, m_sp))),
+        1. / n_sp,
     )
 
     # assert actual and predicted slopes are the same.
@@ -65,119 +60,6 @@ def test_steady_Ksp_no_precip_changer_no_thresh():
         actual_slopes[model.grid.core_nodes[1:-1]],
         predicted_slopes[model.grid.core_nodes[1:-1]],
         decimal=4,
-    )
-
-
-def test_steady_Ksp_no_precip_changer_no_solver_given():
-    U = 0.0001
-    K = 0.001
-    m = 0.5
-    n = 1.0
-    step = 10
-    v_sc = 0.001
-    phi = 0.1
-    F_f = 0.0
-    threshold = 0.000001
-    thresh_change_per_depth = 0
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "v_sc": v_sc,
-        "sediment_porosity": phi,
-        "fraction_fines": F_f,
-        "water_erosion_rule__threshold": threshold,
-        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    # construct and run model
-    model = BasicDdHy(params=params)
-    for _ in range(800):
-        model.run_one_step(step)
-
-    # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = np.power(
-        ((U * v_sc) / (K * np.power(actual_areas, m)))
-        + (U / (K * np.power(actual_areas, m))),
-        1. / n,
-    )
-
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
-        decimal=4,
-    )
-
-
-def test_steady_Ksp_no_precip_changer_with_depression_finding():
-    U = 0.0001
-    K = 0.001
-    m = 0.5
-    n = 1.0
-    step = 10
-    v_sc = 0.001
-    phi = 0.1
-    F_f = 0.0
-    threshold = 0.000001
-    thresh_change_per_depth = 0
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "v_sc": v_sc,
-        "sediment_porosity": phi,
-        "fraction_fines": F_f,
-        "solver": "basic",
-        "water_erosion_rule__threshold": threshold,
-        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
-        "random_seed": 3141,
-        "depression_finder": "DepressionFinderAndRouter",
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    # construct and run model
-    model = BasicDdHy(params=params)
-    for _ in range(800):
-        model.run_one_step(step)
-
-    # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = np.power(
-        ((U * v_sc) / (K * np.power(actual_areas, m)))
-        + (U / (K * np.power(actual_areas, m))),
-        1. / n,
     )
 
     # assert actual and predicted slopes are the same.

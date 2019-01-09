@@ -134,7 +134,7 @@ class BasicThVs(ErosionModel):
         self.K = water_erodability
 
         if float(self.n) != 1.0:
-            raise ValueError("Model BasicThVs only supports n = 1.")
+            raise ValueError("Model only supports n = 1.")
 
         soil_thickness = self.grid.at_node["soil__depth"]
 
