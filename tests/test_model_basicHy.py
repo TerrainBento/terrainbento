@@ -1,8 +1,7 @@
 # coding: utf8
 # !/usr/env/python
-import pytest
-
 import numpy as np
+import pytest
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicHy, NotCoreNodeBaselevelHandler
@@ -14,7 +13,9 @@ from terrainbento import BasicHy, NotCoreNodeBaselevelHandler
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
 @pytest.mark.parametrize("solver", ["basic", "adaptive"])
-def test_no_precip_changer(clock_simple, grid_2, m_sp, n_sp, depression_finder, U, K, solver):
+def test_no_precip_changer(
+    clock_simple, grid_2, m_sp, n_sp, depression_finder, U, K, solver
+):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
     )
@@ -57,7 +58,6 @@ def test_no_precip_changer(clock_simple, grid_2, m_sp, n_sp, depression_finder, 
         predicted_slopes[model.grid.core_nodes[1:-1]],
         decimal=4,
     )
-
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(

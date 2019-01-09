@@ -15,7 +15,18 @@ from terrainbento import BasicDdRt, NotCoreNodeBaselevelHandler
 )
 @pytest.mark.parametrize("threshold", [0.1])
 @pytest.mark.parametrize("thresh_change_per_depth", [0.])
-def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, Kr, Kt, m_sp, n_sp, depression_finder, threshold, thresh_change_per_depth):
+def test_steady_Ksp_no_precip_changer_no_thresh_change(
+    clock_simple,
+    grid_2,
+    U,
+    Kr,
+    Kt,
+    m_sp,
+    n_sp,
+    depression_finder,
+    threshold,
+    thresh_change_per_depth,
+):
 
     step = 1000
     ncnblh = NotCoreNodeBaselevelHandler(
@@ -32,7 +43,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, 
         "m_sp": m_sp,
         "n_sp": n_sp,
         "depression_finder": depression_finder,
-        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh}
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
     # construct and run model

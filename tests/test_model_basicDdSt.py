@@ -15,7 +15,17 @@ from terrainbento import BasicDdSt, NotCoreNodeBaselevelHandler
 )
 @pytest.mark.parametrize("threshold", [0.1])
 @pytest.mark.parametrize("thresh_change_per_depth", [0.])
-def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, K, m_sp, n_sp, depression_finder, threshold, thresh_change_per_depth):
+def test_steady_Ksp_no_precip_changer_no_thresh_change(
+    clock_simple,
+    grid_2,
+    U,
+    K,
+    m_sp,
+    n_sp,
+    depression_finder,
+    threshold,
+    thresh_change_per_depth,
+):
 
     step = 1000
     ncnblh = NotCoreNodeBaselevelHandler(
@@ -31,7 +41,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, 
         "water_erosion_rule__threshold": threshold,
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "depression_finder": depression_finder,
-        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh}
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
     # construct and run model
@@ -46,12 +56,12 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, 
         # slopes to fall.
         actual_slopes = model.grid.at_node["topographic__steepest_slope"]
         actual_areas = model.grid.at_node["surface_water__discharge"]
-        predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m_sp))) ** (
-            1. / n_sp
-        )
-        predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
-            1. / n_sp
-        )
+        predicted_slopes_upper = (
+            (U + threshold) / (K * (actual_areas ** m_sp))
+        ) ** (1. / n_sp)
+        predicted_slopes_lower = (
+            (U + 0.0) / (K * (actual_areas ** m_sp))
+        ) ** (1. / n_sp)
 
         # assert actual and predicted slopes are in the correct range for the
         # slopes.
@@ -75,9 +85,9 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, 
         # steeper than the lower bound.
         actual_slopes = model.grid.at_node["topographic__steepest_slope"]
         actual_areas = model.grid.at_node["surface_water__discharge"]
-        predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
-            1. / n_sp
-        )
+        predicted_slopes_lower = (
+            (U + 0.0) / (K * (actual_areas ** m_sp))
+        ) ** (1. / n_sp)
 
         # assert actual and predicted slopes are in the correct range for the
         # slopes.
