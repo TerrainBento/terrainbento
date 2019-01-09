@@ -1,12 +1,15 @@
-import os
-
+import pytest
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import BasicRtSa, NotCoreNodeBaselevelHandler
+from terrainbento import BasicSaVs, BasicSa, NotCoreNodeBaselevelHandler, BasicRtSa
 
 
-def test_diffusion_only(clock_simple, grid_4):
+_RT_params = {"water_erodability_lower": 0, "water_erodability_upper": 0}
+_OTHER_params = {"water_erodability": 0}
+
+@pytest.mark.parametrize("Model,water_params", [(BasicSa, _OTHER_params), (BasicRtSa, _RT_params), (BasicSaVs, _OTHER_params)])
+def test_diffusion_only(clock_simple, grid_4, Model, water_params):
 
     U = 0.001
     max_soil_production_rate = 0.002
@@ -26,13 +29,13 @@ def test_diffusion_only(clock_simple, grid_4):
         "soil_transport_decay_depth": soil_transport_decay_depth,
         "soil_production__maximum_rate": max_soil_production_rate,
         "soil_production__decay_depth": soil_production_decay_depth,
-        "water_erodability_lower": 0,
-        "water_erodability_upper": 0,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
+    for p in water_params:
+        params[p] = water_params[p]
 
     # construct and run model
-    model = BasicRtSa(**params)
+    model = Model(**params)
     for _ in range(120000):
         model.run_one_step(10)
 
