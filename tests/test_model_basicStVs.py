@@ -11,7 +11,15 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def test_bad_transmiss():
-    """Test steady profile solution with fixed duration."""
+params = {
+    "grid": grid_2,
+    "clock": clock_simple,
+    "regolith_transport_parameter": 0.,
+    "water_erodability": K,
+    "settling_velocity": v_sc,
+    "sediment_porosity": phi,
+    "fraction_fines": F_f,
+    "hydraulic_conductivity": 0.,
     K = 0.001
     H0 = 0.0
     Ks = 0.0
