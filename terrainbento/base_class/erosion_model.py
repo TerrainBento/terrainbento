@@ -147,8 +147,6 @@ class ErosionModel(object):
         save_first_timestep=True,
         output_prefix="terrainbento_output",
         fields=["topographic__elevation"],
-        feet_to_meters=False,
-        meters_to_feet=False,
         **kwargs
     ):
         """
@@ -193,18 +191,6 @@ class ErosionModel(object):
             ``"terrainbento_output"``.
         output_interval : float, optional
             Default is the Clock's stop time.
-        meters_to_feet : boolean, optional
-            These courtesy options exist to support the case in which a model must be run
-            in one type of units (e.g. feet) but the scientific literature  provides
-            information about parameter values in a different unit (e.g. meters). If both
-            are set to ``True`` a ``ValueError`` will be raised.
-
-            Using these parameters **ONLY** impacts the units of model parameters like
-            ``water_erodability`` or ``water_erosion_rule__threshold``. These parameters do
-            not impact the rates or elevations used in boundary condition handlers.
-            Default value is False.
-        feet_to_meters : boolean, optional
-            Default value is False.
         **kwargs :
             Any kwargs to pass to the FlowAccumulator.
 
