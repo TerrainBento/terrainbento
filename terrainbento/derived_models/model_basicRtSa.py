@@ -208,7 +208,6 @@ class BasicRtSa(TwoLithologyErosionModel):
         )
 
         soil_thickness = self.grid.at_node["soil__depth"]
-
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
         bedrock_elev[:] = self.z - soil_thickness
 
@@ -216,7 +215,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         self.diffuser = DepthDependentDiffuser(
             self.grid,
             linear_diffusivity=self.regolith_transport_parameter,
-            soil_transport_decay_depth=soil_production__decay_depth,
+            soil_transport_decay_depth=soil_transport_decay_depth,
         )
 
         self.weatherer = ExponentialWeatherer(
