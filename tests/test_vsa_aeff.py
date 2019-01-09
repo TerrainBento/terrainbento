@@ -5,10 +5,10 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import BasicDdVs, BasicHyVs, NotCoreNodeBaselevelHandler
+from terrainbento import BasicVs, BasicDdVs, BasicHyVs, BasicThVs, BasicTh, NotCoreNodeBaselevelHandler
 
 
-@pytest.mark.parametrize("Model", [BasicDdVs, BasicHyVs])
+@pytest.mark.parametrize("Model", [BasicVs, BasicDdVs, BasicHyVs, BasicTh])
 def test_Aeff(clock_simple, grid_2, K, U, Model):
     m_sp = 0.5
     n_sp = 1.0
@@ -29,7 +29,7 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
     }
 
     # construct and run model
-    model = BasicDdVs(**params)
+    model = Model(**params)
     for _ in range(100):
         model.run_one_step(1000)
 

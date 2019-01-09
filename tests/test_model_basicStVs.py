@@ -10,41 +10,11 @@ from terrainbento import BasicStVs
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def test_bad_transmiss():
-params = {
-    "grid": grid_2,
-    "clock": clock_simple,
-    "regolith_transport_parameter": 0.,
-    "water_erodability": K,
-    "settling_velocity": v_sc,
-    "sediment_porosity": phi,
-    "fraction_fines": F_f,
-    "hydraulic_conductivity": 0.,
-    K = 0.001
-    H0 = 0.0
-    Ks = 0.0
-    m = 1.0
-    n = 1.0
-
-    # construct dictionary. note that D is turned off here
+def test_bad_transmiss(grid_2, clock_simple):
     params = {
-        "model_grid": "RasterModelGrid",
+        "grid": grid_2,
         "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 6,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability_stochastic": K,
-        "m_sp": m,
-        "n_sp": n,
-        "soil__initial_thickness": H0,
-        "hydraulic_conductivity": Ks,
-        "number_of_sub_time_steps": 100,
-        "rainfall_intermittency_factor": 1.0,
-        "rainfall__mean_rate": 1.0,
-        "rainfall__shape_factor": 1.0,
+        "hydraulic_conductivity": 0.,
     }
 
     with pytest.raises(ValueError):

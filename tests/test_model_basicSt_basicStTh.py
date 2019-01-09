@@ -1,16 +1,22 @@
 import glob
 import os
 
+import pytest
+
+from landlab import RasterModelGrid
 import numpy as np
 from numpy.testing import assert_array_almost_equal, assert_equal
 
-from terrainbento import BasicSt
-
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+from terrainbento import BasicSt, BasicStTh, NotCoreNodeBaselevelHandler, Clock
 
 
-def test_steady_without_stochastic_duration():
-    """Test steady profile solution with fixed duration.
+_extra_params = {"water_erosion_rule__threshold": 1e-9}
+_empty_params = {}
+
+@pytest.mark.parametrize("Model,extra_params", [(BasicStTh, _extra_params),
+                                               (BasicSt, _empty_params)])
+def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
+    r"""Test steady profile solution with fixed duration.
 
     Notes
     -----
@@ -63,17 +69,19 @@ def test_steady_without_stochastic_duration():
     K = 0.001
     m = 1.0
     n = 1.0
-    step = 1.0
+
+    grid = RasterModelGrid((3, 6), xy_spacing=100.)
+    grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
+    grid.add_zeros("node", "topographic__elevation")
+
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid, modify_core_nodes=True, lowering_rate=-U
+    )
 
     # construct dictionary. note that D is turned off here
     params = {
-        "model_grid": "RasterModelGrid",
+        "grid": grid,
         "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 6,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
         "water_erodability_stochastic": K,
         "m_sp": m,
@@ -84,17 +92,17 @@ def test_steady_without_stochastic_duration():
         "rainfall__mean_rate": 1.0,
         "rainfall__shape_factor": 1.0,
         "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "depression_finder": "DepressionFinderAndRouter",
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
+    for p in extra_params:
+        params[p] = extra_params[p]
+
     # construct and run model
-    model = BasicSt(params=params)
+    model = Model(**params)
     for _ in range(100):
-        model.run_one_step(step)
+        model.run_one_step(1.0)
 
     # construct actual and predicted slopes
     ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
@@ -117,15 +125,19 @@ def test_stochastic_duration_rainfall_means():
     n = 1.0
     step = 200.0
 
+    grid = RasterModelGrid((3, 6), xy_spacing=100.)
+    grid.set_closed_boundaries_at_grid_edges(True, False, True, False)
+    grid.add_zeros("node", "topographic__elevation")
+
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid, modify_core_nodes=True, lowering_rate=-U
+    )
+
+    clock = Clock(step=200, stop=400)
     # construct dictionary. note that D is turned off here
     params = {
-        "model_grid": "RasterModelGrid",
-        "clock": {"step": step, "output_interval": 401., "stop": 400.},
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 6,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
+        "grid": grid,
+        "clock": clock,
         "regolith_transport_parameter": 0.,
         "water_erodability_stochastic": K,
         "m_sp": m,
@@ -137,16 +149,13 @@ def test_stochastic_duration_rainfall_means():
         "infiltration_capacity": 1.0,
         "random_seed": 3141,
         "mean_storm_depth": 1.0,
+        "output_interval": 401,
         "depression_finder": "DepressionFinderAndRouter",
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
     # construct and run model
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.run()
 
     cum_rain_depth = np.sum(

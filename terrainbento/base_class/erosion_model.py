@@ -140,7 +140,7 @@ class ErosionModel(object):
         precipitator=None,
         runoff_generator=None,
         boundary_handlers={},
-        output_writers=[],
+        output_writers=None,
         flow_director="FlowDirectorSteepest",
         depression_finder=None,
         output_interval=None,
@@ -371,11 +371,6 @@ class ErosionModel(object):
         ``"output_duration"``.
         """
         self._itters = []
-        if output_fields is None:
-            output_fields = self.grid.at_node.keys()
-        if isinstance(output_fields, six.string_types):
-            output_fields = [output_fields]
-        self.output_fields = output_fields
 
         if self.save_first_timestep:
             self.iteration = 0

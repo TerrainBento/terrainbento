@@ -98,8 +98,8 @@ class StochasticErosionModel(ErosionModel):
         clock,
         grid,
         random_seed=0,
-        storm_sequence_filename=None,
-        frequency_filename=None,
+        storm_sequence_filename="storm_sequence.txt",
+        frequency_filename="exceedance_summary.txt",
         record_rain=False,
         opt_stochastic_duration=False,
         mean_storm_duration=1,
@@ -170,13 +170,6 @@ class StochasticErosionModel(ErosionModel):
 
         # make this the non-default option.
 
-        # First test for consistency between filenames and boolean parameters
-        if (
-            (storm_sequence_filename is not None)
-            or (frequency_filename is not None)
-        ) and (record_rain is not True):
-            record_rain = True
-
         # Second, test that
         if record_rain:
             self.record_rain = True
@@ -189,19 +182,6 @@ class StochasticErosionModel(ErosionModel):
         else:
             self.record_rain = False
             self.rain_record = None
-
-        # check that if (self.opt_stochastic_duration==True) that
-        # frequency_filename does not exist. For stochastic time, computing
-        # exceedance frequencies is not super sensible. So make a warning that
-        # it won"t be done.
-        if (self.opt_stochastic_duration is True) and (frequency_filename):
-            raise ValueError(
-                (
-                    "opt_stochastic_duration is set to True and a "
-                    "frequency_filename was specified. Frequency calculations "
-                    "are not done with stochastic time."
-                )
-            )
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
