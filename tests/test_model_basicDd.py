@@ -9,19 +9,15 @@ from terrainbento import BasicDd
 from terrainbento.utilities import filecmp
 
 
-def test_bad_n_sp(clock_simple):
+def test_bad_n_sp(clock_simple, grid_1):
     params = {
-        "model_grid": "RasterModelGrid",
+        "grid": grid_1,
         "clock": clock_simple,
-        "water_erodability": 0.001,
         "n_sp": 1.01,
-        "regolith_transport_parameter": 0.001,
-        "water_erosion_rule__threshold": 0.001,
-        "water_erosion_rule__thresh_depth_derivative": 0.001,
     }
 
     with pytest.raises(ValueError):
-        BasicDd(params=params)
+        BasicDd(**params)
 
 
 # def test_steady_Ksp_no_precip_changer_no_thresh():
