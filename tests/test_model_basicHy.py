@@ -33,6 +33,7 @@ def test_no_precip_changer(clock_simple, grid_2, m_sp, n_sp, depression_finder, 
         "solver": solver,
         "m_sp": m_sp,
         "n_sp": n_sp,
+        "depression_finder": depression_finder,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
