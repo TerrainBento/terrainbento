@@ -1,6 +1,5 @@
-import pytest
-
 import numpy as np
+import pytest
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicRtVs, NotCoreNodeBaselevelHandler
@@ -10,8 +9,11 @@ from terrainbento.utilities import filecmp
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
 @pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"])
-def test_steady_Kss_no_precip_changer(clock_simple, grid_2, U, Kr, Kt, m_sp, n_sp, depression_finder):
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
+def test_steady_Kss_no_precip_changer(
+    clock_simple, grid_2, U, Kr, Kt, m_sp, n_sp, depression_finder
+):
 
     hydraulic_conductivity = 0.1
     recharge_rate = 0.5

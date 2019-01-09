@@ -1,20 +1,32 @@
 import glob
 import os
 
-import pytest
-
-from landlab import RasterModelGrid
 import numpy as np
+import pytest
 from numpy.testing import assert_array_almost_equal, assert_equal
 
-from terrainbento import BasicSt, BasicStTh, NotCoreNodeBaselevelHandler, Clock
+from landlab import RasterModelGrid
+from terrainbento import (
+    BasicSt,
+    BasicStTh,
+    BasicStVs,
+    Clock,
+    NotCoreNodeBaselevelHandler,
+)
 
-
-_extra_params = {"water_erosion_rule__threshold": 1e-9}
+_th_params = {"water_erosion_rule__threshold": 1e-9}
 _empty_params = {}
+_vs_params = {"hydraulic_conductivity": 1.0e-9}
 
-@pytest.mark.parametrize("Model,extra_params", [(BasicStTh, _extra_params),
-                                               (BasicSt, _empty_params)])
+
+@pytest.mark.parametrize(
+    "Model,extra_params",
+    [
+        (BasicStTh, _th_params),
+        (BasicSt, _empty_params),
+        (BasicStVs, _vs_params),
+    ],
+)
 def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     r"""Test steady profile solution with fixed duration.
 
@@ -73,6 +85,8 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     grid = RasterModelGrid((3, 6), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
+    s = grid.add_zeros("node", "soil__depth")
+    s[:] = 1e-9
 
     ncnblh = NotCoreNodeBaselevelHandler(
         grid, modify_core_nodes=True, lowering_rate=-U

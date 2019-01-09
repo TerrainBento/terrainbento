@@ -126,7 +126,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         self,
         clock,
         grid,
-        recharge_rate=0.5,
+        recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         **kwargs
     ):

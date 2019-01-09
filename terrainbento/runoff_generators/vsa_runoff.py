@@ -1,10 +1,12 @@
 """"""
 
+import numpy as np
+
 
 class VariableSourceAreaRunoff(object):
     """"""
 
-    def __init__(self, mg):
+    def __init__(self, mg, hydraulic_conductivity=0.2):
         """"""
 
         self.grid = mg

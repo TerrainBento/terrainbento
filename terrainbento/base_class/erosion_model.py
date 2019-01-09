@@ -117,7 +117,7 @@ class ErosionModel(object):
         clock = Clock.from_dict(**params.pop("clock"))
         boundary_handlers = params.pop("boundary_handlers", {})
         bh_dict = {}
-        for name in boundary_handlers_input:
+        for name in boundary_handlers:
             bh_params = boundary_handlers[name]
             bh_dict[name] = _setup_boundary_handlers(grid, name, bh_params)
 

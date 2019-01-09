@@ -4,6 +4,7 @@
 import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
+
 from terrainbento import BasicSaVs, NotCoreNodeBaselevelHandler
 
 
@@ -15,7 +16,7 @@ from terrainbento import BasicSaVs, NotCoreNodeBaselevelHandler
 def test_detachment_steady_no_precip_changer(
     clock_simple, grid_1, m_sp, n_sp, depression_finder, U, K
 ):
-    grid_1.at_node['soil__depth'][:] = 0
+    grid_1.at_node["soil__depth"][:] = 0
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_1, modify_core_nodes=True, lowering_rate=-U
     )

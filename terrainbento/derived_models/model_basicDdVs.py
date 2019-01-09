@@ -97,7 +97,7 @@ class BasicDdVs(ErosionModel):
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
         water_erosion_rule__thresh_depth_derivative=0.,
-        recharge_rate=0.5,
+        recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         **kwargs
     ):

@@ -92,7 +92,7 @@ class BasicHyVs(ErosionModel):
         settling_velocity=0.001,
         sediment_porosity=0.3,
         fraction_fines=0.5,
-        recharge_rate=0.5,
+        recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         solver="basic",
         **kwargs

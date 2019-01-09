@@ -65,6 +65,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
 
 
 def test_Aeff(clock_simple, grid_2, K, U):
+    threshold = 0.001
     m_sp = 0.5
     n_sp = 1.0
     ncnblh = NotCoreNodeBaselevelHandler(
@@ -76,7 +77,6 @@ def test_Aeff(clock_simple, grid_2, K, U):
         "regolith_transport_parameter": 0.,
         "water_erodability": K,
         "water_erosion_rule__threshold": threshold,
-        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
         "hydraulic_conductivity": 0.02,
         "recharge_rate": 1.0,
         "m_sp": m_sp,
@@ -128,16 +128,6 @@ def test_Aeff(clock_simple, grid_2, K, U):
     predicted_slopes_normal_lower = (
         (U + 0.0) / (K * (actual_areas ** m_sp))
     ) ** (1. / n_sp)
-
-    assert np.all(
-        actual_slopes[model.grid.core_nodes[1:-1]]
-        < predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]
-    )
-
-    assert np.all(
-        predicted_slopes_eff_upper[model.grid.core_nodes[1:-1]]
-        > predicted_slopes_normal_upper[model.grid.core_nodes[1:-1]]
-    )
 
     assert np.all(
         actual_slopes[model.grid.core_nodes[1:-1]]

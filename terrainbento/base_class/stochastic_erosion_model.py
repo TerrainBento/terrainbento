@@ -10,7 +10,7 @@ hydrology.
 Input File or Dictionary Parameters
 -----------------------------------
 The following are parameters found in the parameters input file or dictionary.
-Depending on how the model is initialized, some of them are optional or not
+Depending on© how the model is initialized, some of them are optional or not
 used.
 
 Required Parameters
@@ -395,7 +395,7 @@ class StochasticErosionModel(ErosionModel):
                         "terrainbento stochastic model: the rain record was "
                         "too short to calculate exceedance frequency statistics."
                     )
-                    os.remove(frequency_filename)
+                    os.remove(self.frequency_filename)
                     raise RuntimeError(msg)
 
     def record_rain_event(

@@ -103,7 +103,7 @@ class BasicSaVs(ErosionModel):
         soil_production__maximum_rate=0.001,
         soil_production__decay_depth=0.5,
         soil_transport_decay_depth=0.5,
-        recharge_rate=0.5,
+        recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         **kwargs
     ):

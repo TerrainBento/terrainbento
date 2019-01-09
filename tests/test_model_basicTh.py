@@ -1,6 +1,7 @@
 import numpy as np
-from numpy.testing import assert_array_almost_equal
 import pytest
+from numpy.testing import assert_array_almost_equal
+
 from terrainbento import BasicTh, NotCoreNodeBaselevelHandler
 
 
@@ -8,7 +9,9 @@ from terrainbento import BasicTh, NotCoreNodeBaselevelHandler
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
-def test_steady_Kss_no_precip_changer(clock_simple, grid_2, U, K, m_sp, n_sp, depression_finder):
+def test_steady_Kss_no_precip_changer(
+    clock_simple, grid_2, U, K, m_sp, n_sp, depression_finder
+):
 
     threshold = 0.01
 
@@ -35,9 +38,9 @@ def test_steady_Kss_no_precip_changer(clock_simple, grid_2, U, K, m_sp, n_sp, de
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
-    predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m_sp))) ** (
-        1. / n_sp
-    )
+    predicted_slopes_upper = (
+        (U + threshold) / (K * (actual_areas ** m_sp))
+    ) ** (1. / n_sp)
     predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
         1. / n_sp
     )
