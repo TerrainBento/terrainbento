@@ -2,318 +2,57 @@
 # !/usr/env/python
 
 import numpy as np
-from numpy.testing import assert_array_almost_equal  # assert_array_equal,
+import pytest
 
-from terrainbento import BasicHyVs
-from terrainbento.utilities import filecmp
+from numpy.testing import assert_array_almost_equal
+
+from terrainbento import BasicHyVs, NotCoreNodeBaselevelHandler
 
 
-def test_Aeff():
-    U = 0.0001
-    K = 0.001
-    m = 1. / 3.
-    n = 1.0
-    step = 1000
-    hydraulic_conductivity = 0.1
-    soil__initial_thickness = 0.1
-    recharge_rate = 0.5
-    node_spacing = 100.0
-    v_sc = 0.001
+@pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
+@pytest.mark.parametrize("n_sp", [2. / 3., 1.])
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
+@pytest.mark.parametrize("solver", ["basic", "adaptive"])
+def test_no_precip_changer(
+    clock_simple, grid_2, m_sp, n_sp, depression_finder, U, K, solver,
+):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid_2, modify_core_nodes=True, lowering_rate=-U
+    )
     phi = 0.1
     F_f = 0.0
-
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "v_sc": v_sc,
-        "sediment_porosity": phi,
-        "fraction_fines": F_f,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "hydraulic_conductivity": hydraulic_conductivity,
-        "soil__initial_thickness": soil__initial_thickness,
-        "recharge_rate": recharge_rate,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    model = BasicHyVs(params=params)
-    for _ in range(200):
-        model.run_one_step(step)
-
-    # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-
-    alpha = (
-        hydraulic_conductivity
-        * soil__initial_thickness
-        * node_spacing
-        / recharge_rate
-    )
-    A_eff_predicted = actual_areas * np.exp(
-        -(-alpha * actual_slopes) / actual_areas
-    )
-
-    # assert aeff internally calculated correclty
-    # assert_array_almost_equal(model.eff_area[model.grid.core_nodes],
-    #  A_eff_predicted[model.grid.core_nodes],decimal = 2)
-
-    # assert correct s a relationship (slightly circular)
-    predicted_slopes = (U / (K * (A_eff_predicted ** m))) ** (1. / n)
-    assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes],
-        predicted_slopes[model.grid.core_nodes],
-        decimal=3,
-    )
-
-    # assert all slopes above non effective
-    predicted_slopes_normal = (U / (K * (actual_areas ** m))) ** (1. / n)
-    assert np.all(
-        actual_slopes[model.grid.core_nodes]
-        > predicted_slopes_normal[model.grid.core_nodes]
-    )
-
-
-def test_steady_Kss_no_precip_changer():
-    U = 0.0001
-    K = 0.003
-    m = 1. / 3.
-    n = 1.
-    step = 10
     v_sc = 0.001
-    phi = 0.1
-    F_f = 0.0
-
     # construct dictionary. note that D is turned off here
     params = {
-        "model_grid": "RasterModelGrid",
+        "grid": grid_2,
         "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
         "regolith_transport_parameter": 0.,
         "water_erodability": K,
-        "v_sc": v_sc,
+        "settling_velocity": v_sc,
         "sediment_porosity": phi,
         "fraction_fines": F_f,
-        "hydraulic_conductivity": 0.0,
-        "soil__initial_thickness": 0.0,
-        "recharge_rate": 0.5,
-        "solver": "basic",
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "hydraulic_conductivity": 0.,
+        "solver": solver,
+        "m_sp": m_sp,
+        "n_sp": n_sp,
+        "depression_finder": depression_finder,
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
     # construct and run model
-    model = BasicHyVs(params=params)
+    model = BasicHyVs(**params)
     for _ in range(2000):
-        model.run_one_step(step)
+        model.run_one_step(10)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
+    actual_areas = model.grid.at_node["surface_water__discharge"]
     predicted_slopes = np.power(
-        ((U * v_sc) / (K * np.power(actual_areas, m)))
-        + (U / (K * np.power(actual_areas, m))),
-        1. / n,
-    )
-
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
-        decimal=4,
-    )
-
-
-def test_steady_Ksp_no_precip_changer():
-    U = 0.0001
-    K = 0.001
-    m = 0.5
-    n = 1.0
-    step = 10
-    v_sc = 0.001
-    phi = 0.1
-    F_f = 0.0
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "hydraulic_conductivity": 0.0,
-        "soil__initial_thickness": 0.0,
-        "recharge_rate": 0.5,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "v_sc": v_sc,
-        "sediment_porosity": phi,
-        "fraction_fines": F_f,
-        "solver": "basic",
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    # construct and run model
-    model = BasicHyVs(params=params)
-    for _ in range(800):
-        model.run_one_step(step)
-
-    # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = np.power(
-        ((U * v_sc) / (K * np.power(actual_areas, m)))
-        + (U / (K * np.power(actual_areas, m))),
-        1. / n,
-    )
-
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
-        decimal=4,
-    )
-
-
-def test_steady_Ksp_no_precip_changer_no_solver_given():
-    U = 0.0001
-    K = 0.001
-    m = 0.5
-    n = 1.0
-    step = 10
-    v_sc = 0.001
-    phi = 0.1
-    F_f = 0.0
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "hydraulic_conductivity": 0.0,
-        "soil__initial_thickness": 0.0,
-        "recharge_rate": 0.5,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "v_sc": v_sc,
-        "sediment_porosity": phi,
-        "fraction_fines": F_f,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    # construct and run model
-    model = BasicHyVs(params=params)
-    for _ in range(800):
-        model.run_one_step(step)
-
-    # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = np.power(
-        ((U * v_sc) / (K * np.power(actual_areas, m)))
-        + (U / (K * np.power(actual_areas, m))),
-        1. / n,
-    )
-
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
-        decimal=4,
-    )
-
-
-def test_steady_Ksp_no_precip_changer_with_depression_finding():
-    U = 0.0001
-    K = 0.001
-    m = 0.5
-    n = 1.0
-    step = 10
-    v_sc = 0.001
-    phi = 0.1
-    F_f = 0.0
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "hydraulic_conductivity": 0.0,
-        "soil__initial_thickness": 0.0,
-        "recharge_rate": 0.5,
-        "m_sp": m,
-        "n_sp": n,
-        "v_sc": v_sc,
-        "sediment_porosity": phi,
-        "fraction_fines": F_f,
-        "solver": "basic",
-        "random_seed": 3141,
-        "depression_finder": "DepressionFinderAndRouter",
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
-    }
-
-    # construct and run model
-    model = BasicHyVs(params=params)
-    for _ in range(800):
-        model.run_one_step(step)
-
-    # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
-    predicted_slopes = np.power(
-        ((U * v_sc) / (K * np.power(actual_areas, m)))
-        + (U / (K * np.power(actual_areas, m))),
-        1. / n,
+        ((U * v_sc) / (K * np.power(actual_areas, m_sp)))
+        + (U / (K * np.power(actual_areas, m_sp))),
+        1. / n_sp,
     )
 
     # assert actual and predicted slopes are the same.

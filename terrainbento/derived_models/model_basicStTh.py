@@ -77,7 +77,7 @@ class BasicStTh(StochasticErosionModel):
         n_sp=1.0,
         water_erodability_stochastic=0.0001,
         regolith_transport_parameter=0.1,
-        water_erosion_rule__threshold=1.,
+        water_erosion_rule__threshold=0.01,
         infiltration_capacity=0.5,
         **kwargs
     ):

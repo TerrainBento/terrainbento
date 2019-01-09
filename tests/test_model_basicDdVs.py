@@ -67,8 +67,6 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
 def test_Aeff(clock_simple, grid_2, K, U):
     m_sp = 0.5
     n_sp = 1.0
-    threshold = 0.01
-    thresh_change_per_depth = 0.0
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
     )
