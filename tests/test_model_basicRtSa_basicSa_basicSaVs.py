@@ -8,7 +8,7 @@ from terrainbento import BasicSaVs, BasicSa, NotCoreNodeBaselevelHandler, BasicR
 _RT_params = {"water_erodability_lower": 0, "water_erodability_upper": 0}
 _OTHER_params = {"water_erodability": 0}
 
-@pytest.mark.parametrize("Model,water_params", [(BasicSa, _OTHER_params), (BasicRtSa, _RT_params), (BasicSaVs, _OTHER_params)])
+@pytest.mark.parametrize("Model,water_params", [ (BasicRtSa, _RT_params), (BasicSa, _OTHER_params), (BasicSaVs, _OTHER_params)])
 def test_diffusion_only(clock_simple, grid_4, Model, water_params):
 
     U = 0.001
@@ -16,7 +16,9 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     soil_production_decay_depth = 0.2
     regolith_transport_parameter = 1.0
     soil_transport_decay_depth = 0.5
-    number_of_node_rows = 21
+    num_columns = 21
+
+    grid_4.at_node['soil__depth'][:] = 0.
 
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_4, modify_core_nodes=True, lowering_rate=-U
@@ -49,11 +51,9 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     assert_array_almost_equal(actual_depth, predicted_depth, decimal=3)
 
     # test steady state slope
-    actual_profile = model.grid.at_node["topographic__elevation"][
-        model.grid.core_nodes
-    ]
+    actual_profile = model.grid.at_node["topographic__elevation"][21:42]
 
-    domain = np.arange(0, max(model.grid.node_y + dx), dx)
+    domain = np.arange(0, max(model.grid.node_x + dx), dx)
     steady_domain = np.arange(-max(domain) / 2., max(domain) / 2. + dx, dx)
 
     half_space = int(len(domain) / 2)
@@ -61,7 +61,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
         regolith_transport_parameter
         * 2.
         * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))
-    ) - (U * (number_of_node_rows / 2) ** 2) / (
+    ) - (U * (num_columns / 2) ** 2) / (
         2.
         * regolith_transport_parameter
         * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))
@@ -70,7 +70,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
         regolith_transport_parameter
         * 2.
         * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))
-    ) + (U * (number_of_node_rows / 2) ** 2) / (
+    ) + (U * (num_columns / 2) ** 2) / (
         2.
         * regolith_transport_parameter
         * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))

@@ -103,8 +103,3 @@ def test_detachment_steady_no_precip_changer(
         actual_slopes[model.grid.core_nodes[1:-1]],
         predicted_slopes[model.grid.core_nodes[1:-1]],
     )
-
-
-# VSAs
-
-# Thresholds...
