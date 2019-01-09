@@ -84,7 +84,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, 
         # and with the threshold changing, we can only expect that the slopes are
         # steeper than the lower bound.
         actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-        actual_areas = model.grid.at_node["drainage_area"]
+        actual_areas = model.grid.at_node["surface_water__discharge"]
         predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
             1. / n_sp
         )

@@ -1,61 +1,97 @@
-import glob
-import os
+# coding: utf8
+# !/usr/env/python
 
 import numpy as np
-from numpy.testing import assert_array_almost_equal, assert_equal
+import pytest
+from numpy.testing import assert_array_almost_equal
 
-from terrainbento import BasicDdSt
-
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+from terrainbento import BasicDdSt, NotCoreNodeBaselevelHandler
 
 
-def test_steady_without_stochastic_duration():
-    """Test steady profile solution with fixed duration."""
-    U = 0.0001
-    K = 0.001
-    thresh = 1.0e-9
-    m = 1.0
-    n = 1.0
-    step = 1.0
-
-    # construct dictionary. note that D is turned off here
+def test_bad_n_sp(clock_simple, grid_1):
     params = {
-        "model_grid": "RasterModelGrid",
+        "grid": grid_1,
         "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 6,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
+        "n_sp": 1.01,
+    }
+
+    with pytest.raises(ValueError):
+        BasicDdSt(**params)
+
+@pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
+@pytest.mark.parametrize("n_sp", [1.])
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
+@pytest.mark.parametrize("threshold", [0.1])
+@pytest.mark.parametrize("thresh_change_per_depth", [0.])
+def test_steady_Ksp_no_precip_changer_no_thresh_change(clock_simple, grid_2, U, K, m_sp, n_sp, depression_finder, threshold, thresh_change_per_depth):
+
+    step = 1000
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid_2, modify_core_nodes=True, lowering_rate=-U
+    )
+    params = {
+        "grid": grid_2,
+        "clock": clock_simple,
         "regolith_transport_parameter": 0.,
         "water_erodability_stochastic": K,
-        "water_erosion_rule__threshold": thresh,
-        "thresh_change_per_depth": 0.0,
-        "m_sp": m,
-        "n_sp": n,
-        "number_of_sub_time_steps": 100,
-        "infiltration_capacity": 1.0,
-        "rainfall_intermittency_factor": 1.0,
-        "rainfall__mean_rate": 1.0,
-        "rainfall__shape_factor": 1.0,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "m_sp": m_sp,
+        "n_sp": n_sp,
+        "water_erosion_rule__threshold": threshold,
+        "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
+        "depression_finder": depression_finder,
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh}
     }
 
     # construct and run model
-    model = BasicDdSt(params=params)
-    for _ in range(100):
-        model.run_one_step(step)
+    model = BasicDdSt(**params)
+    for _ in range(200):
+        model.run_one_step(1000)
 
-    # construct actual and predicted slopes
-    ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"][ic]
-    actual_areas = model.grid.at_node["drainage_area"][ic]
-    predicted_slopes = (2 * U / (K * (actual_areas ** m))) ** (1. / n)
+    if thresh_change_per_depth == 0:
+        # construct actual and predicted slopes
+        # note that since we have a smooth threshold, we do not have a true
+        # analytical solution, but a bracket within wich we expect the actual
+        # slopes to fall.
+        actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+        actual_areas = model.grid.at_node["surface_water__discharge"]
+        predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m_sp))) ** (
+            1. / n_sp
+        )
+        predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
+            1. / n_sp
+        )
 
-    # assert actual and predicted slopes are the same.
-    assert_array_almost_equal(actual_slopes, predicted_slopes)
+        # assert actual and predicted slopes are in the correct range for the
+        # slopes.
+        assert np.all(
+            actual_slopes[model.grid.core_nodes[1:-1]]
+            > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+        )
+
+        assert np.all(
+            actual_slopes[model.grid.core_nodes[1:-1]]
+            < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
+        )
+
+    else:
+
+        # construct actual and predicted slopes
+        # note that since we have a smooth threshold, we do not have a true
+        # analytical solution, but a bracket within wich we expect the actual
+        # slopes to fall.
+        # and with the threshold changing, we can only expect that the slopes are
+        # steeper than the lower bound.
+        actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+        actual_areas = model.grid.at_node["surface_water__discharge"]
+        predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
+            1. / n_sp
+        )
+
+        # assert actual and predicted slopes are in the correct range for the
+        # slopes.
+        assert np.all(
+            actual_slopes[model.grid.core_nodes[1:-1]]
+            > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+        )
