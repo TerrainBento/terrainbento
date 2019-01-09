@@ -74,6 +74,9 @@ class Clock(object):
         Examples
         --------
         >>> from terrainbento import Clock
+
+        The follow constructs the default clock.
+
         >>> clock = Clock()
         >>> clock.start
         0.0
@@ -81,6 +84,16 @@ class Clock(object):
         100.0
         >>> clock.step
         10.0
+
+        User specified parameters may be provided.
+
+        >>> clock = Clock(start=0, step=200, stop=2400)
+        >>> clock.start
+        0.0
+        >>> clock.stop
+        2400.0
+        >>> clock.step
+        200.0
         """
         try:
             self.start = float(start)
