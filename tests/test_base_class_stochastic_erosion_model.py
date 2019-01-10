@@ -5,7 +5,7 @@ import os
 import numpy as np
 import pytest
 
-from terrainbento import BasicSt, StochasticErosionModel, PrecipChanger
+from terrainbento import BasicSt, PrecipChanger, StochasticErosionModel
 from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -18,7 +18,9 @@ def test_defaults(clock_simple, grid_1):
 
 
 def test_init_record_opt_true(clock_simple, grid_1):
-    model = StochasticErosionModel(clock=clock_simple, grid=grid_1, record_rain=True)
+    model = StochasticErosionModel(
+        clock=clock_simple, grid=grid_1, record_rain=True
+    )
     assert model.record_rain is True
     assert isinstance(model.rain_record, dict)
     fields = [
@@ -33,7 +35,7 @@ def test_init_record_opt_true(clock_simple, grid_1):
 
 
 def test_init_record_opt_false(clock_simple, grid_1):
-    params = {"clock": clock_simple, "record_rain": False, 'grid':grid_1}
+    params = {"clock": clock_simple, "record_rain": False, "grid": grid_1}
     model = StochasticErosionModel(**params)
     assert model.record_rain is False
     assert model.rain_record is None
@@ -119,16 +121,14 @@ def test_run_stochastic_opt_false(clock_05, grid_1):
     assert (
         np.array_equiv(
             dry_times,
-            model.clock.step
-            * (1. - params["rainfall_intermittency_factor"]),
+            model.clock.step * (1. - params["rainfall_intermittency_factor"]),
         )
         is True
     )
     assert (
         np.array_equiv(
             wet_times,
-            model.clock.step
-            * (params["rainfall_intermittency_factor"]),
+            model.clock.step * (params["rainfall_intermittency_factor"]),
         )
         is True
     )
@@ -277,13 +277,17 @@ def test_run_opt_false_with_changer(clock_06, grid_1, precip_defaults):
     model.run_for(model.clock.step, model.clock.stop)
     assert "PrecipChanger" in model.boundary_handlers
 
-    predicted_intermittency = params["rainfall_intermittency_factor"] + precip_defaults["daily_rainfall__intermittency_factor_time_rate_of_change"] * (
+    predicted_intermittency = params[
+        "rainfall_intermittency_factor"
+    ] + precip_defaults[
+        "daily_rainfall__intermittency_factor_time_rate_of_change"
+    ] * (
         model.clock.stop - model.clock.step
     )
 
-    predicted_intensity = params["rainfall__mean_rate"] + precip_defaults["rainfall__mean_rate_time_rate_of_change"] * (
-        model.clock.stop - model.clock.step
-    )
+    predicted_intensity = params["rainfall__mean_rate"] + precip_defaults[
+        "rainfall__mean_rate_time_rate_of_change"
+    ] * (model.clock.stop - model.clock.step)
 
     assert model.rainfall_intermittency_factor == predicted_intermittency
     assert model.rainfall__mean_rate == predicted_intensity

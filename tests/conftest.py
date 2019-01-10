@@ -86,6 +86,13 @@ def grid_5():
     return grid
 
 
+@pytest.fixture
+def almost_default_grid():
+    grid = RasterModelGrid((4, 5), xy_spacing=100.)
+    grid.add_zeros("node", "topographic__elevation")
+    return grid
+
+
 @pytest.fixture()
 def clock_simple():
     clock_simple = Clock(step=1000., stop=5.1e6)

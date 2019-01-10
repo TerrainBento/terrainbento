@@ -6,7 +6,7 @@ import os
 
 import numpy as np
 
-from terrainbento import Basic
+from terrainbento import Basic, NotCoreNodeBaselevelHandler
 from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -56,23 +56,22 @@ def cleanup_files(searchpath):
         os.remove(f)
 
 
-def test_one_function_writer(clock_08):
+def test_one_function_writer(clock_08, almost_default_grid):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
+    )
     params = {
+        "grid": almost_default_grid,
         "save_first_timestep": False,
         "clock": clock_08,
-        "node_spacing": 100.0,
-        "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "regolith_transport_parameter": 0.0,
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
-    model = Basic(params=params, OutputWriters=output_writer_function_a)
+    model = Basic(
+        **params, output_writers={"function": [output_writer_function_a]}
+    )
     model.run()
 
     # assert things were done correctly
@@ -83,23 +82,20 @@ def test_one_function_writer(clock_08):
     cleanup_files("ow_func_a.*.txt")
 
 
-def test_one_class_writer(clock_08):
+def test_one_class_writer(clock_08, almost_default_grid):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
+    )
     params = {
+        "grid": almost_default_grid,
         "save_first_timestep": False,
         "clock": clock_08,
-        "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
-    model = Basic(params=params, OutputWriters=output_writer_class_a)
+    model = Basic(**params, output_writers={"class": [output_writer_class_a]})
     model.run()
 
     # assert things were done correctly
@@ -110,25 +106,24 @@ def test_one_class_writer(clock_08):
     cleanup_files("ow_class_a.*.txt")
 
 
-def test_two_function_writers(clock_08):
+def test_two_function_writers(clock_08, almost_default_grid):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
+    )
     params = {
+        "grid": almost_default_grid,
         "save_first_timestep": False,
         "clock": clock_08,
-        "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
     model = Basic(
-        params=params,
-        OutputWriters=[output_writer_function_a, output_writer_function_b],
+        **params,
+        output_writers={
+            "function": [output_writer_function_a, output_writer_function_b]
+        },
     )
     model.run()
 
@@ -143,25 +138,24 @@ def test_two_function_writers(clock_08):
     cleanup_files("ow_func_*.txt")
 
 
-def test_two_class_writers(clock_08):
+def test_two_class_writers(clock_08, almost_default_grid):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
+    )
     params = {
+        "grid": almost_default_grid,
         "save_first_timestep": False,
         "clock": clock_08,
-        "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
     model = Basic(
-        params=params,
-        OutputWriters=[output_writer_class_a, output_writer_class_b],
+        **params,
+        output_writers={
+            "class": [output_writer_class_a, output_writer_class_b]
+        },
     )
     model.run()
 
@@ -176,30 +170,25 @@ def test_two_class_writers(clock_08):
     cleanup_files("ow_class_*.txt")
 
 
-def test_all_four_writers(clock_08):
+def test_all_four_writers(clock_08, almost_default_grid):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
+    )
     params = {
+        "grid": almost_default_grid,
         "save_first_timestep": False,
         "clock": clock_08,
-        "node_spacing": 100.0,
         "regolith_transport_parameter": 0.0,
         "water_erodability": 0.0,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -1,
-        },
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
     model = Basic(
-        params=params,
-        OutputWriters=[
-            output_writer_function_a,
-            output_writer_function_b,
-            output_writer_class_a,
-            output_writer_class_b,
-        ],
+        **params,
+        output_writers={
+            "function": [output_writer_function_a, output_writer_function_b],
+            "class": [output_writer_class_a, output_writer_class_b],
+        },
     )
     model.run()
 

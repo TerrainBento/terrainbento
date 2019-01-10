@@ -52,8 +52,6 @@ def test_write_synthesis_netcdf():
 
     ds = model.to_xarray_dataset(time_unit="years", space_unit="meter")
 
-
-    # saving to xarray DS not occuring. Also, currently rainfall unit flux not being written.
     out_fn = "tb_output.nc"
     model.save_to_xarray_dataset(
         filename=out_fn, time_unit="years", space_unit="meter"

@@ -107,7 +107,7 @@ class ErosionModel(object):
         return cls.from_dict(dict)
 
     @classmethod
-    def from_dict(cls, params, outputwriters={"class": {}, "function": []}):
+    def from_dict(cls, params, output_writers={}):
         """
         model = ErosionModel.from_dict(dict-like)
         """
@@ -120,7 +120,13 @@ class ErosionModel(object):
         for name in boundary_handlers:
             bh_params = boundary_handlers[name]
             bh_dict[name] = _setup_boundary_handlers(grid, name, bh_params)
-        return cls(clock, grid, boundary_handlers=bh_dict, output_writers=outputwriters, **params)
+        return cls(
+            clock,
+            grid,
+            boundary_handlers=bh_dict,
+            output_writers=output_writers,
+            **params
+        )
 
     @classmethod
     def _validate(cls, params):
@@ -139,7 +145,7 @@ class ErosionModel(object):
         precipitator=None,
         runoff_generator=None,
         boundary_handlers={},
-        output_writers={"class": {}, "function": []},
+        output_writers={},
         flow_director="FlowDirectorSteepest",
         depression_finder=None,
         output_interval=None,
@@ -173,7 +179,7 @@ class ErosionModel(object):
             dictionary with the name of the boundary handler that contains its own
             parameter dictionary. If this is the case, the handler-specific dictionary
             is passed to instantiate the boundary handler.
-        outputwriters : class, function, or list, optional
+        output_writers : class, function, or list, optional
             Classes or functions used to write incremental output (e.g. make a
             diagnostic plot).
         flow_director : str, optional
@@ -257,6 +263,13 @@ class ErosionModel(object):
         # Boundary Conditions and Output Writers
         ###################################################################
         self.boundary_handlers = boundary_handlers
+
+        instantiated_classes = []
+        if "class" in output_writers:
+            for ow_class in output_writers["class"]:
+                instantiated_classes.append(ow_class(self))
+        output_writers["class"] = instantiated_classes
+
         self.output_writers = output_writers
 
         if len(kwargs) > 0:
@@ -392,11 +405,12 @@ class ErosionModel(object):
 
     def run_output_writers(self):
         """Run all output writers."""
-        if self.output_writers is not None:
-            for name in self.output_writers["class"]:
-                self.output_writers["class"][name].run_one_step()
-            for function in self.output_writers["function"]:
-                function(self)
+        if "class" in self.output_writers:
+            for ow_class in self.output_writers["class"]:
+                ow_class.run_one_step()
+        if "function" in self.output_writers:
+            for ow_function in self.output_writers["function"]:
+                ow_function(self)
 
     def update_boundary_conditions(self, step):
         """Run all boundary handlers forward by step.
@@ -457,10 +471,10 @@ class ErosionModel(object):
         ds["time"] = time
 
         # set x and y to coordinates
-        ds.set_coords(["x", "y", "time"], inplace=True)
+        ds = ds.set_coords(["x", "y", "time"])
 
         # rename dimensions
-        ds.rename(name_dict={"ni": "x", "nj": "y", "nt": "time"}, inplace=True)
+        ds = ds.rename(name_dict={"ni": "x", "nj": "y", "nt": "time"})
 
         # set x and y units
         ds["x"] = xr.DataArray(ds.x, dims=("x"), attrs={"units": space_unit})
