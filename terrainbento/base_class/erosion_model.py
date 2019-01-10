@@ -252,7 +252,7 @@ class ErosionModel(object):
             flow_director == "FlowDirectorSteepest"
         ):
             self.flow_accumulator = FlowAccumulator(
-                self.grid, routing="D4", **kwargs
+                self.grid, routing="D4", depression_finder=depression_finder, **kwargs
             )
         else:
             self.flow_accumulator = FlowAccumulator(self.grid, **kwargs)
