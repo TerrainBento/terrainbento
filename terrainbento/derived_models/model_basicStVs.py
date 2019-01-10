@@ -9,17 +9,15 @@ using a simple variable source-area formulation.
 Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
     2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `StreamPowerEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
+    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
     5. `PrecipitationDistribution <http://landlab.readthedocs.io/en/latest/landlab.components.html#landlab.components.PrecipitationDistribution>`_
 
-Landlab components used: FlowRouter, DepressionFinderAndRouter,
-PrecipitationDistribution, StreamPowerEroder, LinearDiffuser
 """
 
 import numpy as np
 
-from landlab.components import LinearDiffuser, StreamPowerEroder
+from landlab.components import LinearDiffuser, FastscapeEroder
 from terrainbento.base_class import StochasticErosionModel
 
 _REQUIRED_FIELDS = ["topographic__elevation"]
@@ -90,7 +88,6 @@ class BasicStVs(StochasticErosionModel):
         water_erodability_stochastic=0.0001,
         regolith_transport_parameter=0.1,
         hydraulic_conductivity=0.1,
-        infiltration_capacity=1.0,
         **kwargs
     ):
         """
@@ -161,17 +158,13 @@ class BasicStVs(StochasticErosionModel):
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
 
-        # Keep a reference to drainage area and steepest-descent slope
-        self.area = self.grid.at_node["drainage_area"]
-        self.slope = self.grid.at_node["topographic__steepest_slope"]
-
         # Instantiate a FastscapeEroder component
-        self.eroder = StreamPowerEroder(
+        self.eroder = FastscapeEroder(
             self.grid,
-            use_Q="surface_water__discharge",
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.m,
+            discharge_name="surface_water__discharge",
         )
 
         # Instantiate a LinearDiffuser component
@@ -183,13 +176,13 @@ class BasicStVs(StochasticErosionModel):
         """Calculate runoff rate and discharge; return runoff."""
 
         # Here"s the total (surface + subsurface) discharge
-        pa = self.rain_rate * self.area
+        pa = self.rain_rate * self.grid.at_node["drainage_area"]
 
         # slope > 0
-        active_nodes = np.where(self.slope > 0.0)[0]
+        active_nodes = np.where(self.grid.at_node["topographic__steepest_slope"] > 0.0)[0]
 
         # Transmissivity x lambda x slope = subsurface discharge capacity
-        tls = self.tlam[active_nodes] * self.slope[active_nodes]
+        tls = self.tlam[active_nodes] * self.grid.at_node["topographic__steepest_slope"][active_nodes]
 
         # Subsurface discharge: zero where slope is flat
         self.qss[active_nodes] = 0.0

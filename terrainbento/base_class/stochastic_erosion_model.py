@@ -320,8 +320,7 @@ class StochasticErosionModel(ErosionModel):
             runoff = self.calc_runoff_and_discharge()
 
             self.eroder.run_one_step(
-                step, flooded_nodes=flooded, rainfall_intensity_if_used=runoff
-            )
+                step, flooded_nodes=flooded)
             if self.record_rain:
                 # save record into the rain record
                 self.record_rain_event(
@@ -349,7 +348,6 @@ class StochasticErosionModel(ErosionModel):
                 self.eroder.run_one_step(
                     dt_water,
                     flooded_nodes=flooded,
-                    rainfall_intensity_if_used=runoff,
                 )
                 # save record into the rain record
                 if self.record_rain:

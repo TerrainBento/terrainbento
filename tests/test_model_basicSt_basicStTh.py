@@ -14,9 +14,10 @@ from terrainbento import (
     NotCoreNodeBaselevelHandler,
 )
 
-_th_params = {"water_erosion_rule__threshold": 1e-9}
-_empty_params = {}
-_vs_params = {"hydraulic_conductivity": 1.0e-9}
+_th_params = {"water_erosion_rule__threshold": 1e-9,
+              "infiltration_capacity": 1.0,
+}
+_empty_params = {"infiltration_capacity": 1.0,}
 
 
 @pytest.mark.parametrize(
@@ -24,7 +25,6 @@ _vs_params = {"hydraulic_conductivity": 1.0e-9}
     [
         (BasicStTh, _th_params),
         (BasicSt, _empty_params),
-        (BasicStVs, _vs_params),
     ],
 )
 def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
@@ -82,7 +82,7 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     m = 1.0
     n = 1.0
 
-    grid = RasterModelGrid((3, 8), xy_spacing=100.)
+    grid = RasterModelGrid((3, 6), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
     s = grid.add_zeros("node", "soil__depth")
@@ -101,7 +101,6 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
         "m_sp": m,
         "n_sp": n,
         "number_of_sub_time_steps": 100,
-        "infiltration_capacity": 1.0,
         "rainfall_intermittency_factor": 1.0,
         "rainfall__mean_rate": 1.0,
         "rainfall__shape_factor": 1.0,
