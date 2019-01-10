@@ -15,7 +15,8 @@ _OTHER_params = {"water_erodability": 0}
 
 @pytest.mark.parametrize(
     "Model,water_params",
-    [   (BasicSa, _OTHER_params),
+    [
+        (BasicSa, _OTHER_params),
         (BasicRtSa, _RT_params),
         (BasicSaVs, _OTHER_params),
     ],

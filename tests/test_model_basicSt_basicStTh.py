@@ -14,18 +14,15 @@ from terrainbento import (
     NotCoreNodeBaselevelHandler,
 )
 
-_th_params = {"water_erosion_rule__threshold": 1e-9,
-              "infiltration_capacity": 1.0,
+_th_params = {
+    "water_erosion_rule__threshold": 1e-9,
+    "infiltration_capacity": 1.0,
 }
-_empty_params = {"infiltration_capacity": 1.0,}
+_empty_params = {"infiltration_capacity": 1.0}
 
 
 @pytest.mark.parametrize(
-    "Model,extra_params",
-    [
-        (BasicStTh, _th_params),
-        (BasicSt, _empty_params),
-    ],
+    "Model,extra_params", [(BasicStTh, _th_params), (BasicSt, _empty_params)]
 )
 def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     r"""Test steady profile solution with fixed duration.
@@ -121,7 +118,7 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"][ic]
     actual_areas = model.grid.at_node["drainage_area"][ic]
-    predicted_slopes = (2 * U / (K * (actual_areas)))
+    predicted_slopes = 2 * U / (K * (actual_areas))
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(actual_slopes, predicted_slopes)

@@ -12,12 +12,11 @@ Landlab components used:
     3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
     4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
     5. `PrecipitationDistribution <http://landlab.readthedocs.io/en/latest/landlab.components.html#landlab.components.PrecipitationDistribution>`_
-
 """
 
 import numpy as np
 
-from landlab.components import LinearDiffuser, FastscapeEroder
+from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import StochasticErosionModel
 
 _REQUIRED_FIELDS = ["topographic__elevation"]
@@ -179,10 +178,15 @@ class BasicStVs(StochasticErosionModel):
         pa = self.rain_rate * self.grid.at_node["drainage_area"]
 
         # slope > 0
-        active_nodes = np.where(self.grid.at_node["topographic__steepest_slope"] > 0.0)[0]
+        active_nodes = np.where(
+            self.grid.at_node["topographic__steepest_slope"] > 0.0
+        )[0]
 
         # Transmissivity x lambda x slope = subsurface discharge capacity
-        tls = self.tlam[active_nodes] * self.grid.at_node["topographic__steepest_slope"][active_nodes]
+        tls = (
+            self.tlam[active_nodes]
+            * self.grid.at_node["topographic__steepest_slope"][active_nodes]
+        )
 
         # Subsurface discharge: zero where slope is flat
         self.qss[active_nodes] = 0.0
@@ -192,8 +196,10 @@ class BasicStVs(StochasticErosionModel):
         #
         # Note that roundoff errors can sometimes produce a tiny negative
         # value when qss and pa are close; make sure these are set to 0
-        self.grid.at_node['surface_water__discharge'][:] = pa - self.qss
-        self.grid.at_node['surface_water__discharge'][self.grid.at_node['surface_water__discharge'] < 0.0] = 0.0
+        self.grid.at_node["surface_water__discharge"][:] = pa - self.qss
+        self.grid.at_node["surface_water__discharge"][
+            self.grid.at_node["surface_water__discharge"] < 0.0
+        ] = 0.0
 
         return np.nan
 

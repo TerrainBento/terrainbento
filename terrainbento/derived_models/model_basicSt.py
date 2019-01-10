@@ -162,7 +162,6 @@ class BasicSt(StochasticErosionModel):
         # instantiate rain generator
         self.instantiate_rain_generator()
 
-
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
 
