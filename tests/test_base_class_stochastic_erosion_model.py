@@ -5,22 +5,20 @@ import os
 import numpy as np
 import pytest
 
-from terrainbento import BasicSt, StochasticErosionModel
+from terrainbento import BasicSt, StochasticErosionModel, PrecipChanger
 from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def test_defaults(clock_simple):
-    params = {"clock": clock_simple}
-    model = StochasticErosionModel(params=params)
+def test_defaults(clock_simple, grid_1):
+    model = StochasticErosionModel(clock=clock_simple, grid=grid_1)
     assert model.opt_stochastic_duration is False
     assert model.record_rain is False
 
 
-def test_init_record_opt_true(clock_simple):
-    params = {"clock": clock_simple, "record_rain": True}
-    model = StochasticErosionModel(params=params)
+def test_init_record_opt_true(clock_simple, grid_1):
+    model = StochasticErosionModel(clock=clock_simple, grid=grid_1, record_rain=True)
     assert model.record_rain is True
     assert isinstance(model.rain_record, dict)
     fields = [
@@ -34,15 +32,16 @@ def test_init_record_opt_true(clock_simple):
         assert len(model.rain_record[f]) == 0
 
 
-def test_init_record_opt_false(clock_simple):
+def test_init_record_opt_false(clock_simple, grid_1):
     params = {"clock": clock_simple, "record_rain": False}
-    model = StochasticErosionModel(params=params)
+    model = StochasticErosionModel(**params)
     assert model.record_rain is False
     assert model.rain_record is None
 
 
-def test_run_stochastic_opt_true(clock_04):
+def test_run_stochastic_opt_true(clock_04, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": True,
         "clock": clock_04,
         "record_rain": True,
@@ -57,9 +56,9 @@ def test_run_stochastic_opt_true(clock_04):
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     assert model.opt_stochastic_duration == True
-    model.run_for(params["clock"]["step"], params["clock"]["stop"])
+    model.run_for(model.clock.step, model.clock.stop)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(
         decimals=5
@@ -89,8 +88,9 @@ def test_run_stochastic_opt_true(clock_04):
     )
 
 
-def test_run_stochastic_opt_false(clock_05):
+def test_run_stochastic_opt_false(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_05,
         "record_rain": True,
@@ -106,9 +106,9 @@ def test_run_stochastic_opt_false(clock_05):
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     assert model.opt_stochastic_duration == False
-    model.run_for(params["clock"]["step"], 10000.)
+    model.run_for(model.clock.step, 10000.)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"])
     event_duration = np.asarray(model.rain_record["event_duration"])
@@ -119,7 +119,7 @@ def test_run_stochastic_opt_false(clock_05):
     assert (
         np.array_equiv(
             dry_times,
-            params["clock"]["step"]
+            model.clock.step
             * (1. - params["rainfall_intermittency_factor"]),
         )
         is True
@@ -127,7 +127,7 @@ def test_run_stochastic_opt_false(clock_05):
     assert (
         np.array_equiv(
             wet_times,
-            params["clock"]["step"]
+            model.clock.step
             * (params["rainfall_intermittency_factor"]),
         )
         is True
@@ -140,23 +140,9 @@ def test_run_stochastic_opt_false(clock_05):
     )
 
 
-def test_freq_file_with_opt_duration_true(clock_simple):
+def test_reset_random_seed_stochastic_duration_true(clock_simple, grid_1):
     params = {
-        "model_grid": "RasterModelGrid",
-        "clock": clock_simple,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "random_seed": 3141,
-        "frequency_filename": "yams.txt",
-        "opt_stochastic_duration": True,
-    }
-    with pytest.raises(ValueError):
-        _ = StochasticErosionModel(params=params)
-
-
-def test_reset_random_seed_stochastic_duration_true(clock_simple):
-    params = {
+        "grid": grid_1,
         "opt_stochastic_duration": True,
         "clock": clock_simple,
         "record_rain": True,
@@ -171,7 +157,7 @@ def test_reset_random_seed_stochastic_duration_true(clock_simple):
         "random_seed": 0,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     step = 1
     runtime = 200
 
@@ -206,8 +192,9 @@ def test_reset_random_seed_stochastic_duration_true(clock_simple):
     np.testing.assert_array_equal(precip_1, precip_2)
 
 
-def test_reset_random_seed_stochastic_duration_false(clock_05):
+def test_reset_random_seed_stochastic_duration_false(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_05,
         "record_rain": True,
@@ -222,7 +209,7 @@ def test_reset_random_seed_stochastic_duration_false(clock_05):
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
 
     model.reset_random_seed()
     depth_1 = []
@@ -244,8 +231,9 @@ def test_reset_random_seed_stochastic_duration_false(clock_05):
     np.testing.assert_array_equal(depth_1, depth_2)
 
 
-def test_float_number_of_sub_time_steps(clock_05):
+def test_float_number_of_sub_time_steps(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_05,
         "record_rain": True,
@@ -261,11 +249,13 @@ def test_float_number_of_sub_time_steps(clock_05):
         "random_seed": 1234,
     }
     with pytest.raises(ValueError):
-        _ = BasicSt(params=params)
+        _ = BasicSt(**params)
 
 
-def test_run_opt_false_with_changer(clock_06):
+def test_run_opt_false_with_changer(clock_06, grid_1, precip_defaults):
+    precip_changer = PrecipChanger(grid_1, **precip_defaults)
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_06,
         "record_rain": True,
@@ -279,45 +269,46 @@ def test_run_opt_false_with_changer(clock_06):
         "rainfall__shape_factor": 0.65,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults,
+        "boundary_handlers": {"PrecipChanger": precip_changer},
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["step"], params["clock"]["stop"])
+    model.run_for(model.clock.step, model.clock.stop)
     assert "PrecipChanger" in model.boundary_handlers
 
     predicted_intermittency = params["rainfall_intermittency_factor"] + params[
         "PrecipChanger"
     ]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (
-        params["clock"]["stop"] - params["clock"]["step"]
+        model.clock.stop - model.clock.step
     )
 
     predicted_intensity = params["rainfall__mean_rate"] + params[
         "PrecipChanger"
     ]["rainfall__mean_rate_time_rate_of_change"] * (
-        params["clock"]["stop"] - params["clock"]["step"]
+        model.clock.stop - model.clock.step
     )
 
     assert model.rainfall_intermittency_factor == predicted_intermittency
     assert model.rainfall__mean_rate == predicted_intensity
 
 
-def test_opt_dur_true_with_changer(clock_02):
+def test_opt_dur_true_with_changer(clock_02, grid_1, precip_defaults):
+    precip_changer = PrecipChanger(grid_1, **precip_defaults)
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": True,
         "clock": clock_02,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults,
+        "boundary_handlers": {"PrecipChanger": precip_changer},
     }
 
     with pytest.raises(ValueError):
-        StochasticErosionModel(params=params)
+        StochasticErosionModel(**params)
 
 
-def test_not_specifying_record_rain(clock_05):
+def test_not_specifying_record_rain(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_05,
         "record_rain": False,
@@ -333,9 +324,9 @@ def test_not_specifying_record_rain(clock_05):
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["step"], params["clock"]["stop"])
+    model.run_for(model.clock.step, model.clock.stop)
     with pytest.raises(ValueError):
         model.write_storm_sequence_to_file()
 
@@ -343,8 +334,9 @@ def test_not_specifying_record_rain(clock_05):
         model.write_exceedance_frequency_file()
 
 
-def test_finalize_opt_duration_stochastic_false_too_short(clock_05):
+def test_finalize_opt_duration_stochastic_false_too_short(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_05,
         "record_rain": True,
@@ -360,17 +352,18 @@ def test_finalize_opt_duration_stochastic_false_too_short(clock_05):
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["step"], params["clock"]["stop"])
+    model.run_for(model.clock.step, model.clock.stop)
     with pytest.raises(RuntimeError):
         model.finalize()
 
     os.remove("storm_sequence.txt")
 
 
-def test_finalize_opt_duration_stochastic_false_no_rain(clock_07):
+def test_finalize_opt_duration_stochastic_false_no_rain(clock_07, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_07,
         "record_rain": True,
@@ -385,15 +378,16 @@ def test_finalize_opt_duration_stochastic_false_no_rain(clock_07):
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["step"], params["clock"]["stop"])
+    model.run_for(model.clock.step, model.clock.stop)
     with pytest.raises(ValueError):
         model.finalize()
 
 
-def test_finalize_opt_duration_stochastic_false(clock_07):
+def test_finalize_opt_duration_stochastic_false(clock_07, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_07,
         "record_rain": True,
@@ -408,9 +402,9 @@ def test_finalize_opt_duration_stochastic_false(clock_07):
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["step"], params["clock"]["stop"])
+    model.run_for(model.clock.step, model.clock.stop)
     model.finalize()
 
     # assert that these are correct
@@ -428,8 +422,9 @@ def test_finalize_opt_duration_stochastic_false(clock_07):
     os.remove("exceedance_summary.txt")
 
 
-def test_finalize_opt_duration_stochastic_true(clock_07):
+def test_finalize_opt_duration_stochastic_true(clock_07, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": True,
         "clock": clock_07,
         "record_rain": True,
@@ -444,9 +439,9 @@ def test_finalize_opt_duration_stochastic_true(clock_07):
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["clock"]["step"], params["clock"]["stop"])
+    model.run_for(model.clock.step, model.clock.stop)
     model.finalize()
 
     # assert that these are correct
@@ -458,8 +453,9 @@ def test_finalize_opt_duration_stochastic_true(clock_07):
     os.remove("storm_sequence.txt")
 
 
-def test_runoff_equals_zero(clock_07):
+def test_runoff_equals_zero(clock_07, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
         "clock": clock_07,
         "record_rain": True,
@@ -474,7 +470,7 @@ def test_runoff_equals_zero(clock_07):
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.run_one_step(1.)
     runoff = model.calc_runoff_and_discharge()
     assert runoff == 0

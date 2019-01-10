@@ -100,7 +100,7 @@ def clock_01():
 
 @pytest.fixture()
 def clock_02():
-    clock_02 = {"step": 10., "stop": 1000.}
+    clock_02 = Clock.from_dict({"step": 10., "stop": 1000.})
     return clock_02
 
 
@@ -112,25 +112,25 @@ def clock_03():
 
 @pytest.fixture()
 def clock_04():
-    clock_04 = {"step": 10., "stop": 100000.}
+    clock_04 = Clock.from_dict({"step": 10., "stop": 100000.})
     return clock_04
 
 
 @pytest.fixture()
 def clock_05():
-    clock_05 = {"step": 10., "stop": 200.}
+    clock_05 = Clock.from_dict({"step": 10., "stop": 200.})
     return clock_05
 
 
 @pytest.fixture()
 def clock_06():
-    clock_06 = {"step": 1., "stop": 3.}
+    clock_06 = Clock.from_dict({"step": 1., "stop": 3.})
     return clock_06
 
 
 @pytest.fixture()
 def clock_07():
-    clock_07 = {"step": 10., "stop": 10000.}
+    clock_07 = Clock.from_dict({"step": 10., "stop": 10000.})
     return clock_07
 
 
