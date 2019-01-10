@@ -1,9 +1,8 @@
 # coding: utf8
 # !/usr/env/python
 
-import pytest
-
 import numpy as np
+import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from terrainbento.base_class import TwoLithologyErosionModel
@@ -11,11 +10,7 @@ from terrainbento.base_class import TwoLithologyErosionModel
 
 def test_no_contact_zone_width(clock_simple, grid_5):
 
-    params = {
-        "grid": grid_5,
-        "clock": clock_simple,
-        "contact_zone__width": 0,
-    }
+    params = {"grid": grid_5, "clock": clock_simple, "contact_zone__width": 0}
 
     model = TwoLithologyErosionModel(**params)
     model._setup_rock_and_till()

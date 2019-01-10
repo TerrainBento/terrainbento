@@ -30,15 +30,14 @@ at_node_fields = [
 
 def test_input_file():
     fp = os.path.join(_TEST_DATA_DIR, "inputs.yaml")
-    em = ErosionModel(input_file=fp)
+    em = ErosionModel.from_file(fp)
     assert isinstance(em.grid, HexModelGrid)
     assert em.grid.number_of_nodes == 56
     for field in at_node_fields:
         assert field in em.grid.at_node
-    assert em.flow_director == "FlowDirectorSteepest"
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
-    assert em.depression_finder is None
-    assert em.boundary_handler == {}
+    assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
+    assert em.boundary_handlers == {}
     assert em.output_writers == {"class": {}, "function": []}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
@@ -46,16 +45,33 @@ def test_input_file():
 
 
 def test_parameters(clock_simple):
-    params = {"model_grid": "HexModelGrid", "clock": clock_simple}
-    em = ErosionModel(params=params)
+    params = {
+        "grid": {
+            "grid": {
+                "HexModelGrid": {
+                    "base_num_rows": 8,
+                    "base_num_cols": 5,
+                    "dx": 10,
+                }
+            },
+            "fields": {
+                "at_node": {
+                    "topographic__elevation": {"constant": {"constant": 0}}
+                }
+            },
+        },
+        "clock": {"step": 1, "stop": 10},
+        "output_interval": 2,
+    }
+
+    em = ErosionModel.from_dict(params)
     assert isinstance(em.grid, HexModelGrid)
     assert em.grid.number_of_nodes == 56
     for field in at_node_fields:
         assert field in em.grid.at_node
-    assert em.flow_director == "FlowDirectorSteepest"
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
-    assert em.depression_finder is None
-    assert em.boundary_handler == {}
+    assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
+    assert em.boundary_handlers == {}
     assert em.output_writers == {"class": {}, "function": []}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"

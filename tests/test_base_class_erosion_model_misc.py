@@ -3,8 +3,8 @@
 
 import numpy as np
 import pytest
-from landlab import RasterModelGrid
 
+from landlab import RasterModelGrid
 from terrainbento import ErosionModel
 
 

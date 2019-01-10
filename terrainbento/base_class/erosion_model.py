@@ -113,8 +113,8 @@ class ErosionModel(object):
         """
         cls._validate(params)
 
-        grid = create_grid(**params.pop("grid"))
-        clock = Clock.from_dict(**params.pop("clock"))
+        grid = create_grid(params.pop("grid"))
+        clock = Clock.from_dict(params.pop("clock"))
         boundary_handlers = params.pop("boundary_handlers", {})
         bh_dict = {}
         for name in boundary_handlers:
@@ -140,7 +140,7 @@ class ErosionModel(object):
         precipitator=None,
         runoff_generator=None,
         boundary_handlers={},
-        output_writers=None,
+        output_writers={"class": {}, "function": []},
         flow_director="FlowDirectorSteepest",
         depression_finder=None,
         output_interval=None,

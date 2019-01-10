@@ -196,7 +196,9 @@ class StochasticErosionModel(ErosionModel):
                 runoff = 0  # pragma: no cover
         else:
             runoff = self.rain_rate
-        self.grid.at_node['surface_water__discharge'][:] = runoff * self.grid.at_node['drainage_area']
+        self.grid.at_node["surface_water__discharge"][:] = (
+            runoff * self.grid.at_node["drainage_area"]
+        )
         return runoff
 
     def run_for_stochastic(self, step, runtime):
@@ -319,8 +321,7 @@ class StochasticErosionModel(ErosionModel):
 
             runoff = self.calc_runoff_and_discharge()
 
-            self.eroder.run_one_step(
-                step, flooded_nodes=flooded)
+            self.eroder.run_one_step(step, flooded_nodes=flooded)
             if self.record_rain:
                 # save record into the rain record
                 self.record_rain_event(
@@ -345,10 +346,7 @@ class StochasticErosionModel(ErosionModel):
                 self._pre_water_erosion_steps()
 
                 runoff = self.calc_runoff_and_discharge()
-                self.eroder.run_one_step(
-                    dt_water,
-                    flooded_nodes=flooded,
-                )
+                self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
                 # save record into the rain record
                 if self.record_rain:
                     event_start_time = self.model_time + (i * dt_water)
