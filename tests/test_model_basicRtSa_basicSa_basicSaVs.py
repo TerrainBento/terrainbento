@@ -2,12 +2,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import (
-    BasicRtSa,
-    BasicSa,
-    BasicSaVs,
-    NotCoreNodeBaselevelHandler,
-)
+from terrainbento import BasicRtSa, BasicSa, BasicSaVs, NotCoreNodeBaselevelHandler
 
 _RT_params = {"water_erodability_lower": 0, "water_erodability_upper": 0}
 _OTHER_params = {"water_erodability": 0}
@@ -15,11 +10,7 @@ _OTHER_params = {"water_erodability": 0}
 
 @pytest.mark.parametrize(
     "Model,water_params",
-    [
-        (BasicSa, _OTHER_params),
-        (BasicRtSa, _RT_params),
-        (BasicSaVs, _OTHER_params),
-    ],
+    [(BasicSa, _OTHER_params), (BasicRtSa, _RT_params), (BasicSaVs, _OTHER_params)],
 )
 def test_diffusion_only(clock_simple, grid_4, Model, water_params):
 
@@ -68,19 +59,13 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
 
     half_domain = np.arange(0, max(domain) / 2. + dx, dx)
 
-    one_minus_h_hstar = 1 - np.exp(
-        -predicted_depth / soil_transport_decay_depth
-    )
+    one_minus_h_hstar = 1 - np.exp(-predicted_depth / soil_transport_decay_depth)
 
     half_domain_z = (
-        -half_domain ** 2
-        * U
-        / (regolith_transport_parameter * 2. * one_minus_h_hstar)
+        -half_domain ** 2 * U / (regolith_transport_parameter * 2. * one_minus_h_hstar)
     )
 
-    steady_z_profile = np.concatenate(
-        (np.flipud(half_domain_z), half_domain_z[1:])
-    )
+    steady_z_profile = np.concatenate((np.flipud(half_domain_z), half_domain_z[1:]))
 
     predicted_profile = steady_z_profile - np.min(steady_z_profile)
 

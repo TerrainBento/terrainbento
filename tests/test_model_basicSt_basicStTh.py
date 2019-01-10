@@ -14,10 +14,7 @@ from terrainbento import (
     NotCoreNodeBaselevelHandler,
 )
 
-_th_params = {
-    "water_erosion_rule__threshold": 1e-9,
-    "infiltration_capacity": 1.0,
-}
+_th_params = {"water_erosion_rule__threshold": 1e-9, "infiltration_capacity": 1.0}
 _empty_params = {"infiltration_capacity": 1.0}
 
 
@@ -85,9 +82,7 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     s = grid.add_zeros("node", "soil__depth")
     s[:] = 1e-9
 
-    ncnblh = NotCoreNodeBaselevelHandler(
-        grid, modify_core_nodes=True, lowering_rate=-U
-    )
+    ncnblh = NotCoreNodeBaselevelHandler(grid, modify_core_nodes=True, lowering_rate=-U)
 
     # construct dictionary. note that D is turned off here
     params = {
@@ -139,9 +134,7 @@ def test_stochastic_duration_rainfall_means():
     grid.set_closed_boundaries_at_grid_edges(True, False, True, False)
     grid.add_zeros("node", "topographic__elevation")
 
-    ncnblh = NotCoreNodeBaselevelHandler(
-        grid, modify_core_nodes=True, lowering_rate=-U
-    )
+    ncnblh = NotCoreNodeBaselevelHandler(grid, modify_core_nodes=True, lowering_rate=-U)
 
     clock = Clock(step=200, stop=400)
     # construct dictionary. note that D is turned off here

@@ -8,7 +8,6 @@ lithologies.
 """
 import numpy as np
 
-from landlab.io import read_esri_ascii
 from terrainbento.base_class import ErosionModel
 
 _REQUIRED_FIELDS = ["lithology_contact__elevation"]
@@ -43,7 +42,7 @@ class TwoLithologyErosionModel(ErosionModel):
         n_sp=1.0,
         water_erodability_lower=0.0001,
         water_erodability_upper=0.001,
-        regolith_transport_parameter=0.1,
+        regolith_transport_parameter=0.01,
         contact_zone__width=1.,
         **kwargs
     ):
@@ -84,9 +83,7 @@ class TwoLithologyErosionModel(ErosionModel):
         self.rock_erody = self.K_rock
         self.till_erody = self.K_till
 
-        self.rock_till_contact = self.grid.at_node[
-            "lithology_contact__elevation"
-        ]
+        self.rock_till_contact = self.grid.at_node["lithology_contact__elevation"]
 
     def _setup_rock_and_till(self):
         """Set up fields to handle for two layers with different
@@ -110,9 +107,7 @@ class TwoLithologyErosionModel(ErosionModel):
         self.erody = self.grid.add_zeros("node", "substrate__erodability")
 
         # Create field for threshold values
-        self.threshold = self.grid.add_zeros(
-            "node", "water_erosion_rule__threshold"
-        )
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
 
         # Create array for erodability weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
@@ -128,8 +123,7 @@ class TwoLithologyErosionModel(ErosionModel):
             self.erody_wt[core] = 1.0 / (
                 1.0
                 + np.exp(
-                    -(self.z[core] - self.rock_till_contact[core])
-                    / self.contact_width
+                    -(self.z[core] - self.rock_till_contact[core]) / self.contact_width
                 )
             )
         else:
@@ -158,8 +152,7 @@ class TwoLithologyErosionModel(ErosionModel):
 
         # Calculate the effective erodibilities using weighted averaging
         self.erody[:] = (
-            self.erody_wt * self.till_erody
-            + (1.0 - self.erody_wt) * self.rock_erody
+            self.erody_wt * self.till_erody + (1.0 - self.erody_wt) * self.rock_erody
         )
 
     def _update_erodability_and_threshold_fields(self):
@@ -175,12 +168,10 @@ class TwoLithologyErosionModel(ErosionModel):
 
         # Calculate the effective erodibilities using weighted averaging
         self.erody[:] = (
-            self.erody_wt * self.till_erody
-            + (1.0 - self.erody_wt) * self.rock_erody
+            self.erody_wt * self.till_erody + (1.0 - self.erody_wt) * self.rock_erody
         )
 
         # Calculate the effective thresholds using weighted averaging
         self.threshold[:] = (
-            self.erody_wt * self.till_thresh
-            + (1.0 - self.erody_wt) * self.rock_thresh
+            self.erody_wt * self.till_thresh + (1.0 - self.erody_wt) * self.rock_thresh
         )

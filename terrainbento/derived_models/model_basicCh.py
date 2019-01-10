@@ -75,7 +75,7 @@ class BasicCh(ErosionModel):
         m_sp=0.5,
         n_sp=1.0,
         water_erodability=0.0001,
-        regolith_transport_parameter=0.1,
+        regolith_transport_parameter=0.01,
         critical_slope=0.3,
         number_of_taylor_terms=11,
         **kwargs
@@ -88,7 +88,7 @@ class BasicCh(ErosionModel):
         m_sp=0.5,
         n_sp=1.0,
         water_erodability=0.0001,
-        regolith_transport_parameter=0.1,
+        regolith_transport_parameter=0.01,
         critical_slope=0.3,
         number_of_taylor_terms=11,
         **kwargs

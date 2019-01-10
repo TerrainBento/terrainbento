@@ -76,7 +76,7 @@ class BasicCv(ErosionModel):
         m_sp=0.5,
         n_sp=1.0,
         water_erodability=0.0001,
-        regolith_transport_parameter=0.1,
+        regolith_transport_parameter=0.01,
         climate_factor=0.5,
         climate_constant_date=0.,
         **kwargs
@@ -128,11 +128,7 @@ class BasicCv(ErosionModel):
         self.climate_factor = climate_factor
         self.climate_constant_date = climate_constant_date
 
-        time = [
-            0,
-            self.climate_constant_date,
-            self.clock.stop + self.clock.step,
-        ]
+        time = [0, self.climate_constant_date, self.clock.stop + self.clock.step]
         K = [
             water_erodability * self.climate_factor,
             water_erodability,

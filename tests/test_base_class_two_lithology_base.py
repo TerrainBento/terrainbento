@@ -22,11 +22,7 @@ def test_no_contact_zone_width(clock_simple, grid_5):
 
 
 def test_contact_zone_width(clock_simple, grid_5):
-    params = {
-        "grid": grid_5,
-        "clock": clock_simple,
-        "contact_zone__width": 10.,
-    }
+    params = {"grid": grid_5, "clock": clock_simple, "contact_zone__width": 10.}
 
     model = TwoLithologyErosionModel(**params)
     model._setup_rock_and_till()

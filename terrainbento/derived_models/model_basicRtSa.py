@@ -268,9 +268,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         self._update_erodability_field()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(
-            step, flooded_nodes=flooded, K_if_used=self.erody
-        )
+        self.eroder.run_one_step(step, flooded_nodes=flooded, K_if_used=self.erody)
 
         # We must also now erode the bedrock where relevant. If water erosion
         # into bedrock has occurred, the bedrock elevation will be higher than

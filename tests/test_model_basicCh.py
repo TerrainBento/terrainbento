@@ -43,7 +43,5 @@ def test_diffusion_only(clock_09, grid_4):
     p = np.append(p, qs)
     p_roots = np.roots(p)
     predicted_slope = np.abs(np.real(p_roots[-1]))
-    actual_slope = np.abs(
-        model.grid.at_node["topographic__steepest_slope"][39]
-    )
+    actual_slope = np.abs(model.grid.at_node["topographic__steepest_slope"][39])
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)

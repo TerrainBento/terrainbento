@@ -58,7 +58,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         m_sp=0.5,
         n_sp=1.0,
         water_erodability_stochastic=0.0001,
-        regolith_transport_parameter=0.1,
+        regolith_transport_parameter=0.01,
         **kwargs
     ):
         """

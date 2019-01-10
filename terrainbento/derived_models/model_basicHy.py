@@ -82,7 +82,7 @@ class BasicHy(ErosionModel):
         m_sp=0.5,
         n_sp=1.0,
         water_erodability=0.0001,
-        regolith_transport_parameter=0.1,
+        regolith_transport_parameter=0.01,
         settling_velocity=0.001,
         sediment_porosity=0.3,
         fraction_fines=0.5,

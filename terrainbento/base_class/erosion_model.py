@@ -9,7 +9,6 @@ functionality shared by the terrainbento models.
 import os
 import sys
 import time as tm
-from types import FunctionType
 
 import dask
 import numpy as np
@@ -17,11 +16,10 @@ import six
 import xarray as xr
 import yaml
 
-from landlab import CLOSED_BOUNDARY, ModelGrid, create_grid, load_params
+from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
-from landlab.io import read_esri_ascii
-from landlab.io.netcdf import read_netcdf, write_raster_netcdf
+from landlab.io.netcdf import write_raster_netcdf
 from terrainbento import Clock
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
@@ -264,7 +262,6 @@ class ErosionModel(object):
         ###################################################################
         self.boundary_handlers = boundary_handlers
 
-
         if "class" in output_writers:
             instantiated_classes = []
             for ow_class in output_writers["class"]:
@@ -274,8 +271,8 @@ class ErosionModel(object):
         self.output_writers = output_writers
 
         if len(kwargs) > 0:
-            msg = ""
-            raise ValueError(kwargs)
+            msg = str(kwargs)
+            raise ValueError(msg)
 
     def _verify_fields(self, required_fields):
         """"""

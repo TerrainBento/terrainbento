@@ -140,9 +140,7 @@ class StochasticErosionModel(ErosionModel):
         self.opt_stochastic_duration = opt_stochastic_duration
 
         # verify that opt_stochastic_duration and PrecipChanger are consistent
-        if self.opt_stochastic_duration and (
-            "PrecipChanger" in self.boundary_handlers
-        ):
+        if self.opt_stochastic_duration and ("PrecipChanger" in self.boundary_handlers):
             msg = (
                 "terrainbento StochasticErosionModel: setting "
                 "opt_stochastic_duration=True and using the PrecipChanger "
@@ -220,10 +218,7 @@ class StochasticErosionModel(ErosionModel):
         """
         self.rain_generator.delta_t = step
         self.rain_generator.run_time = runtime
-        for (
-            tr,
-            p,
-        ) in self.rain_generator.yield_storm_interstorm_duration_intensity():
+        for (tr, p) in self.rain_generator.yield_storm_interstorm_duration_intensity():
             self.rain_rate = p
             self.run_one_step(tr)
 
@@ -254,13 +249,8 @@ class StochasticErosionModel(ErosionModel):
                 1.0 + (1.0 / self.shape_factor)
             )
 
-            if (
-                isinstance(self.number_of_sub_time_steps, (int, np.integer))
-                is False
-            ):
-                raise ValueError(
-                    ("number_of_sub_time_steps must be of type integer.")
-                )
+            if isinstance(self.number_of_sub_time_steps, (int, np.integer)) is False:
+                raise ValueError(("number_of_sub_time_steps must be of type integer."))
 
             self.n_sub_steps = self.number_of_sub_time_steps
 
@@ -324,9 +314,7 @@ class StochasticErosionModel(ErosionModel):
             self.eroder.run_one_step(step, flooded_nodes=flooded)
             if self.record_rain:
                 # save record into the rain record
-                self.record_rain_event(
-                    self.model_time, step, self.rain_rate, runoff
-                )
+                self.record_rain_event(self.model_time, step, self.rain_rate, runoff)
 
         elif self.opt_stochastic_duration and self.rain_rate <= 0.0:
             # calculate and record the time with no rain:
@@ -363,9 +351,7 @@ class StochasticErosionModel(ErosionModel):
 
                 # if dry time is greater than zero, record.
                 if dt_dry > 0:
-                    event_start_time = self.model_time + (
-                        self.n_sub_steps * dt_water
-                    )
+                    event_start_time = self.model_time + (self.n_sub_steps * dt_water)
                     self.record_rain_event(event_start_time, dt_dry, 0.0, 0.0)
 
     def finalize(self):
@@ -378,9 +364,7 @@ class StochasticErosionModel(ErosionModel):
         """
         # if rain was recorded, write it out.
         if self.record_rain:
-            self.write_storm_sequence_to_file(
-                filename=self.storm_sequence_filename
-            )
+            self.write_storm_sequence_to_file(filename=self.storm_sequence_filename)
 
             if self.opt_stochastic_duration is False:
                 # if opt_stochastic_duration is False, calculate exceedance
@@ -449,35 +433,17 @@ class StochasticErosionModel(ErosionModel):
             n_events = len(self.rain_record["event_start_time"])
             for i in range(n_events):
                 stormfile.write(
-                    str(
-                        np.around(
-                            self.rain_record["event_start_time"][i], decimals=5
-                        )
-                    )
+                    str(np.around(self.rain_record["event_start_time"][i], decimals=5))
                     + ","
-                    + str(
-                        np.around(
-                            self.rain_record["event_duration"][i], decimals=5
-                        )
-                    )
+                    + str(np.around(self.rain_record["event_duration"][i], decimals=5))
                     + ","
-                    + str(
-                        np.around(
-                            self.rain_record["rainfall_rate"][i], decimals=5
-                        )
-                    )
+                    + str(np.around(self.rain_record["rainfall_rate"][i], decimals=5))
                     + ","
-                    + str(
-                        np.around(
-                            self.rain_record["runoff_rate"][i], decimals=5
-                        )
-                    )
+                    + str(np.around(self.rain_record["runoff_rate"][i], decimals=5))
                     + "\n"
                 )
 
-    def write_exceedance_frequency_file(
-        self, filename="exceedance_summary.txt"
-    ):
+    def write_exceedance_frequency_file(self, filename="exceedance_summary.txt"):
         """Write summary of rainfall exceedance statistics to file.
 
         Parameters
@@ -495,9 +461,7 @@ class StochasticErosionModel(ErosionModel):
         # calculate the number of wet days per year.
         number_of_days_per_year = 365
         nwet = int(
-            np.ceil(
-                self.rainfall_intermittency_factor * number_of_days_per_year
-            )
+            np.ceil(self.rainfall_intermittency_factor * number_of_days_per_year)
         )
 
         if nwet == 0:
@@ -513,12 +477,8 @@ class StochasticErosionModel(ErosionModel):
 
             # Write some basic information about the distribution to the file.
             exceedance_file.write("Section 1: Distribution Description\n")
-            exceedance_file.write(
-                "Scale Factor: " + str(self.scale_factor) + "\n"
-            )
-            exceedance_file.write(
-                "Shape Factor: " + str(self.shape_factor) + "\n"
-            )
+            exceedance_file.write("Scale Factor: " + str(self.scale_factor) + "\n")
+            exceedance_file.write("Shape Factor: " + str(self.shape_factor) + "\n")
             exceedance_file.write(
                 (
                     "Intermittency Factor: "
@@ -539,11 +499,7 @@ class StochasticErosionModel(ErosionModel):
             exceedance_file.write("\n")
 
             exceedance_file.write(
-                (
-                    "This provided value was:\n"
-                    + str(self.rainfall__mean_rate)
-                    + "\n"
-                )
+                ("This provided value was:\n" + str(self.rainfall__mean_rate) + "\n")
             )
 
             # calculate the predictions for 10, 25, and 100 year event based on
@@ -552,9 +508,7 @@ class StochasticErosionModel(ErosionModel):
 
             # calculate the probability of each event based on the number of years
             # and the number of wet days per year.
-            daily_distribution_exceedance_probabilities = 1. / (
-                nwet * event_intervals
-            )
+            daily_distribution_exceedance_probabilities = 1. / (nwet * event_intervals)
 
             # exceedance probability is given as
             # Probability of daily rainfall of p exceeding a value of po is given as:
@@ -667,15 +621,11 @@ class StochasticErosionModel(ErosionModel):
 
             event_probability = (
                 (self.shape_factor / self.scale_factor)
-                * (
-                    (expected_rainfall / self.scale_factor)
-                    ** (self.shape_factor - 1.0)
-                )
+                * ((expected_rainfall / self.scale_factor) ** (self.shape_factor - 1.0))
                 * (
                     np.exp(
                         -1.
-                        * (expected_rainfall / self.scale_factor)
-                        ** self.shape_factor
+                        * (expected_rainfall / self.scale_factor) ** self.shape_factor
                     )
                 )
             )
@@ -687,9 +637,7 @@ class StochasticErosionModel(ErosionModel):
 
             event_std = event_variance ** 0.5
 
-            t_statistic = stats.t.ppf(
-                0.975, num_effective_years, loc=0, scale=1
-            )
+            t_statistic = stats.t.ppf(0.975, num_effective_years, loc=0, scale=1)
 
             exceedance_file.write("\n")
             message_text = (
@@ -703,12 +651,8 @@ class StochasticErosionModel(ErosionModel):
             exceedance_file.write("\n")
             for i in range(len(event_intervals)):
 
-                min_expected_val = (
-                    expected_rainfall[i] - t_statistic * event_std[i]
-                )
-                max_expected_val = (
-                    expected_rainfall[i] + t_statistic * event_std[i]
-                )
+                min_expected_val = expected_rainfall[i] - t_statistic * event_std[i]
+                max_expected_val = expected_rainfall[i] + t_statistic * event_std[i]
 
                 exceedance_file.write(
                     (
@@ -725,9 +669,7 @@ class StochasticErosionModel(ErosionModel):
             # exists.
 
             # inititialize a container for the maximum yearly precipitation.
-            maximum_yearly_precipitation = np.nan * np.zeros(
-                (num_effective_years)
-            )
+            maximum_yearly_precipitation = np.nan * np.zeros((num_effective_years))
             for yi in range(num_effective_years):
 
                 # identify the starting and ending index coorisponding to the
@@ -736,14 +678,10 @@ class StochasticErosionModel(ErosionModel):
                 ending_index = starting_index + nwet
 
                 # select the years portion of the wet_day_totals
-                selected_wet_day_totals = wet_day_totals[
-                    starting_index:ending_index
-                ]
+                selected_wet_day_totals = wet_day_totals[starting_index:ending_index]
 
                 # record the yearly maximum precipitation
-                maximum_yearly_precipitation[
-                    yi
-                ] = selected_wet_day_totals.max()
+                maximum_yearly_precipitation[yi] = selected_wet_day_totals.max()
 
             # calculate the distribution percentiles associated with each interval
             event_percentiles = (1. - (1. / event_intervals)) * 100.

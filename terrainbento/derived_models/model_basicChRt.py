@@ -119,12 +119,7 @@ class BasicChRt(TwoLithologyErosionModel):
     """
 
     def __init__(
-        self,
-        clock,
-        grid,
-        critical_slope=0.3,
-        number_of_taylor_terms=7,
-        **kwargs
+        self, clock, grid, critical_slope=0.3, number_of_taylor_terms=7, **kwargs
     ):
         """
         Parameters
@@ -230,9 +225,7 @@ class BasicChRt(TwoLithologyErosionModel):
         self._update_erodability_field()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(
-            step, flooded_nodes=flooded, K_if_used=self.erody
-        )
+        self.eroder.run_one_step(step, flooded_nodes=flooded, K_if_used=self.erody)
 
         # Do some soil creep
         self.diffuser.run_one_step(

@@ -10,20 +10,10 @@ from terrainbento import BasicDdHy, NotCoreNodeBaselevelHandler
 @pytest.mark.parametrize("threshold", [0.0, 0.00001])
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("solver", ["basic", "adaptive"])
 def test_stream_DdHy(
-    clock_simple,
-    grid_2,
-    m_sp,
-    n_sp,
-    depression_finder,
-    U,
-    K,
-    solver,
-    threshold,
+    clock_simple, grid_2, m_sp, n_sp, depression_finder, U, K, solver, threshold
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U

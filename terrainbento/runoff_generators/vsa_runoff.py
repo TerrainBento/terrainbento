@@ -31,4 +31,4 @@ class VariableSourceAreaRunoff(object):
 
         a = self.tlam * self.slope / self.p
 
-        r = (a / self.A ** 2.) * np.exp(-a / self.A)
+        self.r[:] = (a / self.A ** 2.) * np.exp(-a / self.A)

@@ -8,9 +8,7 @@ from terrainbento.utilities import filecmp
 
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 def test_steady_Kss_no_precip_changer(
     clock_simple, grid_2, U, Kr, Kt, m_sp, n_sp, depression_finder
 ):
@@ -47,11 +45,7 @@ def test_steady_Kss_no_precip_changer(
     till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1. / n_sp)
 
     # assert actual and predicted slopes are the same for rock and till.
-    assert_array_almost_equal(
-        actual_slopes[22:37], rock_predicted_slopes[22:37]
-    )
+    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
 
     # assert actual and predicted slopes are the same for rock and till.
-    assert_array_almost_equal(
-        actual_slopes[82:97], till_predicted_slopes[82:97]
-    )
+    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])

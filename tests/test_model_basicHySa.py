@@ -11,9 +11,7 @@ from terrainbento import BasicHySa, NotCoreNodeBaselevelHandler, PrecipChanger
 
 
 @pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("solver", ["basic"])
 def test_no_precip_changer(
     clock_simple, grid_1, m_sp, n_sp, depression_finder, U, solver

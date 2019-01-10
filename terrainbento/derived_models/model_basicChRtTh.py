@@ -15,10 +15,7 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import (
-    StreamPowerSmoothThresholdEroder,
-    TaylorNonLinearDiffuser,
-)
+from landlab.components import StreamPowerSmoothThresholdEroder, TaylorNonLinearDiffuser
 from terrainbento.base_class import TwoLithologyErosionModel
 
 _REQUIRED_FIELDS = ["topographic__elevation"]

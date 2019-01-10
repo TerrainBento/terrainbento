@@ -19,9 +19,7 @@ from terrainbento import (
 @pytest.mark.parametrize("Model", [BasicRt, BasicChRt, BasicRtSa])
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 def test_rock_till_steady_no_precip_changer(
     clock_simple, grid_2, m_sp, n_sp, depression_finder, U, Kr, Kt, Model
 ):
@@ -61,14 +59,10 @@ def test_rock_till_steady_no_precip_changer(
     )
 
 
-@pytest.mark.parametrize(
-    "Model", [Basic, BasicCv, BasicCh, BasicChSa, BasicSa]
-)
+@pytest.mark.parametrize("Model", [Basic, BasicCv, BasicCh, BasicChSa, BasicSa])
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 def test_detachment_steady_no_precip_changer(
     clock_simple, grid_1, m_sp, n_sp, depression_finder, U, K, Model
 ):

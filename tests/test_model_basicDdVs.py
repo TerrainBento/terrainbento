@@ -10,9 +10,7 @@ from terrainbento import BasicDdVs, NotCoreNodeBaselevelHandler
 
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
 @pytest.mark.parametrize("n_sp", [1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("threshold", [0.1])
 @pytest.mark.parametrize("thresh_change_per_depth", [0.])
 def test_steady_Ksp_no_precip_changer_no_thresh_change(
@@ -52,9 +50,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
-    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
-        1. / n_sp
-    )
+    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (1. / n_sp)
 
     # assert actual and predicted slopes are in the correct range for the
     # slopes.
@@ -100,9 +96,7 @@ def test_Aeff(clock_simple, grid_2, K, U):
         * grid_2.dx
         / params["recharge_rate"]
     )
-    A_eff_predicted = actual_areas * np.exp(
-        -(-alpha * actual_slopes) / actual_areas
-    )
+    A_eff_predicted = actual_areas * np.exp(-(-alpha * actual_slopes) / actual_areas)
 
     # assert aeff internally calculated correclty
     assert_array_almost_equal(
@@ -113,21 +107,21 @@ def test_Aeff(clock_simple, grid_2, K, U):
 
     # somewhat circular test to make sure slopes are below predicted upper
     # bound
-    predicted_slopes_eff_upper = (
-        (U + threshold) / (K * (model.eff_area ** m_sp))
-    ) ** (1. / n_sp)
-    predicted_slopes_eff_lower = (
-        (U + 0.0) / (K * (model.eff_area ** m_sp))
-    ) ** (1. / n_sp)
+    predicted_slopes_eff_upper = ((U + threshold) / (K * (model.eff_area ** m_sp))) ** (
+        1. / n_sp
+    )
+    predicted_slopes_eff_lower = ((U + 0.0) / (K * (model.eff_area ** m_sp))) ** (
+        1. / n_sp
+    )
 
     # somewhat circular test to make sure VSA slopes are higher than expected
     # "normal" slopes
     predicted_slopes_normal_upper = (
         (U + threshold) / (K * (actual_areas ** m_sp))
     ) ** (1. / n_sp)
-    predicted_slopes_normal_lower = (
-        (U + 0.0) / (K * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+    predicted_slopes_normal_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
+        1. / n_sp
+    )
 
     assert np.all(
         actual_slopes[model.grid.core_nodes[1:-1]]

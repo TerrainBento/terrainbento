@@ -4,9 +4,7 @@ import numpy as np
 import pytest
 
 from landlab import HexModelGrid
-from terrainbento.boundary_handlers import (
-    GenericFuncBaselevelHandler
-)
+from terrainbento.boundary_handlers import GenericFuncBaselevelHandler
 
 
 def test_function_of_four_variables():

@@ -6,9 +6,7 @@ from terrainbento import BasicTh, NotCoreNodeBaselevelHandler
 
 
 @pytest.mark.parametrize("m_sp,n_sp", [(0.5, 1.0)])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 def test_steady_Kss_no_precip_changer(
     clock_simple, grid_2, U, K, m_sp, n_sp, depression_finder
 ):
@@ -38,12 +36,10 @@ def test_steady_Kss_no_precip_changer(
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
-    predicted_slopes_upper = (
-        (U + threshold) / (K * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
-    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
+    predicted_slopes_upper = ((U + threshold) / (K * (actual_areas ** m_sp))) ** (
         1. / n_sp
     )
+    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (1. / n_sp)
 
     # assert actual and predicted slopes are in the correct range for the
     # slopes.

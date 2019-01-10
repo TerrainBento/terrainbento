@@ -10,9 +10,7 @@ from terrainbento import BasicDdRt, NotCoreNodeBaselevelHandler
 
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
 @pytest.mark.parametrize("n_sp", [1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("threshold", [0.1])
 @pytest.mark.parametrize("thresh_change_per_depth", [0.])
 def test_steady_Ksp_no_precip_changer_no_thresh_change(

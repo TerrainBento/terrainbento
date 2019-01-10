@@ -9,28 +9,14 @@ from terrainbento import BasicHy, BasicHySt, NotCoreNodeBaselevelHandler
 
 @pytest.mark.parametrize(
     "Model,param_name",
-    [
-        (BasicHy, "water_erodability"),
-        (BasicHySt, "water_erodability_stochastic"),
-    ],
+    [(BasicHy, "water_erodability"), (BasicHySt, "water_erodability_stochastic")],
 )
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("solver", ["basic", "adaptive"])
 def test_no_precip_changer(
-    clock_simple,
-    grid_2,
-    m_sp,
-    n_sp,
-    depression_finder,
-    U,
-    K,
-    solver,
-    Model,
-    param_name,
+    clock_simple, grid_2, m_sp, n_sp, depression_finder, U, K, solver, Model, param_name
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
