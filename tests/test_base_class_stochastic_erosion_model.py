@@ -33,7 +33,7 @@ def test_init_record_opt_true(clock_simple, grid_1):
 
 
 def test_init_record_opt_false(clock_simple, grid_1):
-    params = {"clock": clock_simple, "record_rain": False}
+    params = {"clock": clock_simple, "record_rain": False, 'grid':grid_1}
     model = StochasticErosionModel(**params)
     assert model.record_rain is False
     assert model.rain_record is None
@@ -277,15 +277,11 @@ def test_run_opt_false_with_changer(clock_06, grid_1, precip_defaults):
     model.run_for(model.clock.step, model.clock.stop)
     assert "PrecipChanger" in model.boundary_handlers
 
-    predicted_intermittency = params["rainfall_intermittency_factor"] + params[
-        "PrecipChanger"
-    ]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (
+    predicted_intermittency = params["rainfall_intermittency_factor"] + precip_defaults["daily_rainfall__intermittency_factor_time_rate_of_change"] * (
         model.clock.stop - model.clock.step
     )
 
-    predicted_intensity = params["rainfall__mean_rate"] + params[
-        "PrecipChanger"
-    ]["rainfall__mean_rate_time_rate_of_change"] * (
+    predicted_intensity = params["rainfall__mean_rate"] + precip_defaults["rainfall__mean_rate_time_rate_of_change"] * (
         model.clock.stop - model.clock.step
     )
 
