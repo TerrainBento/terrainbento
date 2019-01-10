@@ -96,7 +96,7 @@ class BasicSa(ErosionModel):
         m_sp=0.5,
         n_sp=1.0,
         water_erodability=0.0001,
-        regolith_transport_parameter=0.01,
+        regolith_transport_parameter=0.1,
         soil_production__maximum_rate=0.001,
         soil_production__decay_depth=0.5,
         soil_transport_decay_depth=0.5,

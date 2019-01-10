@@ -29,7 +29,9 @@ from terrainbento import (
 )
 
 
-@pytest.mark.parametrize("Model", [BasicSt, BasicHySt, BasicDdSt, BasicStTh, BasicStVs])
+@pytest.mark.parametrize(
+    "Model", [BasicSt, BasicHySt, BasicDdSt, BasicStTh, BasicStVs]
+)
 def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
     total_time = 5.0e6
     step = 1000
@@ -62,7 +64,9 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+        predicted_z[model.grid.core_nodes],
+        model.z[model.grid.core_nodes],
+        decimal=2,
     )
 
 
@@ -113,7 +117,9 @@ def test_diffusion_only(clock_simple, grid_1, U, Model):
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+        predicted_z[model.grid.core_nodes],
+        model.z[model.grid.core_nodes],
+        decimal=2,
     )
 
 
@@ -153,5 +159,7 @@ def test_rock_till_linear_diffusion(clock_simple, grid_1, U, Model):
 
     # assert actual and predicted elevations are the same.
     assert_array_almost_equal(
-        predicted_z[model.grid.core_nodes], model.z[model.grid.core_nodes], decimal=2
+        predicted_z[model.grid.core_nodes],
+        model.z[model.grid.core_nodes],
+        decimal=2,
     )

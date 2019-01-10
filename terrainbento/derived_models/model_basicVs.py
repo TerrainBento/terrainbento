@@ -78,7 +78,7 @@ class BasicVs(ErosionModel):
         m_sp=0.5,
         n_sp=1.0,
         water_erodability=0.0001,
-        regolith_transport_parameter=0.01,
+        regolith_transport_parameter=0.1,
         recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         **kwargs
@@ -138,9 +138,9 @@ class BasicVs(ErosionModel):
         self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
 
         # Get the effective-area parameter
-        self.sat_param = (hydraulic_conductivity * soil_thickness * self.grid.dx) / (
-            recharge_rate
-        )
+        self.sat_param = (
+            hydraulic_conductivity * soil_thickness * self.grid.dx
+        ) / (recharge_rate)
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(

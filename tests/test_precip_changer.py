@@ -120,15 +120,25 @@ def test_rock_till_precip_changer(
     model = Model(**params)
     model._update_erodability_field()
     try:
-        assert np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
-        assert np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
-    except AttributeError:
         assert (
-            np.array_equiv(model.eroder._K_unit_time[model.grid.core_nodes[:8]], Kt)
+            np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt)
             is True
         )
         assert (
-            np.array_equiv(model.eroder._K_unit_time[model.grid.core_nodes[10:]], Kr)
+            np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr)
+            is True
+        )
+    except AttributeError:
+        assert (
+            np.array_equiv(
+                model.eroder._K_unit_time[model.grid.core_nodes[:8]], Kt
+            )
+            is True
+        )
+        assert (
+            np.array_equiv(
+                model.eroder._K_unit_time[model.grid.core_nodes[10:]], Kr
+            )
             is True
         )
 

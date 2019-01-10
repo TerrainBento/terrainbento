@@ -9,19 +9,23 @@ from landlab import RasterModelGrid
 from terrainbento import (
     BasicSt,
     BasicStTh,
-    BasicStVs,
     Clock,
     NotCoreNodeBaselevelHandler,
 )
 
-_th_params = {"water_erosion_rule__threshold": 1e-9, "infiltration_capacity": 1.0}
+_th_params = {
+    "water_erosion_rule__threshold": 1e-9,
+    "infiltration_capacity": 1.0,
+}
 _empty_params = {"infiltration_capacity": 1.0}
-
 
 @pytest.mark.parametrize(
     "Model,extra_params", [(BasicStTh, _th_params), (BasicSt, _empty_params)]
 )
-def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
+def test_steady_without_stochastic_duration(clock_simple, Model, extra_params, depression_finder):
     r"""Test steady profile solution with fixed duration.
 
     Notes
@@ -82,7 +86,9 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
     s = grid.add_zeros("node", "soil__depth")
     s[:] = 1e-9
 
-    ncnblh = NotCoreNodeBaselevelHandler(grid, modify_core_nodes=True, lowering_rate=-U)
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid, modify_core_nodes=True, lowering_rate=-U
+    )
 
     # construct dictionary. note that D is turned off here
     params = {
@@ -97,7 +103,7 @@ def test_steady_without_stochastic_duration(clock_simple, Model, extra_params):
         "rainfall__mean_rate": 1.0,
         "rainfall__shape_factor": 1.0,
         "random_seed": 3141,
-        "depression_finder": "DepressionFinderAndRouter",
+        "depression_finder": depression_finder,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
@@ -134,7 +140,9 @@ def test_stochastic_duration_rainfall_means():
     grid.set_closed_boundaries_at_grid_edges(True, False, True, False)
     grid.add_zeros("node", "topographic__elevation")
 
-    ncnblh = NotCoreNodeBaselevelHandler(grid, modify_core_nodes=True, lowering_rate=-U)
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid, modify_core_nodes=True, lowering_rate=-U
+    )
 
     clock = Clock(step=200, stop=400)
     # construct dictionary. note that D is turned off here

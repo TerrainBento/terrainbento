@@ -2,6 +2,7 @@
 import pytest
 
 from terrainbento import (
+    BasicChRtTh,
     BasicDd,
     BasicDdRt,
     BasicDdSt,
@@ -25,6 +26,7 @@ from terrainbento import (
         BasicTh,
         BasicThVs,
         BasicDdSt,
+        BasicChRtTh,
     ],
 )
 def test_bad_n_sp(clock_simple, grid_1, Model):

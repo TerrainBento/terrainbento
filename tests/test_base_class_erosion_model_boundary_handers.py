@@ -27,9 +27,14 @@ def test_bad_boundary_condition_string(clock_01, almost_default_grid):
         ErosionModel(**params)
 
 
-def test_single_node_blh_with_closed_boundaries(clock_simple, simple_square_grid):
+def test_single_node_blh_with_closed_boundaries(
+    clock_simple, simple_square_grid
+):
     snblh = SingleNodeBaselevelHandler(
-        simple_square_grid, modify_outlet_node=False, lowering_rate=-0.0005, outlet_id=3
+        simple_square_grid,
+        modify_outlet_node=False,
+        lowering_rate=-0.0005,
+        outlet_id=3,
     )
 
     params = {
@@ -94,7 +99,9 @@ def test_generic_bch(clock_simple, simple_square_grid):
 
     dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
     truth_z = -1. * dzdt * step
-    assert_array_equal(model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes])
+    assert_array_equal(
+        model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes]
+    )
 
 
 def test_capture_node(clock_simple, simple_square_grid):

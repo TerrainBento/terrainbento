@@ -8,15 +8,24 @@ from terrainbento import BasicDdHy, NotCoreNodeBaselevelHandler
 
 
 @pytest.mark.parametrize("threshold", [0.0, 0.00001])
-@pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
-@pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
+@pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
 @pytest.mark.parametrize("solver", ["basic", "adaptive"])
 def test_stream_DdHy(
-    clock_simple, grid_2, m_sp, n_sp, depression_finder, U, K, solver, threshold
+    clock_simple,
+    grid_1,
+    m_sp,
+    n_sp,
+    depression_finder,
+    U,
+    K,
+    solver,
+    threshold,
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
-        grid_2, modify_core_nodes=True, lowering_rate=-U
+        grid_1, modify_core_nodes=True, lowering_rate=-U
     )
     phi = 0.1
     F_f = 0.0
@@ -24,7 +33,7 @@ def test_stream_DdHy(
     thresh_change_per_depth = 0
     # construct dictionary. note that D is turned off here
     params = {
-        "grid": grid_2,
+        "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
         "water_erodability": K,
@@ -42,7 +51,7 @@ def test_stream_DdHy(
 
     # construct and run model
     model = BasicDdHy(**params)
-    for _ in range(2000):
+    for _ in range(2500):
         model.run_one_step(10)
 
     # construct actual and predicted slopes

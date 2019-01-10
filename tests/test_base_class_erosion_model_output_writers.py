@@ -31,7 +31,9 @@ class output_writer_class_a(object):
 
     def run_one_step(self):
         average_change = np.mean(self.change[self.model.grid.core_nodes])
-        with open("ow_class_a." + str(self.model.model_time) + ".txt", "w") as f:
+        with open(
+            "ow_class_a." + str(self.model.model_time) + ".txt", "w"
+        ) as f:
             f.write(str(average_change))
 
 
@@ -42,7 +44,9 @@ class output_writer_class_b(object):
 
     def run_one_step(self):
         min_change = np.min(self.change[self.model.grid.core_nodes])
-        with open("ow_class_b." + str(self.model.model_time) + ".txt", "w") as f:
+        with open(
+            "ow_class_b." + str(self.model.model_time) + ".txt", "w"
+        ) as f:
             f.write(str(min_change))
 
 
@@ -65,7 +69,9 @@ def test_one_function_writer(clock_08, almost_default_grid):
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
-    model = Basic(**params, output_writers={"function": [output_writer_function_a]})
+    model = Basic(
+        **params, output_writers={"function": [output_writer_function_a]}
+    )
     model.run()
 
     # assert things were done correctly
@@ -147,7 +153,9 @@ def test_two_class_writers(clock_08, almost_default_grid):
     # construct and run model
     model = Basic(
         **params,
-        output_writers={"class": [output_writer_class_a, output_writer_class_b]},
+        output_writers={
+            "class": [output_writer_class_a, output_writer_class_b]
+        },
     )
     model.run()
 

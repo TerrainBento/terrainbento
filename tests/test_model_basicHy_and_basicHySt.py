@@ -9,24 +9,37 @@ from terrainbento import BasicHy, BasicHySt, NotCoreNodeBaselevelHandler
 
 @pytest.mark.parametrize(
     "Model,param_name",
-    [(BasicHy, "water_erodability"), (BasicHySt, "water_erodability_stochastic")],
+    [
+        (BasicHy, "water_erodability"),
+        (BasicHySt, "water_erodability_stochastic"),
+    ],
 )
-@pytest.mark.parametrize("m_sp", [1. / 3, 0.5])
-@pytest.mark.parametrize("n_sp", [2. / 3., 1.])
-@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
+@pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
 @pytest.mark.parametrize("solver", ["basic", "adaptive"])
-def test_no_precip_changer(
-    clock_simple, grid_2, m_sp, n_sp, depression_finder, U, K, solver, Model, param_name
+def test_channel_erosion(
+    clock_simple,
+    grid_1,
+    m_sp,
+    n_sp,
+    depression_finder,
+    U,
+    K,
+    solver,
+    Model,
+    param_name,
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
-        grid_2, modify_core_nodes=True, lowering_rate=-U
+        grid_1, modify_core_nodes=True, lowering_rate=-U
     )
     phi = 0.1
     F_f = 0.0
     v_sc = 0.001
     # construct dictionary. note that D is turned off here
     params = {
-        "grid": grid_2,
+        "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
         param_name: K,

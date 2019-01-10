@@ -8,9 +8,11 @@ from terrainbento import BasicHyRt, NotCoreNodeBaselevelHandler
 
 
 @pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
-@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
 @pytest.mark.parametrize("solver", ["basic"])
-def test_no_precip_changer(
+def test_channel_erosion(
     clock_simple, grid_2, m_sp, n_sp, depression_finder, U, solver
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
@@ -59,8 +61,12 @@ def test_no_precip_changer(
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
-    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
+    assert_array_almost_equal(
+        actual_slopes[22:37], rock_predicted_slopes[22:37]
+    )
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
-    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])
+    assert_array_almost_equal(
+        actual_slopes[82:97], till_predicted_slopes[82:97]
+    )

@@ -80,7 +80,7 @@ class BasicHySt(StochasticErosionModel):
         m_sp=0.5,
         n_sp=1.0,
         water_erodability_stochastic=0.0001,
-        regolith_transport_parameter=0.01,
+        regolith_transport_parameter=0.1,
         settling_velocity=0.001,
         infiltration_capacity=1.0,
         sediment_porosity=0.3,
