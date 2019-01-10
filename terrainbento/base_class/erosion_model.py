@@ -120,7 +120,6 @@ class ErosionModel(object):
         for name in boundary_handlers:
             bh_params = boundary_handlers[name]
             bh_dict[name] = _setup_boundary_handlers(grid, name, bh_params)
-        print(params)
         return cls(clock, grid, boundary_handlers=bh_dict, output_writers=outputwriters, **params)
 
     @classmethod

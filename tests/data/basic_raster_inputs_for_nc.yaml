@@ -1,11 +1,37 @@
-model_grid: "RasterModelGrid"
+grid:
+  grid:
+    RasterModelGrid:
+      shape:
+        - 4
+        - 5
+  fields:
+    at_node:
+      topographic__elevation:
+        constant:
+          constant: 0
 clock:
   step: 100
-  output_interval: 500
   stop: 2000.
 water_erodability: 0.0001
 m_sp: 1
 n_sp: 0.5
 regolith_transport_parameter: 0.01
-BoundaryHandlers: "NotCoreNodeBaselevelHandler"
-NotCoreNodeBaselevelHandler: {"modify_core_nodes": True, "lowering_rate": -0.01}
+output_interval: 500
+
+boundary_handlers:
+  NotCoreNodeBaselevelHandler:
+    modify_core_nodes: True
+    lowering_rate: -0.01
+fields:
+  - topographic__elevation
+  - cumulative_elevation_change
+  - initial_topographic__elevation
+  - water__unit_flux_in
+  - flow__sink_flag
+  - flow__receiver_node
+  - topographic__steepest_slope
+  - flow__link_to_receiver_node
+  - drainage_area
+  - surface_water__discharge
+  - flow__upstream_node_order
+  - flow__data_structure_delta
