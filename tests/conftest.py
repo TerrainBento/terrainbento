@@ -74,6 +74,18 @@ def grid_4():
     return grid
 
 
+@pytest.fixture
+def grid_5():
+    grid = RasterModelGrid((6, 9), xy_spacing=10)
+    grid.add_zeros("node", "topographic__elevation")
+    grid.add_ones("node", "soil__depth")
+    lith = grid.add_zeros("node", "lithology_contact__elevation")
+    lith[:27] = -30
+    lith[27:] = 10.
+    lith[grid.boundary_nodes] = -9999.
+    return grid
+
+
 @pytest.fixture()
 def clock_simple():
     clock_simple = Clock(step=1000., stop=5.1e6)
