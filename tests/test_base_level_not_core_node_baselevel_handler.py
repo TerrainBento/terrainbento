@@ -8,7 +8,7 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from landlab import HexModelGrid, RasterModelGrid
-from terrainbento.boundary_condition_handlers import (
+from terrainbento.boundary_handlers import (
     NotCoreNodeBaselevelHandler
 )
 

@@ -38,7 +38,7 @@ def test_input_file():
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
     assert em.boundary_handlers == {}
-    assert em.output_writers == {"class": {}, "function": []}
+    assert em.output_writers == {}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
     assert em._model_time == 0.
@@ -72,7 +72,7 @@ def test_parameters(clock_simple):
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
     assert em.boundary_handlers == {}
-    assert em.output_writers == {"class": {}, "function": []}
+    assert em.output_writers == {}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
     assert em._model_time == 0.

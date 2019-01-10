@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from landlab import HexModelGrid
-from terrainbento.boundary_condition_handlers import (
+from terrainbento.boundary_handlers import (
     GenericFuncBaselevelHandler
 )
 

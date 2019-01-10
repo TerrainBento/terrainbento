@@ -89,7 +89,7 @@ class NotCoreNodeBaselevelHandler(object):
 
         Now import the **NotCoreNodeBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_condition_handlers import (
+        >>> from terrainbento.boundary_handlers import (
         ...                                      NotCoreNodeBaselevelHandler)
         >>> bh = NotCoreNodeBaselevelHandler(mg,
         ...                                 modify_core_nodes = False,
@@ -117,7 +117,7 @@ class NotCoreNodeBaselevelHandler(object):
         ...                                        top_is_closed=True)
         >>> mg.set_watershed_boundary_condition_outlet_id(
         ...     0, mg.at_node["topographic__elevation"], -9999.)
-        >>> from terrainbento.boundary_condition_handlers import (
+        >>> from terrainbento.boundary_handlers import (
         ...                                        NotCoreNodeBaselevelHandler)
         >>> bh = NotCoreNodeBaselevelHandler(mg,
         ...                                 modify_core_nodes = True,

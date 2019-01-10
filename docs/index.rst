@@ -52,7 +52,7 @@ Boundary Condition Handlers
 .. toctree::
    :maxdepth: 2
 
-   source/terrainbento.boundary_condition_handlers
+   source/terrainbento.boundary_handlers
 
 Derived Models
 --------------

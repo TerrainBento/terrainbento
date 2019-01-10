@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from landlab import HexModelGrid, RasterModelGrid
-from terrainbento.boundary_condition_handlers import SingleNodeBaselevelHandler
+from terrainbento.boundary_handlers import SingleNodeBaselevelHandler
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 

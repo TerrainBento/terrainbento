@@ -23,7 +23,7 @@ from landlab.graph import Graph
 from landlab.io import read_esri_ascii
 from landlab.io.netcdf import read_netcdf, write_raster_netcdf
 from terrainbento import Clock
-from terrainbento.boundary_condition_handlers import (
+from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
     NotCoreNodeBaselevelHandler,
@@ -264,11 +264,12 @@ class ErosionModel(object):
         ###################################################################
         self.boundary_handlers = boundary_handlers
 
-        instantiated_classes = []
+
         if "class" in output_writers:
+            instantiated_classes = []
             for ow_class in output_writers["class"]:
                 instantiated_classes.append(ow_class(self))
-        output_writers["class"] = instantiated_classes
+            output_writers["class"] = instantiated_classes
 
         self.output_writers = output_writers
 

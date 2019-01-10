@@ -84,7 +84,7 @@ class SingleNodeBaselevelHandler(object):
 
         Now import the **SingleNodeBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_condition_handlers import (
+        >>> from terrainbento.boundary_handlers import (
         ...                                         SingleNodeBaselevelHandler)
         >>> bh = SingleNodeBaselevelHandler(mg,
         ...                                 outlet_id = 0,

@@ -77,7 +77,7 @@ class GenericFuncBaselevelHandler(object):
 
         Now import the **GenericFuncBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_condition_handlers import (
+        >>> from terrainbento.boundary_handlers import (
         ...                                       GenericFuncBaselevelHandler)
         >>> my_func = lambda grid, t:-(grid.x_of_node + grid.y_of_node + (0*t))
         >>> bh = GenericFuncBaselevelHandler(mg,

@@ -71,7 +71,7 @@ class CaptureNodeBaselevelHandler(object):
 
         Now import the **CaptureNodeBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_condition_handlers import (
+        >>> from terrainbento.boundary_handlers import (
         ...                                       CaptureNodeBaselevelHandler)
         >>> bh = CaptureNodeBaselevelHandler(mg,
         ...                                  capture_node = 3,

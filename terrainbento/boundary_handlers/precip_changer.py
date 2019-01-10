@@ -347,7 +347,7 @@ class PrecipChanger(object):
 
         Now import the **PrecipChanger** and instantiate.
 
-        >>> from terrainbento.boundary_condition_handlers import PrecipChanger
+        >>> from terrainbento.boundary_handlers import PrecipChanger
         >>> bh = PrecipChanger(mg,
         ...    daily_rainfall__intermittency_factor = 0.3,
         ...    daily_rainfall__intermittency_factor_time_rate_of_change = 0.01,

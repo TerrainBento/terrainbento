@@ -5,9 +5,9 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 
-from landlab import CLOSED_BOUNDARY, FIXED_VALUE_BOUNDARY
+from landlab import CLOSED_BOUNDARY, FIXED_VALUE_BOUNDARY, RasterModelGrid
 from terrainbento import Basic, BasicSt, ErosionModel
-from terrainbento.boundary_condition_handlers import (
+from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     PrecipChanger,
     SingleNodeBaselevelHandler,
@@ -15,10 +15,10 @@ from terrainbento.boundary_condition_handlers import (
 from terrainbento.utilities import filecmp
 
 
-def test_bad_boundary_condition_string(clock_01):
-    params = {"clock": clock_01, "BoundaryHandlers": "spam"}
+def test_bad_boundary_condition_string(clock_01, almost_default_grid):
+    params = {"grid": almost_default_grid, "clock": clock_01, "boundary_handlers": {"spam": None}}
     with pytest.raises(ValueError):
-        ErosionModel(params=params)
+        ErosionModel(**params)
 
 
 def test_single_node_blh_with_closed_boundaries(clock_simple):
@@ -41,7 +41,7 @@ def test_single_node_blh_with_closed_boundaries(clock_simple):
             "outlet_id": 3,
         },  # meters/year
     }
-    model = Basic(params=params)
+    model = Basic(**params)
     assert model.grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
 
 
@@ -71,7 +71,7 @@ def test_boundary_condition_handler_without_special_part_of_params(
         "lowering_rate": -U,
     }
 
-    model = Basic(params=params)
+    model = Basic(**params)
     bh = model.boundary_handler["NotCoreNodeBaselevelHandler"]
 
     # assertion tests
@@ -112,7 +112,7 @@ def test_pass_two_boundary_handlers(clock_simple):
         },
         "SingleNodeBaselevelHandler": {"lowering_rate": -U},
     }
-    model = Basic(params=params)
+    model = Basic(**params)
     model.run_one_step(1.0)
 
     truth = np.zeros(model.z.size)
@@ -152,7 +152,7 @@ def test_generic_bch(clock_simple):
             ),
         },  # returns a rate in meters/year
     }
-    model = Basic(params=params)
+    model = Basic(**params)
     bh = model.boundary_handler["GenericFuncBaselevelHandler"]
 
     # assertion tests
@@ -197,7 +197,7 @@ def test_capture_node(clock_simple):
         },  # returns a rate in meters/year
     }
 
-    model = Basic(params=params)
+    model = Basic(**params)
     # assertion tests
     assert "CaptureNodeBaselevelHandler" in model.boundary_handler
     assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == 0

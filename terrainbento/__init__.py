@@ -17,11 +17,11 @@ from .base_class import TwoLithologyErosionModel
 
 from .model_template import ModelTemplate
 
-from .boundary_condition_handlers import PrecipChanger
-from .boundary_condition_handlers import SingleNodeBaselevelHandler
-from .boundary_condition_handlers import CaptureNodeBaselevelHandler
-from .boundary_condition_handlers import NotCoreNodeBaselevelHandler
-from .boundary_condition_handlers import GenericFuncBaselevelHandler
+from .boundary_handlers import PrecipChanger
+from .boundary_handlers import SingleNodeBaselevelHandler
+from .boundary_handlers import CaptureNodeBaselevelHandler
+from .boundary_handlers import NotCoreNodeBaselevelHandler
+from .boundary_handlers import GenericFuncBaselevelHandler
 
 from .precipitators import UniformPrecipitator, RandomPrecipitator
 from .runoff_generators import SimpleRunoff, VariableSourceAreaRunoff

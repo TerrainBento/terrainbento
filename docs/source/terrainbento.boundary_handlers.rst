@@ -10,7 +10,7 @@ Time Varying Precipitation
 
 .. toctree::
 
-    terrainbento.boundary_condition_handlers.precip_changer
+    terrainbento.boundary_handlers.precip_changer
 
 
 Domain Boundary Elevation Modifiers
@@ -18,7 +18,7 @@ Domain Boundary Elevation Modifiers
 
 .. toctree::
 
-    terrainbento.boundary_condition_handlers.generic_function_baselevel_handler
-    terrainbento.boundary_condition_handlers.not_core_node_baselevel_handler
-    terrainbento.boundary_condition_handlers.single_node_baselevel_handler
-    terrainbento.boundary_condition_handlers.capture_node_baselevel_handler
+    terrainbento.boundary_handlers.generic_function_baselevel_handler
+    terrainbento.boundary_handlers.not_core_node_baselevel_handler
+    terrainbento.boundary_handlers.single_node_baselevel_handler
+    terrainbento.boundary_handlers.capture_node_baselevel_handler
