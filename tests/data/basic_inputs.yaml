@@ -1,8 +1,19 @@
-model_grid: "HexModelGrid"
+grid:
+  grid:
+    HexModelGrid:
+      base_num_rows: 8
+      base_num_cols: 5
+      dx: 10
+  fields:
+    at_node:
+      topographic__elevation:
+        constant:
+          constant: 0
 clock:
   step: 1
-  output_interval: 50.
   stop: 200.
+
+output_interval: 50.
 water_erodability: 0.001
 m_sp: 1
 n_sp: 0.5

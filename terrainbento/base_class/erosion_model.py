@@ -107,7 +107,7 @@ class ErosionModel(object):
         return cls.from_dict(dict)
 
     @classmethod
-    def from_dict(cls, params, outputwriters=None):
+    def from_dict(cls, params, outputwriters={"class": {}, "function": []}):
         """
         model = ErosionModel.from_dict(dict-like)
         """
@@ -120,8 +120,8 @@ class ErosionModel(object):
         for name in boundary_handlers:
             bh_params = boundary_handlers[name]
             bh_dict[name] = _setup_boundary_handlers(grid, name, bh_params)
-
-        return cls(clock, grid, bh_dict, outputwriters, **params)
+        print(params)
+        return cls(clock, grid, boundary_handlers=bh_dict, output_writers=outputwriters, **params)
 
     @classmethod
     def _validate(cls, params):
