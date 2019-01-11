@@ -142,9 +142,9 @@ class BasicChSa(ErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(0.1)
         >>> model.model_time
-        1.0
+        0.1
 
         """
 
