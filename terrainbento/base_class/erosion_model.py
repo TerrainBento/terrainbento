@@ -27,7 +27,18 @@ from terrainbento.boundary_handlers import (
     NotCoreNodeBaselevelHandler,
     PrecipChanger,
     SingleNodeBaselevelHandler,
+    )
+from terrainbento.precipitators import(
+    UniformPrecipitator,
+    RandomPrecipitator)
+from terrainbento.runoff_generators import(
+    SimpleRunoff,
+    VariableSourceAreaRunoff
 )
+
+_SUPPORTED_PRECIPITATORS = []
+_SUPPORTED_RUNOFFGENERATORS = []
+
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
     "NormalFault",
@@ -269,6 +280,30 @@ class ErosionModel(object):
         # instantiate container for computational timestep:
         self._compute_time = [tm.time()]
 
+
+        ###################################################################
+        # address Precipitator and RunoffGenerator
+        ###################################################################
+
+        # verify that fields are added if necessary
+        for field in ["water__unit_flux_in", "rainfall__flux"]:
+            if field not in self.grid.at_node:
+                grid.add_zeros("node", field)
+
+        if precipitator is None:
+            precipitator = UniformPrecipitator(self.grid)
+        else:
+            pass
+            # verify that precipitator is valid.
+        self.precipitator = precipitator
+
+        if runoff_generator is None:
+            runoff_generator = SimpleRunoff(self.grid)
+        else:
+            pass
+            # verify that precipitator is valid.
+        self.runoff_generator = runoff_generator
+
         ###################################################################
         # instantiate flow direction and accumulation
         ###################################################################
@@ -325,6 +360,8 @@ class ErosionModel(object):
 
     def create_and_move_water(self, step):
         """"""
+        self.precipitator.run_one_step(step)
+        self.runoff_generator.run_one_step(step)
         self.flow_accumulator.run_one_step()
 
     def write_output(self):

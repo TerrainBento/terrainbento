@@ -2,7 +2,7 @@
 
 
 class UniformPrecipitator(object):
-    """"""
+    """UniformPrecipitator """
 
     def __init__(self, mg, rainfall__flux=1.0):
         """"""
