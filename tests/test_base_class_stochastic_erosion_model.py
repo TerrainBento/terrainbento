@@ -249,7 +249,7 @@ def test_float_number_of_sub_time_steps(clock_05, grid_1):
         "random_seed": 1234,
     }
     with pytest.raises(ValueError):
-        _ = BasicSt(**params)
+        BasicSt(**params)
 
 
 def test_run_opt_false_with_changer(clock_06, grid_1, precip_defaults):

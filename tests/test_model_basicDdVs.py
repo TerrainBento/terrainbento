@@ -27,7 +27,6 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
     thresh_change_per_depth,
 ):
 
-    step = 1000
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
     )
@@ -113,18 +112,12 @@ def test_Aeff(clock_simple, grid_2, K, U):
 
     # somewhat circular test to make sure slopes are below predicted upper
     # bound
-    predicted_slopes_eff_upper = (
-        (U + threshold) / (K * (model.eff_area ** m_sp))
-    ) ** (1. / n_sp)
     predicted_slopes_eff_lower = (
         (U + 0.0) / (K * (model.eff_area ** m_sp))
     ) ** (1. / n_sp)
 
     # somewhat circular test to make sure VSA slopes are higher than expected
     # "normal" slopes
-    predicted_slopes_normal_upper = (
-        (U + threshold) / (K * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
     predicted_slopes_normal_lower = (
         (U + 0.0) / (K * (actual_areas ** m_sp))
     ) ** (1. / n_sp)

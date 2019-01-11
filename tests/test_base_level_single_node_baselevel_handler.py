@@ -28,7 +28,7 @@ def test_hex():
 def test_passing_neither_lowering_method():
     """Test passing no lowering information."""
     mg = RasterModelGrid(5, 5)
-    _ = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
         SingleNodeBaselevelHandler(mg, outlet_id=0)
@@ -37,7 +37,7 @@ def test_passing_neither_lowering_method():
 def test_passing_both_lowering_methods():
     """Test passing both lowering methods."""
     mg = RasterModelGrid(5, 5)
-    _ = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
     with pytest.raises(ValueError):
@@ -50,7 +50,7 @@ def test_outlet_lowering_object_bad_file():
     """Test using an outlet lowering object with a bad file."""
 
     mg = HexModelGrid(5, 5)
-    z = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
         SingleNodeBaselevelHandler(
@@ -161,7 +161,7 @@ def test_outlet_lowering_object_with_scaling():
 
 def test_outlet_lowering_modify_other_nodes():
     mg = HexModelGrid(5, 5)
-    z = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
     with pytest.raises(ValueError):

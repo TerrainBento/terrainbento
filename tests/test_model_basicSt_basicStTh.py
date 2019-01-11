@@ -132,7 +132,6 @@ def test_stochastic_duration_rainfall_means():
     K = 0.0001
     m = 1.0
     n = 1.0
-    step = 200.0
 
     grid = RasterModelGrid((3, 6), xy_spacing=100.)
     grid.set_closed_boundaries_at_grid_edges(True, False, True, False)

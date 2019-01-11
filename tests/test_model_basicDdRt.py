@@ -28,7 +28,6 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
     thresh_change_per_depth,
 ):
 
-    step = 1000
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
     )

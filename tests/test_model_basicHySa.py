@@ -57,7 +57,7 @@ def test_channel_erosion(
 
     # construct and run model
     model = BasicHySa(**params)
-    for _ in range(800):
+    for _ in range(2000):
         model.run_one_step(10)
 
     # construct actual and predicted slopes
@@ -67,6 +67,13 @@ def test_channel_erosion(
         ((U * v_sc) / (K_sed_sp * np.power(actual_areas, m_sp)))
         + (U / (K_rock_sp * np.power(actual_areas, m_sp))),
         1. / n_sp,
+    )
+
+    # assert actual and predicted slopes are the same.
+    assert_array_almost_equal(
+        actual_slopes[model.grid.core_nodes[1:-1]],
+        predicted_slopes[model.grid.core_nodes[1:-1]],
+        decimal=4,
     )
 
     with pytest.raises(SystemExit):

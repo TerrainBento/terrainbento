@@ -24,7 +24,6 @@ def test_steady_Ksp_no_precip_changer(
     Kt = 0.005
     Tr = 0.0001
     Tt = 0.0005
-    step = 1000
 
     params = {
         "grid": grid_2,
