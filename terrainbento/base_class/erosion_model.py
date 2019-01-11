@@ -47,6 +47,41 @@ _HANDLER_METHODS = {
     "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
 
+_REQUIRED_FIELDS = ["topographic__elevation"]
+
+
+def _verify_boundary_handler(handler):
+    bad_name = False
+    bad_instance = False
+    if isinstance(handler, six.string_types):
+        if handler not in _SUPPORTED_BOUNDARY_HANDLERS:
+            bad_name = True
+    else:  # if a dictionary {name, handler}
+        for name in handler:
+            if name not in _SUPPORTED_BOUNDARY_HANDLERS:
+                bad_name = True
+            else:
+                if isinstance(handler[name], _HANDLER_METHODS[name]) is False:
+                    bad_instance = True
+
+    if bad_name:
+        raise ValueError(
+            (
+                "Only supported boundary condition handlers are "
+                "permitted. These include:"
+                "\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
+            )
+        )
+    if bad_instance:
+        raise ValueError(
+            (
+                "An invalid instance of "
+                + name
+                + " was passed as a boundary handler."
+                + str(handler)
+            )
+        )
+
 
 def _setup_boundary_handlers(grid, name, params):
     """Setup BoundaryHandlers for use by a terrainbento model.
@@ -63,19 +98,11 @@ def _setup_boundary_handlers(grid, name, params):
     handler : str
         Name of a supported boundary condition handler.
     """
-    if name in _SUPPORTED_BOUNDARY_HANDLERS:
-        # Instantiate handler
-        handler_func = _HANDLER_METHODS[name]
-        boundary_handler = handler_func(grid, **params)
-    # Raise an error if the handler is not supported.
-    else:
-        raise ValueError(
-            (
-                "Only supported boundary condition handlers are "
-                "permitted. These include:"
-                "\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
-            )
-        )
+    _verify_boundary_handler(name)
+    # Instantiate handler
+    handler_func = _HANDLER_METHODS[name]
+    boundary_handler = handler_func(grid, **params)
+
     return boundary_handler
 
 
@@ -130,11 +157,9 @@ class ErosionModel(object):
     def _validate(cls, params):
         """Make sure necessary things for a model grid and a clock are here."""
         if "grid" not in params:
-            msg = ""
-            raise ValueError(msg)
+            raise ValueError("No grid provided as part of input parameters")
         if "clock" not in params:
-            msg = ""
-            raise ValueError(msg)
+            raise ValueError("No clock provided as part of input parameters")
 
     def __init__(
         self,
@@ -150,7 +175,7 @@ class ErosionModel(object):
         save_first_timestep=True,
         output_prefix="terrainbento_output",
         fields=["topographic__elevation"],
-        **kwargs
+        flow_accumulator_kwargs={},
     ):
         """
         Parameters
@@ -210,13 +235,15 @@ class ErosionModel(object):
         # type checking
         if isinstance(clock, Clock) is False:
             raise ValueError("Provided Clock is not valid.")
-
         if isinstance(grid, ModelGrid) is False:
             raise ValueError("Provided Grid is not valid.")
 
         # save the grid, clock, and parameters.
         self.grid = grid
         self.clock = clock
+
+        # first pass of verifying fields
+        self._verify_fields(_REQUIRED_FIELDS)
 
         # save reference to elevation
         self.z = grid.at_node["topographic__elevation"]
@@ -255,14 +282,19 @@ class ErosionModel(object):
                 self.grid,
                 routing="D4",
                 depression_finder=depression_finder,
-                **kwargs
+                **flow_accumulator_kwargs
             )
         else:
-            self.flow_accumulator = FlowAccumulator(self.grid, **kwargs)
+            self.flow_accumulator = FlowAccumulator(
+                self.grid,
+                depression_finder=depression_finder,
+                **flow_accumulator_kwargs
+            )
 
         ###################################################################
         # Boundary Conditions and Output Writers
         ###################################################################
+        _verify_boundary_handler(boundary_handlers)
         self.boundary_handlers = boundary_handlers
 
         if "class" in output_writers:
@@ -273,15 +305,11 @@ class ErosionModel(object):
 
         self.output_writers = output_writers
 
-        if len(kwargs) > 0:
-            msg = str(kwargs)
-            raise ValueError(msg)
-
     def _verify_fields(self, required_fields):
         """"""
         for field in required_fields:
             if field not in self.grid.at_node:
-                raise ValueError
+                raise ValueError("")
 
     @property
     def model_time(self):

@@ -6,12 +6,7 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_equal
 
 from landlab import RasterModelGrid
-from terrainbento import (
-    BasicSt,
-    BasicStTh,
-    Clock,
-    NotCoreNodeBaselevelHandler,
-)
+from terrainbento import BasicSt, BasicStTh, Clock, NotCoreNodeBaselevelHandler
 
 _th_params = {
     "water_erosion_rule__threshold": 1e-9,
@@ -19,13 +14,16 @@ _th_params = {
 }
 _empty_params = {"infiltration_capacity": 1.0}
 
+
 @pytest.mark.parametrize(
     "Model,extra_params", [(BasicStTh, _th_params), (BasicSt, _empty_params)]
 )
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
-def test_steady_without_stochastic_duration(clock_simple, Model, extra_params, depression_finder):
+def test_steady_without_stochastic_duration(
+    clock_simple, Model, extra_params, depression_finder
+):
     r"""Test steady profile solution with fixed duration.
 
     Notes

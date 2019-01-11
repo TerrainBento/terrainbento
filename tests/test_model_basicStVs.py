@@ -1,5 +1,6 @@
 import pytest
 from numpy.testing import assert_array_almost_equal
+
 from terrainbento import BasicStVs, NotCoreNodeBaselevelHandler
 
 
@@ -18,11 +19,13 @@ def test_bad_transmiss(grid_2, clock_simple):
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
 @pytest.mark.parametrize("m_sp,n_sp", [(1, 1)])
-def test_steady_without_stochastic_duration(clock_simple, depression_finder, U, K, grid_2, m_sp, n_sp):
+def test_steady_without_stochastic_duration(
+    clock_simple, depression_finder, U, K, grid_2, m_sp, n_sp
+):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
     )
-    grid_2.at_node['soil__depth'][:] = 1.0e-9
+    grid_2.at_node["soil__depth"][:] = 1.0e-9
     # construct dictionary. note that D is turned off here
     params = {
         "grid": grid_2,

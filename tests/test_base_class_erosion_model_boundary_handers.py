@@ -1,5 +1,6 @@
 # coding: utf8
 # !/usr/env/python
+import os
 
 import numpy as np
 import pytest
@@ -17,14 +18,24 @@ from terrainbento.boundary_handlers import (
 from terrainbento.utilities import filecmp
 
 
-def test_bad_boundary_condition_string(clock_01, almost_default_grid):
+@pytest.mark.parametrize("keyword", ["BasicSt", "NotCoreNodeBaselevelHandler"])
+def test_bad_boundary_condition_string(
+    clock_simple, almost_default_grid, keyword
+):
     params = {
         "grid": almost_default_grid,
-        "clock": clock_01,
-        "boundary_handlers": {"spam": None},
+        "clock": clock_simple,
+        "boundary_handlers": {keyword: BasicSt},
     }
     with pytest.raises(ValueError):
         ErosionModel(**params)
+
+
+def test_bad_boundary_condition_yaml():
+    _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+    bad_file = os.path.join(_TEST_DATA_DIR, "bad_handler.yaml")
+    with pytest.raises(ValueError):
+        ErosionModel.from_file(bad_file)
 
 
 def test_single_node_blh_with_closed_boundaries(

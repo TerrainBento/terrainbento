@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from landlab import HexModelGrid
+from landlab import HexModelGrid, RasterModelGrid
 from landlab.components import FlowAccumulator
 from terrainbento import ErosionModel
 from terrainbento.utilities import filecmp
@@ -26,6 +26,39 @@ at_node_fields = [
     "flow__upstream_node_order",
     "flow__data_structure_delta",
 ]
+
+
+def test_not_correct_fields(clock_simple):
+    grid = RasterModelGrid((3, 21))
+    with pytest.raises(ValueError):
+        ErosionModel(clock=clock_simple, grid=grid)
+
+
+def test_extra_params(simple_square_grid, clock_simple):
+    with pytest.raises(TypeError):
+        ErosionModel(clock=clock_simple, grid=simple_square_grid, spam="eggs")
+
+
+def test_no_clock(simple_square_grid):
+    with pytest.raises(ValueError):
+        ErosionModel(clock="spam", grid=simple_square_grid)
+
+
+def test_no_grid(clock_simple):
+    with pytest.raises(ValueError):
+        ErosionModel(grid="eggs", clock=clock_simple)
+
+
+def test_no_clock_in_file():
+    fp = os.path.join(_TEST_DATA_DIR, "basic_inputs_no_clock.yaml")
+    with pytest.raises(ValueError):
+        ErosionModel.from_file(fp)
+
+
+def test_no_grid_in_file():
+    fp = os.path.join(_TEST_DATA_DIR, "basic_inputs_no_grid.yaml")
+    with pytest.raises(ValueError):
+        ErosionModel.from_file(fp)
 
 
 def test_input_file():

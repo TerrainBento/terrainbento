@@ -6,6 +6,7 @@ from terrainbento import (
     Basic,
     BasicCh,
     BasicChRt,
+    BasicRtTh,
     BasicChRtTh,
     BasicChSa,
     BasicCv,
@@ -16,17 +17,13 @@ from terrainbento import (
     PrecipChanger,
 )
 
-_EXTRA_PARAMS = {}
-_CHRTTH_PARAMS = {"water_erosion_rule__threshold": 0}
-
 
 @pytest.mark.parametrize(
-    "Model,extra_params",
+    "Model",
     [
-        (BasicRt, _EXTRA_PARAMS),
-        (BasicChRt, _EXTRA_PARAMS),
-        (BasicRtSa, _EXTRA_PARAMS),
-        (BasicChRtTh, _CHRTTH_PARAMS),
+        BasicRt,
+        BasicChRt,
+        BasicRtSa,
     ],
 )
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
@@ -35,7 +32,15 @@ _CHRTTH_PARAMS = {"water_erosion_rule__threshold": 0}
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
 def test_rock_till_steady_no_precip_changer(
-    clock_simple, grid_2,extra_params, m_sp, n_sp, depression_finder, U, Kr, Kt, Model
+    clock_simple,
+    grid_2,
+    m_sp,
+    n_sp,
+    depression_finder,
+    U,
+    Kr,
+    Kt,
+    Model,
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
@@ -51,8 +56,62 @@ def test_rock_till_steady_no_precip_changer(
         "n_sp": n_sp,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
-    for p in extra_params:
-        params[p] = extra_params[p]
+
+    # construct and run model
+    model = Model(**params)
+    for _ in range(200):
+        model.run_one_step(1000)
+
+    # construct actual and predicted slopes
+    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+    actual_areas = model.grid.at_node["surface_water__discharge"]
+    rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1. / n_sp)
+    till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1. / n_sp)
+
+    # assert actual and predicted slopes are the same for rock and till
+    # portions.
+    assert_array_almost_equal(
+        actual_slopes[22:37], rock_predicted_slopes[22:37], decimal=4
+    )
+
+    assert_array_almost_equal(
+        actual_slopes[82:97], till_predicted_slopes[82:97], decimal=4
+    )
+
+
+@pytest.mark.parametrize("Model", [BasicRtTh, BasicChRtTh])
+@pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
+@pytest.mark.parametrize("n_sp", [1.])
+@pytest.mark.parametrize(
+    "depression_finder", [None, "DepressionFinderAndRouter"]
+)
+def test_rock_till_steady_no_precip_changer_ChRtTh(
+    clock_simple,
+    Model,
+    grid_2,
+    m_sp,
+    n_sp,
+    depression_finder,
+    U,
+    Kr,
+    Kt,
+):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        grid_2, modify_core_nodes=True, lowering_rate=-U
+    )
+    params = {
+        "grid": grid_2,
+        "clock": clock_simple,
+        "regolith_transport_parameter": 0.,
+        "water_erodability_lower": Kr,
+        "water_erodability_upper": Kt,
+        "depression_finder": depression_finder,
+        "m_sp": m_sp,
+        "n_sp": n_sp,
+        "water_erosion_rule_upper__threshold": 0.0000001,
+        "water_erosion_rule_lower__threshold": 0.0000001,
+        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
+    }
 
     # construct and run model
     model = Model(**params)
