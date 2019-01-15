@@ -104,7 +104,13 @@ class BasicDdVs(ErosionModel):
         """
         Parameters
         ----------
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
 
+        **kwargs :
+            Keyword arguments to pass to
+            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
 
         Returns
         -------

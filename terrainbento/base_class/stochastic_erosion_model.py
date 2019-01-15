@@ -1,71 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""Base class for common functions of terrainbento stochastic erosion models.
-
-The **StochasticErosionModel** is a base class that contains all of the
-functionality shared by the terrainbento models that use stochastic
-hydrology.
-
-
-Input File or Dictionary Parameters
------------------------------------
-The following are parameters found in the parameters input file or dictionary.
-Depending on© how the model is initialized, some of them are optional or not
-used.
-
-Required Parameters
-^^^^^^^^^^^^^^^^^^^
-Two primary options are avaliable for the stochastic erosion models. When
-``opt_stochastic_duration=True`` the model will use the
-``PrecipitationDistribution`` Landlab component to generate a random storm
-duration, interstorm duration, and precipitation intensity or storm depth from
-an exponential distribution when given a mean value. Refer to the documentation
-for this component for additional details.
-
-When this is the case, the following parameters are used:
-
-mean_storm_duration : float
-    Average duration of a precipitation event.
-mean_interstorm_duration : float
-    Average duration between precipitation events.
-mean_storm_depth : float
-    Average depth of precipitation events.
-
-If ``opt_stochastic_duration=False`` then the duration indicated by the
-parameter ``step`` will first be split into a series of sub-timesteps based on
-the parameter ``number_of_sub_time_steps``, and then each of these
-sub-timesteps will experience a duration of rain and no-rain based on the value
-of ``rainfall_intermittency_factor``. The duration of rain and no-rain
-will not change, but the intensity of rain will vary based on a stretched
-exponential distribution described by the shape factor
-``rainfall__shape_factor`` and with a scale factor
-calculated so that the mean of the distribution has the value given by
-``rainfall__mean_rate``.
-
-number_of_sub_time_steps : int
-    Number of sub-timesteps.
-rainfall_intermittency_factor : float
-    Value between zero and one that indicates the proportion of time rain
-    occurs. A value of 0 means it never rains and a value of 1 means that rain
-    never ceases.
-rainfall__mean_rate : float
-    Mean of the precipitation distribution.
-rainfall__shape_factor : float
-    Shape factor of the precipitation distribution.
-
-Parameters that control output
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Both stochastic options have an option to record the sequence of rain and
-no-rain.
-
-record_rain : boolean
-    Flag to indicate if a sequence of storms should be saved. Default is False.
-storm_sequence_filename : str
-    Storm sequence filename. Default is "storm_sequence.txt"
-frequency_filename : str
-    Filename for precipitation exceedance frequency summary. Default value is
-    "exceedance_summary.txt"
-"""
+"""Base class for common functions of terrainbento stochastic erosion models."""
 
 import os
 import textwrap
@@ -82,15 +17,44 @@ _STRING_LENGTH = 80
 class StochasticErosionModel(ErosionModel):
     """Base class for stochastic-precipitation terrainbento models.
 
-    A **StochasticErosionModel** inherits from **ErosionModel** and provides
+    A **StochasticErosionModel** inherits from
+    :py:class:`~terrainbento.base_class.erosion_model.ErosionModel` and provides
     functionality needed by all stochastic-precipitation models.
 
     This is a base class that handles processes related to the generation of
     preciptiation events.
 
-    It is expected that a derived model will define an **__init__** and a
-     **run_one_step** method. If desired, the derived model can overwrite the
-     existing **run_for**, **run**, and **finalize** methods.
+    Two primary options are avaliable for the stochastic erosion models. When
+    ``opt_stochastic_duration=True`` the model will use the
+    `PrecipitationDistribution <https://landlab.readthedocs.io/en/latest/landlab.components.uniform_precip.html>`_
+    Landlab component to generate a random storm duration, interstorm duration,
+    and precipitation intensity or storm depth from an exponential
+    distribution. When this option is selected, the following parameters are
+    used:
+
+      - mean_storm_duration
+      - mean_interstorm_duration
+      - mean_storm_depth
+
+    When ``opt_stochastic_duration==False`` the model will have uniform
+    timesteps but generate rainfall from a stretched exponential distribution.
+    The duration indicated by the parameter ``step`` will first be split into a
+    series of sub-timesteps based on the parameter
+    ``number_of_sub_time_steps``, and then each of these sub-timesteps will
+    experience a duration of rain and no-rain based on the value of
+    ``rainfall_intermittency_factor``. The duration of rain and no-rain will
+    not change, but the intensity of rain will vary based on a stretched
+    exponential distribution described by the shape factor
+    ``rainfall__shape_factor`` and with a scale factor calculated so that the
+    mean of the distribution has the value given by ``rainfall__mean_rate``.
+
+    The following parameter are used:
+
+      - rainfall__shape_factor
+      - number_of_sub_time_steps
+      - rainfall_intermittency_factor
+      - rainfall__mean_rate
+
     """
 
     def __init__(
@@ -98,8 +62,6 @@ class StochasticErosionModel(ErosionModel):
         clock,
         grid,
         random_seed=0,
-        storm_sequence_filename="storm_sequence.txt",
-        frequency_filename="exceedance_summary.txt",
         record_rain=False,
         opt_stochastic_duration=False,
         mean_storm_duration=1,
@@ -109,20 +71,48 @@ class StochasticErosionModel(ErosionModel):
         number_of_sub_time_steps=1,
         rainfall_intermittency_factor=1,
         rainfall__mean_rate=1,
+        storm_sequence_filename="storm_sequence.txt",
+        frequency_filename="exceedance_summary.txt",
         **kwargs,
     ):
         """
         Parameters
         ----------
-        input_file : str
-            Path to model input file. See wiki for discussion of input file
-            formatting. One of input_file or params is required.
-        params : dict
-            Dictionary containing the input file. One of input_file or params
-            is required.
-        output_writers : class, function, or list of classes and/or functions,
-            optional classes or functions used to write incremental output
-            (e.g. make a diagnostic plot).
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
+        random_seed, int, optional
+            Random seed. Default is 0.
+        opt_stochastic_duration : bool, optional
+            Flag indicating if timestep is stochastic or constant. Default is
+            False.
+        mean_storm_duration : float, optional
+            Average duration of a precipitation event. Default is 1.
+        mean_interstorm_duration : float, optional
+            Average duration between precipitation events. Default is 1.
+        mean_storm_depth : float, optional
+            Average depth of precipitation events. Default is 1.
+        number_of_sub_time_steps : int, optional
+            Number of sub-timesteps. Default is 1.
+        rainfall_intermittency_factor : float, optional
+            Value between zero and one that indicates the proportion of time
+            rain occurs. A value of 0 means it never rains and a value of 1
+            means that rain never ceases.  Default is 1.
+        rainfall__mean_rate : float, optional
+            Mean of the precipitation distribution.  Default is 1.
+        rainfall__shape_factor : float, optional
+            Shape factor of the precipitation distribution.  Default is 1.
+        record_rain : boolean
+            Flag to indicate if a sequence of storms should be saved. Default
+            is False.
+        storm_sequence_filename : str
+            Storm sequence filename. Default is "storm_sequence.txt"
+        frequency_filename : str
+            Filename for precipitation exceedance frequency summary. Default
+            value is "exceedance_summary.txt"
+        **kwargs :
+            Keyword arguments to pass to
+            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`
 
         Returns
         -------

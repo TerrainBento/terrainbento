@@ -79,11 +79,6 @@ class BasicDdHy(ErosionModel):
     |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
     +--------------------+-------------------------------------------------+
 
-    A value for the parameter ``solver`` can also be used to indicate if the
-    default internal timestepping is used for the **ErosionDeposition**
-    component or if an adaptive internal timestep is used. Refer to the
-    **ErosionDeposition** documentation for details.
-
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
 
@@ -108,7 +103,13 @@ class BasicDdHy(ErosionModel):
         """
         Parameters
         ----------
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
 
+        **kwargs :
+            Keyword arguments to pass to
+            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
 
         Returns
         -------

@@ -99,35 +99,6 @@ class BasicChRtTh(TwoLithologyErosionModel):
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
 
-    *Specifying the Lithology Contact*
-
-    In all two-lithology models the spatially variable elevation of the contact
-    elevation must be given as the file path to an ESRII ASCII format file using
-    the parameter ``lithology_contact_elevation__file_name``. If topography was
-    created using an input DEM, then the shape of the field contained in the
-    file must be the same as the input DEM. If synthetic topography is used then
-    the shape of the field must be ``number_of_node_rows-2`` by
-    ``number_of_node_columns-2``. This is because the read-in DEM will be padded
-    by a halo of size 1.
-
-    *Reference Frame Considerations*
-
-    Note that the developers had to make a decision about how to represent the
-    contact. We could represent the contact between two layers either as a depth
-    below present land surface, or as an altitude. Using a depth would allow for
-    vertical motion, because for a fixed surface, the depth remains constant
-    while the altitude changes. But the depth must be updated every time the
-    surface is eroded or aggrades. Using an altitude avoids having to update the
-    contact position every time the surface erodes or aggrades, but any tectonic
-    motion would need to be applied to the contact position as well. We chose to
-    use the altitude approach because this model was originally written for an
-    application with lots of erosion expected but no tectonics.
-
-    If implementing tectonics is desired, consider using either the
-    **SingleNodeBaselevelHandler** or the **NotCoreNodeBaselevelHandler** which
-    modify both the ``topographic__elevation`` and the ``bedrock__elevation``
-    fields.
-
     """
 
     def __init__(
@@ -143,7 +114,13 @@ class BasicChRtTh(TwoLithologyErosionModel):
         """
         Parameters
         ----------
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
 
+        **kwargs :
+            Keyword arguments to pass to
+            :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
 
         Returns
         -------

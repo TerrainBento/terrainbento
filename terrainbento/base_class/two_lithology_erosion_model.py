@@ -16,22 +16,15 @@ _REQUIRED_FIELDS = ["lithology_contact__elevation"]
 class TwoLithologyErosionModel(ErosionModel):
     """Base class for two lithology terrainbento models.
 
-    A **TwoLithologyErosionModel** inherits from **ErosionModel** and provides
-    functionality needed by all models with two lithologies.
+    A **TwoLithologyErosionModel** inherits from
+    :py:class:`~terrainbento.base_class.erosion_model.ErosionModel` and
+    provides functionality needed by all models with two lithologies.
 
     This is a base class that handles setting up common parameters and the
     contact zone elevation.
 
-    *Specifying the Lithology Contact*
-
-    In all two-lithology models the spatially variable elevation of the contact
-    elevation must be given as the file path to an ESRII ASCII format file using
-    the parameter ``lithology_contact_elevation__file_name``. If topography was
-    created using an input DEM, then the shape of the field contained in the
-    file must be the same as the input DEM. If synthetic topography is used then
-    the shape of the field must be ``number_of_node_rows-2`` by
-    ``number_of_node_columns-2``. This is because the read-in DEM will be padded
-    by a halo of size 1.
+    A field "lithology_contact_elevation__file_name" must be specified in the
+    grid.
     """
 
     def __init__(
@@ -49,7 +42,13 @@ class TwoLithologyErosionModel(ErosionModel):
         """
         Parameters
         ----------
-        gr
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
+
+        **kwargs :
+            Keyword arguments to pass to
+            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`
 
         Returns
         -------

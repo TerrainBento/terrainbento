@@ -29,4 +29,4 @@ class RandomPrecipitator(object):
     def run_one_step(self, step):
         """"""
         values = self.function(self._grid.size("node"), **self._kwargs)
-        mg.at_node["rainfall__flux"][:] = values
+        self._grid.at_node["rainfall__flux"][:] = values

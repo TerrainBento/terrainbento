@@ -3,7 +3,6 @@ import pytest
 from numpy.testing import assert_array_almost_equal
 
 from terrainbento import BasicRtVs, NotCoreNodeBaselevelHandler
-from terrainbento.utilities import filecmp
 
 
 @pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])

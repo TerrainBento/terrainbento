@@ -8,7 +8,6 @@ import pytest
 from landlab import HexModelGrid, RasterModelGrid
 from landlab.components import FlowAccumulator
 from terrainbento import ErosionModel
-from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -25,6 +24,8 @@ at_node_fields = [
     "surface_water__discharge",
     "flow__upstream_node_order",
     "flow__data_structure_delta",
+    "water__unit_flux_in",
+    "rainfall__flux",
 ]
 
 
@@ -96,6 +97,25 @@ def test_parameters(clock_simple):
     }
 
     em = ErosionModel.from_dict(params)
+    assert isinstance(em.grid, HexModelGrid)
+    assert em.grid.number_of_nodes == 56
+    for field in at_node_fields:
+        assert field in em.grid.at_node
+    assert isinstance(em.flow_accumulator, FlowAccumulator) is True
+    assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
+    assert em.boundary_handlers == {}
+    assert em.output_writers == {}
+    assert em.save_first_timestep is True
+    assert em._out_file_name == "terrainbento_output"
+    assert em._model_time == 0.
+
+
+def test_string():
+    fp = os.path.join(_TEST_DATA_DIR, "inputs.yaml")
+    with open(fp, "r") as f:
+        contents = f.read()
+
+    em = ErosionModel.from_file(contents)
     assert isinstance(em.grid, HexModelGrid)
     assert em.grid.number_of_nodes == 56
     for field in at_node_fields:

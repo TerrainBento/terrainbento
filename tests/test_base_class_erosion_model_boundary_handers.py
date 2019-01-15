@@ -15,7 +15,6 @@ from terrainbento.boundary_handlers import (
     PrecipChanger,
     SingleNodeBaselevelHandler,
 )
-from terrainbento.utilities import filecmp
 
 
 @pytest.mark.parametrize("keyword", ["BasicSt", "NotCoreNodeBaselevelHandler"])

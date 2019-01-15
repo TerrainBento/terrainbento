@@ -80,9 +80,7 @@ class BasicDdSt(StochasticErosionModel):
     Refer to the terrainbento manuscript Table 5 (URL to manuscript when
     published) for full list of parameter symbols, names, and dimensions.
 
-    For information about the stochastic precipitation and runoff model used,
-    see the documentation for **BasicSt** and the base class
-    **StochasticErosionModel**.
+
     """
 
     def __init__(
@@ -101,7 +99,13 @@ class BasicDdSt(StochasticErosionModel):
         """
         Parameters
         ----------
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
 
+        **kwargs :
+            Keyword arguments to pass to
+            :py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`.
 
         Returns
         -------

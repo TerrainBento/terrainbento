@@ -157,22 +157,54 @@ class ErosionModel(object):
     """
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, file_like):
         """Construct a terrainbento model from a file.
 
         Parameters
         ----------
-        filename : path
-            Valid path to a YAML-style input file or file-like object.
+        file_like : file_like or str
+            Contents of a parameter file, a file-like object, or the path to
+            a parameter file.
 
         Examples
         --------
-        >>>
-
-        model = ErosionModel.from_file("file.yaml")
+        >>> from six import StringIO
+        >>> filelike = StringIO('''
+        ... grid:
+        ...   grid:
+        ...     RasterModelGrid:
+        ...       - [4, 5]
+        ...   fields:
+        ...     at_node:
+        ...       topographic__elevation:
+        ...         constant:
+        ...           - constant: 0
+        ... clock:
+        ...   step: 1
+        ...   stop: 200
+        ... ''')
+        >>> model = ErosionModel.from_file(filelike)
+        >>> model.clock.step
+        1.0
+        >>> model.clock.stop
+        200.0
+        >>> model.grid.shape
+        (4, 5)
         """
-        with open(filename, "r") as f:
-            dict = yaml.load(f)
+        # first get contents.
+        try:
+            contents = file_like.read()
+        except AttributeError:  # was a str
+            if os.path.isfile(file_like):
+                with open(file_like, "r") as fp:
+                    contents = fp.read()
+            else:
+                contents = file_like  # not tested
+
+        # then parse contents.
+        dict = yaml.load(contents)
+
+        # construct instance
         return cls.from_dict(dict)
 
     @classmethod
@@ -189,12 +221,33 @@ class ErosionModel(object):
         params : dict
             Dictionary of input parameters.
         output_writers : dictionary of output writers.
-            XXX
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot). These should be passed in a dictionary with two
+            keys: "class" and "function". The value associated with each of
+            these should be a list containing the uninstantiated output
+            writers. See the Jupyter notebook examples for more details.
 
         Examples
         --------
-        XXX
-        model = ErosionModel.from_dict(dict-like)
+        Examples
+        --------
+        >>> params = {
+        ... "grid": {
+        ...   "grid": {"RasterModelGrid": [(4, 5)]},
+        ...   "fields": {
+        ...     "at_node":
+        ...       {"topographic__elevation": {"constant": [{"constant": 0}]}}
+        ...              },
+        ...          },
+        ... "clock": {"step": 1, "stop": 200}
+        ...           }
+        >>> model = ErosionModel.from_dict(params)
+        >>> model.clock.step
+        1.0
+        >>> model.clock.stop
+        200.0
+        >>> model.grid.shape
+        (4, 5)
         """
         cls._validate(params)
 
@@ -266,46 +319,47 @@ class ErosionModel(object):
         ----------
         clock : terrainbento Clock instance
         grid : landlab model grid instance
-            Correct fields must be created.
+            The grid must have all required fields.
         precipitator : terrainbento precipitator, optional
-
+            An instantiated version of a valid precipitator. See the
+            :py:mod:`precipitator <terrainbento.precipitator>` module for
+            valid options.
         runoff_generator : terrainbento runoff_generator, optional
-
-
-        boundary_handlers : dictionary, optional
-            terrainbento provides the ability for an arbitrary number of boundary
-            condition handler classes to operate on the model grid each time step in order
-            to handle time-variable boundary conditions such as: changing a watershed
-            outlet elevation, modifying precipitation parameters through time, or
-            simulating external drainage capture.
-            Strings containing the names of classes used to handle boundary conditions.
-            Valid options are currently: "NormalFault", "PrecipChanger",
-            "CaptureNodeBaselevelHandler", "NotCoreNodeBaselevelHandler", and
-            "SingleNodeBaselevelHandler". These BoundaryHandlers are instantiated with
-            the entire parameter set unless there is an entry in the parameter
-            dictionary with the name of the boundary handler that contains its own
-            parameter dictionary. If this is the case, the handler-specific dictionary
-            is passed to instantiate the boundary handler.
-        output_writers : class, function, or list, optional
-            Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot).
+            An instantiated version of a valid runoff generator. See the
+            :py:mod:`runoff generator <terrainbento.runoff_generator>` module
+            for valid options.
         flow_director : str, optional
-            String name of a Landlab FlowDirector. All options that the Landlab
-            FlowAccumulator is compatible with are permitted. Default is
-            "FlowDirectorSteepest".
+            String name of a
+            `Landlab FlowDirector <https://landlab.readthedocs.io/en/latest/landlab.components.flow_director.html>`_.
+            Default is "FlowDirectorSteepest".
         depression_finder : str, optional
             String name of a Landlab depression finder. Default is None.
+        flow_accumulator_kwargs : dictionary, optional
+            Dictionary of any additional keyword arguments to pass to the
+            `Landlab FlowAccumulator <https://landlab.readthedocs.io/en/latest/landlab.components.flow_accum.html>`_.
+            Default is an empty dictionary.
+        boundary_handlers : dictionary, optional
+            Dictionary with ``name: instance`` key-value pairs. Each entry
+            must be a valid instance of a terrainbento boundary handler. See
+            the :py:mod:`boundary handlers <terrainbento.boundary_handlers`
+            module for valid options.
+        output_writers : dictionary of output writers.
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot). These should be passed in a dictionary with two
+            keys: "class" and "function". The value associated with each of
+            these should be a list containing the uninstantiated output
+            writers. See the Jupyter notebook examples for more details.
+        output_interval : float, optional
+            Default is the Clock's stop time.
         save_first_timestep : bool, optional
             Indicates whether model output should be saved at time zero.  Default is
             True.
         output_filename : str, optional
             String prefix for names of output netCDF files. Default is
             ``"terrainbento_output"``.
-        output_interval : float, optional
-            Default is the Clock's stop time.
-        flow_accumulator_kwargs : dictionary, optional
-            Dictionary of keyword arguments to pass to the FlowAccumulator.
-            Default is an empty dictionary.
+        fields : list, optional
+            List of field names to write as netCDF output. Default is to only
+            write out "topographic__elevation".
 
         Returns
         -------
@@ -366,7 +420,7 @@ class ErosionModel(object):
             precipitator = UniformPrecipitator(self.grid)
         else:
             if isinstance(precipitator, _VALID_PRECIPITATORS) is False:
-                raise ValueError
+                raise ValueError("Provided value for precipitator not valid.")
         self.precipitator = precipitator
 
         # verify that runoff_generator is valid
@@ -374,7 +428,9 @@ class ErosionModel(object):
             runoff_generator = SimpleRunoff(self.grid)
         else:
             if isinstance(runoff_generator, _VALID_RUNOFF_GENERATORS) is False:
-                raise ValueError
+                raise ValueError(
+                    "Provide value for runoff_generator not valid."
+                )
         self.runoff_generator = runoff_generator
 
         ###################################################################

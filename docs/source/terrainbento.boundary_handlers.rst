@@ -2,7 +2,7 @@ terrainbento Boundary Condition Handlers
 ========================================
 
 Presently terrainbento has four built-in boundary condition handlers. In
-addition, Landlab components can be used as boundary condition handlers.
+addition, a small number of Landlab components are valid.
 
 
 Time Varying Precipitation
@@ -22,3 +22,9 @@ Domain Boundary Elevation Modifiers
     terrainbento.boundary_handlers.not_core_node_baselevel_handler
     terrainbento.boundary_handlers.single_node_baselevel_handler
     terrainbento.boundary_handlers.capture_node_baselevel_handler
+
+
+Valid Landlab Components
+------------------------
+
+- `NormalFault <https://landlab.readthedocs.io/en/latest/landlab.components.normal_fault.html>`_.
