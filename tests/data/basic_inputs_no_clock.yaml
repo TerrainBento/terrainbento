@@ -1,14 +1,14 @@
 grid:
   grid:
     HexModelGrid:
-      base_num_rows: 8
-      base_num_cols: 5
-      dx: 10
+      - base_num_rows: 8
+        base_num_cols: 5
+        dx: 10
   fields:
     at_node:
       topographic__elevation:
         constant:
-          constant: 0
+          - constant: 0
 
 output_interval: 50.
 water_erodability: 0.001

@@ -1,14 +1,12 @@
 grid:
   grid:
     RasterModelGrid:
-      shape:
-        - 4
-        - 5
+      - [4, 5]
   fields:
     at_node:
       topographic__elevation:
         constant:
-          constant: 0
+          - constant: 0
 clock:
   step: 100
   stop: 2000.

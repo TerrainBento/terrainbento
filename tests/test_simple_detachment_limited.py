@@ -6,41 +6,26 @@ from terrainbento import (
     Basic,
     BasicCh,
     BasicChRt,
-    BasicRtTh,
     BasicChRtTh,
     BasicChSa,
     BasicCv,
     BasicRt,
     BasicRtSa,
+    BasicRtTh,
     BasicSa,
     NotCoreNodeBaselevelHandler,
     PrecipChanger,
 )
 
 
-@pytest.mark.parametrize(
-    "Model",
-    [
-        BasicRt,
-        BasicChRt,
-        BasicRtSa,
-    ],
-)
+@pytest.mark.parametrize("Model", [BasicRt, BasicChRt, BasicRtSa])
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2. / 3., 1.])
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
 def test_rock_till_steady_no_precip_changer(
-    clock_simple,
-    grid_2,
-    m_sp,
-    n_sp,
-    depression_finder,
-    U,
-    Kr,
-    Kt,
-    Model,
+    clock_simple, grid_2, m_sp, n_sp, depression_finder, U, Kr, Kt, Model
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
@@ -86,15 +71,7 @@ def test_rock_till_steady_no_precip_changer(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
 def test_rock_till_steady_no_precip_changer_ChRtTh(
-    clock_simple,
-    Model,
-    grid_2,
-    m_sp,
-    n_sp,
-    depression_finder,
-    U,
-    Kr,
-    Kt,
+    clock_simple, Model, grid_2, m_sp, n_sp, depression_finder, U, Kr, Kt
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U

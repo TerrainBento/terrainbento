@@ -81,15 +81,15 @@ def test_parameters(clock_simple):
     params = {
         "grid": {
             "grid": {
-                "HexModelGrid": {
+                "HexModelGrid": [{
                     "base_num_rows": 8,
                     "base_num_cols": 5,
                     "dx": 10,
-                }
+                }]
             },
             "fields": {
                 "at_node": {
-                    "topographic__elevation": {"constant": {"constant": 0}}
+                    "topographic__elevation": {"constant": [{"constant": 0}]}
                 }
             },
         },

@@ -1,10 +1,6 @@
 # coding: utf8
 # !/usr/env/python
-"""Base class for common functions of all terrainbento erosion models.
-
-The **ErosionModel** is a base class that contains all of the
-functionality shared by the terrainbento models.
-"""
+"""Base class for common functions of all terrainbento erosion models."""
 
 import os
 import sys
@@ -27,17 +23,27 @@ from terrainbento.boundary_handlers import (
     NotCoreNodeBaselevelHandler,
     PrecipChanger,
     SingleNodeBaselevelHandler,
-    )
-from terrainbento.precipitators import(
-    UniformPrecipitator,
-    RandomPrecipitator)
-from terrainbento.runoff_generators import(
+)
+from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
+from terrainbento.runoff_generators import (
     SimpleRunoff,
-    VariableSourceAreaRunoff
+    VariableSourceAreaRunoff,
 )
 
-_SUPPORTED_PRECIPITATORS = []
-_SUPPORTED_RUNOFFGENERATORS = []
+_SUPPORTED_PRECIPITATORS = {
+    "UniformPrecipitator": UniformPrecipitator,
+    "RandomPrecipitator": RandomPrecipitator,
+}
+_SUPPORTED_RUNOFF_GENERATORS = {
+    "SimpleRunoff": SimpleRunoff,
+    "VariableSourceAreaRunoff": VariableSourceAreaRunoff,
+}
+
+_VALID_PRECIPITATORS = (UniformPrecipitator, RandomPrecipitator)
+_VALID_RUNOFF_GENERATORS = (SimpleRunoff, VariableSourceAreaRunoff)
+
+_DEFAULT_PRECIPITATOR = {"UniformPrecipitator": {}}
+_DEFAULT_RUNOFF_GENERATOR = {"SimpleRunoff": {}}
 
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
@@ -61,6 +67,12 @@ _HANDLER_METHODS = {
 _REQUIRED_FIELDS = ["topographic__elevation"]
 
 
+def _add_water_fields(grid):
+    for field in ["water__unit_flux_in", "rainfall__flux"]:
+        if field not in grid.at_node:
+            grid.add_zeros("node", field)
+
+
 def _verify_boundary_handler(handler):
     bad_name = False
     bad_instance = False
@@ -74,7 +86,6 @@ def _verify_boundary_handler(handler):
             else:
                 if isinstance(handler[name], _HANDLER_METHODS[name]) is False:
                     bad_instance = True
-
     if bad_name:
         raise ValueError(
             (
@@ -94,12 +105,23 @@ def _verify_boundary_handler(handler):
         )
 
 
+def _setup_precipitator_or_runoff(grid, params, supported):
+    """"""
+    if len(params) != 1:
+        msg = ""
+        raise ValueError(msg)
+    for name in params:
+        constructor = supported[name]
+        instance = constructor(grid, **params[name])
+    return instance
+
+
 def _setup_boundary_handlers(grid, name, params):
     """Setup BoundaryHandlers for use by a terrainbento model.
 
     A boundary condition handler is a class with a **run_one_step** method
     that takes the parameter ``step``. Permitted boundary condition handlers
-    include the Landlab Component ``NormalFault`` as well as the following
+    include the Landlab Component **NormalFault** as well as the following
     options from terrainbento: **PrecipChanger**,
     **CaptureNodeBaselevelHandler**, **NotCoreNodeBaselevelHandler**,
     **SingleNodeBaselevelHandler**.
@@ -135,7 +157,17 @@ class ErosionModel(object):
 
     @classmethod
     def from_file(cls, filename):
-        """
+        """Construct a terrainbento model from a file.
+
+        Parameters
+        ----------
+        filename : path
+            Valid path to a YAML-style input file or file-like object.
+
+        Examples
+        --------
+        >>>
+
         model = ErosionModel.from_file("file.yaml")
         """
         with open(filename, "r") as f:
@@ -144,21 +176,59 @@ class ErosionModel(object):
 
     @classmethod
     def from_dict(cls, params, output_writers={}):
-        """
+        """Construct a terrainbento model from an input parameter dictionary.
+
+        The input parameter dictionary portion associated with the "grid"
+        keword will be passed directly to the Landlab
+        `create_grid <https://landlab.readthedocs.io/en/latest/landlab.grid.create.html>`_.
+        function.
+
+        Parameters
+        ----------
+        params : dict
+            Dictionary of input parameters.
+        output_writers : dictionary of output writers.
+            XXX
+
+        Examples
+        --------
+        XXX
         model = ErosionModel.from_dict(dict-like)
         """
         cls._validate(params)
 
+        # grid, clock
         grid = create_grid(params.pop("grid"))
         clock = Clock.from_dict(params.pop("clock"))
+
+        # add water fields, if necessary.
+        _add_water_fields(grid)
+
+        # precipitator
+        precip_params = params.pop("precipitator", _DEFAULT_PRECIPITATOR)
+        precipitator = _setup_precipitator_or_runoff(
+            grid, precip_params, _SUPPORTED_PRECIPITATORS
+        )
+
+        # runoff_generator
+        runoff_params = params.pop("runoff_generator", _DEFAULT_RUNOFF_GENERATOR)
+        runoff_generator = _setup_precipitator_or_runoff(
+            grid, runoff_params, _SUPPORTED_RUNOFF_GENERATORS
+        )
+
+        # boundary_handlers
         boundary_handlers = params.pop("boundary_handlers", {})
         bh_dict = {}
         for name in boundary_handlers:
             bh_params = boundary_handlers[name]
             bh_dict[name] = _setup_boundary_handlers(grid, name, bh_params)
+
+        # create instance
         return cls(
             clock,
             grid,
+            precipitator=precipitator,
+            runoff_generator=runoff_generator,
             boundary_handlers=bh_dict,
             output_writers=output_writers,
             **params
@@ -178,15 +248,15 @@ class ErosionModel(object):
         grid,
         precipitator=None,
         runoff_generator=None,
-        boundary_handlers={},
-        output_writers={},
         flow_director="FlowDirectorSteepest",
         depression_finder=None,
+        flow_accumulator_kwargs={},
+        boundary_handlers={},
+        output_writers={},
         output_interval=None,
         save_first_timestep=True,
         output_prefix="terrainbento_output",
         fields=["topographic__elevation"],
-        flow_accumulator_kwargs={},
     ):
         """
         Parameters
@@ -230,8 +300,9 @@ class ErosionModel(object):
             ``"terrainbento_output"``.
         output_interval : float, optional
             Default is the Clock's stop time.
-        **kwargs :
-            Any kwargs to pass to the FlowAccumulator.
+        flow_accumulator_kwargs : dictionary, optional
+            Dictionary of keyword arguments to pass to the FlowAccumulator.
+            Default is an empty dictionary.
 
         Returns
         -------
@@ -280,28 +351,27 @@ class ErosionModel(object):
         # instantiate container for computational timestep:
         self._compute_time = [tm.time()]
 
-
         ###################################################################
-        # address Precipitator and RunoffGenerator
+        # address Precipitator and RUNOFF_GENERATOR
         ###################################################################
 
         # verify that fields are added if necessary
-        for field in ["water__unit_flux_in", "rainfall__flux"]:
-            if field not in self.grid.at_node:
-                grid.add_zeros("node", field)
+        _add_water_fields(grid)
 
+        # verify that precipitator is valid
         if precipitator is None:
             precipitator = UniformPrecipitator(self.grid)
         else:
-            pass
-            # verify that precipitator is valid.
+            if isinstance(precipitator, _VALID_PRECIPITATORS) is False:
+                raise ValueError
         self.precipitator = precipitator
 
+        # verify that runoff_generator is valid
         if runoff_generator is None:
             runoff_generator = SimpleRunoff(self.grid)
         else:
-            pass
-            # verify that precipitator is valid.
+            if isinstance(runoff_generator, _VALID_RUNOFF_GENERATORS) is False:
+                raise ValueError
         self.runoff_generator = runoff_generator
 
         ###################################################################
@@ -341,10 +411,12 @@ class ErosionModel(object):
         self.output_writers = output_writers
 
     def _verify_fields(self, required_fields):
-        """"""
+        """Verify all required fields are present."""
         for field in required_fields:
             if field not in self.grid.at_node:
-                raise ValueError("")
+                raise ValueError(
+                    "Required field {field} not present.".format(field=field)
+                )
 
     @property
     def model_time(self):
@@ -359,7 +431,11 @@ class ErosionModel(object):
         )
 
     def create_and_move_water(self, step):
-        """"""
+        """Create and move water.
+
+        Run the precipitator, the runoff generator, and the flow
+        accumulator, in that order.
+        """
         self.precipitator.run_one_step(step)
         self.runoff_generator.run_one_step(step)
         self.flow_accumulator.run_one_step()
