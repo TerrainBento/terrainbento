@@ -60,11 +60,6 @@ class BasicHyRt(TwoLithologyErosionModel):
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
 
-    The **BasicHyRt** program inherits from the terrainbento
-    **TwoLithologyErosionModel** base class. In addition to the parameters
-    required by the base class, models built with this program require the
-    following parameters.
-
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |
     +==================+==================================+
@@ -87,13 +82,9 @@ class BasicHyRt(TwoLithologyErosionModel):
     |:math:`\phi`      | ``sediment_porosity``            |
     +------------------+----------------------------------+
 
-    A value for the parameter ``solver`` can also be used to indicate if the
-    default internal timestepping is used for the **ErosionDeposition**
-    component or if an adaptive internal timestep is used. Refer to the
-    **ErosionDeposition** documentation for details.
-
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
-    published) for full list of parameter symbols, names, and dimensions.
+    refer to
+    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    Table 5 for full list of parameter symbols, names, and dimensions.
     """
 
     def __init__(

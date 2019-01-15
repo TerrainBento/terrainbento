@@ -64,8 +64,9 @@ class BasicCv(ErosionModel):
     |:math:`T_s`       | ``climate_constant_date``        |
     +------------------+----------------------------------+
 
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
-    published) for full list of parameter symbols, names, and dimensions.
+    refer to
+    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    Table 5 for full list of parameter symbols, names, and dimensions.
 
     """
 

@@ -66,16 +66,10 @@ class BasicStVs(StochasticErosionModel):
     |:math:`K_s`       | ``hydraulic_conductivity``       |
     +------------------+----------------------------------+
 
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
-    published) for full list of parameter symbols, names, and dimensions.
+    refer to
+    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    Table 5 for full list of parameter symbols, names, and dimensions.
 
-    For information about the stochastic precipitation and runoff model used,
-    see the documentation for **BasicSt** and the base class
-    **StochasticErosionModel**.
-
-    Note that there is no unique single runoff rate in this model, because
-    runoff rate varies in space. Therefore, the class variable
-    runoff_rate (which contains a single value per event) should be ignored.
     """
 
     def __init__(

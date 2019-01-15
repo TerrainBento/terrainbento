@@ -96,13 +96,10 @@ class BasicHySa(ErosionModel):
     |:math:`H_{*}`     | ``roughness__length_scale``       |
     +------------------+-----------------------------------+
 
-    A value for the parameter ``solver`` can also be used to indicate if the
-    default internal timestepping is used for the **Space** component or if an
-    adaptive internal timestep is used. Refer to the **Space** documentation for
-    details.
+    refer to
+    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    Table 5 for full list of parameter symbols, names, and dimensions.
 
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
-    published) for full list of parameter symbols, names, and dimensions.
     """
 
     def __init__(
