@@ -27,7 +27,7 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 class BasicChRtTh(TwoLithologyErosionModel):
     r"""**BasicChRtTh** model program.
 
-    **BasicChRtTh** combines the **BasicCh**, **BasicTh** and **BasicRt**
+    **BasicChRtTh** combines the :py:class:`BasicCh`, :py:class:`BasicTh` and :py:class:`BasicRt`
     programs by allowing for two lithologies, an "upper" layer and a "lower"
     layer, permitting the use of an smooth erosion threshold for each lithology,
     and using non-linear hillslope transport. Given a spatially varying contact
@@ -53,12 +53,13 @@ class BasicChRtTh(TwoLithologyErosionModel):
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`w` is a weight used to calculate the
-    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone. :math:`N` is the number of
-    terms in the Taylor Series expansion. :math:`N` is set at a default value
-    of 7 but can be modified by a user.
+    erodabilities of the upper and lower lithologies, :math:`\omega_{c1}` and
+    :math:`\omega_{c2}` are the erosion thresholds of the upper and lower
+    lithologies, and :math:`D` is the regolith transport parameter. :math:`w`
+    is a weight used to calculate the effective erodability
+    :math:`K(\eta, \eta_C)` based on the depth to the contact zone and the
+    width of the contact zone. :math:`N` is the number of terms in the Taylor
+    Series expansion.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at a
     given point. When the surface elevation is at the contact elevation, the
@@ -66,35 +67,6 @@ class BasicChRtTh(TwoLithologyErosionModel):
     the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
-
-    The **BasicChRtTh** program inherits from the terrainbento
-    **TwoLithologyErosionModel** base class. In addition to the parameters
-    required by the base class, models built with this program require the
-    following parameters.
-
-    +--------------------+-----------------------------------------+
-    | Parameter Symbol   | Input File Parameter Name               |
-    +====================+=========================================+
-    |:math:`m`           | ``m_sp``                                |
-    +--------------------+-----------------------------------------+
-    |:math:`n`           | ``n_sp``                                |
-    +--------------------+-----------------------------------------+
-    |:math:`K_{1}`       | ``water_erodability_upper``             |
-    +--------------------+-----------------------------------------+
-    |:math:`K_{2}`       | ``water_erodability_lower``             |
-    +--------------------+-----------------------------------------+
-    |:math:`\omega_{c1}` | ``water_erosion_rule_upper__threshold`` |
-    +--------------------+-----------------------------------------+
-    |:math:`\omega_{c2}` | ``water_erosion_rule_lower__threshold`` |
-    +--------------------+-----------------------------------------+
-    |:math:`W_{c}`       | ``contact_zone__width``                 |
-    +--------------------+-----------------------------------------+
-    |:math:`D`           | ``regolith_transport_parameter``        |
-    +--------------------+-----------------------------------------+
-    |:math:`S_c`         | ``critical_slope``                      |
-    +--------------------+-----------------------------------------+
-    |:math:`N`           | ``number_of_taylor_terms``              |
-    +--------------------+-----------------------------------------+
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -118,7 +90,28 @@ class BasicChRtTh(TwoLithologyErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability_upper : float, optional
+            Water erodability of the upper layer (:math:`K_{1}`). Default is
+            0.001.
+        water_erodability_lower : float, optional
+            Water erodability of the upper layer (:math:`K_{2}`). Default is
+            0.0001.
+        contact_zone__width : float, optional
+            Thickness of the contact zone (:math:`W_c`). Default is 1.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        water_erosion_rule_upper__threshold : float, optional.
+            1.0,
+        water_erosion_rule_lower__threshold=1.0,
+        critical_slope : float, optional
+            Critical slope (:math:`S_c`, unitless). Default is 0.3.
+        number_of_taylor_terms : int, optional
+            Number of terms in the Taylor Series Expansion (:math:`N`). Default
+            is 7.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.

@@ -40,28 +40,7 @@ class BasicCh(ErosionModel):
     :math:`K` is the erodability by water, :math:`D` is the regolith
     transport efficiency, and :math:`S_c` is the critical slope. :math:`q_h`
     represents the hillslope sediment flux per unit width. :math:`N` is the
-    number of terms in the Taylor Series expansion. :math:`N` is set at a
-    default value of 11 but can be modified by a user.
-
-    The **BasicCh** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K`         | ``water_erodability``            |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`S_c`       | ``critical_slope``               |
-    +------------------+----------------------------------+
-    |:math:`N`         | ``number_of_taylor_terms``       |
-    +------------------+----------------------------------+
+    number of terms in the Taylor Series expansion.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -87,7 +66,19 @@ class BasicCh(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        critical_slope : float, optional
+            Critical slope (:math:`S_c`, unitless). Default is 0.3.
+        number_of_taylor_terms : int, optional
+            Number of terms in the Taylor Series Expansion (:math:`N`). Default
+            is 11.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.

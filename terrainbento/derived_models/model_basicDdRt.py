@@ -110,7 +110,20 @@ class BasicDdRt(TwoLithologyErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability_upper : float, optional
+            Water erodability of the upper layer (:math:`K_{1}`). Default is
+            0.001.
+        water_erodability_lower : float, optional
+            Water erodability of the upper layer (:math:`K_{2}`). Default is
+            0.0001.
+        contact_zone__width : float, optional
+            Thickness of the contact zone (:math:`W_c`). Default is 1.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.

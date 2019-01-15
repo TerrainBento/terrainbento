@@ -24,8 +24,8 @@ _REQUIRED_FIELDS = ["topographic__elevation"]
 class BasicChRt(TwoLithologyErosionModel):
     r"""**BasicChRt** model program.
 
-    **BasicChRt** is a model program that combines the **BasicRt** and
-    **BasicCh** programs by allowing for two lithologies, an "upper" layer and a
+    **BasicChRt** is a model program that combines the :py:class:`BasicRt` and
+    :py:class:`BasicCh` programs by allowing for two lithologies, an "upper" layer and a
     "lower" layer, and non-linear hillslope sediment transport. Given a
     spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
     **BasicChRt** evolves a topographic surface described by :math:`\eta` with
@@ -47,8 +47,8 @@ class BasicChRt(TwoLithologyErosionModel):
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
     regolith transport parameter. :math:`S_c` is the critical slope parameter
-    and :math:`N` is the number of terms in the Taylor Series expansion. :math:`N`
-    is set at a default value of 7 but can be modified by a user. :math:`w` is a
+    and :math:`N` is the number of terms in the Taylor Series expansion.
+    :math:`w` is a
     weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
     based on the depth to the contact zone and the width of the contact zone.
 
@@ -58,31 +58,6 @@ class BasicChRt(TwoLithologyErosionModel):
     the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
     at a rate related to the contact zone width. Thus, to make a very sharp
     transition, use a small value for the contact zone width.
-
-    The **BasicChRt** program inherits from the terrainbento
-    **TwoLithologyErosionModel** base class. In addition to the parameters
-    required by the base class, models built with this program require the
-    following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K_{1}`     | ``water_erodability_upper``      |
-    +------------------+----------------------------------+
-    |:math:`K_{2}`     | ``water_erodability_lower``      |
-    +------------------+----------------------------------+
-    |:math:`W_{c}`     | ``contact_zone__width``          |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`S_c`       | ``critical_slope``               |
-    +------------------+----------------------------------+
-    |:math:`N`         | ``number_of_taylor_terms``       |
-    +------------------+----------------------------------+
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -104,7 +79,25 @@ class BasicChRt(TwoLithologyErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability_upper : float, optional
+            Water erodability of the upper layer (:math:`K_{1}`). Default is
+            0.001.
+        water_erodability_lower : float, optional
+            Water erodability of the upper layer (:math:`K_{2}`). Default is
+            0.0001.
+        contact_zone__width : float, optional
+            Thickness of the contact zone (:math:`W_c`). Default is 1.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        critical_slope : float, optional
+            Critical slope (:math:`S_c`, unitless). Default is 0.3.
+        number_of_taylor_terms : int, optional
+            Number of terms in the Taylor Series Expansion (:math:`N`). Default
+            is 7.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
