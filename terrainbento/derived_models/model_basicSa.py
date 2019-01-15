@@ -84,7 +84,7 @@ class BasicSa(ErosionModel):
     |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
     +------------------+-----------------------------------+
 
-    refer to
+    Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 

@@ -54,7 +54,7 @@ class BasicTh(ErosionModel):
     |:math:`D`           | ``regolith_transport_parameter``        |
     +--------------------+-----------------------------------------+
 
-    refer to
+    Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 

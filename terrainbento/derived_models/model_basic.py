@@ -35,7 +35,7 @@ class Basic(ErosionModel):
     :math:`K` is the erodability by water, and :math:`D` is the regolith
     transport efficiency.
 
-    The **Basic** program inherits from the terrainbento **ErosionModel** base
+    Refer to
     class. In addition to the parameters required by the base class, models
     built with this program require the following parameters.
 
@@ -51,7 +51,6 @@ class Basic(ErosionModel):
     |:math:`D`         | ``regolith_transport_parameter`` |
     +------------------+----------------------------------+
 
-    refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
