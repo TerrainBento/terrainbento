@@ -1,4 +1,4 @@
-TerrainBento Boundary Condition Handlers
+terrainbento Boundary Condition Handlers
 ========================================
 
 Presently terrainbento has four built-in boundary condition handlers. In
