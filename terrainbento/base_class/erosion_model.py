@@ -108,8 +108,9 @@ def _verify_boundary_handler(handler):
 def _setup_precipitator_or_runoff(grid, params, supported):
     """"""
     if len(params) != 1:
-        msg = ""
-        raise ValueError(msg)
+        raise ValueError(
+            "Too many values provided to set up precipitator or runoff_generator"
+        )
     for name in params:
         constructor = supported[name]
         instance = constructor(grid, **params[name])
@@ -211,7 +212,9 @@ class ErosionModel(object):
         )
 
         # runoff_generator
-        runoff_params = params.pop("runoff_generator", _DEFAULT_RUNOFF_GENERATOR)
+        runoff_params = params.pop(
+            "runoff_generator", _DEFAULT_RUNOFF_GENERATOR
+        )
         runoff_generator = _setup_precipitator_or_runoff(
             grid, runoff_params, _SUPPORTED_RUNOFF_GENERATORS
         )

@@ -4,7 +4,7 @@ import numpy as np
 
 
 class RandomPrecipitator(object):
-    """"""
+    """Generate random precipitation."""
 
     def __init__(self, mg, distribution, **kwargs):
         """
@@ -23,9 +23,10 @@ class RandomPrecipitator(object):
         if distribution not in np.random.__dict__:
             raise ValueError("")
         self.function = np.random.__dict__[distribution]
+        self._kwargs = kwargs
         self.run_one_step(0.)
 
     def run_one_step(self, step):
         """"""
-        values = self.function(self._grid.size("node"), **kwargs)
+        values = self.function(self._grid.size("node"), **self._kwargs)
         mg.at_node["rainfall__flux"][:] = values
