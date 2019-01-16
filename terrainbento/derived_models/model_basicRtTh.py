@@ -18,8 +18,6 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import TwoLithologyErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicRtTh(TwoLithologyErosionModel):
     r"""**BasicRtTh** model program.
@@ -94,6 +92,8 @@ class BasicRtTh(TwoLithologyErosionModel):
 
     """
 
+    _required_fields = ["topographic__elevation"]
+
     def __init__(
         self,
         clock,
@@ -165,7 +165,7 @@ class BasicRtTh(TwoLithologyErosionModel):
             raise ValueError("Model only supports n equals 1.")
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # Save the threshold values for rock and till
         self.rock_thresh = water_erosion_rule_lower__threshold

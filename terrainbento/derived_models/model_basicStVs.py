@@ -19,8 +19,6 @@ import numpy as np
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import StochasticErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicStVs(StochasticErosionModel):
     r"""**BasicStVs** model program.
@@ -71,6 +69,8 @@ class BasicStVs(StochasticErosionModel):
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     """
+
+    _required_fields = ["topographic__elevation"]
 
     def __init__(
         self,
@@ -130,7 +130,7 @@ class BasicStVs(StochasticErosionModel):
         super(BasicStVs, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # Get Parameters:
         self.m = m_sp

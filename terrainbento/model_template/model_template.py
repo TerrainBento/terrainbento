@@ -15,8 +15,6 @@ landlab components used.
 
 from terrainbento.base_class import ErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class ModelTemplate(ErosionModel):  # The model must inherit from either
     # ErosionModel, StochasticErosionModel, or TwoLithologyErosionModel
@@ -50,6 +48,8 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
     Expand on this table to include all required parameters.
     """
+
+    _required_fields = ["topographic__elevation"]
 
     def __init__(
         self,
@@ -104,7 +104,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         # Do not change any additional parts of this line.
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # put all actions needed to initialize the model below this line.
 

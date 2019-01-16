@@ -19,8 +19,6 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import StochasticErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicStTh(StochasticErosionModel):
     r"""**BasicStTh** model program.
@@ -65,6 +63,8 @@ class BasicStTh(StochasticErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
     """
+
+    _required_fields = ["topographic__elevation"]
 
     def __init__(
         self,
@@ -124,7 +124,7 @@ class BasicStTh(StochasticErosionModel):
         super(BasicStTh, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # Get Parameters:
         self.m = m_sp

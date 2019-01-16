@@ -23,8 +23,6 @@ from landlab.components import (
 )
 from terrainbento.base_class import ErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
-
 
 class BasicHySa(ErosionModel):
     r"""**BasicHySa** program.
@@ -102,6 +100,8 @@ class BasicHySa(ErosionModel):
 
     """
 
+    _required_fields = ["topographic__elevation", "soil__depth"]
+
     def __init__(
         self,
         clock,
@@ -170,7 +170,7 @@ class BasicHySa(ErosionModel):
         super(BasicHySa, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         soil_thickness = self.grid.at_node["soil__depth"]
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")

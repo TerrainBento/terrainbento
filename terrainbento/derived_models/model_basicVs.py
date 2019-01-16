@@ -17,8 +17,6 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import ErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicVs(ErosionModel):
     r"""**BasicVs** model program.
@@ -71,6 +69,8 @@ class BasicVs(ErosionModel):
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     """
+
+    _required_fields = ["topographic__elevation"]
 
     def __init__(
         self,
@@ -132,7 +132,7 @@ class BasicVs(ErosionModel):
         super(BasicVs, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # Get Parameters:
         self.m = m_sp

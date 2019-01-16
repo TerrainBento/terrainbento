@@ -64,9 +64,6 @@ _HANDLER_METHODS = {
     "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
-
 def _add_water_fields(grid):
     for field in ["water__unit_flux_in", "rainfall__flux"]:
         if field not in grid.at_node:
@@ -155,6 +152,8 @@ class ErosionModel(object):
     **run_one_step** method. If desired, the derived model can overwrite the
     existing **run_for**, **run**, and **finalize** methods.
     """
+
+    _required_fields = ["topographic__elevation"]
 
     @classmethod
     def from_file(cls, file_like):
@@ -382,7 +381,7 @@ class ErosionModel(object):
         self.clock = clock
 
         # first pass of verifying fields
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # save reference to elevation
         self.z = grid.at_node["topographic__elevation"]

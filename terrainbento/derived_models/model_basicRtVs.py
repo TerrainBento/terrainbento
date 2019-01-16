@@ -18,8 +18,6 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerEroder
 from terrainbento.base_class import TwoLithologyErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicRtVs(TwoLithologyErosionModel):
     r"""**BasicRtVs** model program.
@@ -95,6 +93,8 @@ class BasicRtVs(TwoLithologyErosionModel):
 
     """
 
+    _required_fields = ["topographic__elevation"]
+
     def __init__(
         self,
         clock,
@@ -164,7 +164,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         super(BasicRtVs, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         soil_thickness = self.grid.at_node["soil__depth"]
 

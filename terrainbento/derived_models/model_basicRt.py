@@ -18,8 +18,6 @@ import numpy as np
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import TwoLithologyErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicRt(TwoLithologyErosionModel):
     r"""**BasicRt** model program.
@@ -82,6 +80,8 @@ class BasicRt(TwoLithologyErosionModel):
 
     """
 
+    _required_fields = ["topographic__elevation"]
+
     def __init__(self, clock, grid, **kwargs):
         """
         Parameters
@@ -143,7 +143,7 @@ class BasicRt(TwoLithologyErosionModel):
         super(BasicRt, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

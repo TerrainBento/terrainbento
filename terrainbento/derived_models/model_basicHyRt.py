@@ -18,8 +18,6 @@ import numpy as np
 from landlab.components import ErosionDeposition, LinearDiffuser
 from terrainbento.base_class import TwoLithologyErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicHyRt(TwoLithologyErosionModel):
     r"""**BasicHyRt** model program.
@@ -86,6 +84,8 @@ class BasicHyRt(TwoLithologyErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
     """
+
+    _required_fields = ["topographic__elevation"]
 
     def __init__(
         self,
@@ -156,7 +156,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         super(BasicHyRt, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # Save the threshold values for rock and till
         self.rock_thresh = 0.

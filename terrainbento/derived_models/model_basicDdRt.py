@@ -19,8 +19,6 @@ import numpy as np
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
 from terrainbento.base_class import TwoLithologyErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicDdRt(TwoLithologyErosionModel):
     r"""**BasicDdRt** model program.
@@ -96,6 +94,8 @@ class BasicDdRt(TwoLithologyErosionModel):
 
     """
 
+    _required_fields = ["topographic__elevation"]
+
     def __init__(
         self,
         clock,
@@ -163,7 +163,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         super(BasicDdRt, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         if float(self.n) != 1.0:
             raise ValueError("Model only supports n equals 1.")

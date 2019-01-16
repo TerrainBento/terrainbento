@@ -10,7 +10,6 @@ import numpy as np
 
 from terrainbento.base_class import ErosionModel
 
-_REQUIRED_FIELDS = ["lithology_contact__elevation"]
 
 
 class TwoLithologyErosionModel(ErosionModel):
@@ -26,6 +25,8 @@ class TwoLithologyErosionModel(ErosionModel):
     A field "lithology_contact_elevation__file_name" must be specified in the
     grid.
     """
+
+    _required_fields = ["topographic__elevation", "lithology_contact__elevation"]
 
     def __init__(
         self,
@@ -64,7 +65,7 @@ class TwoLithologyErosionModel(ErosionModel):
         super(TwoLithologyErosionModel, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         self.m = m_sp
         self.n = n_sp

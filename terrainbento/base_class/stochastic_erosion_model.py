@@ -57,6 +57,8 @@ class StochasticErosionModel(ErosionModel):
 
     """
 
+    _required_fields = ["topographic__elevation"]
+
     def __init__(
         self,
         clock,

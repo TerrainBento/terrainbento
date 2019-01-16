@@ -23,8 +23,6 @@ from landlab.components import (
 )
 from terrainbento.base_class import TwoLithologyErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
-
 
 class BasicRtSa(TwoLithologyErosionModel):
     r"""**BasicRtSa** model program.
@@ -113,6 +111,8 @@ class BasicRtSa(TwoLithologyErosionModel):
 
     """
 
+    _required_fields = ["topographic__elevation", "soil__depth"]
+
     def __init__(
         self,
         clock,
@@ -183,7 +183,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         super(BasicRtSa, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

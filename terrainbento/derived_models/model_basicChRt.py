@@ -18,8 +18,6 @@ import numpy as np
 from landlab.components import FastscapeEroder, TaylorNonLinearDiffuser
 from terrainbento.base_class import TwoLithologyErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation"]
-
 
 class BasicChRt(TwoLithologyErosionModel):
     r"""**BasicChRt** model program.
@@ -64,6 +62,8 @@ class BasicChRt(TwoLithologyErosionModel):
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     """
+
+    _required_fields = ["topographic__elevation"]
 
     def __init__(
         self,

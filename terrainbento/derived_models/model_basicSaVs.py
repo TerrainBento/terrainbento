@@ -22,8 +22,6 @@ from landlab.components import (
 )
 from terrainbento.base_class import ErosionModel
 
-_REQUIRED_FIELDS = ["topographic__elevation", "soil__depth"]
-
 
 class BasicSaVs(ErosionModel):
     r"""**BasicSaVs** model program.
@@ -93,6 +91,8 @@ class BasicSaVs(ErosionModel):
 
     """
 
+    _required_fields = ["topographic__elevation", "soil__depth"]
+
     def __init__(
         self,
         clock,
@@ -155,7 +155,7 @@ class BasicSaVs(ErosionModel):
         super(BasicSaVs, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(_REQUIRED_FIELDS)
+        self._verify_fields(self._required_fields)
 
         # Get Parameters and convert units if necessary:
         self.m = m_sp
