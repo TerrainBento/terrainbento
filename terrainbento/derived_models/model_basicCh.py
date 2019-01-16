@@ -30,15 +30,17 @@ class BasicCh(ErosionModel):
 
         \frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \nabla^2 q_h
 
-        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2 +  \left( \frac{S}{S_c} \right)^4 + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
+        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
+              + \left( \frac{S}{S_c} \right)^4
+              + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`D` is the regolith
-    transport efficiency, and :math:`S_c` is the critical slope. :math:`q_h`
-    represents the hillslope sediment flux per unit width. :math:`N` is the
-    number of terms in the Taylor Series expansion.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`D` is the
+    regolith transport efficiency, and :math:`S_c` is the critical slope.
+    :math:`q_h` represents the hillslope sediment flux per unit width.
+    :math:`N` is the number of terms in the Taylor Series expansion.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

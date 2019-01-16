@@ -23,22 +23,25 @@ class BasicChRt(TwoLithologyErosionModel):
     r"""**BasicChRt** model program.
 
     **BasicChRt** is a model program that combines the :py:class:`BasicRt` and
-    :py:class:`BasicCh` programs by allowing for two lithologies, an "upper" layer and a
-    "lower" layer, and non-linear hillslope sediment transport. Given a
-    spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
-    **BasicChRt** evolves a topographic surface described by :math:`\eta` with
-    the following governing equations:
+    :py:class:`BasicCh` programs by allowing for two lithologies, an "upper"
+    layer and a "lower" layer, and non-linear hillslope sediment transport.
+    Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
+    model **BasicChRt** evolves a topographic surface described by :math:`\eta`
+    with the following governing equations:
 
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n} - \nabla q_h
+        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n}
+                                           - \nabla q_h
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
-        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2 +  \left( \frac{S}{S_c} \right)^4 + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
+        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
+              + \left( \frac{S}{S_c} \right)^4
+              + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
