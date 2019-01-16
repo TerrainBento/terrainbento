@@ -96,6 +96,8 @@ class BasicSt(StochasticErosionModel):
     near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P`
     (when :math`P>>I`), without a "hard threshold."
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
     """
 
     _required_fields = ["topographic__elevation"]
@@ -201,8 +203,8 @@ class BasicSt(StochasticErosionModel):
         4. Calculates topographic change by linear diffusion.
 
         5. Finalizes the step using the ``ErosionModel`` base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``step`` and increments model time by ``step``.
+        **finalize__run_one_step**. This function updates all boundary
+        handlers by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
@@ -245,7 +247,7 @@ def main():  # pragma: no cover
         )
         sys.exit(1)
 
-    em = BasicSt(input_file=infile)
+    em = BasicSt.from_file(infile)
     em.run()
 
 

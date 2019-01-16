@@ -84,6 +84,8 @@ class BasicDdVs(ErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
     """
 
     _required_fields = ["topographic__elevation"]
@@ -216,7 +218,7 @@ class BasicDdVs(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active boundary handler and if
            so, uses it to modify the two erodability by water values.
 
         4. Calculates detachment-limited erosion by water.
@@ -224,8 +226,8 @@ class BasicDdVs(ErosionModel):
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``step`` and increments model time by ``step``.
+           **finalize__run_one_step**. This function updates all boundary
+           handlers by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
@@ -295,7 +297,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    my_model = BasicDdVs(input_file=infile)
+    my_model = BasicDdVs.from_file(infile)
     my_model.run()
 
 

@@ -25,17 +25,20 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicChRtTh(TwoLithologyErosionModel):
     r"""**BasicChRtTh** model program.
 
-    **BasicChRtTh** combines the :py:class:`BasicCh`, :py:class:`BasicTh` and :py:class:`BasicRt`
-    programs by allowing for two lithologies, an "upper" layer and a "lower"
-    layer, permitting the use of an smooth erosion threshold for each lithology,
-    and using non-linear hillslope transport. Given a spatially varying contact
-    zone elevation, :math:`\eta_C(x,y))`, model **BasicChRtTh** evolves a
-    topographic surface described by :math:`\eta` with the following governing equations:
+    **BasicChRtTh** combines the :py:class:`BasicCh`, :py:class:`BasicTh` and
+    :py:class:`BasicRt` programs by allowing for two lithologies, an "upper"
+    layer and a "lower" layer, permitting the use of an smooth erosion
+    threshold for each lithology, and using non-linear hillslope transport.
+    Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
+    model **BasicChRtTh** evolves a topographic surface described by
+    :math:`\eta` with the following governing equations:
 
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left[\omega - \omega_c (1 - e^{-\omega /\omega_c}) \right]  - \nabla q_h
+        \frac{\partial \eta}{\partial t} = -\left[\omega
+                    - \omega_c (1 - e^{-\omega /\omega_c}) \right]
+                     - \nabla q_h
 
         \omega = K(\eta, \eta_C) A^{m} S^{n}
 
@@ -45,26 +48,28 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
-        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2 +  \left( \frac{S}{S_c} \right)^4 + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
+        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
+              + \left( \frac{S}{S_c} \right)^4
+              + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, :math:`\omega_{c1}` and
-    :math:`\omega_{c2}` are the erosion thresholds of the upper and lower
-    lithologies, and :math:`D` is the regolith transport parameter. :math:`w`
-    is a weight used to calculate the effective erodability
-    :math:`K(\eta, \eta_C)` based on the depth to the contact zone and the
-    width of the contact zone. :math:`N` is the number of terms in the Taylor
-    Series expansion.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and :
+    math:`K_2` are the erodabilities of the upper and lower lithologies,
+    :math:`\omega_{c1}` and :math:`\omega_{c2}` are the erosion thresholds of
+    the upper and lower lithologies, and :math:`D` is the regolith transport
+    parameter. :math:`w` is a weight used to calculate the effective
+    erodability :math:`K(\eta, \eta_C)` based on the depth to the contact zone
+    and the width of the contact zone. :math:`N` is the number of terms in the
+    Taylor Series expansion.
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
+    The weight :math:`w` promotes smoothness in the solution of erodability at
+    a given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
+    the contact, the erodability approaches the value of :math:`K_1` and
+    :math:`K_2` at a rate related to the contact zone width. Thus, to make a
+    very sharp transition, use a small value for the contact zone width.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -111,8 +116,11 @@ class BasicChRtTh(TwoLithologyErosionModel):
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         water_erosion_rule_upper__threshold : float, optional.
-            1.0,
-        water_erosion_rule_lower__threshold=1.0,
+            Erosion threshold of the upper layer (:math:`\omega_{c1}`). Default
+            is 1.
+        water_erosion_rule_lower__threshold: float, optional.
+            Erosion threshold of the upper layer (:math:`\omega_{c2}`). Default
+            is 1.
         critical_slope : float, optional
             Critical slope (:math:`S_c`, unitless). Default is 0.3.
         number_of_taylor_terms : int, optional
@@ -129,8 +137,8 @@ class BasicChRtTh(TwoLithologyErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicChRtCh**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicChRtCh**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -197,20 +205,20 @@ class BasicChRtTh(TwoLithologyErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active boundary handler and if
            so, uses it to modify the two erodability by water values.
 
-        4. Updates the spatially variable erodability and threshold values based
-           on the relative distance between the topographic surface and the lithology
-           contact.
+        4. Updates the spatially variable erodability and threshold values
+           based on the relative distance between the topographic surface and
+           the lithology contact.
 
         5. Calculates detachment-limited erosion by water.
 
         6. Calculates topographic change by non-linear diffusion.
 
         7. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``step`` and increments model time by ``step``.
+           **finalize__run_one_step**. This function updates all boundary
+           handlers by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
@@ -253,7 +261,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    chrt = BasicChRtTh(input_file=infile)
+    chrt = BasicChRtTh.from_file(infile)
     chrt.run()
 
 

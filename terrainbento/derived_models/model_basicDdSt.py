@@ -79,6 +79,8 @@ class BasicDdSt(StochasticErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
     """
 
     _required_fields = ["topographic__elevation"]
@@ -233,7 +235,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    em = BasicDdSt(input_file=infile)
+    em = BasicDdSt.from_file(infile)
     em.run()
 
 

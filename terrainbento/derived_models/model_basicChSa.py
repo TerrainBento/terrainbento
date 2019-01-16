@@ -28,69 +28,51 @@ class BasicChSa(ErosionModel):
     r"""**BasicChSa** model program.
 
 
-    **BasicChSa** is a model program that explicitly resolves a soil layer. This
-    soil layer is produced by weathering that decays exponentially with soil
-    thickness and hillslope transport is soil-depth dependent. Given a spatially
-    varying soil thickness :math:`H` and a spatially varying bedrock elevation
-    :math:`\eta_b`, model **BasicChSa** evolves a topographic surface described by
-    :math:`\eta` with the following governing equations:
+    **BasicChSa** is a model program that explicitly resolves a soil layer.
+    This soil layer is produced by weathering that decays exponentially with
+    soil thickness and hillslope transport is soil-depth dependent. Given a
+    spatially varying soil thickness :math:`H` and a spatially varying bedrock
+    elevation :math:`\eta_b`, model **BasicChSa** evolves a topographic surface
+    described by :math:`\eta` with the following governing equations:
 
     .. math::
 
         \eta = \eta_b + H
 
-        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{m} S^{n} -\nabla q_h
+        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
+                                        - \delta (H) K A^{m} S^{n}
+                                        -\nabla q_h
 
-        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{m} S^{n}
+        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
+                                             - (1 - \delta (H) ) K A^{m} S^{n}
 
-        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2 +  \left( \frac{S}{S_c} \right)^4 + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
+        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
+              + \left( \frac{S}{S_c} \right)^4
+              + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`D` is the regolith transport
-    parameter, :math:`H_s` is the sediment production decay depth, :math:`H_s`
-    is the sediment production decay depth, :math:`P_0` is the maximum sediment
-    production rate, and :math:`H_0` is the sediment transport decay depth.
-    :math:`q_h` is the hillslope sediment flux per unit width. :math:`S_c`
-    is the critical slope parameter and :math:`N` is the number of terms in the
-    Taylor Series expansion. :math:`N` is set at a default value of 11 but can
-    be modified by a user.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`D` is the
+    regolith transport parameter, :math:`H_s` is the sediment production decay
+    depth, :math:`H_s` is the sediment production decay depth, :math:`P_0` is
+    the maximum sediment production rate, and :math:`H_0` is the sediment
+    transport decay depth. :math:`q_h` is the hillslope sediment flux per unit
+    width. :math:`S_c` is the critical slope parameter and :math:`N` is the
+    number of terms in the Taylor Series expansion.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is
     absent. To achieve this, :math:`\delta (H)` is defined to equal 1 when
-    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
-    underlying parent material is exposed).
-
-    The **BasicChSa** program inherits from the terrainbento **ErosionModel**
-    base class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+-----------------------------------+
-    | Parameter Symbol | Input File Parameter Name         |
-    +==================+===================================+
-    |:math:`m`         | ``m_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`n`         | ``n_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`K`         | ``water_erodability``             |
-    +------------------+-----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter``  |
-    +------------------+-----------------------------------+
-    |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
-    +------------------+-----------------------------------+
-    |:math:`H_{s}`     | ``soil_production__decay_depth``  |
-    +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
-    +------------------+-----------------------------------+
-    |:math:`S_c`       | ``critical_slope``                |
-    +------------------+-----------------------------------+
-    |:math:`N`         | ``number_of_taylor_terms``        |
-    +------------------+-----------------------------------+
+    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning
+    the underlying parent material is exposed).
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
+
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``soil__depth``
     """
 
     _required_fields = ["topographic__elevation", "soil__depth"]
@@ -116,7 +98,25 @@ class BasicChSa(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        critical_slope : float, optional
+            Critical slope (:math:`S_c`, unitless). Default is 0.3.
+        number_of_taylor_terms : int, optional
+            Number of terms in the Taylor Series Expansion (:math:`N`). Default
+            is 11.
+        soil_production__maximum_rate : float, optional
+            Maximum rate of soil production (:math:`P_{0}`). Default is 0.001.
+        soil_production__decay_depth : float, optional
+            Decay depth for soil production (:math:`H_{s}`). Default is 0.5.
+        soil_transport_decay_depth : float, optional
+            Decay depth for soil transport (:math:`H_{0}`). Default is 0.5.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
@@ -128,8 +128,8 @@ class BasicChSa(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicChSa**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicChSa**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -211,11 +211,12 @@ class BasicChSa(ErosionModel):
 
         5. Produces soil and calculates soil depth with exponential weathering.
 
-        6. Calculates topographic change by depth-dependent nonlinear diffusion.
+        6. Calculates topographic change by depth-dependent nonlinear
+           diffusion.
 
         7. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``step`` and increments model time by ``step``.
+           **finalize__run_one_step**. This function updates all boundary
+           handlers by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
@@ -274,7 +275,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    cdsp = BasicChSa(input_file=infile)
+    cdsp = BasicChSa.from_file(infile)
     cdsp.run()
 
 

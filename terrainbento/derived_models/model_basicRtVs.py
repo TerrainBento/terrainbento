@@ -230,7 +230,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active boundary handler and if
            so, uses it to modify the two erodability by water values.
 
         4. Updates the spatially variable erodability value based on the
@@ -242,8 +242,8 @@ class BasicRtVs(TwoLithologyErosionModel):
         6. Calculates topographic change by linear diffusion.
 
         7. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``step`` and increments model time by ``step``.
+           **finalize__run_one_step**. This function updates all boundary
+           handlers by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
@@ -290,7 +290,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    vsrt = BasicRtVs(input_file=infile)
+    vsrt = BasicRtVs.from_file(infile)
     vsrt.run()
 
 

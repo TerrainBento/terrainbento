@@ -94,8 +94,8 @@ class BasicCh(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicCh**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicCh**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -159,7 +159,7 @@ class BasicCh(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
+        3. Assesses if a ``PrecipChanger`` is an active boundary handler and if
            so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited erosion by water.
@@ -167,8 +167,8 @@ class BasicCh(ErosionModel):
         5. Calculates topographic change by nonlinear diffusion.
 
         6. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``step`` and increments model time by ``step``.
+           **finalize__run_one_step**. This function updates all boundary
+           handler handlers by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
@@ -216,7 +216,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    cdsp = BasicCh(input_file=infile)
+    cdsp = BasicCh.from_file(infile)
     cdsp.run()
 
 

@@ -785,7 +785,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    sm = StochasticErosionModel(input_file=infile)
+    sm = StochasticErosionModel.from_file(infile)
     sm.run()
 
 

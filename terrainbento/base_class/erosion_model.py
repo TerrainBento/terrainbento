@@ -732,7 +732,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    erosion_model = ErosionModel(input_file=infile)
+    erosion_model = ErosionModel.from_file(infile)
     erosion_model.run()
 
 

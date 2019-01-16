@@ -139,7 +139,7 @@ class Basic(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active boundary handler and if
            so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited erosion by water.
@@ -147,8 +147,8 @@ class Basic(ErosionModel):
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``step`` and increments model time by ``step``.
+           **finalize__run_one_step**. This function updates all boundary
+           handlers handlers by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
@@ -199,7 +199,7 @@ def main():  # pragma: no cover
         )
         sys.exit(1)
 
-    model = Basic(input_file=infile)
+    model = Basic.from_file(infile)
     model.run()
 
 

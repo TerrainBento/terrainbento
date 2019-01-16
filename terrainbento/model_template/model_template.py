@@ -159,7 +159,7 @@ def main():  # pragma: no cover
         )
         sys.exit(1)
 
-    model = ModelTemplate(input_file=infile)
+    model = ModelTemplate.from_file(infile)
     model.run()
 
 

@@ -44,21 +44,21 @@ class BasicChRt(TwoLithologyErosionModel):
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`S_c` is the critical slope parameter
-    and :math:`N` is the number of terms in the Taylor Series expansion.
-    :math:`w` is a
-    weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
-    based on the depth to the contact zone and the width of the contact zone.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
+    :math:`K_2` are the erodabilities of the upper and lower lithologies,
+    and :math:`D` is the regolith transport parameter. :math:`S_c` is the
+    critical slope parameter and :math:`N` is the number of terms in the Taylor
+    Series expansion. :math:`w` is a weight used to calculate the effective
+    erodability :math:`K(\eta, \eta_C)` based on the depth to the contact zone
+    and the width of the contact zone.
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
+    The weight :math:`w` promotes smoothness in the solution of erodability at
+    a given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
+    the contact, the erodability approaches the value of :math:`K_1` and
+    :math:`K_2` at a rate related to the contact zone width. Thus, to make a
+    very sharp transition, use a small value for the contact zone width.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -118,8 +118,8 @@ class BasicChRt(TwoLithologyErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicChRt**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicChRt**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -175,7 +175,7 @@ class BasicChRt(TwoLithologyErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
+        3. Assesses if a **PrecipChanger** is an active boundary handler and if
            so, uses it to modify the two erodability by water values.
 
         4. Updates the spatially variable erodability value based on the
@@ -187,8 +187,8 @@ class BasicChRt(TwoLithologyErosionModel):
         6. Calculates topographic change by non-linear diffusion.
 
         7. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``step`` and increments model time by ``step``.
+           **finalize__run_one_step**. This function updates all boundary
+           handler handlers by ``step`` and increments model time by ``step``.
 
         Parameters
         ----------
@@ -233,7 +233,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    chrt = BasicChRt(input_file=infile)
+    chrt = BasicChRt.from_file(infile)
     chrt.run()
 
 
