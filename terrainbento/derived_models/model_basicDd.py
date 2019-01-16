@@ -22,8 +22,8 @@ from terrainbento.base_class import ErosionModel
 class BasicDd(ErosionModel):
     r"""**BasicDd** model program.
 
-    **BasicDd** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equation:
+    This model program evolves a topographic surface, :math:`\eta`, with the
+    following governing equation:
 
     .. math::
 
@@ -31,12 +31,12 @@ class BasicDd(ErosionModel):
                 - \omega_{ct}\left(1-e^{-KQ^{m}S^{n}/\omega_{ct}}\right)\right)
                 + D\nabla^2 \eta
 
-    where :math:`Q` is the local stream discharge and :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`D` is the regolith transport
-    efficiency, and :math:`\omega_{ct}` is the critical stream power needed for
-    erosion to occur. :math:`\omega_{ct}` changes through time as it increases
-    with cumulative incision depth:
+    where :math:`Q` is the local stream discharge and :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`D` is the
+    regolith transport efficiency, and :math:`\omega_{ct}` is the critical
+    stream power needed for erosion to occur. :math:`\omega_{ct}` changes
+    through time as it increases with cumulative incision depth:
 
     .. math::
 

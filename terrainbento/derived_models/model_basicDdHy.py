@@ -22,9 +22,9 @@ from terrainbento.base_class import ErosionModel
 class BasicDdHy(ErosionModel):
     r"""**BasicDdHy** model program.
 
-    **BasicDdHy** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
-
+    This model program combines models :py:class:`BasicDd` and
+    :py:class:`BasicHy`. It evolves a topographic surface, :math:`\eta`, with
+    the following governing equation:
 
     .. math::
 
@@ -33,11 +33,10 @@ class BasicDdHy(ErosionModel):
             + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)}
             + D\nabla^2 \eta
 
-
         Q_s = \int_0^A \left(KQ^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
 
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`\omega_{ct}` is
     the critical stream power needed for erosion to occur, :math:`V` is
     effective sediment settling velocity, :math:`Q_s` is volumetric sediment
@@ -56,7 +55,6 @@ class BasicDdHy(ErosionModel):
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\right)` and time :math:`t`.
-
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

@@ -22,9 +22,9 @@ from terrainbento.base_class import ErosionModel
 class BasicDdVs(ErosionModel):
     r"""**BasicDdVs** model program.
 
-    **BasicDdVs** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equations:
-
+    This model program combines :py:class:`BasicDd` and :py:class:`BasicVs`.
+    It evolves a topographic surface described by :math:`\eta` with the
+    following governing equations:
 
     .. math::
 
@@ -36,9 +36,8 @@ class BasicDdVs(ErosionModel):
 
         \alpha = \frac{K_{sat}  H  dx}{R_m}
 
-
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`D` is the
     regolith transport parameter, and :math:`\omega_{ct}` is the critical
     stream power needed for erosion to occur. :math:`\omega_{ct}` changes

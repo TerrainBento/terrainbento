@@ -2,8 +2,8 @@
 # !/usr/env/python
 """terrainbento **BasicDdRt** model program.
 
-Erosion model program using linear diffusion, stream power with stream
-power with a smoothed threshold that increases with incision depth and spatially
+Erosion model program using linear diffusion, stream power with stream power
+with a smoothed threshold that increases with incision depth and spatially
 varying erodability based on two bedrock units, and discharge proportional to
 drainage area.
 
@@ -23,12 +23,12 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicDdRt(TwoLithologyErosionModel):
     r"""**BasicDdRt** model program.
 
-    **BasicRtTh** is a model program that combines the **BasicRt** and
-    **BasicDd** programs by allowing for two lithologies, an "upper" layer and a
-    "lower" layer, and permitting the use of an smooth erosion threshold that
-    increases with erosion depth. Given a spatially varying contact zone
-    elevation, :math:`\eta_C(x,y))`, model **BasicDdRt** evolves a topographic
-    surface described by :math:`\eta` with the following governing equations:
+    This model program combines the :py:class:`BasicRt` and :py:class:`BasicDd`
+    programs by allowing for two lithologies, an "upper" layer and a "lower"
+    layer, and permitting the use of an smooth erosion threshold that increases
+    with erosion depth. Given a spatially varying contact zone elevation,
+    :math:`\eta_C(x,y))`, model **BasicDdRt** evolves a topographic surface
+    described by :math:`\eta` with the following governing equations:
 
     .. math::
 
@@ -44,9 +44,8 @@ class BasicDdRt(TwoLithologyErosionModel):
 
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
-
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies,
     :math:`\omega_{c}` is the in initial erosion threshold (for both

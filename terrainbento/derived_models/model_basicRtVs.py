@@ -2,7 +2,7 @@
 # !/usr/env/python
 """terrainbento **BasicRtVs** model program.
 
-Erosion model program using linear diffusion, stream power with spatially
+Erosion model program using linear diffusion, stream power with spatiall
 varying erodability based on two bedrock units, and discharge proportional to
 effective drainage area.
 
@@ -22,18 +22,17 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicRtVs(TwoLithologyErosionModel):
     r"""**BasicRtVs** model program.
 
-    **BasicRtVs** is a model program that combines the **BasicRt** and
-    **BasicVs** programs by allowing for two lithologies, an "upper" layer and a
-    "lower" layer, and using discharge proportional to effective drainage area
-    based on variable source area hydrology. Given a spatially varying contact
-    zone elevation, :math:`\eta_C(x,y))`, model **BasicRtVs** evolves a
-    topographic surface described by :math:`\eta` with the following governing
-    equations:
-
+    This model program combines the :py:class:`BasicRt` and :py:class:`BasicVs`
+    programs by allowing for two lithologies, an "upper" layer and a "lower"
+    layer, and using discharge proportional to effective drainage area based on
+    variable source area hydrology. Given a spatially varying contact zone
+    elevation, :math:`\eta_C(x,y))`, model **BasicRtVs** evolves a topographic
+    surface described by :math:`\eta` with the following governing equations:
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{m}S^{n}
+                                           + D\nabla^2 \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 

@@ -27,16 +27,15 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicRtSa(TwoLithologyErosionModel):
     r"""**BasicRtSa** model program.
 
-    **BasicRtSa** combines the **BasicRt** and **BasicSa** programs by allowing
-    for two lithologies, an "upper" layer and a "lower" layer and explicitly
-    resolving a soil layer. This soil layer is produced by weathering that
-    decays exponentially with soil thickness and hillslope transport is
-    soil-depth dependent. Given a spatially varying contact zone elevation,
-    :math:`\eta_C(x,y))`, a spatially varying soil thickness :math:`H` and a
-    spatially varying bedrock elevation :math:`\eta_b`, model **BasicRtSa**
-    evolves a topographic surface described by :math:`\eta` with the following
-    governing equations:
-
+    This model program combines the :py:class:`BasicRt` and :py:class:`BasicSa`
+    programs by allowing for two lithologies, an "upper" layer and a "lower"
+    layer and explicitly resolving a soil layer. This soil layer is produced by
+    weathering that decays exponentially with soil thickness and hillslope
+    transport is soil-depth dependent. Given a spatially varying contact zone
+    elevation, :math:`\eta_C(x,y))`, a spatially varying soil thickness
+    :math:`H` and a spatially varying bedrock elevation :math:`\eta_b`,
+    model **BasicRtSa** evolves a topographic surface described by :math:`\eta`
+    with the following governing equations:
 
     .. math::
 
@@ -55,9 +54,8 @@ class BasicRtSa(TwoLithologyErosionModel):
 
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
-
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies, and
     :math:`D` is the regolith transport parameter. :math:`w` is a weight used

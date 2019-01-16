@@ -24,7 +24,6 @@ class BasicHy(ErosionModel):
     **BasicHy** is a model program that evolves a topographic surface described
     by :math:`\eta` with the following governing equation:
 
-
     .. math::
 
         \frac{\partial \eta}{\partial t} = -KQ^{m}S^{n}
@@ -33,8 +32,8 @@ class BasicHy(ErosionModel):
 
         Q_s = \int_0^A \left(KQ^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
 
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`V` is effective
     sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
     :math:`r` is a runoff rate, :math:`\phi` is sediment porosity, :math:`D` is

@@ -2,9 +2,9 @@
 # !/usr/env/python
 """terrainbento model **BasicHySa** program.
 
-Erosion model program using exponential weathering, soil-depth-dependent
-linear diffusion, stream-power-driven sediment erosion, mass conservation, and
-bedrock erosion, and discharge proportional to drainage area.
+Erosion model program using exponential weathering, soil-depth-dependent linear
+diffusion, stream-power-driven sediment erosion, mass conservation, and bedrock
+erosion, and discharge proportional to drainage area.
 
 Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
@@ -27,9 +27,9 @@ from terrainbento.base_class import ErosionModel
 class BasicHySa(ErosionModel):
     r"""**BasicHySa** program.
 
-    Model **BasicHySa** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
-
+    This model program combines :py:class:`BasicHy` and :py:class:`BasicSa` to
+    evolve a topographic surface described by :math:`\eta` with the following
+    governing equation:
 
     .. math::
 
@@ -47,7 +47,6 @@ class BasicHySa(ErosionModel):
               + K_r (1-F_f) Q^{m}S^{n} e^{-H/H_*}
               - \frac{V_s Q_s}{Ar\left(1 - \phi \right)}\right) dA
 
-
     where :math:`\eta_b` is the bedrock elevation, :math:`H` is the soil depth,
     :math:`P_0` is the maximum soil production rate, :math:`H_s` is the soil
     production decay depth, :math:`V_s` is effective sediment settling
@@ -59,12 +58,10 @@ class BasicHySa(ErosionModel):
     is the bedrock roughness length scale, and :math:`r` is a runoff rate.
     Hillslope sediment flux per unit width :math:`q_h` is given by:
 
-
     .. math::
 
         q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right]
               \nabla \eta.
-
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.

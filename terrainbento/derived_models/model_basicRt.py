@@ -22,12 +22,11 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicRt(TwoLithologyErosionModel):
     r"""**BasicRt** model program.
 
-    **BasicRt** is a model program that improves upon the **Basic** program by
-    allowing for two lithologies, an "upper" layer and a "lower" layer. Given a
+    This model program improves upon the :py:class:`Basic` program by allowing
+    for two lithologies, an "upper" layer and a "lower" layer. Given a
     spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
     **BasicRt** evolves a topographic surface described by :math:`\eta` with
     the following governing equations:
-
 
     .. math::
 
@@ -38,13 +37,12 @@ class BasicRt(TwoLithologyErosionModel):
 
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
-
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`m` and :math:`n` are the drainage area
-    and slope exponent parameters. :math:`w` is a weight used to calculate the
-    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2`
+    are the erodabilities of the upper and lower lithologies, and :math:`D` is
+    the regolith transport parameter. :math:`m` and :math:`n` are the drainage
+    area and slope exponent parameters. :math:`w` is a weight used to calculate
+    the effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
     contact zone and the width of the contact zone.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at

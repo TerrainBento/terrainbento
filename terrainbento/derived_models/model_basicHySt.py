@@ -24,44 +24,23 @@ from terrainbento.base_class import StochasticErosionModel
 class BasicHySt(StochasticErosionModel):
     r"""**BasicHySt** model program.
 
-    **BasicHySt** is a model program that uses a stochastic treatment of runoff
-    and discharge, and includes an erosion threshold in the water erosion law.
-    THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
-    with the following governing equation:
+    This model program that uses a stochastic treatment of runoff and
+    discharge, and includes an erosion threshold in the water erosion law. It
+    combines models :py:class:`BasicHy` and :py:class:`BasicSt`. The model
+    evolves a topographic surface, :math:`\eta (x,y,t)`, with the following
+    governing equation:
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -E(\hat{Q}) + D_s(\hat{Q}) + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -E(\hat{Q})
+                                           + D_s(\hat{Q})
+                                           + D\nabla^2 \eta
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
-    indicates that it is a random-in-time variable), :math:`E` is the bed erosion
-    (entrainment) rate due to fluid entrainment, :math:`D_s` is the deposition
-    rate of sediment settling out of active transport, and :math:`D` is the
-    regolith transport parameter.
-
-    **BasicHySt** inherits from the terrainbento **StochasticErosionModel**
-    base class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K_q`       | ``water_erodability_stochastic`` |
-    +------------------+----------------------------------+
-    |:math:`V_s`       | ``v_s``                          |
-    +------------------+----------------------------------+
-    |:math:`F_f`       | ``fraction_fines``               |
-    +------------------+----------------------------------+
-    |:math:`\phi`      | ``sediment_porosity``            |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`I_m`       | ``infiltration_capacity``        |
-    +------------------+----------------------------------+
+    indicates that it is a random-in-time variable), :math:`E` is the bed
+    erosion (entrainment) rate due to fluid entrainment, :math:`D_s` is the
+    deposition rate of sediment settling out of active transport, and :math:`D`
+    is the regolith transport parameter.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

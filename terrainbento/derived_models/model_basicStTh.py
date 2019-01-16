@@ -23,10 +23,11 @@ from terrainbento.base_class import StochasticErosionModel
 class BasicStTh(StochasticErosionModel):
     r"""**BasicStTh** model program.
 
-    **BasicStTh** is a model program that uses a stochastic treatment of runoff
-    and discharge, and includes an erosion threshold in the water erosion law.
-    The model evolves a topographic surface, :math:`\eta (x,y,t)`,
-    with the following governing equation:
+    This model program uses a stochastic treatment of runoff and discharge, and
+    includes an erosion threshold in the water erosion law. It combines models
+    :py:class:`BasicSt` and :py:class:`BasicTh`.  The model evolves a
+    topographic surface, :math:`\eta (x,y,t)`, with the following governing
+    equation:
 
     .. math::
 
@@ -37,8 +38,8 @@ class BasicStTh(StochasticErosionModel):
     indicates that it is a random-in-time variable) and :math:`S` is the local
     slope gradient. :math:`m` and :math:`n` are the discharge and slope
     exponent, respectively, :math:`\omega_c` is the critical stream power
-    required for erosion to occur, and :math:`D` is the regolith transport
-    parameter.
+    required for erosion to occur, :math:`K_q` is the erodability by water, and
+    :math:`D` is the regolith transport parameter.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

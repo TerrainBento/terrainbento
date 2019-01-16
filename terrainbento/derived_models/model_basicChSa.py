@@ -26,7 +26,6 @@ from terrainbento.base_class import ErosionModel
 class BasicChSa(ErosionModel):
     r"""**BasicChSa** model program.
 
-
     This model program combines models :py:class:`BasicCh` and
     :py:class:`BasicSa`. A soil layer is produced by weathering that decays
     exponentially with soil thickness and hillslope transport is soil-depth

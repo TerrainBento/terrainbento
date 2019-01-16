@@ -23,10 +23,11 @@ from terrainbento.base_class import StochasticErosionModel
 class BasicStVs(StochasticErosionModel):
     r"""**BasicStVs** model program.
 
-    **BasicStVs** is a model program that uses a stochastic treatment of runoff
-    and discharge, using a variable source area runoff generation model.
-    THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
-    with the following governing equation:
+    This model program uses a stochastic treatment of runoff and discharge,
+    using a variable source area runoff generation model. It combines
+    :py:class:`BasicSt` and :py:class:`BasicVs`. The model evolves a
+    topographic surface, :math:`\eta (x,y,t)`, with the following governing
+    equation:
 
     .. math::
 
@@ -35,7 +36,9 @@ class BasicStVs(StochasticErosionModel):
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable) and :math:`S` is the local
-    slope gradient.
+    slope gradient. :math:`m` and :math:`n` are the discharge and slope
+    exponent, respectively, :math:`K_q` is the erodability by water, and
+    :math:`D` is the regolith transport parameter.
 
     This model iterates through a sequence of storm and interstorm periods.
     Given a storm precipitation intensity :math:`P`, the discharge :math:`Q`.

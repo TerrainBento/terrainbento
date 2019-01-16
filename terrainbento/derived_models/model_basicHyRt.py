@@ -22,13 +22,12 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicHyRt(TwoLithologyErosionModel):
     r"""**BasicHyRt** model program.
 
-    **BasicHyRt** is a model program that combines the **BasicRt** and
-    **BasicHy** programs by allowing for two lithologies, an "upper" layer and
-    a "lower" layer, stream-power-driven sediment erosion and mass
-    conservation. Given a spatially varying contact zone elevation,
-    :math:`\eta_C(x,y))`, model **BasicHyRt** evolves a topographic surface
-    described by :math:`\eta` with the following governing equations:
-
+    This model program combines the :py:class:`BasicRt` and :py:class:`BasicHy`
+    programs by allowing for two lithologies, an "upper" layer and a "lower"
+    layer, stream-power-driven sediment erosion and mass conservation. Given a
+    spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
+    **BasicHyRt** evolves a topographic surface described by :math:`\eta` with
+    the following governing equations:
 
     .. math::
 
@@ -42,9 +41,8 @@ class BasicHyRt(TwoLithologyErosionModel):
 
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
-
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies, and
     :math:`D` is the regolith transport parameter. :math:`Q_s` is the
@@ -60,28 +58,6 @@ class BasicHyRt(TwoLithologyErosionModel):
     the contact, the erodability approaches the value of :math:`K_1` and
     :math:`K_2` at a rate related to the contact zone width. Thus, to make a
     very sharp transition, use a small value for the contact zone width.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K_{1}`     | ``water_erodability_upper``      |
-    +------------------+----------------------------------+
-    |:math:`K_{2}`     | ``water_erodability_lower``      |
-    +------------------+----------------------------------+
-    |:math:`W_{c}`     | ``contact_zone__width``          |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`V`         | ``settling_velocity``            |
-    +------------------+----------------------------------+
-    |:math:`F_f`       | ``fraction_fines``               |
-    +------------------+----------------------------------+
-    |:math:`\phi`      | ``sediment_porosity``            |
-    +------------------+----------------------------------+
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

@@ -33,7 +33,6 @@ class BasicChRtTh(TwoLithologyErosionModel):
     model **BasicChRtTh** evolves a topographic surface described by
     :math:`\eta` with the following governing equations:
 
-
     .. math::
 
         \frac{\partial \eta}{\partial t} = -\left[\omega
@@ -51,7 +50,6 @@ class BasicChRtTh(TwoLithologyErosionModel):
         q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
               + \left( \frac{S}{S_c} \right)^4
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
-
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local
     slope, :math:`m` and :math:`n` are the drainage area and slope exponent

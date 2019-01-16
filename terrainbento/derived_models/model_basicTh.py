@@ -21,8 +21,8 @@ from terrainbento.base_class import ErosionModel
 class BasicTh(ErosionModel):
     r"""**BasicTh** model program.
 
-    **BasicTh** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equation:
+    This model program evolves a topographic surface described by :math:`\eta`
+    with the following governing equation:
 
     .. math::
 
@@ -30,8 +30,8 @@ class BasicTh(ErosionModel):
                     - \omega_c\left(1-e^{-KQ^{m}S^{n}/\omega_c}\right)\right)
                     + D\nabla^2 \eta
 
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`\omega_c` is the
     critical stream power needed for erosion to occur and :math:`D` is the
     regolith transport efficiency.

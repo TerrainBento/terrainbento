@@ -21,8 +21,9 @@ from terrainbento.base_class import ErosionModel
 class BasicThVs(ErosionModel):
     r"""**BasicThVs** model program.
 
-    **BasicThVs** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equations:
+    This model program combines models :py:class:`BasicTh` and
+    :py:class:`BasicVs`. It evolves a topographic surface described by :
+    math:`\eta` with the following governing equations:
 
     .. math::
 
@@ -33,7 +34,6 @@ class BasicThVs(ErosionModel):
         A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
         \alpha = \frac{K_{sat} H dx}{R_m}
-
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent

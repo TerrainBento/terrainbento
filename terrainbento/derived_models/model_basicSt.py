@@ -23,8 +23,8 @@ from terrainbento.base_class import StochasticErosionModel
 class BasicSt(StochasticErosionModel):
     r"""**BasicSt** model program.
 
-    **BasicSt** is a model program that evolves a topographic surface
-    described by :math:`\eta (x,y,t)` with the following governing equation:
+    This model program that evolves a topographic surface,
+    :math:`\eta (x,y,t)`, with the following governing equation:
 
     .. math::
 
@@ -34,7 +34,8 @@ class BasicSt(StochasticErosionModel):
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), :math:`S` is the local
     slope gradient, :math:`m` and :math:`n` are the discharge and slope
-    exponents, respectively, and :math:`D` is the regolith transport parameter.
+    exponents, respectively, :math:`K_q` is the erodability by water, and
+    :math:`D` is the regolith transport parameter.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

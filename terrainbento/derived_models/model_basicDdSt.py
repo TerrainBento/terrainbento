@@ -27,9 +27,9 @@ class BasicDdSt(StochasticErosionModel):
     This model program uses a stochastic treatment of runoff and discharge, and
     includes an erosion threshold in the water erosion law. The threshold
     depends on cumulative incision depth, and therefore can vary in space and
-    time.
+    time. It combines models :py:class:`BasicDd` and :py:class:`BasicSt`.
 
-    THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
+    The model evolves a topographic surface, :math:`\eta (x,y,t)`,
     with the following governing equation:
 
     .. math::
@@ -43,8 +43,8 @@ class BasicDdSt(StochasticErosionModel):
     indicates that it is a random-in-time variable) and :math:`S` is the local
     slope gradient. :math:`m` and :math:`n` are the discharge and slope
     exponent, respectively, :math:`\omega_c` is the critical stream power
-    required for erosion to occur, and :math:`D` is the regolith transport
-    parameter.
+    required for erosion to occur, :math:`K_q` is the erodability by water, and
+    :math:`D` is the regolith transport parameter.
 
     :math:`\omega_{ct}` may change through time as it increases with cumulative
     incision depth:

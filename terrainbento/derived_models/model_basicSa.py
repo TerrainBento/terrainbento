@@ -27,13 +27,12 @@ from terrainbento.base_class import ErosionModel
 class BasicSa(ErosionModel):
     r"""**BasicSa** model program.
 
-    **BasicSa** is a model program that explicitly resolves a soil layer. This
-    soil layer is produced by weathering that decays exponentially with soil
-    thickness and hillslope transport is soil-depth dependent. Given a
-    spatially varying soil thickness :math:`H` and a spatially varying bedrock
-    elevation :math:`\eta_b`, model **BasicSa** evolves a topographic surface
-    described by :math:`\eta` with the following governing equations:
-
+    This model program explicitly resolves a soil layer. This soil layer is
+    produced by weathering that decays exponentially with soil thickness and
+    hillslope transport is soil-depth dependent. Given a spatially varying soil
+    thickness :math:`H` and a spatially varying bedrock elevation
+    :math:`\eta_b`, model **BasicSa** evolves a topographic surface described
+    by :math:`\eta` with the following governing equations:
 
     .. math::
 
@@ -47,7 +46,6 @@ class BasicSa(ErosionModel):
                                              - (1 - \delta (H) ) K Q^{m} S^{N}
 
         q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
-
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent

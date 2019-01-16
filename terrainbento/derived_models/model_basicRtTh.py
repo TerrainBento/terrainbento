@@ -22,10 +22,10 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicRtTh(TwoLithologyErosionModel):
     r"""**BasicRtTh** model program.
 
-    **BasicRtTh** is a model program that combines the **BasicRt** and
-    **BasicTh** programs by allowing for two lithologies, an "upper" layer and a
-    "lower" layer, and permitting the use of an smooth erosion threshold for
-    each lithology. Given a spatially varying contact zone elevation,
+    This model program combines the :py:class:`BasicRt` and :py:class:`BasicTh`
+    programs by allowing for two lithologies, an "upper" layer and a "lower"
+    layer, and permitting the use of an smooth erosion threshold for each
+    lithology. Given a spatially varying contact zone elevation,
     :math:`\eta_C(x,y))`, model **BasicRtTh** evolves a topographic surface
     described by :math:`\eta` with the following governing equations:
 
@@ -43,9 +43,8 @@ class BasicRtTh(TwoLithologyErosionModel):
 
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
-
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies,
     :math:`\omega_{c1}` and :math:`\omega_{c2}` are the erosion thresholds of
@@ -63,31 +62,6 @@ class BasicRtTh(TwoLithologyErosionModel):
     the contact, the erodability approaches the value of :math:`K_1` and
     :math:`K_2` at a rate related to the contact zone width. Thus, to make a
     very sharp transition, use a small value for the contact zone width.
-
-    The **BasicRtTh** program inherits from the terrainbento
-    **TwoLithologyErosionModel** base class. In addition to the parameters
-    required by the base class, models built with this program require the
-    following parameters.
-
-    +--------------------+-----------------------------------------+
-    | Parameter Symbol   | Input File Parameter Name               |
-    +====================+=========================================+
-    |:math:`m`           | ``m_sp``                                |
-    +--------------------+-----------------------------------------+
-    |:math:`n`           | ``n_sp``                                |
-    +--------------------+-----------------------------------------+
-    |:math:`K_{1}`       | ``water_erodability_upper``             |
-    +--------------------+-----------------------------------------+
-    |:math:`K_{2}`       | ``water_erodability_lower``             |
-    +--------------------+-----------------------------------------+
-    |:math:`\omega_{c1}` | ``water_erosion_rule_upper__threshold`` |
-    +--------------------+-----------------------------------------+
-    |:math:`\omega_{c2}` | ``water_erosion_rule_lower__threshold`` |
-    +--------------------+-----------------------------------------+
-    |:math:`W_{c}`       | ``contact_zone__width``                 |
-    +--------------------+-----------------------------------------+
-    |:math:`D`           | ``regolith_transport_parameter``        |
-    +--------------------+-----------------------------------------+
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
