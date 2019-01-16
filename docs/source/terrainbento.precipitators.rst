@@ -1,3 +1,5 @@
+.. py:module:: terrainbento.precipitators
+
 terrainbento Precipitators
 ==========================
 

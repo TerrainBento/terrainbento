@@ -1,5 +1,7 @@
+.. py:module:: terrainbento.runoff_generators
+
 terrainbento Runoff Generators
-==========================
+==============================
 
 .. toctree::
 

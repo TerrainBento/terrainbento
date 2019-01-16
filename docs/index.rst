@@ -26,7 +26,7 @@ or multiple lithology layers
 Second, a set of :py:mod:`Boundary Condition Handlers <terrainbento.boundary_handlers>`
 provide tools to set and modify boundary conditions during a model run.
 
-Third, a set of :py:mod`Precipitators <terrainbento.precipitators>` permits
+Third, a set of :py:mod:`Precipitators <terrainbento.precipitators>` permits
 alternative approaches to specifying spatially and temporally variable
 precipitation.
 

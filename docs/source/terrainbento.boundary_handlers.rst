@@ -1,3 +1,5 @@
+.. py:module:: terrainbento.boundary_handlers
+
 terrainbento Boundary Condition Handlers
 ========================================
 
