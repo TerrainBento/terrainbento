@@ -21,8 +21,9 @@ class TwoLithologyErosionModel(ErosionModel):
     This is a base class that handles setting up common parameters and the
     contact zone elevation.
 
-    A field "lithology_contact_elevation__file_name" must be specified in the
-    grid.
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``lithology_contact__elevation``
     """
 
     _required_fields = [

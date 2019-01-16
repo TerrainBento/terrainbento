@@ -189,7 +189,7 @@ class BasicSa(ErosionModel):
 
         The **run_one_step** method does the following:
 
-        1. Directs flow and accumulates drainage area.
+        1. Creates rain and runoff, then directs and accumulates flow.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.

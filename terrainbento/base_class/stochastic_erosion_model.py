@@ -33,9 +33,9 @@ class StochasticErosionModel(ErosionModel):
     distribution. When this option is selected, the following parameters are
     used:
 
-      - mean_storm_duration
-      - mean_interstorm_duration
-      - mean_storm_depth
+        - mean_storm_duration
+        - mean_interstorm_duration
+        - mean_storm_depth
 
     When ``opt_stochastic_duration==False`` the model will have uniform
     timesteps but generate rainfall from a stretched exponential distribution.
@@ -51,10 +51,13 @@ class StochasticErosionModel(ErosionModel):
 
     The following parameter are used:
 
-      - rainfall__shape_factor
-      - number_of_sub_time_steps
-      - rainfall_intermittency_factor
-      - rainfall__mean_rate
+        - rainfall__shape_factor
+        - number_of_sub_time_steps
+        - rainfall_intermittency_factor
+        - rainfall__mean_rate
+
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
     """
 
     _required_fields = ["topographic__elevation"]

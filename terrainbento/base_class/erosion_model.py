@@ -152,6 +152,9 @@ class ErosionModel(object):
     It is expected that a derived model will define an **__init__** and a
     **run_one_step** method. If desired, the derived model can overwrite the
     existing **run_for**, **run**, and **finalize** methods.
+
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
     """
 
     _required_fields = ["topographic__elevation"]
