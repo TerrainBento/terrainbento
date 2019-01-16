@@ -19,7 +19,7 @@ exponential:
 
 .. math::
 
-    Pr(P>p) = \exp \left[-\left( p \lambda \\right)^c\\right]
+    Pr(P>p) = \exp \left[-\left( p \lambda \right)^c\right]
 
 where :math:`c` is the shape factor and :math:`\lambda` is the scale factor.
 The corresponding probability density function is a Weibull distribution. The
@@ -118,8 +118,8 @@ is:
 
 .. math::
 
-    \\\frac{K}{K_0} =
-    \\\frac{F\int_{I_c}^\infty (p-I_c)^{m} f(p) dp}
+    \frac{K}{K_0} =
+    \frac{F\int_{I_c}^\infty (p-I_c)^{m} f(p) dp}
           {F_0\int_{I_c}^\infty (p-I_c)^{m} f_0(p) dp}
 
 Here :math:`F_0` is the starting intermittency factor.
@@ -132,12 +132,12 @@ distribution such that :math:`f(p)` has the form:
 
 .. math::
 
-    f(p) = \\\frac{c}
-                 {\lambda}\left( \\\frac{p}{\lambda} \\right)^{(c-1)}
+    f(p) = \frac{c}
+                 {\lambda}\left( \frac{p}{\lambda} \right)^{(c-1)}
                  e^{-(p \lambda)^c}.
 
 The above definition can be substituted in the integrals in the equation for
-:math:`\\\frac{K}{K_0}`. We are not aware of a closed-form solution to the
+:math:`\frac{K}{K_0}`. We are not aware of a closed-form solution to the
 resulting integrals. Therefore, we apply a numerical integration to convert the
 input values of :math:`F`, :math:`c`, and :math:`p_d` into a corresponding new
 value of :math:`K`.
@@ -157,7 +157,7 @@ Finally we define the erodability adjustment factor :math:`F_{w}`:
 
 .. math::
 
-     K = F_{w} K_{0} = \\\frac{F \Psi}{F_0 \Psi_0} K_{0}
+     K = F_{w} K_{0} = \frac{F \Psi}{F_0 \Psi_0} K_{0}
 
 Here :math:`F_0` and :math:`\Psi_0` are the starting fraction of wet days and
 starting value for :math:`\Psi`.
@@ -534,7 +534,7 @@ class PrecipChanger(object):
 
         .. math::
 
-             K = F_{w} K_{0} = \\\frac{F \Psi}{F_0 \Psi_0} K_{0}
+             K = F_{w} K_{0} = \frac{F \Psi}{F_0 \Psi_0} K_{0}
 
         Returns
         -------

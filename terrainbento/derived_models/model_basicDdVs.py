@@ -28,11 +28,11 @@ class BasicDdVs(ErosionModel):
 
     .. math::
 
-        \\\frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_{ct}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{ct}}\\right)\\right) + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_{ct}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{ct}}\right)\right) + D\nabla^2 \eta
 
-        A_{eff} = A \exp \left( -\\\frac{-\\alpha S}{A}\\right)
+        A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \\alpha = \\\frac{K_{sat}  H_{init}  dx}{R_m}
+        \alpha = \frac{K_{sat}  H_{init}  dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -44,14 +44,14 @@ class BasicDdVs(ErosionModel):
 
     .. math::
 
-        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\\right), \omega_c \\right)
+        \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\right), \omega_c \right)
 
     where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
-    :math:`\left(x,y\\right)` and time :math:`t`.
+    :math:`\left(x,y\right)` and time :math:`t`.
 
-    :math:`\\alpha` is the saturation area scale used for transforming area into
+    :math:`\alpha` is the saturation area scale used for transforming area into
     effective area. It is given as a function of the saturated hydraulic
     conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
     the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.

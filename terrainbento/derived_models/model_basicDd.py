@@ -27,7 +27,7 @@ class BasicDd(ErosionModel):
 
     .. math::
 
-        \\\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\\right)\\right) + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\right)\right) + D\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
@@ -38,12 +38,12 @@ class BasicDd(ErosionModel):
 
     .. math::
 
-        \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\\right), \omega_c \\right)
+        \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\right), \omega_c \right)
 
     where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
-    :math:`\left(x,y\\right)` and time :math:`t`.
+    :math:`\left(x,y\right)` and time :math:`t`.
 
     The **BasicDd** program inherits from the terrainbento **ErosionModel** base
     class. In addition to the parameters required by the base class, models
@@ -176,13 +176,13 @@ class BasicDd(ErosionModel):
 
         .. math::
 
-            \omega_{ct}\left(x,y,t\\right) = \mathrm{max}\left(\omega_c + \\
-            b D_I\left(x, y, t\\right), \omega_c \\right)
+            \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c + \\
+            b D_I\left(x, y, t\right), \omega_c \right)
 
         where :math:`\omega_c` is the threshold when no incision has taken place,
         :math:`b` is the rate at which the threshold increases with incision depth,
         and :math:`D_I` is the cumulative incision depth at location
-        :math:`\left(x,y\\right)` and time :math:`t`.
+        :math:`\left(x,y\right)` and time :math:`t`.
         """
 
         # Set the erosion threshold.

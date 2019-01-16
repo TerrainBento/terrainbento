@@ -28,7 +28,7 @@ class BasicCv(ErosionModel):
 
     .. math::
 
-        \\\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + D\nabla^2 \eta
 
 
     where :math:`K` is the fluviel erodability coefficient, :math:`A` is the

@@ -35,15 +35,15 @@ class BasicSaVs(ErosionModel):
 
         \eta = \eta_b + H
 
-        \\\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A_{eff}^{M} S^{N} -\nabla q_h
+        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A_{eff}^{M} S^{N} -\nabla q_h
 
-        \\\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
+        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
 
-        q_h = -D \left[1-\exp \left( -\\\frac{H}{H_0} \\right) \\right] \nabla \eta
+        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
-        A_{eff} = A \exp \left( -\\\frac{-\\alpha S}{A}\\right)
+        A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \\alpha = \\\frac{K_{sat}  H_{init}  dx}{R_m}
+        \alpha = \frac{K_{sat}  H_{init}  dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -54,7 +54,7 @@ class BasicSaVs(ErosionModel):
     production rate, and :math:`H_0` is the sediment transport decay depth.
     :math:`q_h` is the hillslope sediment flux per unit width.
 
-    :math:`\\alpha` is the saturation area scale used for transforming area into
+    :math:`\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
     hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
     the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.

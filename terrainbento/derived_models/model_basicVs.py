@@ -27,11 +27,11 @@ class BasicVs(ErosionModel):
 
     .. math::
 
-        \\\frac{\partial \eta}{\partial t} = - K A_{eff}^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = - K A_{eff}^{m}S^{n} + D\nabla^2 \eta
 
-        A_{eff} = A \exp \left( -\\\frac{-\\alpha S}{A}\\right)
+        A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \\alpha = \\\frac{K_{sat}  H_{init}  dx}{R_m}
+        \alpha = \frac{K_{sat}  H_{init}  dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -39,7 +39,7 @@ class BasicVs(ErosionModel):
     :math:`K` is the erodability by water, and :math:`D` is the regolith
     transport parameter.
 
-    :math:`\\alpha` is the saturation area scale used for transforming area into
+    :math:`\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
     hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
     the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.

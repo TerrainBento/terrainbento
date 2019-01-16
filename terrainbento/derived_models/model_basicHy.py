@@ -27,7 +27,7 @@ class BasicHy(ErosionModel):
 
     .. math::
 
-        \\\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \\\frac{V Q_s}{rA \left(1-\phi\\right)} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \frac{V Q_s}{rA \left(1-\phi\right)} + D\nabla^2 \eta
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,

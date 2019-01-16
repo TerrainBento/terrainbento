@@ -28,11 +28,11 @@ class BasicHyVs(ErosionModel):
 
     .. math::
 
-        \\\frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_c\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_c}\\right)\\right) + \\\frac{V\\\frac{Q_s}{Q}}{\left(1-\phi\\right)} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_c\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_c}\right)\right) + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)} + D\nabla^2 \eta
 
-        A_{eff} = A \exp \left( -\\\frac{-\\alpha S}{A}\\right)
+        A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \\alpha = \\\frac{K_{sat}  H_{init}  dx}{R_m}
+        \alpha = \frac{K_{sat}  H_{init}  dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -43,7 +43,7 @@ class BasicHyVs(ErosionModel):
     volumetric water discharge, :math:`\phi` is sediment porosity, and
     :math:`D` is the regolith transport efficiency.
 
-    :math:`\\alpha` is the saturation area scale used for transforming area into
+    :math:`\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
     hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
     the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.

@@ -42,15 +42,15 @@ class BasicRtSa(TwoLithologyErosionModel):
 
         \eta = \eta_b + H
 
-        \\\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{m} S^{n} - \nabla q_h
+        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{m} S^{n} - \nabla q_h
 
-        \\\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{m} S^{n}
+        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{m} S^{n}
 
-        q_h = -D \left[1-\exp \left( -\\\frac{H}{H_0} \\right) \\right] \nabla \eta
+        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
-        w = \\\frac{1}{1+\exp \left( -\\\frac{(\eta -\eta_C )}{W_c}\\right)}
+        w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,

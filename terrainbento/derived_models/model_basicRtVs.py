@@ -33,22 +33,22 @@ class BasicRtVs(TwoLithologyErosionModel):
 
     .. math::
 
-        \\\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{m}S^{n} + D\nabla^2 \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
-        w = \\\frac{1}{1+\exp \left( -\\\frac{(\eta -\eta_C )}{W_c}\\right)}
+        w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
-        A_{eff} = A \exp \left( -\\\frac{-\\alpha S}{A}\\right)
+        A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \\alpha = \\\frac{K_{sat}  H_{init}  dx }{R_m}
+        \alpha = \frac{K_{sat}  H_{init}  dx }{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
     erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`\\alpha` is the saturation area scale
+    regolith transport parameter. :math:`\alpha` is the saturation area scale
     used for transforming area into effective area and it is given as a function
     of the saturated hydraulic conductivity :math:`K_{sat}`, the soil thickness
     :math:`H_{init}`, the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
