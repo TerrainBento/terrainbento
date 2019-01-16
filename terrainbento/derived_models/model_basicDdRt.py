@@ -32,7 +32,7 @@ class BasicDdRt(TwoLithologyErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_{ct} (1 - e^{-\omega /\omega_{ct}}) \\right]  + D\\nabla^2 \eta,
+        \\\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_{ct} (1 - e^{-\omega /\omega_{ct}}) \\right]  + D\nabla^2 \eta,
 
         \omega = K(\eta, \eta_C) A^{m} S^{n}
 
@@ -40,7 +40,7 @@ class BasicDdRt(TwoLithologyErosionModel):
 
         \omega_{ct}(x,y,t) = \max(\omega_c + b D_I(x,y,t)
 
-        w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
+        w = \\\frac{1}{1+\exp \left( -\\\frac{(\eta -\eta_C )}{W_c}\\right)}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -92,9 +92,15 @@ class BasicDdRt(TwoLithologyErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``lithology_contact__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _required_fields = [
+        "topographic__elevation",
+        "lithology_contact__elevation",
+    ]
 
     def __init__(
         self,

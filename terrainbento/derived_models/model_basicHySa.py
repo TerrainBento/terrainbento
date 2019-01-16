@@ -35,11 +35,11 @@ class BasicHySa(ErosionModel):
 
         \eta = \eta_b + H
 
-        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) + \\frac{V_s Q_s}{Ar\left(1 - \phi \\right)} - K_s A^{m}S^{n} (1 - e^{-H/H_*}) -\\nabla q_h
+        \\\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) + \\\frac{V_s Q_s}{Ar\left(1 - \phi \\right)} - K_s A^{m}S^{n} (1 - e^{-H/H_*}) -\nabla q_h
 
-        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - K_r A^{m}S^{n} e^{-H/H_*}
+        \\\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - K_r A^{m}S^{n} e^{-H/H_*}
 
-        Q_s = \int_0^A \left(K_s A^{m}S^{n} (1-e^{-H/H_*}) + K_r (1-F_f) A^{m}S^{n} e^{-H/H_*} - \\frac{V_s Q_s}{Ar\left(1 - \phi \\right)}\\right) dA
+        Q_s = \int_0^A \left(K_s A^{m}S^{n} (1-e^{-H/H_*}) + K_r (1-F_f) A^{m}S^{n} e^{-H/H_*} - \\\frac{V_s Q_s}{Ar\left(1 - \phi \\right)}\\right) dA
 
 
     where :math:`\eta_b` is the bedrock elevation, :math:`H` is the soil depth,
@@ -56,7 +56,7 @@ class BasicHySa(ErosionModel):
 
     .. math::
 
-        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \\nabla \eta.
+        q_h = -D \left[1-\exp \left( -\\\frac{H}{H_0} \\right) \\right] \nabla \eta.
 
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport

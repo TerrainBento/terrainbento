@@ -26,11 +26,11 @@ class BasicThVs(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(K A_{eff}^{m}S^{n} - \omega_{c}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{c}}\\right)\\right) + D\\nabla^2 \eta
+        \\\frac{\partial \eta}{\partial t} = -\left(K A_{eff}^{m}S^{n} - \omega_{c}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{c}}\\right)\\right) + D\nabla^2 \eta
 
-        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
+        A_{eff} = A \exp \left( -\\\frac{-\\alpha S}{A}\\right)
 
-        \\alpha = \\frac{K_{sat}  H_{init}  dx}{R_m}
+        \\alpha = \\\frac{K_{sat}  H_{init}  dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,

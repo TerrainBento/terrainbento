@@ -30,7 +30,7 @@ class BasicStVs(StochasticErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -K_{q}\hat{Q}^{m}S^{n} + D\\nabla^2 \eta
+        \\\frac{\partial \eta}{\partial t} = -K_{q}\hat{Q}^{m}S^{n} + D\nabla^2 \eta
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable) and :math:`S` is the local

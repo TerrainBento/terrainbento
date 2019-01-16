@@ -31,7 +31,7 @@ class BasicRtTh(TwoLithologyErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_c (1 - e^{-\omega /\omega_c}) \\right]  + D\\nabla^2 \eta
+        \\\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_c (1 - e^{-\omega /\omega_c}) \\right]  + D\nabla^2 \eta
 
         \omega = K(\eta, \eta_C) A^{m} S^{n}
 
@@ -39,7 +39,7 @@ class BasicRtTh(TwoLithologyErosionModel):
 
         \omega_c(\eta, \eta_C ) = w \omega_{c1} + (1 - w) \omega_{c2}
 
-        w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
+        w = \\\frac{1}{1+\exp \left( -\\\frac{(\eta -\eta_C )}{W_c}\\right)}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -90,9 +90,15 @@ class BasicRtTh(TwoLithologyErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``lithology_contact__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _required_fields = [
+        "topographic__elevation",
+        "lithology_contact__elevation",
+    ]
 
     def __init__(
         self,

@@ -28,9 +28,9 @@ class BasicCh(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \\nabla^2 q_h
+        \\\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \nabla^2 q_h
 
-        q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
+        q_h = -DS \left[ 1 + \left( \\\frac{S}{S_c} \\right)^2 +  \left( \\\frac{S}{S_c} \\right)^4 + ... \left( \\\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -44,6 +44,8 @@ class BasicCh(ErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
     """
 
     _required_fields = ["topographic__elevation"]

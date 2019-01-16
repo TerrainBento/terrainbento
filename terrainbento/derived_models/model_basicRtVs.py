@@ -33,15 +33,15 @@ class BasicRtVs(TwoLithologyErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{m}S^{n} + D\\nabla^2 \eta
+        \\\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A_{eff}^{m}S^{n} + D\nabla^2 \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
-        w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
+        w = \\\frac{1}{1+\exp \left( -\\\frac{(\eta -\eta_C )}{W_c}\\right)}
 
-        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
+        A_{eff} = A \exp \left( -\\\frac{-\\alpha S}{A}\\right)
 
-        \\alpha = \\frac{K_{sat}  H_{init}  dx }{R_m}
+        \\alpha = \\\frac{K_{sat}  H_{init}  dx }{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -91,9 +91,17 @@ class BasicRtVs(TwoLithologyErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``lithology_contact__elevation``
+        - ``soil__depth``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _required_fields = [
+        "topographic__elevation",
+        "lithology_contact__elevation",
+        "soil__depth",
+    ]
 
     def __init__(
         self,

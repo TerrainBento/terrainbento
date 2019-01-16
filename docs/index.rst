@@ -23,14 +23,14 @@ or multiple lithology layers
 (:py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`)
 .
 
-Second, a set of :py:module:`Boundary Condition Handlers <terrainbento.boundary_handlers>`
+Second, a set of :py:mod:`Boundary Condition Handlers <terrainbento.boundary_handlers>`
 provide tools to set and modify boundary conditions during a model run.
 
-Third, a set of :py:module`Precipitators <terrainbento.precipitators>` permits
+Third, a set of :py:mod`Precipitators <terrainbento.precipitators>` permits
 alternative approaches to specifying spatially and temporally variable
 precipitation.
 
-Fourth, a set of :py:module:`Runoff Generators <terrainbento.runoff_generators>`
+Fourth, a set of :py:mod:`Runoff Generators <terrainbento.runoff_generators>`
 allows for alternative approaches for converting rainfall into runoff.
 
 Fifth, we provide an initial set of landscape evolution models derived from the
@@ -38,7 +38,7 @@ base class. These models increase in complexity from a base model to models
 with one, two, or three differences from the base mode.
 
 Finally, a
-:py:class:`~terrainbento.model_template.ModelTemplate` provides an skeleton of
+:py:class:`~terrainbento.model_template.model_template.ModelTemplate` provides an skeleton of
 a model made with the main base class that can be used to create your own
 terrainbento model.
 
@@ -55,6 +55,14 @@ Model Base Class
    :maxdepth: 2
 
    source/terrainbento.base_class
+
+Clock
+-----
+
+.. toctree::
+   :maxdepth: 2
+
+   source/terrainbento.clock
 
 Boundary Condition Handlers
 ---------------------------

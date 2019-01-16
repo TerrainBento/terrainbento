@@ -35,15 +35,15 @@ class BasicSaVs(ErosionModel):
 
         \eta = \eta_b + H
 
-        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A_{eff}^{M} S^{N} -\\nabla q_h
+        \\\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A_{eff}^{M} S^{N} -\nabla q_h
 
-        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
+        \\\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
 
-        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \\nabla \eta
+        q_h = -D \left[1-\exp \left( -\\\frac{H}{H_0} \\right) \\right] \nabla \eta
 
-        A_{eff} = A \exp \left( -\\frac{-\\alpha S}{A}\\right)
+        A_{eff} = A \exp \left( -\\\frac{-\\alpha S}{A}\\right)
 
-        \\alpha = \\frac{K_{sat}  H_{init}  dx}{R_m}
+        \\alpha = \\\frac{K_{sat}  H_{init}  dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,

@@ -27,7 +27,7 @@ class BasicDd(ErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\\right)\\right) + D\\nabla^2 \eta
+        \\\frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\\right)\\right) + D\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,

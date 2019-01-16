@@ -31,7 +31,7 @@ class BasicHySt(StochasticErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -E(\hat{Q}) + D_s(\hat{Q}) + D\\nabla^2 \eta
+        \\\frac{\partial \eta}{\partial t} = -E(\hat{Q}) + D_s(\hat{Q}) + D\nabla^2 \eta
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), :math:`E` is the bed erosion

@@ -35,7 +35,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_c (1 - e^{-\omega /\omega_c}) \\right]  - \\nabla q_h
+        \\\frac{\partial \eta}{\partial t} = -\left[\omega - \omega_c (1 - e^{-\omega /\omega_c}) \\right]  - \nabla q_h
 
         \omega = K(\eta, \eta_C) A^{m} S^{n}
 
@@ -43,9 +43,9 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         \omega_c(\eta, \eta_C ) = w \omega_{c1} + (1 - w) \omega_{c2}
 
-        w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
+        w = \\\frac{1}{1+\exp \left( -\\\frac{(\eta -\eta_C )}{W_c}\\right)}
 
-        q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
+        q_h = -DS \left[ 1 + \left( \\\frac{S}{S_c} \\right)^2 +  \left( \\\frac{S}{S_c} \\right)^4 + ... \left( \\\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -70,9 +70,15 @@ class BasicChRtTh(TwoLithologyErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``lithology_contact__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _required_fields = [
+        "topographic__elevation",
+        "lithology_contact__elevation",
+    ]
 
     def __init__(
         self,

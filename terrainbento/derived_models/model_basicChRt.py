@@ -32,13 +32,13 @@ class BasicChRt(TwoLithologyErosionModel):
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n} - \\nabla q_h
+        \\\frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n} - \nabla q_h
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
-        w = \\frac{1}{1+\exp \left( -\\frac{(\eta -\eta_C )}{W_c}\\right)}
+        w = \\\frac{1}{1+\exp \left( -\\\frac{(\eta -\eta_C )}{W_c}\\right)}
 
-        q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
+        q_h = -DS \left[ 1 + \left( \\\frac{S}{S_c} \\right)^2 +  \left( \\\frac{S}{S_c} \\right)^4 + ... \left( \\\frac{S}{S_c} \\right)^{2(N-1)} \\right]
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
@@ -61,9 +61,15 @@ class BasicChRt(TwoLithologyErosionModel):
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``lithology_contact__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _required_fields = [
+        "topographic__elevation",
+        "lithology_contact__elevation",
+    ]
 
     def __init__(
         self,
