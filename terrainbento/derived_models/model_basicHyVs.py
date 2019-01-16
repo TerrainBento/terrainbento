@@ -28,11 +28,16 @@ class BasicHyVs(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_c\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_c}\right)\right) + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n}
+              - \omega_c\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_c}\right)\right)
+              + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)}
+              + D\nabla^2 \eta
+
+        Q_s = \int_0^A \left(KA^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
 
         A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \alpha = \frac{K_{sat}  H_{init}  dx}{R_m}
+        \alpha = \frac{K_{sat} H dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
@@ -45,34 +50,8 @@ class BasicHyVs(ErosionModel):
 
     :math:`\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
-    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
-    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
-
-    The **BasicVs** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Name                  |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K`         | ``water_erodability``            |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`K_{sat}`   | ``hydraulic_conductivity``       |
-    +------------------+----------------------------------+
-    |:math:`R_m`       | ``recharge_rate``                |
-    +------------------+----------------------------------+
-    |:math:`V`         | ``settling_velocity``            |
-    +------------------+----------------------------------+
-    |:math:`F_f`       | ``fraction_fines``               |
-    +------------------+----------------------------------+
-    |:math:`\phi`      | ``sediment_porosity``            |
-    +------------------+----------------------------------+
+    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H`, the
+    grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -107,7 +86,30 @@ class BasicHyVs(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        settling_velocity : float, optional
+            Settling velocity of entrained sediment (:math:`V`). Default
+            is 0.001.
+        sediment_porosity : float, optional
+            Sediment porosity (:math:`\phi`). Default is 0.3.
+        fraction_fines : float, optional
+            Fraction of fine sediment that is permanently detached
+            (:math:`F_f`). Default is 0.5.
+        solver : str, optional
+            Solver option to pass to the Landlab
+            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`_
+            component. Default is "basic".
+        recharge_rate : float, optional
+            Recharge rate (:math:`R_m`). Default is 1.0.
+        hydraulic_conductivity : float, optional
+            Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
@@ -119,8 +121,8 @@ class BasicHyVs(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicHy**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicHy**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

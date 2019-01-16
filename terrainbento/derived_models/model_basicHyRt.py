@@ -23,16 +23,18 @@ class BasicHyRt(TwoLithologyErosionModel):
     r"""**BasicHyRt** model program.
 
     **BasicHyRt** is a model program that combines the **BasicRt** and
-    **BasicHy** programs by allowing for two lithologies, an "upper" layer and a
-    "lower" layer, stream-power-driven sediment erosion and mass conservation.
-    Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
-    model **BasicHyRt** evolves a topographic surface described by :math:`\eta`
-    with the following governing equations:
+    **BasicHy** programs by allowing for two lithologies, an "upper" layer and
+    a "lower" layer, stream-power-driven sediment erosion and mass
+    conservation. Given a spatially varying contact zone elevation,
+    :math:`\eta_C(x,y))`, model **BasicHyRt** evolves a topographic surface
+    described by :math:`\eta` with the following governing equations:
 
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = \frac{V Q_s}{Q} - K A^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = \frac{V Q_s}{Q}
+                                           - K A^{m}S^{n}
+                                           + D\nabla^2 \eta
 
         Q_s = \int_0^A \left(KA^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
 
@@ -42,21 +44,22 @@ class BasicHyRt(TwoLithologyErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`Q_s` is the volumetric sediment
-    discharge, :math:`Q` is the volumetric water discharge, and :math:`V` is
-    the effective settling velocity of the sediment. :math:`w` is a weight used
-    to calculate the effective erodability :math:`K(\eta, \eta_C)` based on the
-    depth to the contact zone and the width of the contact zone.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
+    :math:`K_2` are the erodabilities of the upper and lower lithologies, and
+    :math:`D` is the regolith transport parameter. :math:`Q_s` is the
+    volumetric sediment discharge, :math:`Q` is the volumetric water discharge,
+    and :math:`V` is the effective settling velocity of the sediment. :math:`w`
+    is a weight used to calculate the effective erodability
+    :math:`K(\eta, \eta_C)` based on the depth to the contact zone and the
+    width of the contact zone.
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
+    The weight :math:`w` promotes smoothness in the solution of erodability at
+    a given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
+    the contact, the erodability approaches the value of :math:`K_1` and
+    :math:`K_2` at a rate related to the contact zone width. Thus, to make a
+    very sharp transition, use a small value for the contact zone width.
 
     +------------------+----------------------------------+
     | Parameter Symbol | Input File Parameter Name        |
@@ -124,6 +127,18 @@ class BasicHyRt(TwoLithologyErosionModel):
             Thickness of the contact zone (:math:`W_c`). Default is 1.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
+        settling_velocity : float, optional
+            Settling velocity of entrained sediment (:math:`V`). Default
+            is 0.001.
+        sediment_porosity : float, optional
+            Sediment porosity (:math:`\phi`). Default is 0.3.
+        fraction_fines : float, optional
+            Fraction of fine sediment that is permanently detached
+            (:math:`F_f`). Default is 0.5.
+        solver : str, optional
+            Solver option to pass to the Landlab
+            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`_
+            component. Default is "basic".
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
@@ -135,8 +150,8 @@ class BasicHyRt(TwoLithologyErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicHyRt**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicHyRt**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

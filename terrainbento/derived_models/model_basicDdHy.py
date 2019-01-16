@@ -28,54 +28,35 @@ class BasicDdHy(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\right)\right) + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n}
+            - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\right)\right)
+            + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)}
+            + D\nabla^2 \eta
 
+
+        Q_s = \int_0^A \left(KA^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`\omega_{ct}` is the critical
-    stream power needed for erosion to occur, :math:`V` is effective sediment
-    settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`Q` is
-    volumetric water discharge, :math:`\phi` is sediment porosity,  and
-    :math:`D` is the regolith transport efficiency.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`\omega_{ct}` is
+    the critical stream power needed for erosion to occur, :math:`V` is
+    effective sediment settling velocity, :math:`Q_s` is volumetric sediment
+    flux, :math:`Q` is volumetric water discharge, :math:`\phi` is sediment
+    porosity,  and :math:`D` is the regolith transport efficiency.
 
     :math:`\omega_{ct}` may change through time as it increases with cumulative
     incision depth:
 
     .. math::
 
-        \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c + b D_I\left(x, y, t\right), \omega_c \right)
+        \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c
+                                 + b D_I\left(x, y, t\right), \omega_c \right)
 
     where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\right)` and time :math:`t`.
 
-    The **BasicDdHy** program inherits from the terrainbento **ErosionModel**
-    base class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +--------------------+-------------------------------------------------+
-    | Parameter Symbol   | Input File Parameter Name                       |
-    +====================+=================================================+
-    |:math:`m`           | ``m_sp``                                        |
-    +--------------------+-------------------------------------------------+
-    |:math:`n`           | ``n_sp``                                        |
-    +--------------------+-------------------------------------------------+
-    |:math:`K`           | ``water_erodability``                           |
-    +--------------------+-------------------------------------------------+
-    |:math:`D`           | ``regolith_transport_parameter``                |
-    +--------------------+-------------------------------------------------+
-    |:math:`V`           | ``settling_velocity``                           |
-    +--------------------+-------------------------------------------------+
-    |:math:`F_f`         | ``fraction_fines``                              |
-    +--------------------+-------------------------------------------------+
-    |:math:`\phi`        | ``sediment_porosity``                           |
-    +--------------------+-------------------------------------------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               |
-    +--------------------+-------------------------------------------------+
-    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
-    +--------------------+-------------------------------------------------+
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -109,7 +90,32 @@ class BasicDdHy(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        water_erosion_rule__threshold : float, optional
+            Erosion rule threshold when no erosion has occured
+            (:math:`\omega_c`). Default is 1.0.
+        water_erosion_rule__thresh_depth_derivative : float, optional
+            Rate of increase of water erosion threshold as increased incision
+            occurs (:math:`b`). Default is 0.0.
+        settling_velocity : float, optional
+            Settling velocity of entrained sediment (:math:`V`). Default
+            is 0.001.
+        sediment_porosity : float, optional
+            Sediment porosity (:math:`\phi`). Default is 0.3.
+        fraction_fines : float, optional
+            Fraction of fine sediment that is permanently detached
+            (:math:`F_f`). Default is 0.5.
+        solver : str, optional
+            Solver option to pass to the Landlab
+            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`_
+            component. Default is "basic".
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
@@ -121,8 +127,8 @@ class BasicDdHy(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicDdHy**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicDdHy**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

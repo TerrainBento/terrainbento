@@ -30,7 +30,8 @@ class BasicStTh(StochasticErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -(K_{q}\hat{Q}^{m}S^{n} - \omega_c) + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -(K_{q}\hat{Q}^{m}S^{n} - \omega_c)
+                                           + D\nabla^2 \eta
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable) and :math:`S` is the local
@@ -38,26 +39,6 @@ class BasicStTh(StochasticErosionModel):
     exponent, respectively, :math:`\omega_c` is the critical stream power
     required for erosion to occur, and :math:`D` is the regolith transport
     parameter.
-
-    **BasicSt** inherits from the terrainbento **StochasticErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K_q`       | ``water_erodability_stochastic`` |
-    +------------------+----------------------------------+
-    |:math:`\omega_c`  | ``water_erosion_rule__threshold``|
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`I_m`       | ``infiltration_capacity``        |
-    +------------------+----------------------------------+
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -87,10 +68,23 @@ class BasicStTh(StochasticErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability_stochastic : float, optional
+            Water erodability (:math:`K_q`). Default is 0.0001.
+        water_erosion_rule__threshold : float, optional
+            Erosion rule threshold when no erosion has occured
+            (:math:`\omega_c`). Default is 0.01.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        infiltration_capacity: float, optional
+            Infiltration capacity (:math:`I_m`). Default is 1.0.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`.
+            These arguments control the discharge :math:`\hat{Q}`.
 
         Returns
         -------
@@ -99,8 +93,8 @@ class BasicStTh(StochasticErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicStTh**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicStTh**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

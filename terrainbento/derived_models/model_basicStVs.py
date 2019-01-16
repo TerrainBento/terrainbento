@@ -30,14 +30,15 @@ class BasicStVs(StochasticErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -K_{q}\hat{Q}^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -K_{q}\hat{Q}^{m}S^{n}
+                                           + D\nabla^2 \eta
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable) and :math:`S` is the local
     slope gradient.
 
     This model iterates through a sequence of storm and interstorm periods.
-    Given a storm precipitation intensity $P$, the discharge $Q$ [L$^3$/T]
+    Given a storm precipitation intensity :math:`P`, the discharge :math:`Q`.
     is calculated using:
 
     .. math::
@@ -47,22 +48,6 @@ class BasicStVs(StochasticErosionModel):
     where :math:`T = K_sH` is the soil transmissivity, :math:`H` is soil
     thickness, :math:`K_s` is hydraulic conductivity, and :math:`\lambda` is
     cell width.
-
-    **BasicStVs** inherits from the terrainbento **StochasticErosionModel**
-    base class. In addition to the parameters required by the base class,
-    models built with this program require the following parameters:
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K_q`       | ``water_erodability_stochastic`` |
-    +------------------+----------------------------------+
-    |:math:`K_s`       | ``hydraulic_conductivity``       |
-    +------------------+----------------------------------+
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -91,10 +76,24 @@ class BasicStVs(StochasticErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability_stochastic : float, optional
+            Water erodability (:math:`K_q`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        infiltration_capacity: float, optional
+            Infiltration capacity (:math:`I_m`). Default is 1.0.
+        recharge_rate : float, optional
+            Recharge rate (:math:`R_m`). Default is 1.0.
+        hydraulic_conductivity : float, optional
+            Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`.
+            These arguments control the discharge :math:`\hat{Q}`.
 
         Returns
         -------
@@ -103,8 +102,8 @@ class BasicStVs(StochasticErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicStVs**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicStVs**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

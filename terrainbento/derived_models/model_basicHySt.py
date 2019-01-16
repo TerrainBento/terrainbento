@@ -94,10 +94,32 @@ class BasicHySt(StochasticErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability_stochastic : float, optional
+            Water erodability (:math:`K_s`). Default is 0.0001.
+        nfiltration_capacity: float, optional
+            Infiltration capacity (:math:`I_m`). Default is 1.0.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        settling_velocity : float, optional
+            Settling velocity of entrained sediment (:math:`V`). Default
+            is 0.001.
+        sediment_porosity : float, optional
+            Sediment porosity (:math:`\phi`). Default is 0.3.
+        fraction_fines : float, optional
+            Fraction of fine sediment that is permanently detached
+            (:math:`F_f`). Default is 0.5.
+        solver : str, optional
+            Solver option to pass to the Landlab
+            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`_
+            component. Default is "basic".
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`.
+            These arguments control the discharge :math:`\hat{Q}`.
 
         Returns
         -------
@@ -106,8 +128,8 @@ class BasicHySt(StochasticErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicHySt**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicHySt**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

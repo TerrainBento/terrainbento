@@ -41,51 +41,27 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \alpha = \frac{K_{sat}  H_{init}  dx }{R_m}
+        \alpha = \frac{K_{sat} dx }{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`\alpha` is the saturation area scale
-    used for transforming area into effective area and it is given as a function
-    of the saturated hydraulic conductivity :math:`K_{sat}`, the soil thickness
-    :math:`H_{init}`, the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
-    :math:`w` is a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
-    based on the depth to the contact zone and the width of the contact zone.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
+    :math:`K_2` are the erodabilities of the upper and lower lithologies, and
+    :math:`D` is the regolith transport parameter. :math:`\alpha` is the
+    saturation area scale used for transforming area into effective area and it
+    is given as a function of the saturated hydraulic conductivity
+    :math:`K_{sat}`, the soil thickness :math:`H`, the grid spacing :math:`dx`,
+    and the recharge rate, :math:`R_m`. :math:`w` is a weight used to calculate
+    the effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
+    contact zone and the width of the contact zone.
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
+    The weight :math:`w` promotes smoothness in the solution of erodability at
+    a given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
-
-    The **BasicRtVs** program inherits from the terrainbento
-    **TwoLithologyErosionModel** base class. In addition to the parameters
-    required by the base class, models built with this program require the
-    following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Name                  |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K_{1}`     | ``water_erodability_upper``      |
-    +------------------+----------------------------------+
-    |:math:`K_{2}`     | ``water_erodability_lower``      |
-    +------------------+----------------------------------+
-    |:math:`W_{c}`     | ``contact_zone__width``          |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`K_{sat}`   | ``hydraulic_conductivity``       |
-    +------------------+----------------------------------+
-    |:math:`R_m`       | ``recharge_rate``                |
-    +------------------+----------------------------------+
+    the contact, the erodability approaches the value of :math:`K_1` and
+    :math:`K_2` at a rate related to the contact zone width. Thus, to make a
+    very sharp transition, use a small value for the contact zone width.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -131,6 +107,10 @@ class BasicRtVs(TwoLithologyErosionModel):
             Thickness of the contact zone (:math:`W_c`). Default is 1.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
+        recharge_rate : float, optional
+            Recharge rate (:math:`R_m`). Default is 1.0.
+        hydraulic_conductivity : float, optional
+            Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
@@ -142,8 +122,8 @@ class BasicRtVs(TwoLithologyErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicRtVs**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicRtVs**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

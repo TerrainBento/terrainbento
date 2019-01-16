@@ -27,7 +27,9 @@ class BasicDd(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n} - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\right)\right) + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n}
+                - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\right)\right)
+                + D\nabla^2 \eta
 
     where :math:`A` is the local drainage area and :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
@@ -38,32 +40,13 @@ class BasicDd(ErosionModel):
 
     .. math::
 
-        \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\right), \omega_c \right)
+        \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c +
+                                   b D_I\left(x, y, t\right), \omega_c \right)
 
     where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
     and :math:`D_I` is the cumulative incision depth at location
     :math:`\left(x,y\right)` and time :math:`t`.
-
-    The **BasicDd** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +--------------------+-------------------------------------------------+
-    | Parameter Symbol   | Input File Parameter Name                       |
-    +====================+=================================================+
-    |:math:`m`           | ``m_sp``                                        |
-    +--------------------+-------------------------------------------------+
-    |:math:`n`           | ``n_sp``                                        |
-    +--------------------+-------------------------------------------------+
-    |:math:`K`           | ``water_erodability``                           |
-    +--------------------+-------------------------------------------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               |
-    +--------------------+-------------------------------------------------+
-    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
-    +--------------------+-------------------------------------------------+
-    |:math:`D`           | ``regolith_transport_parameter``                |
-    +--------------------+-------------------------------------------------+
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -84,7 +67,7 @@ class BasicDd(ErosionModel):
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
-        water_erosion_rule__thresh_depth_derivative=0.,
+        water_erosion_rule__thresh_depth_derivative=0.0,
         **kwargs
     ):
         """
@@ -93,7 +76,20 @@ class BasicDd(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        water_erosion_rule__threshold : float, optional
+            Erosion rule threshold when no erosion has occured
+            (:math:`\omega_c`). Default is 0.01.
+        water_erosion_rule__thresh_depth_derivative : float, optional
+            Rate of increase of water erosion threshold as increased incision
+            occurs (:math:`b`). Default is 0.0.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
@@ -105,8 +101,8 @@ class BasicDd(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicDd**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicDd**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -181,10 +177,10 @@ class BasicDd(ErosionModel):
             \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c + \\
             b D_I\left(x, y, t\right), \omega_c \right)
 
-        where :math:`\omega_c` is the threshold when no incision has taken place,
-        :math:`b` is the rate at which the threshold increases with incision depth,
-        and :math:`D_I` is the cumulative incision depth at location
-        :math:`\left(x,y\right)` and time :math:`t`.
+        where :math:`\omega_c` is the threshold when no incision has taken
+        place, :math:`b` is the rate at which the threshold increases with
+        incision depth, and :math:`D_I` is the cumulative incision depth at
+        location :math:`\left(x,y\right)` and time :math:`t`.
         """
 
         # Set the erosion threshold.

@@ -35,55 +35,34 @@ class BasicSaVs(ErosionModel):
 
         \eta = \eta_b + H
 
-        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A_{eff}^{M} S^{N} -\nabla q_h
+        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
+                                        - \delta (H) K A_{eff}^{M} S^{N}
+                                        - \nabla q_h
 
-        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
+        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
+                                       - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
 
         q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
         A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \alpha = \frac{K_{sat}  H_{init}  dx}{R_m}
+        \alpha = \frac{K_{sat} H dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`D` is the regolith transport
-    parameter, :math:`H_s` is the sediment production decay depth, :math:`H_0`
-    is the sediment transport decay depth, :math:`P_0` is the maximum sediment
-    production rate, and :math:`H_0` is the sediment transport decay depth.
-    :math:`q_h` is the hillslope sediment flux per unit width.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`D` is the
+    regolith transport parameter, :math:`H_s` is the sediment production decay
+    depth, :math:`H_0` is the sediment transport decay depth, :math:`P_0` is
+    the maximum sediment production rate, and :math:`H_0` is the sediment
+    transport decay depth. :math:`q_h` is the hillslope sediment flux per unit
+    width.
+
 
     :math:`\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
-    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
-    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
-
-    The **BasicSaVs** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+-----------------------------------+
-    | Parameter Symbol | Input File Name                   |
-    +==================+===================================+
-    |:math:`m`         | ``m_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`n`         | ``n_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`K`         | ``water_erodability``             |
-    +------------------+-----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter``  |
-    +------------------+-----------------------------------+
-    |:math:`K_{sat}`   | ``hydraulic_conductivity``        |
-    +------------------+-----------------------------------+
-    |:math:`R_m`       | ``recharge_rate``                 |
-    +------------------+-----------------------------------+
-    |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
-    +------------------+-----------------------------------+
-    |:math:`H_{s}`     | ``soil_production__decay_depth``  |
-    +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
-    +------------------+-----------------------------------+
+    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H`, the
+    grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -117,10 +96,28 @@ class BasicSaVs(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        soil_production__maximum_rate : float, optional
+            Maximum rate of soil production (:math:`P_{0}`). Default is 0.001.
+        soil_production__decay_depth : float, optional
+            Decay depth for soil production (:math:`H_{s}`). Default is 0.5.
+        soil_transport_decay_depth : float, optional
+            Decay depth for soil transport (:math:`H_{0}`). Default is 0.5.
+        recharge_rate : float, optional
+            Recharge rate (:math:`R_m`). Default is 1.0.
+        hydraulic_conductivity : float, optional
+            Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
+
 
         Returns
         -------
@@ -129,8 +126,8 @@ class BasicSaVs(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicSaVs**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicSaVs**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

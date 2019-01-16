@@ -22,29 +22,32 @@ from terrainbento.base_class import ErosionModel
 class BasicDdVs(ErosionModel):
     r"""**BasicDdVs** model program.
 
-    **BasicDdVs** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equations:
+    **BasicDdVs** is a model program that evolves a topographic surface
+    described by :math:`\eta` with the following governing equations:
 
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n} - \omega_{ct}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{ct}}\right)\right) + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n}
+          - \omega_{ct}\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_{ct}}\right)\right)
+          + D\nabla^2 \eta
 
         A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \alpha = \frac{K_{sat}  H_{init}  dx}{R_m}
+        \alpha = \frac{K_{sat}  H  dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`D` is the regolith transport
-    parameter, and :math:`\omega_{ct}` is the critical stream power needed for
-    erosion to occur. :math:`\omega_{ct}` changes through time as it increases
-    with cumulative incision depth:
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`D` is the
+    regolith transport parameter, and :math:`\omega_{ct}` is the critical
+    stream power needed for erosion to occur. :math:`\omega_{ct}` changes
+    through time as it increases with cumulative incision depth:
 
     .. math::
 
-        \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c +  b D_I\left(x, y, t\right), \omega_c \right)
+        \omega_{ct}\left(x,y,t\right) = \mathrm{max}\left(\omega_c
+                       + b D_I\left(x, y, t\right), \omega_c \right)
 
     where :math:`\omega_c` is the threshold when no incision has taken place,
     :math:`b` is the rate at which the threshold increases with incision depth,
@@ -53,32 +56,8 @@ class BasicDdVs(ErosionModel):
 
     :math:`\alpha` is the saturation area scale used for transforming area into
     effective area. It is given as a function of the saturated hydraulic
-    conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
-    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
-
-    The **BasicDdVs** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +--------------------+-------------------------------------------------+
-    | Parameter Symbol   | Input File Name                                 |
-    +====================+=================================================+
-    |:math:`m`           | ``m_sp``                                        |
-    +--------------------+-------------------------------------------------+
-    |:math:`n`           | ``n_sp``                                        |
-    +--------------------+-------------------------------------------------+
-    |:math:`K`           | ``water_erodability``                           |
-    +--------------------+-------------------------------------------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               |
-    +--------------------+-------------------------------------------------+
-    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
-    +--------------------+-------------------------------------------------+
-    |:math:`D`           | ``regolith_transport_parameter``                |
-    +--------------------+-------------------------------------------------+
-    |:math:`K_{sat}`     | ``hydraulic_conductivity``                      |
-    +--------------------+-------------------------------------------------+
-    |:math:`R_m`         | ``recharge_rate``                               |
-    +--------------------+-------------------------------------------------+
+    conductivity :math:`K_{sat}`, the soil thickness :math:`H`, the grid
+    spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -86,9 +65,10 @@ class BasicDdVs(ErosionModel):
 
     The following at-node fields must be specified in the grid:
         - ``topographic__elevation``
+        - ``soil__depth``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _required_fields = ["topographic__elevation", "soil__depth"]
 
     def __init__(
         self,
@@ -110,7 +90,24 @@ class BasicDdVs(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        water_erosion_rule__threshold : float, optional
+            Erosion rule threshold when no erosion has occured
+            (:math:`\omega_c`). Default is 0.01.
+        water_erosion_rule__thresh_depth_derivative : float, optional
+            Rate of increase of water erosion threshold as increased incision
+            occurs (:math:`b`). Default is 0.0.
+        recharge_rate : float, optional
+            Recharge rate (:math:`R_m`). Default is 1.0.
+        hydraulic_conductivity : float, optional
+            Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
@@ -122,8 +119,8 @@ class BasicDdVs(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicVs**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicVs**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

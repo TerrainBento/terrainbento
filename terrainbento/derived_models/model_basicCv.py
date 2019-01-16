@@ -39,28 +39,8 @@ class BasicCv(ErosionModel):
     This model also has a basic parameterization of climate change such that
     :math:`K` varies through time. Between model run onset and a time at
     which the climate becomes constant, the value of :math:`K` linearly
-    changes from :math:`fK` to :math:`K`, at which point it remains at :math:`K`
-    for the remainder of the modeling time period.
-
-    The **BasicCv** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K`         | ``water_erodability``            |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`f`         | ``climate_factor``               |
-    +------------------+----------------------------------+
-    |:math:`T_s`       | ``climate_constant_date``        |
-    +------------------+----------------------------------+
+    changes from :math:`fK` to :math:`K`, at which point it remains at
+    :math:`K` for the remainder of the modeling time period.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -81,7 +61,7 @@ class BasicCv(ErosionModel):
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
         climate_factor=0.5,
-        climate_constant_date=0.,
+        climate_constant_date=0.0,
         **kwargs
     ):
         """
@@ -90,11 +70,23 @@ class BasicCv(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        climate_factor : float, optional.
+             Default is 0.5.(:math:`f` )
+        climate_constant_date : float, optional.
+            Model time at which climate becomes constant (:math:`T_s`) and
+            water erodability stabilizes at a  value of :math:`K`. Default
+            is 0.0.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
-
         Returns
         -------
         Basic : model object
@@ -102,8 +94,8 @@ class BasicCv(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model ``Basic``. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model ``Basic``. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

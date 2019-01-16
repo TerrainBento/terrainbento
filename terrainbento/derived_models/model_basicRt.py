@@ -25,13 +25,14 @@ class BasicRt(TwoLithologyErosionModel):
     **BasicRt** is a model program that improves upon the **Basic** program by
     allowing for two lithologies, an "upper" layer and a "lower" layer. Given a
     spatially varying contact zone elevation, :math:`\eta_C(x,y))`, model
-    **BasicRt** evolves a topographic surface described by :math:`\eta` with the
-    following governing equations:
+    **BasicRt** evolves a topographic surface described by :math:`\eta` with
+    the following governing equations:
 
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n}
+                                           + D\nabla^2 \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -46,33 +47,12 @@ class BasicRt(TwoLithologyErosionModel):
     effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
     contact zone and the width of the contact zone.
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
+    The weight :math:`w` promotes smoothness in the solution of erodability at
+    a given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
-
-    The **BasicRt** program inherits from the terrainbento
-    **TwoLithologyErosionModel** base class. In addition to the parameters
-    required by the base class, models built with this program require the
-    following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K_{1}`     | ``water_erodability_upper``      |
-    +------------------+----------------------------------+
-    |:math:`K_{2}`     | ``water_erodability_lower``      |
-    +------------------+----------------------------------+
-    |:math:`W_{c}`     | ``contact_zone__width``          |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
+    the contact, the erodability approaches the value of :math:`K_1` and
+    :math:`K_2` at a rate related to the contact zone width. Thus, to make a
+    very sharp transition, use a small value for the contact zone width.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -120,8 +100,8 @@ class BasicRt(TwoLithologyErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicRt**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicRt**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

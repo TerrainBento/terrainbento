@@ -42,9 +42,12 @@ class BasicRtSa(TwoLithologyErosionModel):
 
         \eta = \eta_b + H
 
-        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{m} S^{n} - \nabla q_h
+        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
+                                        - \delta (H) K A^{m} S^{n}
+                                        - \nabla q_h
 
-        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{m} S^{n}
+        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
+                                             - (1 - \delta (H) ) K A^{m} S^{n}
 
         q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
@@ -54,56 +57,29 @@ class BasicRtSa(TwoLithologyErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, and :math:`D` is the
-    regolith transport parameter. :math:`w` is a weight used to calculate the
-    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone. :math:`H_s` is the sediment
-    production decay depth, :math:`H_0` is the sediment transport decay depth,
-    :math:`P_0` is the maximum sediment production rate, and :math:`H_0` is the
-    sediment transport decay depth. :math:`q_h` is the hillslope sediment flux
-    per unit width.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
+    :math:`K_2` are the erodabilities of the upper and lower lithologies, and
+    :math:`D` is the regolith transport parameter. :math:`w` is a weight used
+    to calculate the effective erodability :math:`K(\eta, \eta_C)` based on the
+    depth to the contact zone and the width of the contact zone. :math:`H_s` is
+    the sediment production decay depth, :math:`H_0` is the sediment transport
+    decay depth, :math:`P_0` is the maximum sediment production rate, and
+    :math:`H_0` is the sediment transport decay depth. :math:`q_h` is the
+    hillslope sediment flux per unit width.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is
     absent. To achieve this, :math:`\delta (H)` is defined to equal 1 when
-    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
-    underlying parent material is exposed).
+    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning
+    the underlying parent material is exposed).
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
+    The weight :math:`w` promotes smoothness in the solution of erodability at
+    a given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
-
-    The **BasicRtSa** program inherits from the terrainbento
-    **TwoLithologyErosionModel** base class. In addition to the parameters
-    required by the base class, models built with this program require the
-    following parameters.
-
-    +------------------+-----------------------------------+
-    | Parameter Symbol | Input File Parameter Name         |
-    +==================+===================================+
-    |:math:`m`         | ``m_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`n`         | ``n_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`K_{1}`     | ``water_erodability_upper``       |
-    +------------------+-----------------------------------+
-    |:math:`K_{2}`     | ``water_erodability_lower``       |
-    +------------------+-----------------------------------+
-    |:math:`W_{c}`     | ``contact_zone__width``           |
-    +------------------+-----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter``  |
-    +------------------+-----------------------------------+
-    |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
-    +------------------+-----------------------------------+
-    |:math:`H_{s}`     | ``soil_production__decay_depth``  |
-    +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
-    +------------------+-----------------------------------+
+    the contact, the erodability approaches the value of :math:`K_1` and
+    :math:`K_2` at a rate related to the contact zone width. Thus, to make a
+    very sharp transition, use a small value for the contact zone width.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -150,6 +126,12 @@ class BasicRtSa(TwoLithologyErosionModel):
             Thickness of the contact zone (:math:`W_c`). Default is 1.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
+        soil_production__maximum_rate : float, optional
+            Maximum rate of soil production (:math:`P_{0}`). Default is 0.001.
+        soil_production__decay_depth : float, optional
+            Decay depth for soil production (:math:`H_{s}`). Default is 0.5.
+        soil_transport_decay_depth : float, optional
+            Decay depth for soil transport (:math:`H_{0}`). Default is 0.5.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
@@ -161,8 +143,8 @@ class BasicRtSa(TwoLithologyErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicRtSa**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicRtSa**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

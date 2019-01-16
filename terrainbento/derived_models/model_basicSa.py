@@ -29,58 +29,40 @@ class BasicSa(ErosionModel):
 
     **BasicSa** is a model program that explicitly resolves a soil layer. This
     soil layer is produced by weathering that decays exponentially with soil
-    thickness and hillslope transport is soil-depth dependent. Given a spatially
-    varying soil thickness :math:`H` and a spatially varying bedrock elevation
-    :math:`\eta_b`, model **BasicSa** evolves a topographic surface described by
-    :math:`\eta` with the following governing equations:
+    thickness and hillslope transport is soil-depth dependent. Given a
+    spatially varying soil thickness :math:`H` and a spatially varying bedrock
+    elevation :math:`\eta_b`, model **BasicSa** evolves a topographic surface
+    described by :math:`\eta` with the following governing equations:
 
 
     .. math::
 
         \eta = \eta_b + H
 
-        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) - \delta (H) K A^{M} S^{N} -\nabla q_h
+        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
+                                        - \delta (H) K A^{M} S^{N}
+                                        - \nabla q_h
 
-        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - (1 - \delta (H) ) K A^{m} S^{N}
+        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
+                                             - (1 - \delta (H) ) K A^{m} S^{N}
 
         q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`D` is the regolith transport
-    parameter, :math:`H` is the regolith thickness, :math:`H_s`
-    is the sediment production decay depth, :math:`P_0` is the maximum sediment
-    production rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_s`
-    represents the hillslope sediment flux per unit width.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`D` is the
+    regolith transport parameter, :math:`H` is the regolith thickness,
+    :math:`H_s` is the sediment production decay depth, :math:`P_0` is the
+    maximum sediment production rate, and :math:`H_0` is the sediment transport
+    decay depth. :math:`q_s` represents the hillslope sediment flux per unit
+    width.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is
     absent. To achieve this, :math:`\delta (H)` is defined to equal 1 when
-    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning the
-    underlying parent material is exposed).
-
-    The **BasicSa** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+-----------------------------------+
-    | Parameter Symbol | Input File Parameter Name         |
-    +==================+===================================+
-    |:math:`m`         | ``m_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`n`         | ``n_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`K`         | ``water_erodability``             |
-    +------------------+-----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter``  |
-    +------------------+-----------------------------------+
-    |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
-    +------------------+-----------------------------------+
-    |:math:`H_{s}`     | ``soil_production__decay_depth``  |
-    +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport_decay_depth``   |
-    +------------------+-----------------------------------+
+    :math:`H > 0` (meaning soil is present), and 0 if :math:`H = 0` (meaning
+    the underlying parent material is exposed).
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -112,7 +94,20 @@ class BasicSa(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        soil_production__maximum_rate : float, optional
+            Maximum rate of soil production (:math:`P_{0}`). Default is 0.001.
+        soil_production__decay_depth : float, optional
+            Decay depth for soil production (:math:`H_{s}`). Default is 0.5.
+        soil_transport_decay_depth : float, optional
+            Decay depth for soil transport (:math:`H_{0}`). Default is 0.5.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
@@ -124,8 +119,8 @@ class BasicSa(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicSa**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicSa**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

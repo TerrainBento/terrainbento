@@ -26,31 +26,15 @@ class BasicTh(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(K A^{m}S^{n} - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\right)\right) + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left(K A^{m}S^{n}
+                    - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\right)\right)
+                    + D\nabla^2 \eta
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
-    stream power needed for erosion to occur and :math:`D` is the regolith
-    transport efficiency.
-
-    The **BasicTh** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +--------------------+-----------------------------------------+
-    | Parameter Symbol   | Input File Parameter Name               |
-    +====================+=========================================+
-    |:math:`m`           | ``m_sp``                                |
-    +--------------------+-----------------------------------------+
-    |:math:`n`           | ``n_sp``                                |
-    +--------------------+-----------------------------------------+
-    |:math:`K`           | ``water_erodability``                   |
-    +--------------------+-----------------------------------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``       |
-    +--------------------+-----------------------------------------+
-    |:math:`D`           | ``regolith_transport_parameter``        |
-    +--------------------+-----------------------------------------+
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`\omega_c` is the
+    critical stream power needed for erosion to occur and :math:`D` is the
+    regolith transport efficiency.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -79,7 +63,17 @@ class BasicTh(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        water_erosion_rule__threshold : float, optional
+            Erosion rule threshold when no erosion has occured
+            (:math:`\omega_c`). Default is 0.01.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
@@ -91,8 +85,8 @@ class BasicTh(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicTh**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicTh**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

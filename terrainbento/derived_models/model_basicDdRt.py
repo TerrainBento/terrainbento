@@ -32,7 +32,9 @@ class BasicDdRt(TwoLithologyErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left[\omega - \omega_{ct} (1 - e^{-\omega /\omega_{ct}}) \right]  + D\nabla^2 \eta,
+        \frac{\partial \eta}{\partial t} = -\left[\omega
+                         - \omega_{ct} (1 - e^{-\omega /\omega_{ct}}) \right]
+                         + D\nabla^2 \eta,
 
         \omega = K(\eta, \eta_C) A^{m} S^{n}
 
@@ -44,49 +46,25 @@ class BasicDdRt(TwoLithologyErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, :math:`\omega_{c}` is the
-    in initial erosion threshold (for both lithologies) and :math:`b` is the
-    rate of change of threshold with increasing cumulative incision :math:`D_I(x,y,t)`,
-    and :math:`D` is the regolith transport parameter, :math:`w` is a weight
-    used to calculate the effective erodability :math:`K(\eta, \eta_C)` based on
-    the depth to the contact zone and the width of the contact zone.
-    :math:`\omega` is the erosion rate that would be calculated without the use
-    of a threshold and as the threshold increases the erosion rate smoothly
-    transitions between zero and :math:`\omega`.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
+    :math:`K_2` are the erodabilities of the upper and lower lithologies,
+    :math:`\omega_{c}` is the in initial erosion threshold (for both
+    lithologies) and :math:`b` is the rate of change of threshold with
+    increasing cumulative incision :math:`D_I(x,y,t)`, and :math:`D` is the
+    regolith transport parameter, :math:`w` is a weight used to calculate the
+    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
+    contact zone and the width of the contact zone. :math:`\omega` is the
+    erosion rate that would be calculated without the use of a threshold and as
+    the threshold increases the erosion rate smoothly transitions between zero
+    and :math:`\omega`.
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
+    The weight :math:`w` promotes smoothness in the solution of erodability at
+    a given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
-
-    The **BasicDdRt** program inherits from the terrainbento
-    **TwoLithologyErosionModel** base class. In addition to the parameters
-    required by the base class, models built with this program require the
-    following parameters.
-
-    +--------------------+-------------------------------------------------+
-    | Parameter Symbol   | Input File Parameter Name                       |
-    +====================+=================================================+
-    |:math:`m`           | ``m_sp``                                        |
-    +--------------------+-------------------------------------------------+
-    |:math:`n`           | ``n_sp``                                        |
-    +--------------------+-------------------------------------------------+
-    |:math:`K_{1}`       | ``water_erodability_upper``                     |
-    +--------------------+-------------------------------------------------+
-    |:math:`K_{2}`       | ``water_erodability_lower``                     |
-    +--------------------+-------------------------------------------------+
-    |:math:`\omega_{c}`  | ``water_erosion_rule__threshold``               |
-    +--------------------+-------------------------------------------------+
-    |:math:`b`           | ``water_erosion_rule__thresh_depth_derivative`` |
-    +--------------------+-------------------------------------------------+
-    |:math:`W_{c}`       | ``contact_zone__width``                         |
-    +--------------------+-------------------------------------------------+
-    |:math:`D`           | ``regolith_transport_parameter``                |
-    +--------------------+-------------------------------------------------+
+    the contact, the erodability approaches the value of :math:`K_1` and
+    :math:`K_2` at a rate related to the contact zone width. Thus, to make a
+    very sharp transition, use a small value for the contact zone width.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -130,6 +108,15 @@ class BasicDdRt(TwoLithologyErosionModel):
             Thickness of the contact zone (:math:`W_c`). Default is 1.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
+        water_erosion_rule__threshold : float, optional
+            Erosion rule threshold when no erosion has occured
+            (:math:`\omega_c`). Default is 0.01.
+        water_erosion_rule__thresh_depth_derivative : float, optional
+            Rate of increase of water erosion threshold as increased incision
+            occurs (:math:`b`). Default is 0.0.
+        **kwargs :
+            Keyword arguments to pass to
+            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
@@ -142,7 +129,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         --------
         This is a minimal example to demonstrate how to construct an instance
         of model **BasicDdRt**. For more detailed examples, including steady-
-        state test examples, see the terrainbento tutorials.
+        state steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

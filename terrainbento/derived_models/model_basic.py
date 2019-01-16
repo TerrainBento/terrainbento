@@ -78,8 +78,8 @@ class Basic(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **Basic**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **Basic**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

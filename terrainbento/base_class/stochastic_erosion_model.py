@@ -56,6 +56,40 @@ class StochasticErosionModel(ErosionModel):
         - rainfall_intermittency_factor
         - rainfall__mean_rate
 
+    The hydrology uses calculation of drainage area using the user-specified
+    routing method. It then performs one of two options, depending on the
+    user"s choice of ``opt_stochastic_duration`` (True or False).
+
+    If the user requests stochastic duration, the model iterates through a sequence
+    of storm and interstorm periods. Storm depth is drawn at random from a gamma
+    distribution, and storm duration from an exponential distribution; storm
+    intensity is then depth divided by duration. This sequencing is implemented by
+    overriding the run_for method.
+
+    If the user does not request stochastic duration (indicated by setting
+    ``opt_stochastic_duration`` to ``False``), then the default
+    (**erosion_model** base class) **run_for** method is used. Whenever
+    **run_one_step** is called, storm intensity is generated at random from an
+    exponential distribution with mean given by the parameter
+    ``rainfall__mean_rate``. The stream power component is run for only a
+    fraction of the time step duration step, as specified by the parameter
+    ``rainfall_intermittency_factor``. For example, if ``step`` is 10 years and
+    the intermittency factor is 0.25, then the stream power component is run
+    for only 2.5 years.
+
+    In either case, given a storm precipitation intensity :math:`P`, the runoff
+    production rate :math:`R` [L/T] is calculated using:
+
+    .. math::
+        R = P - I (1 - \exp ( -P / I ))
+
+    where :math:`I` is the soil infiltration capacity. At the sub-grid scale, soil
+    infiltration capacity is assumed to have an exponential distribution of which
+    $I$ is the mean. Hence, there are always some spots within any given grid cell
+    that will generate runoff. This approach yields a smooth transition from
+    near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P`
+    (when :math`P>>I`), without a "hard threshold."
+
     The following at-node fields must be specified in the grid:
         - ``topographic__elevation``
     """

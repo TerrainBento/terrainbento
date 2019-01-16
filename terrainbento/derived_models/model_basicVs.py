@@ -27,42 +27,23 @@ class BasicVs(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = - K A_{eff}^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = - K A_{eff}^{m}S^{n}
+                                           + D\nabla^2 \eta
 
         A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
-        \alpha = \frac{K_{sat}  H_{init}  dx}{R_m}
+        \alpha = \frac{K_{sat}  H  dx}{R_m}
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, and :math:`D` is the regolith
-    transport parameter.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K` is the erodability by water, and :math:`D` is the
+    regolith transport parameter.
 
     :math:`\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
-    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H_{init}`,
-    the grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
-
-    The **BasicVs** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Name                  |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K`         | ``water_erodability``            |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`K_{sat}`   | ``hydraulic_conductivity``       |
-    +------------------+----------------------------------+
-    |:math:`R_m`       | ``recharge_rate``                |
-    +------------------+----------------------------------+
+    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H`, the
+    grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
@@ -93,7 +74,18 @@ class BasicVs(ErosionModel):
         clock : terrainbento Clock instance
         grid : landlab model grid instance
             The grid must have all required fields.
-
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        recharge_rate : float, optional
+            Recharge rate (:math:`R_m`). Default is 1.0.
+        hydraulic_conductivity : float, optional
+            Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to
             :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
@@ -105,8 +97,8 @@ class BasicVs(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicVs**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicVs**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 

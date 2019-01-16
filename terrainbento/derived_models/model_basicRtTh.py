@@ -31,7 +31,9 @@ class BasicRtTh(TwoLithologyErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left[\omega - \omega_c (1 - e^{-\omega /\omega_c}) \right]  + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -\left[\omega
+                              - \omega_c (1 - e^{-\omega /\omega_c}) \right]
+                              + D\nabla^2 \eta
 
         \omega = K(\eta, \eta_C) A^{m} S^{n}
 
@@ -43,23 +45,24 @@ class BasicRtTh(TwoLithologyErosionModel):
 
 
     where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2` are the
-    erodabilities of the upper and lower lithologies, :math:`\omega_{c1}` and
-    :math:`\omega_{c2}` are the erosion thresholds of the upper and lower
-    lithologies, and :math:`D` is the regolith transport parameter. :math:`w` is
-    a weight used to calculate the effective erodability :math:`K(\eta, \eta_C)`
-    based on the depth to the contact zone and the width of the contact zone.
-    :math:`\omega` is the erosion rate that would be calculated without the use
-    of a threshold and as the threshold increases the erosion rate smoothly
-    transitions between zero and :math:`\omega`.
+    :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
+    :math:`K_2` are the erodabilities of the upper and lower lithologies,
+    :math:`\omega_{c1}` and :math:`\omega_{c2}` are the erosion thresholds of
+    the upper and lower lithologies, and :math:`D` is the regolith transport
+    \parameter. :math:`w` is a weight used to calculate the effective
+    erodability :math:`K(\eta, \eta_C)` based on the depth to the contact zone
+    and the width of the contact zone. :math:`\omega` is the erosion rate that
+    would be calculated without the use of a threshold and as the threshold
+    increases the erosion rate smoothly transitions between zero and
+    :math:`\omega`.
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at a
-    given point. When the surface elevation is at the contact elevation, the
+    The weight :math:`w` promotes smoothness in the solution of erodability at
+    a given point. When the surface elevation is at the contact elevation, the
     erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and :math:`K_2`
-    at a rate related to the contact zone width. Thus, to make a very sharp
-    transition, use a small value for the contact zone width.
+    the contact, the erodability approaches the value of :math:`K_1` and
+    :math:`K_2` at a rate related to the contact zone width. Thus, to make a
+    very sharp transition, use a small value for the contact zone width.
 
     The **BasicRtTh** program inherits from the terrainbento
     **TwoLithologyErosionModel** base class. In addition to the parameters
@@ -124,6 +127,12 @@ class BasicRtTh(TwoLithologyErosionModel):
         water_erodability_lower : float, optional
             Water erodability of the upper layer (:math:`K_{2}`). Default is
             0.0001.
+        water_erosion_rule_upper__threshold : float, optional.
+            Erosion threshold of the upper layer (:math:`\omega_{c1}`). Default
+            is 1.
+        water_erosion_rule_lower__threshold: float, optional.
+            Erosion threshold of the upper layer (:math:`\omega_{c2}`). Default
+            is 1.
         contact_zone__width : float, optional
             Thickness of the contact zone (:math:`W_c`). Default is 1.
         regolith_transport_parameter : float, optional
@@ -139,8 +148,8 @@ class BasicRtTh(TwoLithologyErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicRtTh**. For more detailed examples, including steady-state
-        test examples, see the terrainbento tutorials.
+        of model **BasicRtTh**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
@@ -208,9 +217,9 @@ class BasicRtTh(TwoLithologyErosionModel):
         3. Assesses if a **PrecipChanger** is an active boundary handler and if
            so, uses it to modify the two erodability by water values.
 
-        4. Updates the spatially variable erodability and threshold values based
-           on the relative distance between the topographic surface and the lithology
-           contact.
+        4. Updates the spatially variable erodability and threshold values
+           based on the relative distance between the topographic surface and
+           the lithology contact.
 
         5. Calculates detachment-limited erosion by water.
 
