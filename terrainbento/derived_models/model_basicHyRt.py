@@ -33,17 +33,17 @@ class BasicHyRt(TwoLithologyErosionModel):
     .. math::
 
         \frac{\partial \eta}{\partial t} = \frac{V Q_s}{Q}
-                                           - K A^{m}S^{n}
+                                           - K Q^{m}S^{n}
                                            + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left(KA^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
+        Q_s = \int_0^A \left(KQ^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies, and

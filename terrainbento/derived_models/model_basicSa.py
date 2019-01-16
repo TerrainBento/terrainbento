@@ -44,12 +44,12 @@ class BasicSa(ErosionModel):
                                         - \nabla q_h
 
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
-                                             - (1 - \delta (H) ) K A^{m} S^{N}
+                                             - (1 - \delta (H) ) K Q^{m} S^{N}
 
         q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`D` is the
     regolith transport parameter, :math:`H` is the regolith thickness,

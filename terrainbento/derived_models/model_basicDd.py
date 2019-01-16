@@ -27,11 +27,11 @@ class BasicDd(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(KA^{m}S^{n}
-                - \omega_{ct}\left(1-e^{-KA^{m}S^{n}/\omega_{ct}}\right)\right)
+        \frac{\partial \eta}{\partial t} = -\left(KQ^{m}S^{n}
+                - \omega_{ct}\left(1-e^{-KQ^{m}S^{n}/\omega_{ct}}\right)\right)
                 + D\nabla^2 \eta
 
-    where :math:`A` is the local drainage area and :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge and :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
     :math:`K` is the erodability by water, :math:`D` is the regolith transport
     efficiency, and :math:`\omega_{ct}` is the critical stream power needed for

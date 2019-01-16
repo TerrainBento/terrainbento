@@ -2,9 +2,9 @@
 # !/usr/env/python
 """terrainbento **BasicChRtTh** model program.
 
-Erosion model program using non-linear diffusion, stream power with stream power
-with a smoothed threshold and spatially varying erodability based on two bedrock
-units, and discharge proportional to drainage area.
+Erosion model program using non-linear diffusion, stream power with stream
+powe with a smoothed threshold and spatially varying erodability based on two
+bedrock units, and discharge proportional to drainage area.
 
 Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
@@ -25,7 +25,7 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicChRtTh(TwoLithologyErosionModel):
     r"""**BasicChRtTh** model program.
 
-    **BasicChRtTh** combines the :py:class:`BasicCh`, :py:class:`BasicTh` and
+    This model program combines :py:class:`BasicCh`, :py:class:`BasicTh` and
     :py:class:`BasicRt` programs by allowing for two lithologies, an "upper"
     layer and a "lower" layer, permitting the use of an smooth erosion
     threshold for each lithology, and using non-linear hillslope transport.
@@ -40,7 +40,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
                     - \omega_c (1 - e^{-\omega /\omega_c}) \right]
                      - \nabla q_h
 
-        \omega = K(\eta, \eta_C) A^{m} S^{n}
+        \omega = K(\eta, \eta_C) Q^{m} S^{n}
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2,
 
@@ -53,8 +53,8 @@ class BasicChRtTh(TwoLithologyErosionModel):
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and :
     math:`K_2` are the erodabilities of the upper and lower lithologies,
     :math:`\omega_{c1}` and :math:`\omega_{c2}` are the erosion thresholds of

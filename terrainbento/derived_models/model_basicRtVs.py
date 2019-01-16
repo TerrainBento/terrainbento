@@ -44,7 +44,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         \alpha = \frac{K_{sat} dx }{R_m}
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies, and

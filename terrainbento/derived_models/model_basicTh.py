@@ -26,11 +26,11 @@ class BasicTh(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(K A^{m}S^{n}
-                    - \omega_c\left(1-e^{-KA^{m}S^{n}/\omega_c}\right)\right)
+        \frac{\partial \eta}{\partial t} = -\left(K Q^{m}S^{n}
+                    - \omega_c\left(1-e^{-KQ^{m}S^{n}/\omega_c}\right)\right)
                     + D\nabla^2 \eta
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`\omega_c` is the
     critical stream power needed for erosion to occur and :math:`D` is the

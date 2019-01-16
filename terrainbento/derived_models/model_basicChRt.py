@@ -22,17 +22,16 @@ from terrainbento.base_class import TwoLithologyErosionModel
 class BasicChRt(TwoLithologyErosionModel):
     r"""**BasicChRt** model program.
 
-    **BasicChRt** is a model program that combines the :py:class:`BasicRt` and
-    :py:class:`BasicCh` programs by allowing for two lithologies, an "upper"
-    layer and a "lower" layer, and non-linear hillslope sediment transport.
-    Given a spatially varying contact zone elevation, :math:`\eta_C(x,y))`,
-    model **BasicChRt** evolves a topographic surface described by :math:`\eta`
-    with the following governing equations:
-
+    This model program combines the :py:class:`BasicRt` and :py:class:`BasicCh`
+    programs by allowing for two lithologies, an "upper" layer and a "lower"
+    layer, and non-linear hillslope sediment transport. Given a spatially
+    varying contact zone elevation, :math:`\eta_C(x,y))`, it evolves a
+    topographic surface described by :math:`\eta` with the following governing
+    equations:
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) A^{m}S^{n}
+        \frac{\partial \eta}{\partial t} = - K(\eta,\eta_C) Q^{m}S^{n}
                                            - \nabla q_h
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
@@ -43,8 +42,8 @@ class BasicChRt(TwoLithologyErosionModel):
               + \left( \frac{S}{S_c} \right)^4
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies,
     and :math:`D` is the regolith transport parameter. :math:`S_c` is the

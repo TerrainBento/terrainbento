@@ -27,13 +27,13 @@ class BasicHy(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -KA^{m}S^{n}
+        \frac{\partial \eta}{\partial t} = -KQ^{m}S^{n}
                                 + \frac{V Q_s}{rA \left(1-\phi\right)}
                                 + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left(KA^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
+        Q_s = \int_0^A \left(KQ^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`V` is effective
     sediment settling velocity, :math:`Q_s` is volumetric sediment flux,

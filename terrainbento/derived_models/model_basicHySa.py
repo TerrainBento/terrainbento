@@ -37,14 +37,14 @@ class BasicHySa(ErosionModel):
 
         \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
                           + \frac{V_s Q_s}{Ar\left(1 - \phi \right)}
-                          - K_s A^{m}S^{n} (1 - e^{-H/H_*})
+                          - K_s Q^{m}S^{n} (1 - e^{-H/H_*})
                           -\nabla q_h
 
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
-                                             - K_r A^{m}S^{n} e^{-H/H_*}
+                                             - K_r Q^{m}S^{n} e^{-H/H_*}
 
-        Q_s = \int_0^A \left(K_s A^{m}S^{n} (1-e^{-H/H_*})
-              + K_r (1-F_f) A^{m}S^{n} e^{-H/H_*}
+        Q_s = \int_0^A \left(K_s Q^{m}S^{n} (1-e^{-H/H_*})
+              + K_r (1-F_f) Q^{m}S^{n} e^{-H/H_*}
               - \frac{V_s Q_s}{Ar\left(1 - \phi \right)}\right) dA
 
 

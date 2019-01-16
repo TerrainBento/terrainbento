@@ -35,7 +35,7 @@ class BasicThVs(ErosionModel):
         \alpha = \frac{K_{sat} H dx}{R_m}
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`\omega_c` is the
     critical stream power needed for erosion to occur, and :math:`D` is the

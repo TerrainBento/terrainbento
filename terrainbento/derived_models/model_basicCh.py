@@ -22,21 +22,19 @@ from terrainbento.base_class import ErosionModel
 class BasicCh(ErosionModel):
     r"""**BasicCh** model program.
 
-    **BasicCh** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equations:
-
+    This model program evolves a topographic surface, :math:`\eta`, with the
+    following governing equation:
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \nabla^2 q_h
+        \frac{\partial \eta}{\partial t} = -KQ^{m}S^{n} + \nabla^2 q_h
 
         q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
               + \left( \frac{S}{S_c} \right)^4
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
-
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`D` is the
     regolith transport efficiency, and :math:`S_c` is the critical slope.
     :math:`q_h` represents the hillslope sediment flux per unit width.

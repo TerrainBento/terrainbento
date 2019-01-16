@@ -2,8 +2,7 @@
 # !/usr/env/python
 """terrainbento **Basic** model program.
 
-Erosion model program using linear diffusion, stream power, and discharge
-proportional to drainage area.
+Erosion model program using linear diffusion, stream power, and discharge.
 
 Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
@@ -21,14 +20,14 @@ from terrainbento.base_class import ErosionModel
 class Basic(ErosionModel):
     r"""**Basic** model program.
 
-    **Basic** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equation:
+    This model program evolves a topographic surface, :math:`\eta`, with the
+    following governing equation:
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -K A^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -K Q^{m}S^{n} + D\nabla^2 \eta
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, and :math:`D` is the
     regolith transport efficiency.

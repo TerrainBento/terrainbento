@@ -35,7 +35,7 @@ The basic erosion law considered here is:
 
 .. math::
 
-    E = KA^{m}S^{n}
+    E = KQ^{m}S^{n}
 
 where :math:`E` is channel erosion rate, :math:`A` is contributing drainage
 area, and :math:`S` is local channel gradient. :math:`m` and :math:`n` are the
@@ -71,7 +71,7 @@ Combining these we can write
 
 .. math::
 
-    E_i = K_q r^{m} A^{m} S^{m}.
+    E_i = K_q r^{m} Q^{m} S^{m}.
 
 This equation establishes the dependence of short-term erosion rate on
 catchment-average runoff rate, :math:`r`.
@@ -96,7 +96,7 @@ the long-term erosion rate by water can be expressed as:
 
 .. math::
 
-    E = F \int_{I_c}^\infty K_q (p-I_c)^{m}A^{m} S^{n} f(p) dp,
+    E = F \int_{I_c}^\infty K_q (p-I_c)^{m}Q^{m} S^{n} f(p) dp,
 
 where :math:`f(p)` is the probability density function (PDF) of daily
 precipitation intensity. By equating the above definition of long-term erosion

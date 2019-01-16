@@ -49,7 +49,7 @@ class BasicSaVs(ErosionModel):
         \alpha = \frac{K_{sat} H dx}{R_m}
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`D` is the
     regolith transport parameter, :math:`H_s` is the sediment production decay

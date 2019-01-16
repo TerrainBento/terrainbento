@@ -2,9 +2,8 @@
 # !/usr/env/python
 """terrainbento **BasicChSa** model program.
 
-Erosion model program using depth-dependent cubic diffusion
-with a soil layer, basic stream power, and discharge proportional to drainage
-area.
+Erosion model program using depth-dependent cubic diffusion with a soil layer,
+basic stream power, and discharge proportional to drainage area.
 
 Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
@@ -28,30 +27,31 @@ class BasicChSa(ErosionModel):
     r"""**BasicChSa** model program.
 
 
-    **BasicChSa** is a model program that explicitly resolves a soil layer.
-    This soil layer is produced by weathering that decays exponentially with
-    soil thickness and hillslope transport is soil-depth dependent. Given a
-    spatially varying soil thickness :math:`H` and a spatially varying bedrock
-    elevation :math:`\eta_b`, model **BasicChSa** evolves a topographic surface
-    described by :math:`\eta` with the following governing equations:
+    This model program combines models :py:class:`BasicCh` and
+    :py:class:`BasicSa`. A soil layer is produced by weathering that decays
+    exponentially with soil thickness and hillslope transport is soil-depth
+    dependent. Given a spatially varying soil thickness :math:`H` and a
+    spatially varying bedrock elevation :math:`\eta_b`, model **BasicChSa**
+    evolves a topographic surface described by :math:`\eta` with the following
+    governing equations:
 
     .. math::
 
         \eta = \eta_b + H
 
         \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
-                                        - \delta (H) K A^{m} S^{n}
+                                        - \delta (H) K Q^{m} S^{n}
                                         -\nabla q_h
 
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
-                                             - (1 - \delta (H) ) K A^{m} S^{n}
+                                             - (1 - \delta (H) ) K Q^{m} S^{n}
 
         q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
               + \left( \frac{S}{S_c} \right)^4
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`D` is the
     regolith transport parameter, :math:`H_s` is the sediment production decay
     depth, :math:`H_s` is the sediment production decay depth, :math:`P_0` is

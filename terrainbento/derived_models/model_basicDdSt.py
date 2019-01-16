@@ -24,10 +24,10 @@ from terrainbento.base_class import StochasticErosionModel
 class BasicDdSt(StochasticErosionModel):
     r"""**BasicDdSt** model program.
 
-    **BasicDdSt** is a model program that uses a stochastic treatment of runoff
-    and discharge, and includes an erosion threshold in the water erosion law.
-    The threshold depends on cumulative incision depth, and therefore can vary
-    in space and time.
+    This model program uses a stochastic treatment of runoff and discharge, and
+    includes an erosion threshold in the water erosion law. The threshold
+    depends on cumulative incision depth, and therefore can vary in space and
+    time.
 
     THe model evolves a topographic surface, :math:`\eta (x,y,t)`,
     with the following governing equation:

@@ -36,7 +36,7 @@ class BasicDdRt(TwoLithologyErosionModel):
                          - \omega_{ct} (1 - e^{-\omega /\omega_{ct}}) \right]
                          + D\nabla^2 \eta,
 
-        \omega = K(\eta, \eta_C) A^{m} S^{n}
+        \omega = K(\eta, \eta_C) Q^{m} S^{n}
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -45,7 +45,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies,

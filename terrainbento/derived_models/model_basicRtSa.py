@@ -43,11 +43,11 @@ class BasicRtSa(TwoLithologyErosionModel):
         \eta = \eta_b + H
 
         \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
-                                        - \delta (H) K A^{m} S^{n}
+                                        - \delta (H) K Q^{m} S^{n}
                                         - \nabla q_h
 
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
-                                             - (1 - \delta (H) ) K A^{m} S^{n}
+                                             - (1 - \delta (H) ) K Q^{m} S^{n}
 
         q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
@@ -56,7 +56,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
+    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies, and

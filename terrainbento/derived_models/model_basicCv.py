@@ -22,19 +22,17 @@ from terrainbento.base_class import ErosionModel
 class BasicCv(ErosionModel):
     r"""**BasicCv** model program.
 
-    **BasicCv** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equation:
-
+    This model program evolves a topographic surface, :math:`\eta`, with the
+    following governing equation:
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = -KQ^{m}S^{n} + D\nabla^2 \eta
 
-
-    where :math:`K` is the fluviel erodability coefficient, :math:`A` is the
-    local drainage area, :math:`S` is the local slope, :math:`m` and :math:`n`
-    are the drainage area and slope exponent parameters, and :math:`D` is the
-    regolith transport parameter.
+    where :math:`K` is the fluviel erodability coefficient, :math:`Q` is the
+    local stream discharge, :math:`S` is the local slope, :math:`m` and
+    :math:`n` are the drainage area and slope exponent parameters, and
+    :math:`D` is the regolith transport parameter.
 
     This model also has a basic parameterization of climate change such that
     :math:`K` varies through time. Between model run onset and a time at
