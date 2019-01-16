@@ -344,7 +344,7 @@ class ErosionModel(object):
         boundary_handlers : dictionary, optional
             Dictionary with ``name: instance`` key-value pairs. Each entry
             must be a valid instance of a terrainbento boundary handler. See
-            the :py:mod:`boundary handlers <terrainbento.boundary_handlers`
+            the :py:mod:`boundary handlers <terrainbento.boundary_handlers>`
             module for valid options.
         output_writers : dictionary of output writers.
             Classes or functions used to write incremental output (e.g. make a
