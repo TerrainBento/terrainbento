@@ -64,6 +64,7 @@ _HANDLER_METHODS = {
     "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
 
+
 def _add_water_fields(grid):
     for field in ["water__unit_flux_in", "rainfall__flux"]:
         if field not in grid.at_node:

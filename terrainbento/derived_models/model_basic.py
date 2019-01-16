@@ -17,6 +17,7 @@ import numpy as np
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import ErosionModel
 
+
 class Basic(ErosionModel):
     r"""**Basic** model program.
 

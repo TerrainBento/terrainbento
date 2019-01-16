@@ -1,6 +1,7 @@
 # coding: utf8
 # !/usr/env/python
-"""Base class for common functions of terrainbento stochastic erosion models."""
+"""Base class for common functions of terrainbento stochastic erosion
+models."""
 
 import os
 import textwrap
@@ -54,7 +55,6 @@ class StochasticErosionModel(ErosionModel):
       - number_of_sub_time_steps
       - rainfall_intermittency_factor
       - rainfall__mean_rate
-
     """
 
     _required_fields = ["topographic__elevation"]

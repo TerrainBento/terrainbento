@@ -18,6 +18,7 @@ from scipy.interpolate import interp1d
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import ErosionModel
 
+
 class BasicCv(ErosionModel):
     r"""**BasicCv** model program.
 

@@ -11,7 +11,6 @@ import numpy as np
 from terrainbento.base_class import ErosionModel
 
 
-
 class TwoLithologyErosionModel(ErosionModel):
     """Base class for two lithology terrainbento models.
 
@@ -26,7 +25,10 @@ class TwoLithologyErosionModel(ErosionModel):
     grid.
     """
 
-    _required_fields = ["topographic__elevation", "lithology_contact__elevation"]
+    _required_fields = [
+        "topographic__elevation",
+        "lithology_contact__elevation",
+    ]
 
     def __init__(
         self,
