@@ -1,3 +1,5 @@
+.. py:class:: BasicHyVs
+
 Model BasicHyVs
 ===============
 

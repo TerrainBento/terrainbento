@@ -1,3 +1,5 @@
+.. py:class:: BasicHySa
+
 Model BasicHySa
 ===============
 

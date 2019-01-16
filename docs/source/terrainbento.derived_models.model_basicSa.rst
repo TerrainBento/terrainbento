@@ -1,3 +1,5 @@
+.. py:class:: BasicSa
+
 Model BasicSa
 =============
 

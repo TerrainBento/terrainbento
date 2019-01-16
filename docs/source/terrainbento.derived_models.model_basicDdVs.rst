@@ -1,3 +1,5 @@
+.. py:class:: BasicDdVs
+
 Model BasicDdVs
 ===============
 

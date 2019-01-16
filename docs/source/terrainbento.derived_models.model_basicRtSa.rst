@@ -1,3 +1,5 @@
+.. py:class:: BasicRtSa
+
 Model BasicRtSa
 ===============
 

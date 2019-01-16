@@ -1,3 +1,5 @@
+.. py:class:: BasicRtVs
+
 Model BasicRtVs
 ===============
 
