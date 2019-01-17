@@ -26,7 +26,6 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
         "regolith_transport_parameter": 0.,
         "water_erodability": K,
         "hydraulic_conductivity": 0.02,
-        "recharge_rate": 1.0,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "depression_finder": "DepressionFinderAndRouter",
@@ -46,7 +45,7 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
         params["hydraulic_conductivity"]
         * grid_2.at_node["soil__depth"][0]
         * grid_2.dx
-        / params["recharge_rate"]
+        / grid_2.at_node["rainfall__flux"][0]
     )
 
     A_eff_predicted = actual_areas * np.exp(

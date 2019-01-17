@@ -65,7 +65,6 @@ class BasicThVs(ErosionModel):
         n_sp=1.0,
         water_erodability=0.0001,
         regolith_transport_parameter=0.1,
-        recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         water_erosion_rule__threshold=0.01,
         **kwargs
@@ -87,8 +86,6 @@ class BasicThVs(ErosionModel):
         water_erosion_rule__threshold : float, optional
             Erosion rule threshold when no erosion has occured
             (:math:`\omega_c`). Default is 0.01.
-        recharge_rate : float, optional
-            Recharge rate (:math:`R_m`). Default is 1.0.
         hydraulic_conductivity : float, optional
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
@@ -141,15 +138,8 @@ class BasicThVs(ErosionModel):
         if float(self.n) != 1.0:
             raise ValueError("Model only supports n = 1.")
 
-        soil_thickness = self.grid.at_node["soil__depth"]
-
-        # Add a field for effective drainage area
-        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
-
         # Get the effective-area parameter
-        self.sat_param = (
-            hydraulic_conductivity * soil_thickness * self.grid.dx
-        ) / (recharge_rate)
+        self._Kdx = hydraulic_conductivity * self.grid.dx
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
@@ -172,9 +162,14 @@ class BasicThVs(ErosionModel):
         area = self.grid.at_node["drainage_area"]
         slope = self.grid.at_node["topographic__steepest_slope"]
         cores = self.grid.core_nodes
-        self.eff_area[cores] = area[cores] * (
-            np.exp(-self.sat_param[cores] * slope[cores] / area[cores])
+
+        sat_param = self._Kdx * self.grid.at_node["soil__depth"]/self.grid.at_node["rainfall__flux"]
+
+        eff_area = area[cores] * (
+            np.exp(-sat_param[cores] * slope[cores] / area[cores])
         )
+
+        self.grid.at_node["surface_water__discharge"][cores] = eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicThVs** for one time-step of duration step.
@@ -219,7 +214,7 @@ class BasicThVs(ErosionModel):
             )[0]
 
         # Zero out effective area in flooded nodes
-        self.eff_area[flooded] = 0.0
+        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)

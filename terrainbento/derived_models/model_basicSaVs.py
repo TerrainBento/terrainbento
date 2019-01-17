@@ -84,7 +84,6 @@ class BasicSaVs(ErosionModel):
         soil_production__maximum_rate=0.001,
         soil_production__decay_depth=0.5,
         soil_transport_decay_depth=0.5,
-        recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         **kwargs
     ):
@@ -108,8 +107,6 @@ class BasicSaVs(ErosionModel):
             Decay depth for soil production (:math:`H_{s}`). Default is 0.5.
         soil_transport_decay_depth : float, optional
             Decay depth for soil transport (:math:`H_{0}`). Default is 0.5.
-        recharge_rate : float, optional
-            Recharge rate (:math:`R_m`). Default is 1.0.
         hydraulic_conductivity : float, optional
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
@@ -164,13 +161,8 @@ class BasicSaVs(ErosionModel):
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
         bedrock_elev[:] = self.z - soil_thickness
 
-        # Add a field for effective drainage area
-        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
-
-        # Get the effective-length parameter
-        self.sat_len = (hydraulic_conductivity * self.grid.dx) / (
-            recharge_rate
-        )
+        # Get the effective-area parameter
+        self._Kdx = hydraulic_conductivity * self.grid.dx
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
@@ -200,10 +192,14 @@ class BasicSaVs(ErosionModel):
         slope = self.grid.at_node["topographic__steepest_slope"]
         soil = self.grid.at_node["soil__depth"]
         cores = self.grid.core_nodes
-        self.eff_area[cores] = area[cores] * (
-            np.exp(-self.sat_len * soil[cores] * slope[cores] / area[cores])
+
+        sat_param = self._Kdx * self.grid.at_node["soil__depth"]/self.grid.at_node["rainfall__flux"]
+
+        eff_area = area[cores] * (
+            np.exp(-sat_param[cores] * slope[cores] / area[cores])
         )
-        self.grid.at_node["surface_water__discharge"][:] = self.eff_area
+
+        self.grid.at_node["surface_water__discharge"][cores] = eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicVs** for one time-step of duration step.
@@ -248,7 +244,7 @@ class BasicSaVs(ErosionModel):
             )[0]
 
         # Zero out effective area in flooded nodes
-        self.eff_area[flooded] = 0.0
+        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)

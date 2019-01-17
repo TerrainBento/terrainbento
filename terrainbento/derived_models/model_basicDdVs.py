@@ -79,7 +79,6 @@ class BasicDdVs(ErosionModel):
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
         water_erosion_rule__thresh_depth_derivative=0.,
-        recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         **kwargs
     ):
@@ -103,8 +102,6 @@ class BasicDdVs(ErosionModel):
         water_erosion_rule__thresh_depth_derivative : float, optional
             Rate of increase of water erosion threshold as increased incision
             occurs (:math:`b`). Default is 0.0.
-        recharge_rate : float, optional
-            Recharge rate (:math:`R_m`). Default is 1.0.
         hydraulic_conductivity : float, optional
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
@@ -158,15 +155,8 @@ class BasicDdVs(ErosionModel):
         self.K = water_erodability
         self.threshold_value = water_erosion_rule__threshold
 
-        soil_thickness = self.grid.at_node["soil__depth"]
-
-        # Add a field for effective drainage area
-        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
-
         # Get the effective-area parameter
-        self.sat_param = (
-            hydraulic_conductivity * soil_thickness * self.grid.dx
-        ) / (recharge_rate)
+        self._Kdx = hydraulic_conductivity * self.grid.dx
 
         # Create a field for the (initial) erosion threshold
         self.threshold = self.grid.add_zeros(
@@ -200,10 +190,14 @@ class BasicDdVs(ErosionModel):
         area = self.grid.at_node["drainage_area"]
         slope = self.grid.at_node["topographic__steepest_slope"]
         cores = self.grid.core_nodes
-        self.eff_area[cores] = area[cores] * (
-            np.exp(-self.sat_param[cores] * slope[cores] / area[cores])
+
+        sat_param = self._Kdx * self.grid.at_node["soil__depth"]/self.grid.at_node["rainfall__flux"]
+
+        eff_area = area[cores] * (
+            np.exp(-sat_param[cores] * slope[cores] / area[cores])
         )
-        self.grid.at_node["surface_water__discharge"][:] = self.eff_area
+
+        self.grid.at_node["surface_water__discharge"][cores] = eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicVs** for one time-step of duration step.
@@ -248,7 +242,7 @@ class BasicDdVs(ErosionModel):
             )[0]
 
         # Zero out effective area in flooded nodes
-        self.eff_area[flooded] = 0.0
+        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
 
         # Set the erosion threshold.
         #

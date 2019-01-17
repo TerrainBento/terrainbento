@@ -82,7 +82,6 @@ class BasicRtVs(TwoLithologyErosionModel):
         self,
         clock,
         grid,
-        recharge_rate=1.0,
         hydraulic_conductivity=0.1,
         **kwargs
     ):
@@ -106,8 +105,6 @@ class BasicRtVs(TwoLithologyErosionModel):
             Thickness of the contact zone (:math:`W_c`). Default is 1.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
-        recharge_rate : float, optional
-            Recharge rate (:math:`R_m`). Default is 1.0.
         hydraulic_conductivity : float, optional
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
@@ -155,18 +152,11 @@ class BasicRtVs(TwoLithologyErosionModel):
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
 
-        soil_thickness = self.grid.at_node["soil__depth"]
-
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 
-        # Add a field for effective drainage area
-        self.eff_area = self.grid.add_zeros("node", "effective_drainage_area")
-
         # Get the effective-area parameter
-        self.sat_param = (
-            hydraulic_conductivity * soil_thickness * self.grid.dx
-        ) / (recharge_rate)
+        self._Kdx = hydraulic_conductivity * self.grid.dx
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerEroder(
@@ -187,20 +177,25 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         Effective drainage area is defined as:
 
-        $A_{eff} = A \exp ( \alpha S / A) = A R_r$
+        .. math::
 
-        where $S$ is downslope-positive steepest gradient, $A$ is drainage
-        area, $R_r$ is the runoff ratio, and $\alpha$ is the saturation
-        parameter.
+            A_{eff} = A \exp ( \alpha S / A) = A R_r
+
+        where :math:`S` is downslope-positive steepest gradient, :math:`A` is
+        drainage area, :math:`R_r` is the runoff ratio, and :math:`\alpha` is
+        the saturation parameter.
         """
         area = self.grid.at_node["drainage_area"]
         slope = self.grid.at_node["topographic__steepest_slope"]
         cores = self.grid.core_nodes
-        self.eff_area[cores] = area[cores] * (
-            np.exp(-self.sat_param[cores] * slope[cores] / area[cores])
+
+        sat_param = self._Kdx * self.grid.at_node["soil__depth"]/self.grid.at_node["rainfall__flux"]
+
+        eff_area = area[cores] * (
+            np.exp(-sat_param[cores] * slope[cores] / area[cores])
         )
 
-        self.grid.at_node["surface_water__discharge"][:] = self.eff_area
+        self.grid.at_node["surface_water__discharge"][cores] = eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicRtVs** for one time-step of duration step.
@@ -249,7 +244,7 @@ class BasicRtVs(TwoLithologyErosionModel):
             )[0]
 
         # Zero out effective area in flooded nodes
-        self.eff_area[flooded] = 0.0
+        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
 
         # Update the erodability field
         self._update_erodability_field()

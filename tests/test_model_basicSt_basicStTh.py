@@ -38,12 +38,14 @@ def test_steady_without_stochastic_duration(
     Instantaneous erosion rate, :math:E_i:
 
     ..math::
+
         E_i = K_q Q^m S^n
 
     Instantaneous water discharge depends on drainage area, :math:A, rain
     intensity, :math:P, and infiltration capacity, :math:I_m:
 
     ..math::
+
         Q = R A
         R = P - I_m (1 - e^{-P/I_m})
 
@@ -51,19 +53,21 @@ def test_steady_without_stochastic_duration(
     rate over all possible rain rates times the PDF of rain rate, :math:f(P):
 
     ..math::
+
         E = \int_0^\infty f(P) K_q A^m S^n [P-I_m(1-e^{-P/I_m})]^m dP
           = K_q A^m S^n \int_0^\infty f(P) [P-I_m(1-e^{-P/I_m})]^m dP
           = K_q A^m S^n \Phi
 
     where :math:\Phi represents the integral. For testing purposes, we seek an
-    analytical solution to the integral. Take $m=n=1$ and $P=I_m=1$. Also
+    analytical solution to the integral. Take :math:`m=n=1` and :math:`P=I_m=1`. Also
     assume that the distribution shape factor is 1, so that
-    :math:f(P) = (1/Pbar) e^{-P/Pbar}.
+    :math:`f(P) = (1/Pbar) e^{-P/Pbar}`.
 
     According to the online integrator, the indefinite integral solution under
     these assumptions is
 
     ..math::
+
         \Phi = e^{-P} (-\frac{1}{2} e^{-P} - P)
 
     The definite integral should therefore be 1/2.
@@ -71,6 +75,7 @@ def test_steady_without_stochastic_duration(
     The slope-area relation is therefore
 
     ..math::
+
         S = \frac{2U}{K_q A}
     """
     U = 0.0001

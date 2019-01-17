@@ -89,8 +89,6 @@ class BasicStVs(StochasticErosionModel):
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         infiltration_capacity: float, optional
             Infiltration capacity (:math:`I_m`). Default is 1.0.
-        recharge_rate : float, optional
-            Recharge rate (:math:`R_m`). Default is 1.0.
         hydraulic_conductivity : float, optional
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :

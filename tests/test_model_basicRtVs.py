@@ -14,7 +14,6 @@ def test_steady_Kss_no_precip_changer(
 ):
 
     hydraulic_conductivity = 0.1
-    recharge_rate = 0.5
 
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
@@ -26,7 +25,6 @@ def test_steady_Kss_no_precip_changer(
         "regolith_transport_parameter": 0.,
         "water_erodability_lower": Kr,
         "water_erodability_upper": Kt,
-        "recharge_rate": recharge_rate,
         "hydraulic_conductivity": hydraulic_conductivity,
         "m_sp": m_sp,
         "n_sp": n_sp,

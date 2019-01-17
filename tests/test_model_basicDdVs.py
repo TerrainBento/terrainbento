@@ -85,7 +85,6 @@ def test_Aeff(clock_simple, grid_2, K, U):
         "water_erodability": K,
         "water_erosion_rule__threshold": threshold,
         "hydraulic_conductivity": 0.01,
-        "recharge_rate": 1.0,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "depression_finder": "DepressionFinderAndRouter",
@@ -104,7 +103,7 @@ def test_Aeff(clock_simple, grid_2, K, U):
         params["hydraulic_conductivity"]
         * grid_2.at_node["soil__depth"][0]
         * grid_2.dx
-        / params["recharge_rate"]
+        / grid_2.at_node["rainfall__flux"][0]
     )
     A_eff_predicted = actual_areas * np.exp(
         -(-alpha * actual_slopes) / actual_areas

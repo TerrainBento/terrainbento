@@ -81,11 +81,12 @@ class StochasticErosionModel(ErosionModel):
     production rate :math:`R` [L/T] is calculated using:
 
     .. math::
+
         R = P - I (1 - \exp ( -P / I ))
 
     where :math:`I` is the soil infiltration capacity. At the sub-grid scale, soil
     infiltration capacity is assumed to have an exponential distribution of which
-    $I$ is the mean. Hence, there are always some spots within any given grid cell
+    :math:`I` is the mean. Hence, there are always some spots within any given grid cell
     that will generate runoff. This approach yields a smooth transition from
     near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P`
     (when :math`P>>I`), without a "hard threshold."
