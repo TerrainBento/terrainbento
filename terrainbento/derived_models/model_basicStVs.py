@@ -207,7 +207,33 @@ class BasicStVs(StochasticErosionModel):
         return np.nan
 
     def run_one_step(self, step):
-        """Advance model for one time-step of duration step."""
+        """Advance model **BasicStVs** for one time-step of duration step.
+
+        The **run_one_step** method does the following:
+
+        1. Directs flow, accumulates drainage area, and calculates effective
+           drainage area.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+           not occur.
+
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
+
+        4. Calculates detachment-limited erosion by water.
+
+        5. Calculates topographic change by linear diffusion.
+
+        6. Finalizes the step using the :py:mod:`ErosionModel` base class
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
+           ``step``.
+
+        Parameters
+        ----------
+        step : float
+            Increment of time for which the model is run.
+        """
         # create and move water
         self.create_and_move_water(step)
 

@@ -154,7 +154,32 @@ class BasicStTh(StochasticErosionModel):
         )
 
     def run_one_step(self, step):
-        """Advance model for one time-step of duration step."""
+        """Advance model **BasicStTh** for one time-step of duration step.
+
+        The **run_one_step** method does the following:
+
+        1. Creates rain and runoff, then directs and accumulates flow.
+
+        2. Assesses the location, if any, of flooded nodes where erosion should
+           not occur.
+
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
+
+        4. Calculates detachment-limited, threshold-modified erosion by water.
+
+        5. Calculates topographic change by linear diffusion.
+
+        6. Finalizes the step using the :py:mod:`ErosionModel` base class
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
+           ``step``.
+
+        Parameters
+        ----------
+        step : float
+            Increment of time for which the model is run.
+        """
         # create and move water
         self.create_and_move_water(step)
 
