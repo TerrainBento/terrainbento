@@ -113,11 +113,10 @@ class BasicHyRt(TwoLithologyErosionModel):
             (:math:`F_f`). Default is 0.5.
         solver : str, optional
             Solver option to pass to the Landlab
-            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`_
+            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`__
             component. Default is "basic".
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
+            Keyword arguments to pass to :py:class:`TwoLithologyErosionModel`.
 
         Returns
         -------
@@ -191,8 +190,8 @@ class BasicHyRt(TwoLithologyErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active boundary handler and if
-           so, uses it to modify the two erodability by water values.
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
 
         4. Updates the spatially variable erodability value based on the
            relative distance between the topographic surface and the lithology
@@ -202,7 +201,7 @@ class BasicHyRt(TwoLithologyErosionModel):
 
         6. Calculates topographic change by linear diffusion.
 
-        7. Finalizes the step using the **ErosionModel** base class function
+        7. Finalizes the step using the :py:mod:`ErosionModel` base class function
            **finalize__run_one_step**. This function updates all boundary
            handlers by ``step`` and increments model time by ``step``.
 

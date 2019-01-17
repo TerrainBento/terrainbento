@@ -94,8 +94,7 @@ class BasicStVs(StochasticErosionModel):
         hydraulic_conductivity : float, optional
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`.
+            Keyword arguments to pass to :py:class:`StochasticErosionModel`.
             These arguments control the discharge :math:`\hat{Q}`.
 
         Returns

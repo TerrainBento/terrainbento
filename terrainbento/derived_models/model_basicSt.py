@@ -75,8 +75,7 @@ class BasicSt(StochasticErosionModel):
         infiltration_capacity: float, optional
             Infiltration capacity (:math:`I_m`). Default is 1.0.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`.
+            Keyword arguments to pass to :py:class:`StochasticErosionModel`.
             These arguments control the discharge :math:`\hat{Q}`.
 
         Returns
@@ -157,7 +156,7 @@ class BasicSt(StochasticErosionModel):
 
         4. Calculates topographic change by linear diffusion.
 
-        5. Finalizes the step using the ``ErosionModel`` base class function
+        5. Finalizes the step using the :py:mod:`ErosionModel` base class function
         **finalize__run_one_step**. This function updates all boundary
         handlers by ``step`` and increments model time by ``step``.
 

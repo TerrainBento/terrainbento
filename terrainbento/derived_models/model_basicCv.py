@@ -83,8 +83,7 @@ class BasicCv(ErosionModel):
             water erodability stabilizes at a  value of :math:`K`. Default
             is 0.0.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`.
         Returns
         -------
         Basic : model object
@@ -169,7 +168,7 @@ class BasicCv(ErosionModel):
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the **ErosionModel** base class function
+        6. Finalizes the step using the :py:mod:`ErosionModel` base class function
            **finalize__run_one_step**. This function updates all boundary
            handlers by ``step`` and increments model time by ``step``.
 

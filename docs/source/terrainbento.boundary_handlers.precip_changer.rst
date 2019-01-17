@@ -1,3 +1,5 @@
+.. py:class:: PrecipChanger
+
 Precipitation Changer
 =====================
 

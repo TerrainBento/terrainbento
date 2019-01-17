@@ -98,11 +98,10 @@ class BasicHySt(StochasticErosionModel):
             (:math:`F_f`). Default is 0.5.
         solver : str, optional
             Solver option to pass to the Landlab
-            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`_
+            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`__
             component. Default is "basic".
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`.
+            Keyword arguments to pass to :py:class:`StochasticErosionModel`.
             These arguments control the discharge :math:`\hat{Q}`.
 
         Returns

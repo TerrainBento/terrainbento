@@ -19,8 +19,8 @@ class StochasticErosionModel(ErosionModel):
     """Base class for stochastic-precipitation terrainbento models.
 
     A **StochasticErosionModel** inherits from
-    :py:class:`~terrainbento.base_class.erosion_model.ErosionModel` and provides
-    functionality needed by all stochastic-precipitation models.
+    :py:class:`ErosionModel` and provides functionality needed by all
+    stochastic-precipitation models.
 
     This is a base class that handles processes related to the generation of
     preciptiation events.
@@ -151,7 +151,7 @@ class StochasticErosionModel(ErosionModel):
             value is "exceedance_summary.txt"
         **kwargs :
             Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`
+            :py:class:`ErosionModel`
 
         Returns
         -------

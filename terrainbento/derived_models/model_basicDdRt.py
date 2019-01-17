@@ -115,10 +115,9 @@ class BasicDdRt(TwoLithologyErosionModel):
             occurs (:math:`b`). Default is 0.0.
         **kwargs :
             Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
+            :py:class:`ErosionModel`.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
+            Keyword arguments to pass to :py:class:`TwoLithologyErosionModel`.
 
         Returns
         -------
@@ -221,8 +220,8 @@ class BasicDdRt(TwoLithologyErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active boundary handler and if
-           so, uses it to modify the two erodability by water values.
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
 
         4. Updates the spatially variable erodability value based on the
            relative distance between the topographic surface and the lithology
@@ -235,7 +234,7 @@ class BasicDdRt(TwoLithologyErosionModel):
 
         7. Calculates topographic change by linear diffusion.
 
-        8. Finalizes the step using the **ErosionModel** base class function
+        8. Finalizes the step using the :py:mod:`ErosionModel` base class function
            **finalize__run_one_step**. This function updates all boundary
            handlers by ``step`` and increments model time by ``step``.
 

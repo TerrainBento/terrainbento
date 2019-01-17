@@ -14,13 +14,13 @@ in the `GitHub repository`_.
 The goal of terrainbento is to make it easier to create alternative Earth
 surface dynamics models. The package has six main parts that support this
 goal. First, a model base class called
-:py:class:`~terrainbento.base_class.erosion_model.ErosionModel` contains the
+:py:class:`ErosionModel` contains the
 functionality requires across models (e.g. reading in input files, writing
 output). Two specialized base classes also exist for models that use stochastic
 hydrology
 (:py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`)
 or multiple lithology layers
-(:py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`)
+(:py:class:`TwoLithologyErosionModel`)
 .
 
 Second, a set of :py:mod:`Boundary Condition Handlers <terrainbento.boundary_handlers>`

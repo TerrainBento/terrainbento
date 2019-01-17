@@ -1,3 +1,5 @@
+.. py:class:: CapturedNodeBaselevelHandler
+
 Captured Node Baselevel Handler
 ===============================
 

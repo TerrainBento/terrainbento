@@ -51,9 +51,7 @@ class GenericFuncBaselevelHandler(object):
             be a function of three variables and return an array of size
             number of nodes. If a constant value is desired, used
             **NotCoreNodeBaselevelHandler** instead. The default function is:
-            ``lambda grid, t: (0 * grid.x_of_node +
-                               0 * grid.y_of_node +
-                               0 * t)``
+            ``lambda grid, t: (0 * grid.x_of_node + 0 * grid.y_of_node + 0 * t)``
 
         Examples
         --------

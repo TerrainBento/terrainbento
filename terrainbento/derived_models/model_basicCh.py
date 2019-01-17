@@ -82,8 +82,7 @@ class BasicCh(ErosionModel):
             Number of terms in the Taylor Series Expansion (:math:`N`). Default
             is 11.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`.
 
         Returns
         -------
@@ -157,14 +156,14 @@ class BasicCh(ErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active boundary handler and if
-           so, uses it to modify the erodability by water.
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited erosion by water.
 
         5. Calculates topographic change by nonlinear diffusion.
 
-        6. Finalizes the step using the **ErosionModel** base class function
+        6. Finalizes the step using the :py:mod:`ErosionModel` base class function
            **finalize__run_one_step**. This function updates all boundary
            handler handlers by ``step`` and increments model time by ``step``.
 

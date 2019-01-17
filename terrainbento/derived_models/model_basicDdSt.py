@@ -105,8 +105,7 @@ class BasicDdSt(StochasticErosionModel):
         infiltration_capacity: float, optional
             Infiltration capacity (:math:`I_m`). Default is 1.0.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`.
+            Keyword arguments to pass to :py:class:`StochasticErosionModel`.
             These arguments control the discharge :math:`\hat{Q}`.
 
         Returns

@@ -125,8 +125,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
             Number of terms in the Taylor Series Expansion (:math:`N`). Default
             is 7.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
+            Keyword arguments to pass to :py:class:`TwoLithologyErosionModel`.
 
         Returns
         -------
@@ -203,8 +202,8 @@ class BasicChRtTh(TwoLithologyErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active boundary handler and if
-           so, uses it to modify the two erodability by water values.
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
 
         4. Updates the spatially variable erodability and threshold values
            based on the relative distance between the topographic surface and
@@ -214,7 +213,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         6. Calculates topographic change by non-linear diffusion.
 
-        7. Finalizes the step using the **ErosionModel** base class function
+        7. Finalizes the step using the :py:mod:`ErosionModel` base class function
            **finalize__run_one_step**. This function updates all boundary
            handlers by ``step`` and increments model time by ``step``.
 

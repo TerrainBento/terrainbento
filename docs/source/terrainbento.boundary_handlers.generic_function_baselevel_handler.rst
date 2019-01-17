@@ -1,3 +1,5 @@
+.. py:class:: GenericFuncBaselevelHandler
+
 Generic Function Baselevel Handler
 ==================================
 

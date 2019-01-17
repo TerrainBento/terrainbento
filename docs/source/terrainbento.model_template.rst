@@ -1,3 +1,5 @@
+.. py:class:: ModelTemplate
+
 Model Template
 ==============
 

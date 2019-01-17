@@ -88,8 +88,7 @@ class BasicRt(TwoLithologyErosionModel):
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.two_lithology_erosion_model.TwoLithologyErosionModel`.
+            Keyword arguments to pass to :py:class:`TwoLithologyErosionModel`.
 
         Returns
         -------
@@ -156,9 +155,8 @@ class BasicRt(TwoLithologyErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active boundary handler and if
-           so, uses it to modify the two erodability by water values.
-
+        33. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
         4. Updates the spatially variable erodability value based on the
            relative distance between the topographic surface and the lithology
            contact.
@@ -167,7 +165,7 @@ class BasicRt(TwoLithologyErosionModel):
 
         6. Calculates topographic change by linear diffusion.
 
-        7. Finalizes the step using the **ErosionModel** base class function
+        7. Finalizes the step using the :py:mod:`ErosionModel` base class function
            **finalize__run_one_step**. This function updates all boundary
            handlers by ``step`` and increments model time by ``step``.
 

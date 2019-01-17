@@ -1,3 +1,5 @@
+.. py:class:: NotCoreNodeBaselevelHandler
+
 Not Core Node Baselevel Handler
 ===============================
 

@@ -15,7 +15,7 @@ class TwoLithologyErosionModel(ErosionModel):
     """Base class for two lithology terrainbento models.
 
     A **TwoLithologyErosionModel** inherits from
-    :py:class:`~terrainbento.base_class.erosion_model.ErosionModel` and
+    :py:class:`ErosionModel` and
     provides functionality needed by all models with two lithologies.
 
     This is a base class that handles setting up common parameters and the
@@ -52,7 +52,7 @@ class TwoLithologyErosionModel(ErosionModel):
 
         **kwargs :
             Keyword arguments to pass to
-            :py:class:`~terrainbento.base_class.erosion_model.ErosionModel`
+            :py:class:`ErosionModel`
 
         Returns
         -------

@@ -1,3 +1,5 @@
+.. py:class:: TwoLithologyErosionModel
+
 Two Lithology Erosion Model
 ---------------------------
 
