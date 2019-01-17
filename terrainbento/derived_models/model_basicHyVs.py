@@ -44,8 +44,8 @@ class BasicHyVs(ErosionModel):
     parameters, :math:`K` is the erodability by water, :math:`\omega_c` is the
     critical stream power needed for erosion to occur, :math:`V` is effective
     sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
-    :math:`Q` is volumetric water discharge, :math:`\phi` is sediment porosity,
-    and :math:`D` is the regolith transport efficiency.
+    :math:`\phi` is sediment porosity, and :math:`D` is the regolith transport
+    efficiency.
 
     :math:`\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated

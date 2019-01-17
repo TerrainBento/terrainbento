@@ -26,19 +26,20 @@ class BasicHy(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -KQ^{m}S^{n}
-                                + \frac{V Q_s}{rA \left(1-\phi\right)}
-                                + D\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = \frac{V Q_s}
+                                                {A\left(1 - \phi \right)}
+                                           - KA^{m}S^{n}
+                                           + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left(KQ^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
+        Q_s = \int_0^A \left((1-F_f)KA^{m}S^{n}
+                             - \frac{V Q_s}{A\left(1 - \phi \right)} \right) dA
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local
     slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`V` is effective
     sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
-    :math:`r` is a runoff rate, :math:`\phi` is sediment porosity, :math:`D` is
-    the regolith transport efficiency, :math:`H` is soil depth, and
-    :math:`H_*` is the bedrock roughness length scale.
+    :math:`r` is a runoff rate, :math:`\phi` is sediment porosity, and
+    :math:`D` is the regolith transport efficiency.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

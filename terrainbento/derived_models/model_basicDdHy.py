@@ -33,15 +33,17 @@ class BasicDdHy(ErosionModel):
             + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)}
             + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left(KQ^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
+        Q_s = \int_0^A \left((1-F_f)[\omega
+              - \omega_c (1 - e^{-\omega / \omega_c})]
+              - \frac{V Q_s}{A\left(1 - \phi \right)} \right) dA
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local
     slope, :math:`m` and :math:`n` are the drainage area and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`\omega_{ct}` is
     the critical stream power needed for erosion to occur, :math:`V` is
     effective sediment settling velocity, :math:`Q_s` is volumetric sediment
-    flux, :math:`Q` is volumetric water discharge, :math:`\phi` is sediment
-    porosity,  and :math:`D` is the regolith transport efficiency.
+    flux, :math:`\phi` is sediment porosity, and :math:`D` is the regolith
+    transport efficiency.
 
     :math:`\omega_{ct}` may change through time as it increases with cumulative
     incision depth:

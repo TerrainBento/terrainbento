@@ -32,15 +32,20 @@ class BasicHySt(StochasticErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -E(\hat{Q})
-                                           + D_s(\hat{Q})
+        \frac{\partial \eta}{\partial t} = \frac{V Q_s}{\hat{Q}}
+                                           - K_q\hat{Q}^{m}S^{n}
                                            + D\nabla^2 \eta
 
+        Q_s = \int_0^A \left(K_q(1-F_f)\hat{Q}^{m}S^{n}
+              - \frac{V Q_s}{A\left(1 - \phi \right)}\right) dA
+
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
-    indicates that it is a random-in-time variable), :math:`E` is the bed
-    erosion (entrainment) rate due to fluid entrainment, :math:`D_s` is the
-    deposition rate of sediment settling out of active transport, and :math:`D`
-    is the regolith transport parameter.
+    indicates that it is a random-in-time variable), :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    parameters, :math:`K_q` is the erodability by water, :math:`V` is effective
+    sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
+    :math:`r` is a runoff rate, :math:`\phi` is sediment porosity, and
+    :math:`D` is the regolith transport efficiency.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
