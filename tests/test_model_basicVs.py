@@ -22,7 +22,7 @@ def test_detachment_steady_no_precip_changer(
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
         "water_erodability": 0.001,
-        "hydraulic_conductivity": 0.,
+        "hydraulic_conductivity": 1.0,
         "recharge_rate": 1.0,
         "depression_finder": depression_finder,
         "m_sp": m_sp,

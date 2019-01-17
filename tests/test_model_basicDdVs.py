@@ -37,7 +37,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
         "water_erodability": K,
         "water_erosion_rule__threshold": threshold,
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,
-        "hydraulic_conductivity": 0.,
+        "hydraulic_conductivity": 0.1,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "depression_finder": depression_finder,
@@ -46,11 +46,14 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
 
     # construct and run model
     model = BasicDdVs(**params)
-    for _ in range(100):
+    for _ in range(200):
         model.run_one_step(1000)
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
+    predicted_slopes_upper = (
+        (U + threshold) / (K * (actual_areas ** m_sp))
+    ) ** (1. / n_sp)
     predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
         1. / n_sp
     )
@@ -60,6 +63,11 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
     assert np.all(
         actual_slopes[model.grid.core_nodes[1:-1]]
         > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+    )
+
+    assert np.all(
+        actual_slopes[model.grid.core_nodes[1:-1]]
+        < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
     )
 
 
@@ -76,7 +84,7 @@ def test_Aeff(clock_simple, grid_2, K, U):
         "regolith_transport_parameter": 0.,
         "water_erodability": K,
         "water_erosion_rule__threshold": threshold,
-        "hydraulic_conductivity": 0.02,
+        "hydraulic_conductivity": 0.01,
         "recharge_rate": 1.0,
         "m_sp": m_sp,
         "n_sp": n_sp,
@@ -86,10 +94,9 @@ def test_Aeff(clock_simple, grid_2, K, U):
 
     # construct and run model
     model = BasicDdVs(**params)
-    for _ in range(100):
+    for _ in range(200):
         model.run_one_step(1000)
 
-    # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["drainage_area"]
 
@@ -105,29 +112,7 @@ def test_Aeff(clock_simple, grid_2, K, U):
 
     # assert aeff internally calculated correclty
     assert_array_almost_equal(
-        model.eff_area[model.grid.core_nodes],
+        model.grid.at_node['surface_water__discharge'][model.grid.core_nodes],
         A_eff_predicted[model.grid.core_nodes],
         decimal=1,
-    )
-
-    # somewhat circular test to make sure slopes are below predicted upper
-    # bound
-    predicted_slopes_eff_lower = (
-        (U + 0.0) / (K * (model.eff_area ** m_sp))
-    ) ** (1. / n_sp)
-
-    # somewhat circular test to make sure VSA slopes are higher than expected
-    # "normal" slopes
-    predicted_slopes_normal_lower = (
-        (U + 0.0) / (K * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
-
-    assert np.all(
-        actual_slopes[model.grid.core_nodes[1:-1]]
-        > predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]]
-    )
-
-    assert np.all(
-        predicted_slopes_eff_lower[model.grid.core_nodes[1:-1]]
-        > predicted_slopes_normal_lower[model.grid.core_nodes[1:-1]]
     )

@@ -40,7 +40,7 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_areas = model.grid.at_node["drainage_area"]
 
     alpha = (
         params["hydraulic_conductivity"]
@@ -48,13 +48,14 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
         * grid_2.dx
         / params["recharge_rate"]
     )
+
     A_eff_predicted = actual_areas * np.exp(
         -(-alpha * actual_slopes) / actual_areas
     )
 
     # assert aeff internally calculated correclty
     assert_array_almost_equal(
-        model.eff_area[model.grid.core_nodes],
+        model.grid.at_node['surface_water__discharge'][model.grid.core_nodes],
         A_eff_predicted[model.grid.core_nodes],
         decimal=1,
     )
