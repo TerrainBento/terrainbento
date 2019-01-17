@@ -91,7 +91,9 @@ class BasicDd(ErosionModel):
             Rate of increase of water erosion threshold as increased incision
             occurs (:math:`b`). Default is 0.0.
         **kwargs :
-            Keyword arguments to pass to :py:class:`ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------

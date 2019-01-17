@@ -326,11 +326,13 @@ class ErosionModel(object):
         precipitator : terrainbento precipitator, optional
             An instantiated version of a valid precipitator. See the
             :py:mod:`precipitator <terrainbento.precipitator>` module for
-            valid options.
+            valid options. The precipitator creates rain.
         runoff_generator : terrainbento runoff_generator, optional
             An instantiated version of a valid runoff generator. See the
             :py:mod:`runoff generator <terrainbento.runoff_generator>` module
-            for valid options.
+            for valid options. The runoff generator converts rain into runoff.
+            This runoff is then accumulated into surface water discharge
+            (:math:`Q`) and used by channel erosion components.
         flow_director : str, optional
             String name of a
             `Landlab FlowDirector <https://landlab.readthedocs.io/en/latest/landlab.components.flow_director.html>`_.

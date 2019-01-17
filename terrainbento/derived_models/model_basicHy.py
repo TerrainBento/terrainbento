@@ -92,7 +92,9 @@ class BasicHy(ErosionModel):
             `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`__
             component. Default is "basic".
         **kwargs :
-            Keyword arguments to pass to :py:class:`ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------

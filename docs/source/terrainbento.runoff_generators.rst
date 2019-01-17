@@ -1,7 +1,11 @@
 .. py:module:: terrainbento.runoff_generators
 
-terrainbento Runoff Generators
-==============================
+terrainbento RunoffGenerators
+=============================
+
+The terrainbento RunoffGenerators convert precipitation created by
+:py:module:`Precipitators <terrainbento.precipitators>` into runoff. This
+runoff is then accumulated into surface water discharge.
 
 .. toctree::
 

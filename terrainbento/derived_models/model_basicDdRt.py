@@ -114,10 +114,10 @@ class BasicDdRt(TwoLithologyErosionModel):
             Rate of increase of water erosion threshold as increased incision
             occurs (:math:`b`). Default is 0.0.
         **kwargs :
-            Keyword arguments to pass to
-            :py:class:`ErosionModel`.
-        **kwargs :
             Keyword arguments to pass to :py:class:`TwoLithologyErosionModel`.
+            Importantly these arguments specify the precipitator and the runoff
+            generator that control the generation of surface water discharge
+            (:math:`Q`).
 
         Returns
         -------

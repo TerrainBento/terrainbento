@@ -82,7 +82,9 @@ class BasicCh(ErosionModel):
             Number of terms in the Taylor Series Expansion (:math:`N`). Default
             is 11.
         **kwargs :
-            Keyword arguments to pass to :py:class:`ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------

@@ -75,7 +75,9 @@ class BasicTh(ErosionModel):
             Erosion rule threshold when no erosion has occured
             (:math:`\omega_c`). Default is 0.01.
         **kwargs :
-            Keyword arguments to pass to :py:class:`ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------

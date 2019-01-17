@@ -67,7 +67,9 @@ class Basic(ErosionModel):
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         **kwargs :
-            Keyword arguments to pass to :py:class:`ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------

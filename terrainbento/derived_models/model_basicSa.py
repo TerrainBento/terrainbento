@@ -106,7 +106,9 @@ class BasicSa(ErosionModel):
         soil_transport_decay_depth : float, optional
             Decay depth for soil transport (:math:`H_{0}`). Default is 0.5.
         **kwargs :
-            Keyword arguments to pass to :py:class:`ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------

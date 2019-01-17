@@ -112,6 +112,9 @@ class BasicRtVs(TwoLithologyErosionModel):
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to :py:class:`TwoLithologyErosionModel`.
+            Importantly these arguments specify the precipitator and the runoff
+            generator that control the generation of surface water discharge
+            (:math:`Q`).
 
         Returns
         -------

@@ -89,6 +89,9 @@ class BasicRt(TwoLithologyErosionModel):
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         **kwargs :
             Keyword arguments to pass to :py:class:`TwoLithologyErosionModel`.
+            Importantly these arguments specify the precipitator and the runoff
+            generator that control the generation of surface water discharge
+            (:math:`Q`).
 
         Returns
         -------

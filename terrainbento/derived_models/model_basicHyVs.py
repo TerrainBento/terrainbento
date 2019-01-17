@@ -110,7 +110,9 @@ class BasicHyVs(ErosionModel):
         hydraulic_conductivity : float, optional
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.
         **kwargs :
-            Keyword arguments to pass to :py:class:`ErosionModel`.
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------
