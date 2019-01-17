@@ -65,12 +65,6 @@ _HANDLER_METHODS = {
 }
 
 
-def _add_water_fields(grid):
-    for field in ["water__unit_flux_in", "rainfall__flux"]:
-        if field not in grid.at_node:
-            grid.add_zeros("node", field)
-
-
 def _verify_boundary_handler(handler):
     bad_name = False
     bad_instance = False
@@ -258,9 +252,6 @@ class ErosionModel(object):
         grid = create_grid(params.pop("grid"))
         clock = Clock.from_dict(params.pop("clock"))
 
-        # add water fields, if necessary.
-        _add_water_fields(grid)
-
         # precipitator
         precip_params = params.pop("precipitator", _DEFAULT_PRECIPITATOR)
         precipitator = _setup_precipitator_or_runoff(
@@ -326,13 +317,22 @@ class ErosionModel(object):
         precipitator : terrainbento precipitator, optional
             An instantiated version of a valid precipitator. See the
             :py:mod:`precipitator <terrainbento.precipitator>` module for
-            valid options. The precipitator creates rain.
+            valid options. The precipitator creates rain. Default value is the
+            :py:class:`UniformPrecipitator` with a rainfall flux of 1.0.
         runoff_generator : terrainbento runoff_generator, optional
             An instantiated version of a valid runoff generator. See the
             :py:mod:`runoff generator <terrainbento.runoff_generator>` module
             for valid options. The runoff generator converts rain into runoff.
             This runoff is then accumulated into surface water discharge
-            (:math:`Q`) and used by channel erosion components.
+            (:math:`Q`) and used by channel erosion components. Default value
+            is :py:class:`SimpleRunoff` in which all rainfall turns into
+            runoff. For the drainage area version of the stream power law use
+            the default precipitator and runoff_generator.
+
+            If the default values of both the precipitator and
+            runoff_generator are used, then :math:`Q` will be equal to drainage
+            area. XXXX might acknowledge that Kq = K R**m  and with R=1...
+
         flow_director : str, optional
             String name of a
             `Landlab FlowDirector <https://landlab.readthedocs.io/en/latest/landlab.components.flow_director.html>`_.
@@ -416,9 +416,6 @@ class ErosionModel(object):
         ###################################################################
         # address Precipitator and RUNOFF_GENERATOR
         ###################################################################
-
-        # verify that fields are added if necessary
-        _add_water_fields(grid)
 
         # verify that precipitator is valid
         if precipitator is None:
