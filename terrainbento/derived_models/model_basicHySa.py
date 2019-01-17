@@ -36,7 +36,7 @@ class BasicHySa(ErosionModel):
         \eta = \eta_b + H
 
         \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
-                          + \frac{V_s Q_s}{Ar\left(1 - \phi \right)}
+                          + \frac{V_s Q_s}{Q\left(1 - \phi \right)}
                           - K_s Q^{m}S^{n} (1 - e^{-H/H_*})
                           -\nabla q_h
 
@@ -45,7 +45,7 @@ class BasicHySa(ErosionModel):
 
         Q_s = \int_0^A \left(K_s Q^{m}S^{n} (1-e^{-H/H_*})
               + K_r (1-F_f) Q^{m}S^{n} e^{-H/H_*}
-              - \frac{V_s Q_s}{Ar\left(1 - \phi \right)}\right) dA
+              - \frac{V_s Q_s}{Q\left(1 - \phi \right)}\right) dA
 
     where :math:`\eta_b` is the bedrock elevation, :math:`H` is the soil depth,
     :math:`P_0` is the maximum soil production rate, :math:`H_s` is the soil

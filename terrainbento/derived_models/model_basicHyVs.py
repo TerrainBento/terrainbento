@@ -28,14 +28,14 @@ class BasicHyVs(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(KA_{eff}^{m}S^{n}
-              - \omega_c\left(1-e^{-KA_{eff}^{m}S^{n}/\omega_c}\right)\right)
+        \frac{\partial \eta}{\partial t} = -\left(KQ^{m}S^{n}
+              - \omega_c\left(1-e^{-KQ^{m}S^{n}/\omega_c}\right)\right)
               + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)}
               + D\nabla^2 \eta
 
         Q_s = \int_0^A \left(KQ^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
 
-        A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
+        Q = A \exp \left( -\frac{-\alpha S}{A}\right)
 
         \alpha = \frac{K_{sat} H dx}{R_m}
 
@@ -48,9 +48,10 @@ class BasicHyVs(ErosionModel):
     efficiency.
 
     :math:`\alpha` is the saturation area scale used for transforming area into
-    effective area :math:`A_{eff}`. It is given as a function of the saturated
-    hydraulic conductivity :math:`K_{sat}`, the soil thickness :math:`H`, the
-    grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
+    effective area :math:`A_{eff}` (used as discharge). It is given as a
+    function of the saturated hydraulic conductivity :math:`K_{sat}`, the soil
+    thickness :math:`H`, the grid spacing :math:`dx`, and the recharge rate,
+    :math:`R_m`.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

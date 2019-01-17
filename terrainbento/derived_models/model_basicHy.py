@@ -27,19 +27,20 @@ class BasicHy(ErosionModel):
     .. math::
 
         \frac{\partial \eta}{\partial t} = \frac{V Q_s}
-                                                {A\left(1 - \phi \right)}
-                                           - KA^{m}S^{n}
+                                                {Q\left(1 - \phi \right)}
+                                           - KQ^{m}S^{n}
                                            + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left((1-F_f)KA^{m}S^{n}
-                             - \frac{V Q_s}{A\left(1 - \phi \right)} \right) dA
+        Q_s = \int_0^A \left((1-F_f)KQ^{m}S^{n}
+                             - \frac{V Q_s}{Q\left(1 - \phi \right)} \right) dA
 
-    where :math:`Q` is the local stream discharge, :math:`S` is the local
-    slope, :math:`m` and :math:`n` are the discharge and slope exponent
-    parameters, :math:`K` is the erodability by water, :math:`V` is effective
-    sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
-    :math:`r` is a runoff rate, :math:`\phi` is sediment porosity, and
-    :math:`D` is the regolith transport efficiency.
+    where :math:`Q` is the local stream discharge, :math:`A` is the local
+    upstream drainage area,:math:`S` is the local slope, :math:`m` and
+    :math:`n` are the discharge and slope exponent parameters, :math:`K` is the
+    erodability by water, :math:`V` is effective sediment settling velocity,
+    :math:`Q_s` is volumetric sediment flux, :math:`r` is a runoff rate,
+    :math:`\phi` is sediment porosity, and :math:`D` is the regolith transport
+    efficiency.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
