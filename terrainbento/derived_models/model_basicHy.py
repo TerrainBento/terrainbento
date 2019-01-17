@@ -35,7 +35,7 @@ class BasicHy(ErosionModel):
                              - \frac{V Q_s}{A\left(1 - \phi \right)} \right) dA
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local
-    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    slope, :math:`m` and :math:`n` are the discharge and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`V` is effective
     sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
     :math:`r` is a runoff rate, :math:`\phi` is sediment porosity, and

@@ -40,9 +40,9 @@ class BasicRt(TwoLithologyErosionModel):
     where :math:`Q` is the local stream discharge, :math:`S` is the local
     slope, :math:`W_c` is the contact-zone width, :math:`K_1` and :math:`K_2`
     are the erodabilities of the upper and lower lithologies, and :math:`D` is
-    the regolith transport parameter. :math:`m` and :math:`n` are the drainage
-    area and slope exponent parameters. :math:`w` is a weight used to calculate
-    the effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
+    the regolith transport parameter. :math:`m` and :math:`n` are the discharge
+    and slope exponent parameters. :math:`w` is a weight used to calculate the
+    effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
     contact zone and the width of the contact zone.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at

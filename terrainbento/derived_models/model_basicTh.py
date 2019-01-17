@@ -31,7 +31,7 @@ class BasicTh(ErosionModel):
                     + D\nabla^2 \eta
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local
-    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    slope, :math:`m` and :math:`n` are the discharge and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`\omega_c` is the
     critical stream power needed for erosion to occur and :math:`D` is the
     regolith transport efficiency.

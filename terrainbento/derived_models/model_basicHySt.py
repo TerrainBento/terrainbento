@@ -41,7 +41,7 @@ class BasicHySt(StochasticErosionModel):
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), :math:`S` is the local
-    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    slope, :math:`m` and :math:`n` are the discharge and slope exponent
     parameters, :math:`K_q` is the erodability by water, :math:`V` is effective
     sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
     :math:`r` is a runoff rate, :math:`\phi` is sediment porosity, and

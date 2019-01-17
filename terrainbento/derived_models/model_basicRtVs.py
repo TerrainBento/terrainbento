@@ -43,8 +43,8 @@ class BasicRtVs(TwoLithologyErosionModel):
         \alpha = \frac{K_{sat} dx }{R_m}
 
 
-    where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the discharge and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies, and
     :math:`D` is the regolith transport parameter. :math:`\alpha` is the
@@ -52,8 +52,8 @@ class BasicRtVs(TwoLithologyErosionModel):
     is given as a function of the saturated hydraulic conductivity
     :math:`K_{sat}`, the soil thickness :math:`H`, the grid spacing :math:`dx`,
     and the recharge rate, :math:`R_m`. :math:`w` is a weight used to calculate
-    the effective erodability :math:`K(\eta, \eta_C)` based on the depth to the
-    contact zone and the width of the contact zone.
+    the effective erodability :math:`K(\eta, \eta_C)` based on the depth to
+    the contact zone and the width of the contact zone.
 
     The weight :math:`w` promotes smoothness in the solution of erodability at
     a given point. When the surface elevation is at the contact elevation, the

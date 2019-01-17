@@ -48,13 +48,12 @@ class BasicSa(ErosionModel):
         q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
-    parameters, :math:`K` is the erodability by water, :math:`D` is the
-    regolith transport parameter, :math:`H` is the regolith thickness,
-    :math:`H_s` is the sediment production decay depth, :math:`P_0` is the
-    maximum sediment production rate, and :math:`H_0` is the sediment transport
-    decay depth. :math:`q_s` represents the hillslope sediment flux per unit
-    width.
+    :math:`m` and :math:`n` are the discharge and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    parameter, :math:`H` is the regolith thickness, :math:`H_s` is the sediment
+    production decay depth, :math:`P_0` is the maximum sediment production
+    rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_s`
+    represents the hillslope sediment flux per unit width.
 
     The function :math:`\delta (H)` is used to indicate that water erosion will
     act on soil where it exists, and on the underlying lithology where soil is

@@ -34,7 +34,7 @@ class BasicVs(ErosionModel):
         \alpha = \frac{K_{sat}  H  dx}{R_m}
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
+    :math:`m` and :math:`n` are the discharge and slope exponent
     parameters, :math:`K` is the erodability by water, and :math:`D` is the
     regolith transport parameter.
 

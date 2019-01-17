@@ -28,9 +28,9 @@ class Basic(ErosionModel):
         \frac{\partial \eta}{\partial t} = -K Q^{m}S^{n} + D\nabla^2 \eta
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
-    parameters, :math:`K` is the erodability by water, and :math:`D` is the
-    regolith transport efficiency.
+    :math:`m` and :math:`n` are the discharge and slope exponent parameters,
+    :math:`K` is the erodability by water, and :math:`D` is the regolith
+    transport efficiency.
 
     Refer to
     `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_

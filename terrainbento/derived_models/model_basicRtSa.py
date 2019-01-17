@@ -55,7 +55,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         w = \frac{1}{1+\exp \left( -\frac{(\eta -\eta_C )}{W_c}\right)}
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local
-    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    slope, :math:`m` and :math:`n` are the discharge and slope exponent
     parameters, :math:`W_c` is the contact-zone width, :math:`K_1` and
     :math:`K_2` are the erodabilities of the upper and lower lithologies, and
     :math:`D` is the regolith transport parameter. :math:`w` is a weight used

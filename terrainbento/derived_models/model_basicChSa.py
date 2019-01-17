@@ -50,7 +50,7 @@ class BasicChSa(ErosionModel):
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local
-    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    slope, :math:`m` and :math:`n` are the discharge and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`D` is the
     regolith transport parameter, :math:`H_s` is the sediment production decay
     depth, :math:`H_s` is the sediment production decay depth, :math:`P_0` is

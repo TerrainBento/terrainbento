@@ -34,7 +34,7 @@ class BasicCh(ErosionModel):
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local
-    slope, :math:`m` and :math:`n` are the drainage area and slope exponent
+    slope, :math:`m` and :math:`n` are the discharge and slope exponent
     parameters, :math:`K` is the erodability by water, :math:`D` is the
     regolith transport efficiency, and :math:`S_c` is the critical slope.
     :math:`q_h` represents the hillslope sediment flux per unit width.

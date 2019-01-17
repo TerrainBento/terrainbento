@@ -54,8 +54,8 @@ class BasicHySa(ErosionModel):
     local drainage area, :math:`S` is the local slope, :math:`\phi` is sediment
     porosity, :math:`F_f` is the fraction of fine sediment, :math:`K_r` and
     :math:`K_s` are rock and sediment erodibility respectively, :math:`m` and
-    :math:`n` are the drainage area and slope exponent parameters, :math:`H_*`
-    is the bedrock roughness length scale, and :math:`r` is a runoff rate.
+    :math:`n` are the discharge and slope exponent parameters, :math:`H_*` is
+    the bedrock roughness length scale, and :math:`r` is a runoff rate.
     Hillslope sediment flux per unit width :math:`q_h` is given by:
 
     .. math::

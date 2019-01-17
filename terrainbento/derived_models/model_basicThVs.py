@@ -36,10 +36,10 @@ class BasicThVs(ErosionModel):
         \alpha = \frac{K_{sat} H dx}{R_m}
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent
-    parameters, :math:`K` is the erodability by water, :math:`\omega_c` is the
-    critical stream power needed for erosion to occur, and :math:`D` is the
-    regolith transport parameter.
+    :math:`m` and :math:`n` are the discharge and slope exponent parameters,
+    :math:`K` is the erodability by water, :math:`\omega_c` is the critical
+    stream power needed for erosion to occur, and :math:`D` is the regolith
+    transport parameter.
 
     :math:`\alpha` is the saturation area scale used for transforming area into
     effective area :math:`A_{eff}`. It is given as a function of the saturated
