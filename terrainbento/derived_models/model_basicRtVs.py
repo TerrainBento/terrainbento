@@ -197,6 +197,8 @@ class BasicRtVs(TwoLithologyErosionModel):
             np.exp(-self.sat_param[cores] * slope[cores] / area[cores])
         )
 
+        self.grid.at_node["surface_water__discharge"][:] = self.eff_area
+
     def run_one_step(self, step):
         """Advance model **BasicRtVs** for one time-step of duration step.
 

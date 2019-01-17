@@ -163,6 +163,7 @@ class BasicVs(ErosionModel):
         self.eff_area[cores] = area[cores] * (
             np.exp(-self.sat_param[cores] * slope[cores] / area[cores])
         )
+        self.grid.at_node["surface_water__discharge"][:] = self.eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicVs** for one time-step of duration step.
