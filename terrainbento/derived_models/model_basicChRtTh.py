@@ -216,9 +216,10 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         6. Calculates topographic change by non-linear diffusion.
 
-        7. Finalizes the step using the :py:mod:`ErosionModel` base class function
-           **finalize__run_one_step**. This function updates all boundary
-           handlers by ``step`` and increments model time by ``step``.
+        7. Finalizes the step using the :py:mod:`ErosionModel` base class
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
+           ``step``.
 
         Parameters
         ----------

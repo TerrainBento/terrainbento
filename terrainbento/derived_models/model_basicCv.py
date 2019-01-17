@@ -171,9 +171,10 @@ class BasicCv(ErosionModel):
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the :py:mod:`ErosionModel` base class function
-           **finalize__run_one_step**. This function updates all boundary
-           handlers by ``step`` and increments model time by ``step``.
+        6. Finalizes the step using the :py:mod:`ErosionModel` base class
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
+           ``step``.
 
         Parameters
         ----------
