@@ -31,11 +31,11 @@ mean wet-day precipitation depth :math:`p_d` is related to the scale factor by
 
 where :math:`\Gamma` is the gamma function.
 
-The basic erosion law considered here is:
+The drainage area-based basic erosion law considered here is:
 
 .. math::
 
-    E = KQ^{m}S^{n}
+    E = KA^{m}S^{n}
 
 where :math:`E` is channel erosion rate, :math:`A` is contributing drainage
 area, and :math:`S` is local channel gradient. :math:`m` and :math:`n` are the
