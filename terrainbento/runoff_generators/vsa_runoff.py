@@ -192,26 +192,31 @@ class VariableSourceAreaRunoff(object):
         self._grid = grid
 
         if "water__unit_flux_in" not in grid.at_node:
-            grid.add_ones("node", "water__unit_flux_in")  # line not yet tested
+            grid.add_ones("node", "water__unit_flux_in")
 
+        if hydraulic_conductivity <= 0:
+            raise ValueError(
+                "VariableSourceAreaRunoff: hydraulic_conductivity must be >= 0."
+            )
         self._hydraulic_conductivity = hydraulic_conductivity
 
     def run_one_step(self, step):
         """Run **VariableSourceAreaRunoff** forward by duration ``step``"""
-        self._p = self._grid.at_node["rainfall__flux"]
-        self._area = self._grid.at_node["drainage_area"]
-        self._slope = self._grid.at_node["topographic__steepest_slope"]
-        self._H = self._grid.at_node["soil__depth"]
+        H = self._grid.at_node["soil__depth"]
 
         # Get the transmissivity parameter
         # transmissivity is hydraulic condiuctivity times soil thickness
-        self._transmissivity = self._hydraulic_conductivity * self._H
-        if np.any(self._transmissivity) <= 0.0:
+        transmissivity = self._hydraulic_conductivity * H
+        if np.any(transmissivity <= 0.0):
             raise ValueError(
-                "VariableSourceAreaRunoff: Transmissivity must be > 0"
+                "VariableSourceAreaRunoff: Transmissivity must be => 0"
             )  # line not yet tested
 
-        a = self._transmissivity * self._grid.dx * self._slope / self._p
+        p = self._grid.at_node["rainfall__flux"]
+        area = self._grid.at_node["drainage_area"]
+        slope = self._grid.at_node["topographic__steepest_slope"]
+
+        a = transmissivity * self._grid.dx * slope / p
 
         runoff_coefficient = (
             _definite_integral(self._grid.at_node["drainage_area"], a)
@@ -229,7 +234,7 @@ class VariableSourceAreaRunoff(object):
         self._grid.at_node["water__unit_flux_in"][:] = 0.0
         self._grid.at_node["water__unit_flux_in"][self._grid.core_nodes] = (
             runoff_coefficient[self._grid.core_nodes]
-            * self._p[self._grid.core_nodes]
+            * p[self._grid.core_nodes]
         )
 
 
