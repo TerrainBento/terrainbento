@@ -33,9 +33,9 @@ class Clock(object):
         """
         try:
             with open(filelike, "r") as f:
-                params = yaml.load(f)
+                params = yaml.safe_load(f)
         except TypeError:
-            params = yaml.load(filelike)
+            params = yaml.safe_load(filelike)
         return cls.from_dict(params)
 
     @classmethod

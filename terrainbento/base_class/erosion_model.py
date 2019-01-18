@@ -199,13 +199,13 @@ class ErosionModel(object):
                 contents = file_like  # not tested
 
         # then parse contents.
-        dict = yaml.load(contents)
+        dict = yaml.safe_load(contents)
 
         # construct instance
         return cls.from_dict(dict)
 
     @classmethod
-    def from_dict(cls, params, output_writers={}):
+    def from_dict(cls, params, output_writers=None):
         """Construct a terrainbento model from an input parameter dictionary.
 
         The input parameter dictionary portion associated with the "grid"
@@ -300,9 +300,9 @@ class ErosionModel(object):
         runoff_generator=None,
         flow_director="FlowDirectorSteepest",
         depression_finder=None,
-        flow_accumulator_kwargs={},
-        boundary_handlers={},
-        output_writers={},
+        flow_accumulator_kwargs=None,
+        boundary_handlers=None,
+        output_writers=None,
         output_interval=None,
         save_first_timestep=True,
         output_prefix="terrainbento_output",
@@ -376,6 +376,10 @@ class ErosionModel(object):
         recommend that you look at the terrainbento tutorials for examples of
         usage.
         """
+        flow_accumulator_kwargs = flow_accumulator_kwargs or {}
+        boundary_handlers = boundary_handlers or {}
+        output_writers = output_writers or {}
+
         # type checking
         if isinstance(clock, Clock) is False:
             raise ValueError("Provided Clock is not valid.")

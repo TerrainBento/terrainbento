@@ -35,11 +35,6 @@ def test_not_correct_fields(clock_simple):
         ErosionModel(clock=clock_simple, grid=grid)
 
 
-def test_extra_params(simple_square_grid, clock_simple):
-    with pytest.raises(TypeError):
-        ErosionModel(clock=clock_simple, grid=simple_square_grid, spam="eggs")
-
-
 def test_no_clock(simple_square_grid):
     with pytest.raises(ValueError):
         ErosionModel(clock="spam", grid=simple_square_grid)

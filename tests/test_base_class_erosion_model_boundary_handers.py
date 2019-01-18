@@ -6,13 +6,12 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 
-from landlab import CLOSED_BOUNDARY, FIXED_VALUE_BOUNDARY, RasterModelGrid
+from landlab import CLOSED_BOUNDARY, FIXED_VALUE_BOUNDARY
 from terrainbento import Basic, BasicSt, ErosionModel
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
     NotCoreNodeBaselevelHandler,
-    PrecipChanger,
     SingleNodeBaselevelHandler,
 )
 

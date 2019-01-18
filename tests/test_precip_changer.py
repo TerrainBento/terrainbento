@@ -24,7 +24,6 @@ from terrainbento import (
     BasicTh,
     BasicThVs,
     BasicVs,
-    NotCoreNodeBaselevelHandler,
     PrecipChanger,
 )
 
@@ -85,7 +84,7 @@ def test_simple_precip_changer(
     except ValueError:
         assert model.eroder.K[0] == K
     except AttributeError:
-        model.eroder._K_unit_time == K
+        assert model.eroder._K_unit_time == K
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
     model.run_one_step(1.0)
