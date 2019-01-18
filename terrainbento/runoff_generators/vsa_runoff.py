@@ -219,14 +219,8 @@ class VariableSourceAreaRunoff(object):
         a = transmissivity * self._grid.dx * slope / p
 
         runoff_coefficient = (
-            _definite_integral(self._grid.at_node["drainage_area"], a)
-            - _definite_integral(
-                (
-                    self._grid.at_node["drainage_area"]
-                    - self._grid.cell_area_at_node
-                ),
-                a,
-            )
+            _definite_integral(area, a)
+            - _definite_integral((area - self._grid.cell_area_at_node), a)
         ) / self._grid.cell_area_at_node
 
         runoff_coefficient[np.isnan(runoff_coefficient)] = 0.0
