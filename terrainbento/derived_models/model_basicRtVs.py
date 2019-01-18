@@ -15,7 +15,7 @@ Landlab components used:
 
 import numpy as np
 
-from landlab.components import LinearDiffuser, StreamPowerEroder
+from landlab.components import LinearDiffuser, FastscapeEroder
 from terrainbento.base_class import TwoLithologyErosionModel
 
 
@@ -156,7 +156,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         self._Kdx = hydraulic_conductivity * self.grid.dx
 
         # Instantiate a FastscapeEroder component
-        self.eroder = StreamPowerEroder(
+        self.eroder = FastscapeEroder(
             self.grid,
             K_sp=self.erody,
             m_sp=self.m,

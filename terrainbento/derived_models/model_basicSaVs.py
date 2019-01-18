@@ -18,7 +18,7 @@ import numpy as np
 from landlab.components import (
     DepthDependentDiffuser,
     ExponentialWeatherer,
-    StreamPowerEroder,
+    FastscapeEroder,
 )
 from terrainbento.base_class import ErosionModel
 
@@ -168,9 +168,9 @@ class BasicSaVs(ErosionModel):
         self._Kdx = hydraulic_conductivity * self.grid.dx
 
         # Instantiate a FastscapeEroder component
-        self.eroder = StreamPowerEroder(
+        self.eroder = FastscapeEroder(
             self.grid,
-            use_Q="surface_water__discharge",
+            discharge_name="surface_water__discharge",
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
