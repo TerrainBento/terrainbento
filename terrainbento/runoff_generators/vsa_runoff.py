@@ -34,7 +34,7 @@ class VariableSourceAreaRunoff(object):
 
     .. math::
 
-        Q = \int_0^A R_0 P dA = P A e^{\frac{-K_s H \Delta x S}{P A}}
+        Q = \int_0^A R_0 P dA = P A e^{\frac{-K_s H \Delta x S(A)}{P A}}
 
     where :math:`R_0` is a runoff fraction.
 
@@ -42,13 +42,13 @@ class VariableSourceAreaRunoff(object):
 
     .. math::
 
-        c = \frac{-K_s H \Delta x S}{P} \;.
+        c = \frac{-K_s H \Delta x}{P} \;.
 
     Then
 
     .. math::
 
-        \int_0^A R_0 dA = A e^{\frac{-c}{A}} \;.
+        \int_0^A R_0 dA = A e^{\frac{-c S(A)}{A}} \;.
 
     Solving for :math:`R_0` using the chain rule we get
 
@@ -57,9 +57,14 @@ class VariableSourceAreaRunoff(object):
         R_0(A) = \left ( \frac{c}{A} + 1 \right) e^{\frac{-c}{A}} \;.
 
 
-    This doesn't end up working out. Some ideas as to why:
-        1) Does the lower limit of the integral need to coorespond to the
-        minimum area/slope combination at which discharge is produced?
+    We must use the average value of :math:`R_0` over the entire cell as
+    :math`R_0` varies non-linearly with A.
+
+    If we ignore the fact that :math:`S` varies over space (and use only the
+    local value), we get the runnoff from a cell. We do not get contributions
+    from subsurface flow that consider that streams turn from losing streams to
+    gaining streams when they flatten out and the subsurface flow capacity
+    decreases.
 
     Examples
     --------
@@ -77,15 +82,15 @@ class VariableSourceAreaRunoff(object):
     >>> H = grid.add_ones("node", "soil__depth")
     >>> z = grid.add_field(
     ...     'topographic__elevation',
-    ...     grid.node_x**2 + grid.node_y,
+    ...     grid.node_x + grid.node_y,
     ...     at = 'node'
     ...     )
     >>> z.reshape(grid.shape)
-    array([[  0.,   1.,   4.,   9.,  16.],
-           [  1.,   2.,   5.,  10.,  17.],
-           [  2.,   3.,   6.,  11.,  18.],
-           [  3.,   4.,   7.,  12.,  19.],
-           [  4.,   5.,   8.,  13.,  20.]])
+    array([[ 0.,  1.,  2.,  3.,  4.],
+           [ 1.,  2.,  3.,  4.,  5.],
+           [ 2.,  3.,  4.,  5.,  6.],
+           [ 3.,  4.,  5.,  6.,  7.],
+           [ 4.,  5.,  6.,  7.,  8.]])
 
     In terrainbento models the **VariableSourceAreaRunoff** will be run as part
     of a model that does flow accumulation. Here, for simplicity we will run it
@@ -96,17 +101,17 @@ class VariableSourceAreaRunoff(object):
     >>> flow_accumulator = FlowAccumulator(grid)
     >>> flow_accumulator.run_one_step()
     >>> grid.at_node["drainage_area"].reshape(grid.shape)
-    array([[ 0.,  9.,  0.,  0.,  0.],
-           [ 0.,  9.,  2.,  1.,  0.],
-           [ 0.,  6.,  2.,  1.,  0.],
-           [ 0.,  3.,  2.,  1.,  0.],
+    array([[ 0.,  3.,  3.,  3.,  0.],
+           [ 0.,  3.,  3.,  3.,  0.],
+           [ 0.,  2.,  2.,  2.,  0.],
+           [ 0.,  1.,  1.,  1.,  0.],
            [ 0.,  0.,  0.,  0.,  0.]])
 
     >>> grid.at_node["topographic__steepest_slope"].reshape(grid.shape)
     array([[ 0.,  0.,  0.,  0.,  0.],
-           [ 0.,  1.,  3.,  5.,  0.],
-           [ 0.,  1.,  3.,  5.,  0.],
-           [ 0.,  1.,  3.,  5.,  0.],
+           [ 0.,  1.,  1.,  1.,  0.],
+           [ 0.,  1.,  1.,  1.,  0.],
+           [ 0.,  1.,  1.,  1.,  0.],
            [ 0.,  0.,  0.,  0.,  0.]])
 
     Create a precipitator with uniform rainfall flux of 1.0.
@@ -135,9 +140,9 @@ class VariableSourceAreaRunoff(object):
     >>> runoff_generator.run_one_step(10)
     >>> grid.at_node["water__unit_flux_in"].reshape(grid.shape)
     array([[ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ],
-           [ 0.        ,  0.99975671,  0.96306369,  0.73575888,  0.        ],
-           [ 0.        ,  0.99945664,  0.96306369,  0.73575888,  0.        ],
-           [ 0.        ,  0.99787412,  0.96306369,  0.73575888,  0.        ],
+           [ 0.        ,  0.99684612,  0.99684612,  0.99684612,  0.        ],
+           [ 0.        ,  0.99094408,  0.99094408,  0.99094408,  0.        ],
+           [ 0.        ,  0.81873075,  0.81873075,  0.81873075,  0.        ],
            [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ]])
 
     Next this runoff is accumulated.
@@ -145,10 +150,10 @@ class VariableSourceAreaRunoff(object):
     >>> flow_accumulator = FlowAccumulator(grid)
     >>> flow_accumulator.run_one_step()
     >>> grid.at_node["surface_water__discharge"].reshape(grid.shape)
-    array([[ 0.        ,  8.09355545,  0.        ,  0.        ,  0.        ],
-           [ 0.        ,  8.09355545,  1.69882262,  0.73575888,  0.        ],
-           [ 0.        ,  5.39497614,  1.69882262,  0.73575888,  0.        ],
-           [ 0.        ,  2.69669676,  1.69882262,  0.73575888,  0.        ],
+    array([[ 0.        ,  2.80652094,  2.80652094,  2.80652094,  0.        ],
+           [ 0.        ,  2.80652094,  2.80652094,  2.80652094,  0.        ],
+           [ 0.        ,  1.80967486,  1.80967486,  1.80967486,  0.        ],
+           [ 0.        ,  0.81873075,  0.81873075,  0.81873075,  0.        ],
            [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ]])
 
     Finally, we compare the results of the **VariableSourceAreaRunoff** with
@@ -161,11 +166,19 @@ class VariableSourceAreaRunoff(object):
 
     >>> Q = P * A * np.exp( -(Ks * H * grid.dx * S) / (P * A) )
     >>> Q
-    array([        nan,  9.        ,         nan,         nan,         nan,
-                   nan,  8.80220585,  1.48163644,  0.36787944,         nan,
-                   nan,  5.8032966 ,  1.48163644,  0.36787944,         nan,
-                   nan,  2.80652096,  1.48163644,  0.36787944,         nan,
+    array([        nan,  3.        ,  3.        ,  3.        ,         nan,
+                   nan,  2.80652096,  2.80652096,  2.80652096,         nan,
+                   nan,  1.80967484,  1.80967484,  1.80967484,         nan,
+                   nan,  0.81873075,  0.81873075,  0.81873075,         nan,
                    nan,         nan,         nan,         nan,         nan])
+
+    >>> from numpy.testing import assert_array_almost_equal
+    >>> assert_array_almost_equal(
+    ...     grid.at_node["surface_water__discharge"][grid.core_nodes],
+    ...     Q[grid.core_nodes])
+
+    This example works because the slope is constant.
+
     """
 
     def __init__(self, grid, hydraulic_conductivity=0.2):
@@ -200,9 +213,16 @@ class VariableSourceAreaRunoff(object):
 
         a = self._transmissivity * self._grid.dx * self._slope / self._p
 
-        runoff_coefficient = ((a / self._area) + 1.0) * np.exp(
-            -(a / self._area)
-        )
+        runoff_coefficient = (
+            _definite_integral(self._grid.at_node["drainage_area"], a)
+            - _definite_integral(
+                (
+                    self._grid.at_node["drainage_area"]
+                    - self._grid.cell_area_at_node
+                ),
+                a,
+            )
+        ) / self._grid.cell_area_at_node
 
         runoff_coefficient[np.isnan(runoff_coefficient)] = 0.0
 
@@ -211,3 +231,7 @@ class VariableSourceAreaRunoff(object):
             runoff_coefficient[self._grid.core_nodes]
             * self._p[self._grid.core_nodes]
         )
+
+
+def _definite_integral(x, c):
+    return x * np.exp(-c / x)
