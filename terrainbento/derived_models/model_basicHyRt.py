@@ -35,8 +35,8 @@ class BasicHyRt(TwoLithologyErosionModel):
                                            - K Q^{m}S^{n}
                                            + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left((1-F_f)KQ^{m}S^{n}
-                             - \frac{V Q_s}{Q\left(1 - \phi \right)} \right) dA
+        Q_s = \int_0^A \left((1-F_f)KQ(A)^{m}S^{n}
+                             - \frac{V Q_s}{Q(A)\left(1 - \phi \right)} \right) dA
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 

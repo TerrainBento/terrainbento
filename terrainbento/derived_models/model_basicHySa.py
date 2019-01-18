@@ -36,27 +36,28 @@ class BasicHySa(ErosionModel):
         \eta = \eta_b + H
 
         \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
-                          + \frac{V_s Q_s}{Q\left(1 - \phi \right)}
-                          - K_s Q^{m}S^{n} (1 - e^{-H/H_*})
+                          + \frac{V_s Q_s}{Q(A)\left(1 - \phi \right)}
+                          - K_s Q(A)^{m}S^{n} (1 - e^{-H/H_*})
                           -\nabla q_h
 
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
-                                             - K_r Q^{m}S^{n} e^{-H/H_*}
+                                             - K_r Q(A)^{m}S^{n} e^{-H/H_*}
 
-        Q_s = \int_0^A \left(K_s Q^{m}S^{n} (1-e^{-H/H_*})
-              + K_r (1-F_f) Q^{m}S^{n} e^{-H/H_*}
-              - \frac{V_s Q_s}{Q\left(1 - \phi \right)}\right) dA
+        Q_s = \int_0^A \left(K_s Q(A)^{m}S^{n} (1-e^{-H/H_*})
+              + K_r (1-F_f) Q(A)^{m}S^{n} e^{-H/H_*}
+              - \frac{V_s Q_s}{Q(A)\left(1 - \phi \right)}\right) dA
 
     where :math:`\eta_b` is the bedrock elevation, :math:`H` is the soil depth,
     :math:`P_0` is the maximum soil production rate, :math:`H_s` is the soil
     production decay depth, :math:`V_s` is effective sediment settling
     velocity, :math:`Q_s` is volumetric fluvial sediment flux, :math:`A` is the
-    local drainage area, :math:`S` is the local slope, :math:`\phi` is sediment
-    porosity, :math:`F_f` is the fraction of fine sediment, :math:`K_r` and
-    :math:`K_s` are rock and sediment erodibility respectively, :math:`m` and
-    :math:`n` are the discharge and slope exponent parameters, :math:`H_*` is
-    the bedrock roughness length scale, and :math:`r` is a runoff rate.
-    Hillslope sediment flux per unit width :math:`q_h` is given by:
+    local drainage area, :math:`Q`, is the local discharge, :math:`S` is the
+    local slope, :math:`\phi` is sediment porosity, :math:`F_f` is the fraction
+    of fine sediment, :math:`K_r` and :math:`K_s` are rock and sediment
+    erodibility respectively, :math:`m` and :math:`n` are the discharge and
+    slope exponent parameters, :math:`H_*` is the bedrock roughness length
+    scale, and :math:`r` is a runoff rate. Hillslope sediment flux per unit
+    width :math:`q_h` is given by:
 
     .. math::
 

@@ -36,8 +36,8 @@ class BasicHySt(StochasticErosionModel):
                                            - K_q\hat{Q}^{m}S^{n}
                                            + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left(K_q(1-F_f)\hat{Q}^{m}S^{n}
-              - \frac{V Q_s}{Q\left(1 - \phi \right)}\right) dA
+        Q_s = \int_0^A \left(K_q(1-F_f)\hat{Q(A)}^{m}S^{n}
+              - \frac{V Q_s}{\hat{Q}(A)\left(1 - \phi \right)}\right) dA
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), :math:`S` is the local

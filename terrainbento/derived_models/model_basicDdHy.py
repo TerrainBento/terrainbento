@@ -28,16 +28,16 @@ class BasicDdHy(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(KQ^{m}S^{n}
+        \frac{\partial \eta}{\partial t} = -\left(KQ(A)^{m}S^{n}
             - \omega_{ct}\left(1-e^{-KQ^{m}S^{n}/\omega_{ct}}\right)\right)
-            + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)}
+            + \frac{V\frac{Q_s}{Q(A)}}{\left(1-\phi\right)}
             + D\nabla^2 \eta
 
         Q_s = \int_0^A \left((1-F_f)[\omega
               - \omega_c (1 - e^{-\omega / \omega_c})]
-              - \frac{V Q_s}{Q\left(1 - \phi \right)} \right) dA
+              - \frac{V Q_s}{Q(A)\left(1 - \phi \right)} \right) dA
 
-        \omega = KQ^{m}S^{n}
+        \omega = KQ(A)^{m}S^{n}
 
     where :math:`Q` is the local stream discharge, :math:`A` is the local
     upstream drainage area, :math:`S` is the local slope, :math:`m` and

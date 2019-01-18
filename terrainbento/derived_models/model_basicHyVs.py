@@ -28,12 +28,12 @@ class BasicHyVs(ErosionModel):
 
     .. math::
 
-        \frac{\partial \eta}{\partial t} = -\left(KQ^{m}S^{n}
-              - \omega_c\left(1-e^{-KQ^{m}S^{n}/\omega_c}\right)\right)
-              + \frac{V\frac{Q_s}{Q}}{\left(1-\phi\right)}
+        \frac{\partial \eta}{\partial t} = -\left(KQ(A)^{m}S^{n}
+              - \omega_c\left(1-e^{-KQ(A)^{m}S^{n}/\omega_c}\right)\right)
+              + \frac{V\frac{Q_s}{Q(A)}}{\left(1-\phi\right)}
               + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left(KQ^{m}S^{n} - \frac{V Q_s}{Q} \right) dA
+        Q_s = \int_0^A \left(KQ(A)^{m}S^{n} - \frac{V Q_s}{Q(A)} \right) dA
 
         Q = A \exp \left( -\frac{-\alpha S}{A}\right)
 
