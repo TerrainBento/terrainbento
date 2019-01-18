@@ -33,16 +33,16 @@ class BasicHySt(StochasticErosionModel):
     .. math::
 
         \frac{\partial \eta}{\partial t} = \frac{V Q_s}{\hat{Q}}
-                                           - K_q\hat{Q}^{m}S^{n}
+                                           - K\hat{Q}^{m}S^{n}
                                            + D\nabla^2 \eta
 
-        Q_s = \int_0^A \left(K_q(1-F_f)\hat{Q(A)}^{m}S^{n}
+        Q_s = \int_0^A \left(K(1-F_f)\hat{Q(A)}^{m}S^{n}
               - \frac{V Q_s}{\hat{Q}(A)\left(1 - \phi \right)}\right) dA
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), :math:`S` is the local
     slope, :math:`A` is the local upstream drainage area, :math:`m` and
-    :math:`n` are the discharge and slope exponent parameters, :math:`K_q` is
+    :math:`n` are the discharge and slope exponent parameters, :math:`K` is
     the erodability by water, :math:`V` is effective sediment settling
     velocity, :math:`Q_s` is volumetric sediment flux, :math:`r` is a runoff
     rate, :math:`\phi` is sediment porosity, and :math:`D` is the regolith
@@ -64,7 +64,7 @@ class BasicHySt(StochasticErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability_stochastic=0.0001,
+        water_erodability=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
         infiltration_capacity=1.0,
@@ -83,7 +83,7 @@ class BasicHySt(StochasticErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability_stochastic : float, optional
+        water_erodability : float, optional
             Water erodability (:math:`K_s`). Default is 0.0001.
         nfiltration_capacity: float, optional
             Infiltration capacity (:math:`I_m`). Default is 1.0.
@@ -145,7 +145,7 @@ class BasicHySt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability_stochastic
+        self.K = water_erodability
         self.infilt = infiltration_capacity
 
         # instantiate rain generator

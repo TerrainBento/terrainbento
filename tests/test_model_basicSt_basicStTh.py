@@ -39,7 +39,7 @@ def test_steady_without_stochastic_duration(
 
     ..math::
 
-        E_i = K_q Q^m S^n
+        E_i = K Q^m S^n
 
     Instantaneous water discharge depends on drainage area, :math:A, rain
     intensity, :math:P, and infiltration capacity, :math:I_m:
@@ -54,9 +54,9 @@ def test_steady_without_stochastic_duration(
 
     ..math::
 
-        E = \int_0^\infty f(P) K_q A^m S^n [P-I_m(1-e^{-P/I_m})]^m dP
-          = K_q A^m S^n \int_0^\infty f(P) [P-I_m(1-e^{-P/I_m})]^m dP
-          = K_q A^m S^n \Phi
+        E = \int_0^\infty f(P) K A^m S^n [P-I_m(1-e^{-P/I_m})]^m dP
+          = K A^m S^n \int_0^\infty f(P) [P-I_m(1-e^{-P/I_m})]^m dP
+          = K A^m S^n \Phi
 
     where :math:\Phi represents the integral. For testing purposes, we seek an
     analytical solution to the integral. Take :math:`m=n=1` and :math:`P=I_m=1`. Also
@@ -76,7 +76,7 @@ def test_steady_without_stochastic_duration(
 
     ..math::
 
-        S = \frac{2U}{K_q A}
+        S = \frac{2U}{K A}
     """
     U = 0.0001
     K = 0.001
@@ -98,7 +98,7 @@ def test_steady_without_stochastic_duration(
         "grid": grid,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability_stochastic": K,
+        "water_erodability": K,
         "m_sp": m,
         "n_sp": n,
         "number_of_sub_time_steps": 100,
@@ -152,7 +152,7 @@ def test_stochastic_duration_rainfall_means():
         "grid": grid,
         "clock": clock,
         "regolith_transport_parameter": 0.,
-        "water_erodability_stochastic": K,
+        "water_erodability": K,
         "m_sp": m,
         "n_sp": n,
         "opt_stochastic_duration": True,

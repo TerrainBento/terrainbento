@@ -42,7 +42,7 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 1,
-        "water_erodability_stochastic": 0,
+        "water_erodability": 0,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model

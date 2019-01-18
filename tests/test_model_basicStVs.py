@@ -31,7 +31,7 @@ def test_steady_without_stochastic_duration(
         "grid": grid_2,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability_stochastic": K,
+        "water_erodability": K,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "hydraulic_conductivity": 1.0e-9,

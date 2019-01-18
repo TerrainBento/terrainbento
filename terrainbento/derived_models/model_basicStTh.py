@@ -38,7 +38,7 @@ class BasicStTh(StochasticErosionModel):
     indicates that it is a random-in-time variable) and :math:`S` is the local
     slope gradient. :math:`m` and :math:`n` are the discharge and slope
     exponent, respectively, :math:`\omega_c` is the critical stream power
-    required for erosion to occur, :math:`K_q` is the erodability by water, and
+    required for erosion to occur, :math:`K` is the erodability by water, and
     :math:`D` is the regolith transport parameter.
 
     Refer to
@@ -57,7 +57,7 @@ class BasicStTh(StochasticErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability_stochastic=0.0001,
+        water_erodability=0.0001,
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
         infiltration_capacity=1.0,
@@ -73,8 +73,8 @@ class BasicStTh(StochasticErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability_stochastic : float, optional
-            Water erodability (:math:`K_q`). Default is 0.0001.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
         water_erosion_rule__threshold : float, optional
             Erosion rule threshold when no erosion has occured
             (:math:`\omega_c`). Default is 0.01.
@@ -126,7 +126,7 @@ class BasicStTh(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability_stochastic
+        self.K = water_erodability
         self.infilt = infiltration_capacity
 
         if float(self.n) != 1.0:

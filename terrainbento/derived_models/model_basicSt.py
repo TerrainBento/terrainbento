@@ -34,7 +34,7 @@ class BasicSt(StochasticErosionModel):
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), :math:`S` is the local
     slope gradient, :math:`m` and :math:`n` are the discharge and slope
-    exponents, respectively, :math:`K_q` is the erodability by water, and
+    exponents, respectively, :math:`K` is the erodability by water, and
     :math:`D` is the regolith transport parameter.
 
     Refer to
@@ -53,7 +53,7 @@ class BasicSt(StochasticErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability_stochastic=0.0001,
+        water_erodability=0.0001,
         regolith_transport_parameter=0.1,
         infiltration_capacity=1.0,
         **kwargs
@@ -68,8 +68,8 @@ class BasicSt(StochasticErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability_stochastic : float, optional
-            Water erodability (:math:`K_q`). Default is 0.0001.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         infiltration_capacity: float, optional
@@ -118,7 +118,7 @@ class BasicSt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability_stochastic
+        self.K = water_erodability
         self.infilt = infiltration_capacity
 
         # instantiate rain generator
