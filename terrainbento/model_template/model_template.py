@@ -113,7 +113,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
         Put any additional information about **run_one_step** here.
         Importantly, **run_one_step** should only take on parameter,
-             ``step``.
+        ``step``.
         """
         # write here all actions needed to run the model forward for a time
         # increment `step`.

@@ -190,10 +190,13 @@ class BasicSaVs(ErosionModel):
         """Calculate and store effective drainage area."""
         area = self.grid.at_node["drainage_area"]
         slope = self.grid.at_node["topographic__steepest_slope"]
-        soil = self.grid.at_node["soil__depth"]
         cores = self.grid.core_nodes
 
-        sat_param = self._Kdx * self.grid.at_node["soil__depth"]/self.grid.at_node["rainfall__flux"]
+        sat_param = (
+            self._Kdx
+            * self.grid.at_node["soil__depth"]
+            / self.grid.at_node["rainfall__flux"]
+        )
 
         eff_area = area[cores] * (
             np.exp(-sat_param[cores] * slope[cores] / area[cores])

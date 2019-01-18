@@ -54,7 +54,7 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
 
     # assert aeff internally calculated correclty
     assert_array_almost_equal(
-        model.grid.at_node['surface_water__discharge'][model.grid.core_nodes],
+        model.grid.at_node["surface_water__discharge"][model.grid.core_nodes],
         A_eff_predicted[model.grid.core_nodes],
         decimal=1,
     )

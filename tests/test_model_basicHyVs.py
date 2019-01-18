@@ -19,7 +19,7 @@ def test_channel_erosion(
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_1, modify_core_nodes=True, lowering_rate=-U
     )
-    phi = 0.1
+    phi = 0.0
     F_f = 0.0
     v_sc = 0.001
     # construct dictionary. note that D is turned off here
@@ -41,8 +41,8 @@ def test_channel_erosion(
 
     # construct and run model
     model = BasicHyVs(**params)
-    for _ in range(2500):
-        model.run_one_step(10)
+    for _ in range(3000):
+        model.run_one_step(5)
 
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]

@@ -131,7 +131,9 @@ class BasicVs(ErosionModel):
         self.K = water_erodability
 
         # Add a field for effective drainage area
-        self.grid.at_node["surface_water__discharge"] = self.grid.add_zeros("node", "effective_drainage_area")
+        self.grid.at_node["surface_water__discharge"] = self.grid.add_zeros(
+            "node", "effective_drainage_area"
+        )
 
         # Get the effective-area parameter
         self._Kdx = hydraulic_conductivity * self.grid.dx
@@ -156,7 +158,11 @@ class BasicVs(ErosionModel):
         slope = self.grid.at_node["topographic__steepest_slope"]
         cores = self.grid.core_nodes
 
-        sat_param = self._Kdx * self.grid.at_node["soil__depth"]/self.grid.at_node["rainfall__flux"]
+        sat_param = (
+            self._Kdx
+            * self.grid.at_node["soil__depth"]
+            / self.grid.at_node["rainfall__flux"]
+        )
 
         eff_area = area[cores] * (
             np.exp(-sat_param[cores] * slope[cores] / area[cores])

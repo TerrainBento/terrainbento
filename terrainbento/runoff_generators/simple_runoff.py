@@ -1,5 +1,6 @@
 """terrainbento **SimpleRunoff**."""
 
+
 class SimpleRunoff(object):
     """Generate runoff proportional to precipitation.
 

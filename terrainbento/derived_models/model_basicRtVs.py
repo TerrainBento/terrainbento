@@ -78,13 +78,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         "soil__depth",
     ]
 
-    def __init__(
-        self,
-        clock,
-        grid,
-        hydraulic_conductivity=0.1,
-        **kwargs
-    ):
+    def __init__(self, clock, grid, hydraulic_conductivity=0.1, **kwargs):
         """
         Parameters
         ----------
@@ -189,7 +183,11 @@ class BasicRtVs(TwoLithologyErosionModel):
         slope = self.grid.at_node["topographic__steepest_slope"]
         cores = self.grid.core_nodes
 
-        sat_param = self._Kdx * self.grid.at_node["soil__depth"]/self.grid.at_node["rainfall__flux"]
+        sat_param = (
+            self._Kdx
+            * self.grid.at_node["soil__depth"]
+            / self.grid.at_node["rainfall__flux"]
+        )
 
         eff_area = area[cores] * (
             np.exp(-sat_param[cores] * slope[cores] / area[cores])
