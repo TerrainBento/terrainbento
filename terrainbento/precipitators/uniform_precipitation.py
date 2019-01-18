@@ -39,6 +39,7 @@ class UniformPrecipitator(object):
         rainfall_flux : float, optional
             Rainfall flux. Default value is 1.0.
         """
+        self._rainfall_flux = rainfall_flux
         if "rainfall__flux" not in grid.at_node:
             grid.add_ones("node", "rainfall__flux")
         grid.at_node["rainfall__flux"][:] = rainfall_flux

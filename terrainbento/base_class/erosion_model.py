@@ -606,6 +606,28 @@ class ErosionModel(object):
         # now that the model is finished running, execute finalize.
         self.finalize()
 
+    def _ensure_precip_runoff_are_vanilla(self):
+        """Ensure only default versions of precipitator/runoff are used.
+
+        Some models only work when the precipitator and runoff generator
+        are the default versions.
+        """
+        if isinstance(self.precipitator, UniformPrecipitator) is False:
+            raise ValueError(
+                "This model must be run with a UniformPrecipitator."
+            )
+
+        if self.precipitator._rainfall_flux != 1:
+            raise ValueError(
+                "This model must use a rainfall__flux value of 1.0."
+            )
+
+        if isinstance(self.runoff_generator, SimpleRunoff) is False:
+            raise ValueError("This model must be run with SimpleRunoff.")
+
+        if self.runoff_generator.runoff_proportion != 1.0:
+            raise ValueError("The model must use a runoff_proportion of 1.0.")
+
     def run_output_writers(self):
         """Run all output writers."""
         if "class" in self.output_writers:

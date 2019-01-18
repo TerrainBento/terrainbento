@@ -167,6 +167,9 @@ class StochasticErosionModel(ErosionModel):
         # Call StochasticErosionModel init
         super(StochasticErosionModel, self).__init__(clock, grid, **kwargs)
 
+        # ensure Precipitator and RunoffGenerator are vanilla
+        self._ensure_precip_runoff_are_vanilla()
+
         self.opt_stochastic_duration = opt_stochastic_duration
 
         # verify that opt_stochastic_duration and PrecipChanger are consistent
