@@ -28,28 +28,6 @@ from terrainbento import (
 )
 
 
-@pytest.mark.parametrize("Model", [BasicSaVs])
-def test_soil_precip_changer(
-    clock_simple, grid_1, precip_defaults, precip_testing_factor, Model, K
-):
-    precip_changer = PrecipChanger(grid_1, **precip_defaults)
-    params = {
-        "grid": grid_1,
-        "clock": clock_simple,
-        "water_erodability": K,
-        "boundary_handlers": {"PrecipChanger": precip_changer},
-    }
-
-    model = Model(**params)
-    assert np.array_equiv(model.eroder._K_unit_time, K) is True
-    assert "PrecipChanger" in model.boundary_handlers
-    model.run_one_step(1.0)
-    model.run_one_step(1.0)
-
-    truth = K * precip_testing_factor * np.ones(model.eroder._K_unit_time.size)
-    assert_array_almost_equal(model.eroder._K_unit_time, truth, decimal=4)
-
-
 @pytest.mark.parametrize(
     "Model",
     [
@@ -65,6 +43,7 @@ def test_soil_precip_changer(
         BasicThVs,
         BasicHyVs,
         BasicVs,
+        BasicSaVs
     ],
 )
 def test_simple_precip_changer(
