@@ -359,7 +359,7 @@ class ErosionModel(object):
         save_first_timestep : bool, optional
             Indicates whether model output should be saved at time zero.  Default is
             True.
-        output_filename : str, optional
+        output_prefix : str, optional
             String prefix for names of output netCDF files. Default is
             ``"terrainbento_output"``.
         fields : list, optional
@@ -610,7 +610,7 @@ class ErosionModel(object):
         # now that the model is finished running, execute finalize.
         self.finalize()
 
-    def _ensure_precip_runoff_are_vanilla(self):
+    def _ensure_precip_runoff_are_vanilla(self, vsa_precip=False):
         """Ensure only default versions of precipitator/runoff are used.
 
         Some models only work when the precipitator and runoff generator
@@ -621,10 +621,11 @@ class ErosionModel(object):
                 "This model must be run with a UniformPrecipitator."
             )
 
-        if self.precipitator._rainfall_flux != 1:
-            raise ValueError(
-                "This model must use a rainfall__flux value of 1.0."
-            )
+        if vsa_precip is False:
+            if self.precipitator._rainfall_flux != 1:
+                raise ValueError(
+                    "This model must use a rainfall__flux value of 1.0."
+                )
 
         if isinstance(self.runoff_generator, SimpleRunoff) is False:
             raise ValueError("This model must be run with SimpleRunoff.")

@@ -149,7 +149,7 @@ class BasicHyVs(ErosionModel):
         super(BasicHyVs, self).__init__(clock, grid, **kwargs)
 
         # ensure Precipitator and RunoffGenerator are vanilla
-        self._ensure_precip_runoff_are_vanilla()
+        self._ensure_precip_runoff_are_vanilla(vsa_precip=True)
 
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
