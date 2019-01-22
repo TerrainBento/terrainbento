@@ -245,7 +245,7 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
     if sys.platform == "win32":
         GITS = ["git.cmd", "git.exe"]
 
-    out, rc = run_command(
+    _, rc = run_command(
         GITS, ["rev-parse", "--git-dir"], cwd=root, hide_stderr=True
     )
     if rc != 0:

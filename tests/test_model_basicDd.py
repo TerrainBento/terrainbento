@@ -4,7 +4,7 @@
 import numpy as np
 import pytest
 
-from terrainbento import BasicDd, BasicDdHy, NotCoreNodeBaselevelHandler
+from terrainbento import BasicDd, NotCoreNodeBaselevelHandler
 
 
 @pytest.mark.parametrize("m_sp", [1. / 3, 0.5])

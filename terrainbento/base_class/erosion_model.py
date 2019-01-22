@@ -199,10 +199,10 @@ class ErosionModel(object):
                 contents = file_like  # not tested
 
         # then parse contents.
-        dict = yaml.safe_load(contents)
+        params = yaml.safe_load(contents)
 
         # construct instance
-        return cls.from_dict(dict)
+        return cls.from_dict(params)
 
     @classmethod
     def from_dict(cls, params, output_writers=None):
@@ -306,7 +306,7 @@ class ErosionModel(object):
         output_interval=None,
         save_first_timestep=True,
         output_prefix="terrainbento_output",
-        fields=["topographic__elevation"],
+        fields=None,
     ):
         """
         Parameters
@@ -379,7 +379,7 @@ class ErosionModel(object):
         flow_accumulator_kwargs = flow_accumulator_kwargs or {}
         boundary_handlers = boundary_handlers or {}
         output_writers = output_writers or {}
-
+        fields = fields or ["topographic__elevation"]
         # type checking
         if isinstance(clock, Clock) is False:
             raise ValueError("Provided Clock is not valid.")
