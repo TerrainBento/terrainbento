@@ -178,3 +178,226 @@ def precip_defaults():
 def precip_testing_factor():
     precip_testing_factor = 1.3145341380253433
     return precip_testing_factor
+
+
+@pytest.fixture()
+def clock_yaml():
+    out = """
+    start: 1
+    step: 2
+    stop: 11
+    """
+    return out
+
+
+@pytest.fixture()
+def inputs_yaml():
+    out = """
+    grid:
+      grid:
+        HexModelGrid:
+          - base_num_rows: 8
+            base_num_cols: 5
+            dx: 10
+      fields:
+        at_node:
+          topographic__elevation:
+            constant:
+              - constant: 0
+    clock:
+      step: 1
+      stop: 10.
+
+    output_interval: 2.
+    """
+    return out
+
+
+@pytest.fixture()
+def bad_handler_yaml():
+    out = """
+    grid:
+      grid:
+        RasterModelGrid:
+          - [4, 5]
+      fields:
+        at_node:
+          topographic__elevation:
+            constant:
+              - constant: 0
+    clock:
+      step: 100
+      stop: 2000.
+
+    boundary_handlers:
+      spam_and_eggs:
+        foo: 100
+        bar: -0.01
+    """
+    return out
+
+
+@pytest.fixture()
+def basic_inputs_bad_precipitator_yaml():
+    out = """
+    grid:
+      grid:
+        HexModelGrid:
+          - base_num_rows: 8
+            base_num_cols: 5
+            dx: 10
+      fields:
+        at_node:
+          topographic__elevation:
+            constant:
+              - constant: 0
+    clock:
+      step: 1
+      stop: 200.
+
+    output_interval: 50.
+    water_erodability: 0.001
+    m_sp: 1
+    n_sp: 0.5
+    regolith_transport_parameter: 0.01
+
+    precipitator:
+      UniformPrecipitator:
+        rainfall_flux: 3
+      SomethingElse:
+        anotherkwarg: 100.
+    """
+    return out
+
+
+@pytest.fixture()
+def basic_inputs_no_clock_yaml():
+    out = """
+    grid:
+      grid:
+        HexModelGrid:
+          - base_num_rows: 8
+            base_num_cols: 5
+            dx: 10
+      fields:
+        at_node:
+          topographic__elevation:
+            constant:
+              - constant: 0
+
+    output_interval: 50.
+    water_erodability: 0.001
+    m_sp: 1
+    n_sp: 0.5
+    regolith_transport_parameter: 0.01
+    """
+    return out
+
+
+@pytest.fixture()
+def basic_inputs_no_grid_yaml():
+    out = """
+    clock:
+      step: 1
+      stop: 200.
+
+    output_interval: 50.
+    water_erodability: 0.001
+    m_sp: 1
+    n_sp: 0.5
+    regolith_transport_parameter: 0.01
+    """
+    return out
+
+
+@pytest.fixture()
+def basic_inputs_yaml():
+    out = """
+    grid:
+      grid:
+        HexModelGrid:
+          - base_num_rows: 8
+            base_num_cols: 5
+            dx: 10
+      fields:
+        at_node:
+          topographic__elevation:
+            constant:
+              - constant: 0
+    clock:
+      step: 1
+      stop: 200.
+
+    output_interval: 50.
+    water_erodability: 0.001
+    m_sp: 1
+    n_sp: 0.5
+    regolith_transport_parameter: 0.01
+    """
+    return out
+
+
+@pytest.fixture()
+def basic_raster_inputs_yaml():
+    out = """
+    grid:
+      grid:
+        RasterModelGrid:
+          - [4, 5]
+      fields:
+        at_node:
+          topographic__elevation:
+            constant:
+              - constant: 0
+    clock:
+      step: 1
+      stop: 200.
+    water_erodability: 0.001
+    m_sp: 1
+    n_sp: 0.5
+    regolith_transport_parameter: 0.01
+    output_interval: 50
+    """
+    return out
+
+
+@pytest.fixture()
+def basic_raster_inputs_for_nc_yaml():
+    out = """
+    grid:
+      grid:
+        RasterModelGrid:
+          - [4, 5]
+      fields:
+        at_node:
+          topographic__elevation:
+            constant:
+              - constant: 0
+    clock:
+      step: 100
+      stop: 2000.
+    water_erodability: 0.0001
+    m_sp: 1
+    n_sp: 0.5
+    regolith_transport_parameter: 0.01
+    output_interval: 500
+
+    boundary_handlers:
+      NotCoreNodeBaselevelHandler:
+        modify_core_nodes: True
+        lowering_rate: -0.01
+    fields:
+      - topographic__elevation
+      - cumulative_elevation_change
+      - initial_topographic__elevation
+      - water__unit_flux_in
+      - flow__sink_flag
+      - flow__receiver_node
+      - topographic__steepest_slope
+      - flow__link_to_receiver_node
+      - drainage_area
+      - surface_water__discharge
+      - flow__upstream_node_order
+      - flow__data_structure_delta
+    """
+    return out

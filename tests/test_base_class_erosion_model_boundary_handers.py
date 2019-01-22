@@ -1,6 +1,5 @@
 # coding: utf8
 # !/usr/env/python
-import os
 
 import numpy as np
 import pytest
@@ -29,11 +28,13 @@ def test_bad_boundary_condition_string(
         ErosionModel(**params)
 
 
-def test_bad_boundary_condition_yaml():
-    _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
-    bad_file = os.path.join(_TEST_DATA_DIR, "bad_handler.yaml")
-    with pytest.raises(ValueError):
-        ErosionModel.from_file(bad_file)
+def test_bad_boundary_condition_yaml(bad_handler_yaml, tmpdir):
+    with tmpdir.as_cwd():
+        with open("params.yaml", "w") as fp:
+            fp.write(bad_handler_yaml)
+
+        with pytest.raises(ValueError):
+            ErosionModel.from_file("./params.yaml")
 
 
 def test_single_node_blh_with_closed_boundaries(

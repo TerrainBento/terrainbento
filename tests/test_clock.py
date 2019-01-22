@@ -7,12 +7,12 @@ import pytest
 
 from terrainbento import Clock
 
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
-
-def test_from_file():
-    filename = os.path.join(_TEST_DATA_DIR, "clock.yaml")
-    clock = Clock.from_file(filename)
+def test_from_file(tmpdir, clock_yaml):
+    with tmpdir.as_cwd():
+        with open("params.yaml", "w") as fp:
+            fp.write(clock_yaml)
+        clock = Clock.from_file("./params.yaml")
     assert clock.start == 1.
     assert clock.stop == 11.
     assert clock.step == 2.

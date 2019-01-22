@@ -9,10 +9,7 @@ from terrainbento import BasicHy, BasicHySt, NotCoreNodeBaselevelHandler
 
 @pytest.mark.parametrize(
     "Model,param_name",
-    [
-        (BasicHy, "water_erodability"),
-        (BasicHySt, "water_erodability"),
-    ],
+    [(BasicHy, "water_erodability"), (BasicHySt, "water_erodability")],
 )
 @pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
 @pytest.mark.parametrize(

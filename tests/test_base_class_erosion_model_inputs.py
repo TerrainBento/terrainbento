@@ -1,15 +1,11 @@
 # coding: utf8
 # !/usr/env/python
 
-import os
-
 import pytest
 
 from landlab import HexModelGrid, RasterModelGrid
 from landlab.components import FlowAccumulator
 from terrainbento import ErosionModel
-
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 at_node_fields = [
     "topographic__elevation",
@@ -45,21 +41,29 @@ def test_no_grid(clock_simple):
         ErosionModel(grid="eggs", clock=clock_simple)
 
 
-def test_no_clock_in_file():
-    fp = os.path.join(_TEST_DATA_DIR, "basic_inputs_no_clock.yaml")
-    with pytest.raises(ValueError):
-        ErosionModel.from_file(fp)
+def test_no_clock_in_file(tmpdir, basic_inputs_no_clock_yaml):
+    with tmpdir.as_cwd():
+        with open("params.yaml", "w") as fp:
+            fp.write(basic_inputs_no_clock_yaml)
+        with pytest.raises(ValueError):
+            ErosionModel.from_file("./params.yaml")
 
 
-def test_no_grid_in_file():
-    fp = os.path.join(_TEST_DATA_DIR, "basic_inputs_no_grid.yaml")
-    with pytest.raises(ValueError):
-        ErosionModel.from_file(fp)
+def test_no_grid_in_file(tmpdir, basic_inputs_no_grid_yaml):
+    with tmpdir.as_cwd():
+        with open("params.yaml", "w") as fp:
+            fp.write(basic_inputs_no_grid_yaml)
+        with pytest.raises(ValueError):
+            ErosionModel.from_file("./params.yaml")
 
 
-def test_input_file():
-    fp = os.path.join(_TEST_DATA_DIR, "inputs.yaml")
-    em = ErosionModel.from_file(fp)
+def test_input_file(tmpdir, inputs_yaml):
+    with tmpdir.as_cwd():
+        with open("params.yaml", "w") as fp:
+            fp.write(inputs_yaml)
+
+        em = ErosionModel.from_file("./params.yaml")
+
     assert isinstance(em.grid, HexModelGrid)
     assert em.grid.number_of_nodes == 56
     for field in at_node_fields:
@@ -105,10 +109,13 @@ def test_parameters(clock_simple):
     assert em._model_time == 0.
 
 
-def test_string():
-    fp = os.path.join(_TEST_DATA_DIR, "inputs.yaml")
-    with open(fp, "r") as f:
-        contents = f.read()
+def test_string(tmpdir, inputs_yaml):
+    with tmpdir.as_cwd():
+        with open("params.yaml", "w") as fp:
+            fp.write(inputs_yaml)
+
+        with open("./params.yaml", "r") as f:
+            contents = f.read()
 
     em = ErosionModel.from_file(contents)
     assert isinstance(em.grid, HexModelGrid)
