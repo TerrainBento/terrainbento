@@ -10,4 +10,3 @@ runoff is then accumulated into surface water discharge.
 .. toctree::
 
     terrainbento.runoff_generators.simple_runoff
-    terrainbento.runoff_generators.vsa_runoff

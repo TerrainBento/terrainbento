@@ -5,7 +5,6 @@ from terrainbento import (
     RandomPrecipitator,
     SimpleRunoff,
     UniformPrecipitator,
-    VariableSourceAreaRunoff,
 )
 
 
@@ -22,7 +21,7 @@ def test_not_default_UniformPrecipitator(grid_1, clock_simple):
 
 
 def test_not_SimpleRunoff(grid_1, clock_simple):
-    rg = VariableSourceAreaRunoff(grid_1)
+    rg = RandomPrecipitator(grid_1)
     with pytest.raises(ValueError):
         BasicSt(clock_simple, grid_1, runoff_generator=rg)
 

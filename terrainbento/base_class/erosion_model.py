@@ -25,22 +25,16 @@ from terrainbento.boundary_handlers import (
     SingleNodeBaselevelHandler,
 )
 from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
-from terrainbento.runoff_generators import (
-    SimpleRunoff,
-    VariableSourceAreaRunoff,
-)
+from terrainbento.runoff_generators import SimpleRunoff
 
 _SUPPORTED_PRECIPITATORS = {
     "UniformPrecipitator": UniformPrecipitator,
     "RandomPrecipitator": RandomPrecipitator,
 }
-_SUPPORTED_RUNOFF_GENERATORS = {
-    "SimpleRunoff": SimpleRunoff,
-    "VariableSourceAreaRunoff": VariableSourceAreaRunoff,
-}
+_SUPPORTED_RUNOFF_GENERATORS = {"SimpleRunoff": SimpleRunoff}
 
 _VALID_PRECIPITATORS = (UniformPrecipitator, RandomPrecipitator)
-_VALID_RUNOFF_GENERATORS = (SimpleRunoff, VariableSourceAreaRunoff)
+_VALID_RUNOFF_GENERATORS = (SimpleRunoff)
 
 _DEFAULT_PRECIPITATOR = {"UniformPrecipitator": {}}
 _DEFAULT_RUNOFF_GENERATOR = {"SimpleRunoff": {}}

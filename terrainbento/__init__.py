@@ -24,7 +24,7 @@ from .boundary_handlers import NotCoreNodeBaselevelHandler
 from .boundary_handlers import GenericFuncBaselevelHandler
 
 from .precipitators import UniformPrecipitator, RandomPrecipitator
-from .runoff_generators import SimpleRunoff, VariableSourceAreaRunoff
+from .runoff_generators import SimpleRunoff
 
 from .derived_models import Basic
 from .derived_models import BasicTh
@@ -90,7 +90,6 @@ __all__ = [
     "UniformPrecipitator",
     "RandomPrecipitator",
     "SimpleRunoff",
-    "VariableSourceAreaRunoff",
     "CaptureNodeBaselevelHandler",
     "NotCoreNodeBaselevelHandler",
     "SingleNodeBaselevelHandler",
