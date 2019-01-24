@@ -58,7 +58,7 @@ install:
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
-  - cmd: conda config --add channels landlab
+  - cmd: conda config --add channels conda-forge
   - cmd: conda build -q .conda-recipe --old-build-string
   - cmd: conda install -q terrainbento --use-local
 
