@@ -113,7 +113,7 @@ class StochasticErosionModel(ErosionModel):
         rainfall__mean_rate=1,
         storm_sequence_filename="storm_sequence.txt",
         frequency_filename="exceedance_summary.txt",
-        **kwargs,
+        **kwargs
     ):
         """
         Parameters

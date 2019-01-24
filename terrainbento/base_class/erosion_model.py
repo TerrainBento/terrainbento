@@ -300,7 +300,7 @@ class ErosionModel(object):
         output_interval=None,
         save_first_timestep=True,
         output_prefix="terrainbento_output",
-        fields=None,
+        fields=None
     ):
         """
         Parameters
