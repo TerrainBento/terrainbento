@@ -60,17 +60,15 @@ def test_one_function_writer(clock_08, almost_default_grid):
     ncnblh = NotCoreNodeBaselevelHandler(
         almost_default_grid, modify_core_nodes=True, lowering_rate=-1
     )
-    params = {
-        "save_first_timestep": False,
-        "water_erodability": 0.0,
-        "regolith_transport_parameter": 0.0,
-        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
-    }
     # construct and run model
-    model = Basic(clock_08,
-                  almost_default_grid,
-                  **params,
-                  output_writers={"function": [output_writer_function_a]}
+    model = Basic(
+        clock_08,
+        almost_default_grid,
+        save_first_timestep=False,
+        water_erodability=0.0,
+        regolith_transport_parameter=0.0,
+        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
+        output_writers={"function": [output_writer_function_a]},
     )
     model.run()
 
@@ -86,17 +84,18 @@ def test_one_class_writer(clock_08, almost_default_grid):
     ncnblh = NotCoreNodeBaselevelHandler(
         almost_default_grid, modify_core_nodes=True, lowering_rate=-1
     )
-    params = {
-        "save_first_timestep": False,
-        "regolith_transport_parameter": 0.0,
-        "water_erodability": 0.0,
-        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
-    }
     # construct and run model
-    model = Basic(clock_08,
-                  almost_default_grid,
-                  **params,
-                  output_writers={"class": [output_writer_class_a]})
+    model = Basic(
+        clock_08,
+        almost_default_grid,
+        clock_08,
+        almost_default_grid,
+        save_first_timestep=False,
+        water_erodability=0.0,
+        regolith_transport_parameter=0.0,
+        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
+        output_writers={"class": [output_writer_class_a]},
+    )
     model.run()
 
     # assert things were done correctly
@@ -111,20 +110,20 @@ def test_two_function_writers(clock_08, almost_default_grid):
     ncnblh = NotCoreNodeBaselevelHandler(
         almost_default_grid, modify_core_nodes=True, lowering_rate=-1
     )
-    params = {
-        "save_first_timestep": False,
-        "regolith_transport_parameter": 0.0,
-        "water_erodability": 0.0,
-        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
-    }
     # construct and run model
-    model = Basic(clock_08,
-                  almost_default_grid,
-                  **params,
-                  output_writers={"function": [output_writer_function_a,
-                                               output_writer_function_b]
-                                  },
-                  )
+    model = Basic(
+        clock_08,
+        almost_default_grid,
+        clock_08,
+        almost_default_grid,
+        save_first_timestep=False,
+        water_erodability=0.0,
+        regolith_transport_parameter=0.0,
+        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
+        output_writers={
+            "function": [output_writer_function_a, output_writer_function_b]
+        },
+    )
     model.run()
 
     # assert things were done correctly
@@ -142,20 +141,18 @@ def test_two_class_writers(clock_08, almost_default_grid):
     ncnblh = NotCoreNodeBaselevelHandler(
         almost_default_grid, modify_core_nodes=True, lowering_rate=-1
     )
-    params = {
-        "save_first_timestep": False,
-        "regolith_transport_parameter": 0.0,
-        "water_erodability": 0.0,
-        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
-    }
     # construct and run model
-    model = Basic(clock_08,
-                  almost_default_grid,
-                  **params,
-                  output_writers={"class": [output_writer_class_a,
-                                            output_writer_class_b]
-                                  },
-                  )
+    model = Basic(
+        clock_08,
+        almost_default_grid,
+        save_first_timestep=False,
+        water_erodability=0.0,
+        regolith_transport_parameter=0.0,
+        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
+        output_writers={
+            "class": [output_writer_class_a, output_writer_class_b]
+        },
+    )
     model.run()
 
     # assert things were done correctly
@@ -173,17 +170,15 @@ def test_all_four_writers(clock_08, almost_default_grid):
     ncnblh = NotCoreNodeBaselevelHandler(
         almost_default_grid, modify_core_nodes=True, lowering_rate=-1
     )
-    params = {
-        "grid": almost_default_grid,
-        "save_first_timestep": False,
-        "clock": clock_08,
-        "regolith_transport_parameter": 0.0,
-        "water_erodability": 0.0,
-        "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
-    }
+
     # construct and run model
     model = Basic(
-        **params,
+        clock_08,
+        almost_default_grid,
+        save_first_timestep=False,
+        water_erodability=0.0,
+        regolith_transport_parameter=0.0,
+        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
         output_writers={
             "function": [output_writer_function_a, output_writer_function_b],
             "class": [output_writer_class_a, output_writer_class_b],
