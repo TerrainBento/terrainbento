@@ -5,7 +5,7 @@ class UniformPrecipitator(object):
     """Generate uniform precipitation.
 
     UniformPrecipitator populates the at-node field "rainfall__flux" with a
-    value provided by the keyword argument ``rainfall_flux`.
+    value provided by the keyword argument ``rainfall_flux``.
 
     To make discharge proprortional to drainage area, use the default value
     of 1.

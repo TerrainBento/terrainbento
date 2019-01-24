@@ -158,8 +158,9 @@ class BasicRt(TwoLithologyErosionModel):
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        33. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
            and if so, uses it to modify the erodability by water.
+
         4. Updates the spatially variable erodability value based on the
            relative distance between the topographic surface and the lithology
            contact.

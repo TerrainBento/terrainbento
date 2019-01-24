@@ -149,16 +149,16 @@ class BasicSt(StochasticErosionModel):
         1. Creates rain and runoff, then directs and accumulates flow.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Calculates precipitation, runoff, discharge, and detachment-limited
-        erosion by water.
+           erosion by water.
 
         4. Calculates topographic change by linear diffusion.
 
         5. Finalizes the step using the :py:mod:`ErosionModel` base class
-        function **finalize__run_one_step**. This function updates all
-        boundary handlers handlers by ``step`` and increments model time by
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
            ``step``.
 
         Parameters

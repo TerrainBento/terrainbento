@@ -228,7 +228,7 @@ class BasicHySa(ErosionModel):
         1. Creates rain and runoff, then directs and accumulates flow.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
            and if so, uses it to modify the erodability by water.
@@ -238,8 +238,8 @@ class BasicHySa(ErosionModel):
         5. Calculates topographic change by linear diffusion.
 
         6. Finalizes the step using the :py:mod:`ErosionModel` base class
-        function **finalize__run_one_step**. This function updates all
-        boundary handlers handlers by ``step`` and increments model time by
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
            ``step``.
 
         Parameters
