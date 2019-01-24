@@ -88,8 +88,6 @@ def test_one_class_writer(clock_08, almost_default_grid):
     model = Basic(
         clock_08,
         almost_default_grid,
-        clock_08,
-        almost_default_grid,
         save_first_timestep=False,
         water_erodability=0.0,
         regolith_transport_parameter=0.0,
@@ -112,8 +110,6 @@ def test_two_function_writers(clock_08, almost_default_grid):
     )
     # construct and run model
     model = Basic(
-        clock_08,
-        almost_default_grid,
         clock_08,
         almost_default_grid,
         save_first_timestep=False,
