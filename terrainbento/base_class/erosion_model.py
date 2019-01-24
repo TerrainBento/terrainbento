@@ -34,7 +34,7 @@ _SUPPORTED_PRECIPITATORS = {
 _SUPPORTED_RUNOFF_GENERATORS = {"SimpleRunoff": SimpleRunoff}
 
 _VALID_PRECIPITATORS = (UniformPrecipitator, RandomPrecipitator)
-_VALID_RUNOFF_GENERATORS = (SimpleRunoff)
+_VALID_RUNOFF_GENERATORS = SimpleRunoff
 
 _DEFAULT_PRECIPITATOR = {"UniformPrecipitator": {}}
 _DEFAULT_RUNOFF_GENERATOR = {"SimpleRunoff": {}}
@@ -300,7 +300,7 @@ class ErosionModel(object):
         output_interval=None,
         save_first_timestep=True,
         output_prefix="terrainbento_output",
-        fields=None
+        fields=None,
     ):
         """
         Parameters
