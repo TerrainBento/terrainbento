@@ -134,12 +134,12 @@ class BasicChSa(ErosionModel):
         To begin, import the model class.
 
         >>> from landlab import RasterModelGrid
-        >>> from landlab.values import random
+        >>> from landlab.values import constant
         >>> from terrainbento import Clock, BasicChSa
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
-        >>> _ = random(grid, "topographic__elevation")
-        >>> _ = random(grid, "soil__depth")
+        >>> _ = constant(grid, "topographic__elevation", constant=1)
+        >>> _ = constant(grid, "soil__depth", constant=1)
 
         Construct the model.
 
@@ -148,9 +148,9 @@ class BasicChSa(ErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(0.1)
+        >>> model.run_one_step(10)
         >>> model.model_time
-        0.1
+        10.0
 
         """
 
