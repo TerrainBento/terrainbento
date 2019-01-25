@@ -98,14 +98,11 @@ def test_rock_till_precip_changer(
     model._update_erodability_field()
 
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt)
-        is True
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
     )
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr)
-        is True
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
     )
-
 
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
@@ -118,4 +115,4 @@ def test_rock_till_precip_changer(
     assert_array_almost_equal(
         model.eroder.K[model.grid.core_nodes[10:]],
         Kr * precip_testing_factor * np.ones((9)),
-        )
+    )

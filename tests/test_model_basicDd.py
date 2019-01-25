@@ -56,9 +56,9 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
     predicted_slopes_upper = (
         (U + threshold) / (K * (actual_areas ** m_sp))
     ) ** (1. / n_sp)
-    predicted_slopes_lower = (
-        (U + 0.0) / (K * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+    predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
+        1. / n_sp
+    )
 
     # assert actual and predicted slopes are in the correct range for the
     # slopes.
