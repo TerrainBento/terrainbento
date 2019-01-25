@@ -42,13 +42,10 @@ install:
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
   - cmd: conda config --add channels conda-forge
-  - cmd: conda build -q .conda-recipe --old-build-string
-  - cmd: conda install -q terrainbento --use-local
+  - cmd: conda install --file=requirements.txt
+  - cmd: python setup.py install
 
 build: false
 
 test_script:
   - cmd: pytest
-
-deploy_script:
-  - cmd: python .ci/appveyor/anaconda_upload.py
