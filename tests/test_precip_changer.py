@@ -62,8 +62,7 @@ def test_simple_precip_changer(
         assert model.eroder.K == K
     except ValueError:
         assert model.eroder.K[0] == K
-    except AttributeError:
-        assert model.eroder._K_unit_time == K
+
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
     model.run_one_step(1.0)
@@ -97,48 +96,26 @@ def test_rock_till_precip_changer(
 
     model = Model(**params)
     model._update_erodability_field()
-    try:
-        assert (
-            np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt)
-            is True
-        )
-        assert (
-            np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr)
-            is True
-        )
-    except AttributeError:
-        assert (
-            np.array_equiv(
-                model.eroder._K_unit_time[model.grid.core_nodes[:8]], Kt
-            )
-            is True
-        )
-        assert (
-            np.array_equiv(
-                model.eroder._K_unit_time[model.grid.core_nodes[10:]], Kr
-            )
-            is True
-        )
+
+    assert (
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt)
+        is True
+    )
+    assert (
+        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr)
+        is True
+    )
+
 
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
     model.run_one_step(1.0)
 
-    try:
-        assert_array_almost_equal(
-            model.eroder.K[model.grid.core_nodes[:8]],
-            Kt * precip_testing_factor * np.ones((8)),
-        )
-        assert_array_almost_equal(
-            model.eroder.K[model.grid.core_nodes[10:]],
-            Kr * precip_testing_factor * np.ones((9)),
-        )
-    except AttributeError:
-        assert_array_almost_equal(
-            model.eroder._K_unit_time[model.grid.core_nodes[:8]],
-            Kt * precip_testing_factor * np.ones((8)),
-        )
-        assert_array_almost_equal(
-            model.eroder._K_unit_time[model.grid.core_nodes[10:]],
-            Kr * precip_testing_factor * np.ones((9)),
+    assert_array_almost_equal(
+        model.eroder.K[model.grid.core_nodes[:8]],
+        Kt * precip_testing_factor * np.ones((8)),
+    )
+    assert_array_almost_equal(
+        model.eroder.K[model.grid.core_nodes[10:]],
+        Kr * precip_testing_factor * np.ones((9)),
         )

@@ -108,21 +108,9 @@ def clock_simple():
 
 
 @pytest.fixture()
-def clock_01():
-    clock_01 = {"step": 1., "stop": 10.}
-    return clock_01
-
-
-@pytest.fixture()
 def clock_02():
     clock_02 = Clock.from_dict({"step": 10., "stop": 1000.})
     return clock_02
-
-
-@pytest.fixture()
-def clock_03():
-    clock_03 = {"step": 10., "stop": 1e6}
-    return clock_03
 
 
 @pytest.fixture()

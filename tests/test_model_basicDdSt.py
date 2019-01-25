@@ -47,49 +47,27 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
     for _ in range(200):
         model.run_one_step(1000)
 
-    if thresh_change_per_depth == 0:
-        # construct actual and predicted slopes
-        # note that since we have a smooth threshold, we do not have a true
-        # analytical solution, but a bracket within wich we expect the actual
-        # slopes to fall.
-        actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-        actual_areas = model.grid.at_node["surface_water__discharge"]
-        predicted_slopes_upper = (
-            (U + threshold) / (K * (actual_areas ** m_sp))
-        ) ** (1. / n_sp)
-        predicted_slopes_lower = (
-            (U + 0.0) / (K * (actual_areas ** m_sp))
-        ) ** (1. / n_sp)
+    # construct actual and predicted slopes
+    # note that since we have a smooth threshold, we do not have a true
+    # analytical solution, but a bracket within wich we expect the actual
+    # slopes to fall.
+    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+    actual_areas = model.grid.at_node["surface_water__discharge"]
+    predicted_slopes_upper = (
+        (U + threshold) / (K * (actual_areas ** m_sp))
+    ) ** (1. / n_sp)
+    predicted_slopes_lower = (
+        (U + 0.0) / (K * (actual_areas ** m_sp))
+    ) ** (1. / n_sp)
 
-        # assert actual and predicted slopes are in the correct range for the
-        # slopes.
-        assert np.all(
-            actual_slopes[model.grid.core_nodes[1:-1]]
-            > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
-        )
+    # assert actual and predicted slopes are in the correct range for the
+    # slopes.
+    assert np.all(
+        actual_slopes[model.grid.core_nodes[1:-1]]
+        > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+    )
 
-        assert np.all(
-            actual_slopes[model.grid.core_nodes[1:-1]]
-            < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
-        )
-
-    else:
-
-        # construct actual and predicted slopes
-        # note that since we have a smooth threshold, we do not have a true
-        # analytical solution, but a bracket within wich we expect the actual
-        # slopes to fall.
-        # and with the threshold changing, we can only expect that the slopes are
-        # steeper than the lower bound.
-        actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-        actual_areas = model.grid.at_node["surface_water__discharge"]
-        predicted_slopes_lower = (
-            (U + 0.0) / (K * (actual_areas ** m_sp))
-        ) ** (1. / n_sp)
-
-        # assert actual and predicted slopes are in the correct range for the
-        # slopes.
-        assert np.all(
-            actual_slopes[model.grid.core_nodes[1:-1]]
-            > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
-        )
+    assert np.all(
+        actual_slopes[model.grid.core_nodes[1:-1]]
+        < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
+    )
