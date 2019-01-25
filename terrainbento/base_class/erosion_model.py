@@ -621,8 +621,8 @@ class ErosionModel(object):
                     "This model must use a rainfall__flux value of 1.0."
                 )
 
-        if isinstance(self.runoff_generator, SimpleRunoff) is False:
-            raise ValueError("This model must be run with SimpleRunoff.")
+        # if isinstance(self.runoff_generator, SimpleRunoff) is False:
+        #     raise ValueError("This model must be run with SimpleRunoff.")
 
         if self.runoff_generator.runoff_proportion != 1.0:
             raise ValueError("The model must use a runoff_proportion of 1.0.")
