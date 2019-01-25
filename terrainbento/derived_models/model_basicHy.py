@@ -19,73 +19,83 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHy(ErosionModel):
-    """**BasicHy** model program.
+    r"""**BasicHy** model program.
 
     **BasicHy** is a model program that evolves a topographic surface described
     by :math:`\eta` with the following governing equation:
 
-
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \\frac{V Q_s}{rA \left(1-\phi\\right)} + D\\nabla^2 \eta
+        \frac{\partial \eta}{\partial t} = \frac{V Q_s}
+                                                {Q\left(1 - \phi \right)}
+                                           - KQ^{m}S^{n}
+                                           + D\nabla^2 \eta
 
+        Q_s = \int_0^A \left((1-F_f)KQ(A)^{m}S^{n}
+                             - \frac{V Q_s}{Q(A)\left(1 - \phi \right)} \right) dA
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`V` is effective sediment
-    settling velocity, :math:`Q_s` is volumetric sediment flux, :math:`r` is
-    a runoff rate which presently can only be 1.0, :math:`\phi` is sediment
-    porosity, :math:`D` is the regolith transport efficiency, :math:`H` is soil
-    depth, and :math:`H_*` is the bedrock roughness length scale.
+    where :math:`Q` is the local stream discharge, :math:`A` is the local
+    upstream drainage area,:math:`S` is the local slope, :math:`m` and
+    :math:`n` are the discharge and slope exponent parameters, :math:`K` is the
+    erodability by water, :math:`V` is effective sediment settling velocity,
+    :math:`Q_s` is volumetric sediment flux, :math:`r` is a runoff rate,
+    :math:`\phi` is sediment porosity, and :math:`D` is the regolith transport
+    efficiency.
 
-    If you have use cases for which :math:`r=1.0` is not sufficient, please make
-    an Issue on GitHub.
+    Refer to
+    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    Table 5 for full list of parameter symbols, names, and dimensions.
 
-    The **BasicHy** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K`         | ``water_erodability``            |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`V`         | ``settling_velocity``            |
-    +------------------+----------------------------------+
-    |:math:`F_f`       | ``fraction_fines``               |
-    +------------------+----------------------------------+
-    |:math:`\phi`      | ``sediment_porosity``            |
-    +------------------+----------------------------------+
-
-    A value for the parameter ``solver`` can also be used to indicate if the
-    default internal timestepping is used for the **ErosionDeposition**
-    component or if an adaptive internal timestep is used. Refer to the
-    **ErosionDeposition** documentation for details.
-
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
-    published) for full list of parameter symbols, names, and dimensions.
-
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
     """
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+    _required_fields = ["topographic__elevation"]
+
+    def __init__(
+        self,
+        clock,
+        grid,
+        m_sp=0.5,
+        n_sp=1.0,
+        water_erodability=0.0001,
+        regolith_transport_parameter=0.1,
+        settling_velocity=0.001,
+        sediment_porosity=0.3,
+        fraction_fines=0.5,
+        solver="basic",
+        **kwargs
+    ):
         """
         Parameters
         ----------
-        input_file : str
-            Path to model input file. See wiki for discussion of input file
-            formatting. One of input_file or params is required.
-        params : dict
-            Dictionary containing the input file. One of input_file or params is
-            required.
-        OutputWriters : class, function, or list of classes and/or functions, optional
-            Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot).
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        settling_velocity : float, optional
+            Settling velocity of entrained sediment (:math:`V`). Default
+            is 0.001.
+        sediment_porosity : float, optional
+            Sediment porosity (:math:`\phi`). Default is 0.3.
+        fraction_fines : float, optional
+            Fraction of fine sediment that is permanently detached
+            (:math:`F_f`). Default is 0.5.
+        solver : str, optional
+            Solver option to pass to the Landlab
+            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`__
+            component. Default is "basic".
+        **kwargs :
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------
@@ -94,35 +104,21 @@ class BasicHy(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicHy**. Note that a YAML input file can be used instead of
-        a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the terrainbento tutorials.
+        of model **BasicHy**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
-        >>> from terrainbento import BasicHy
-
-        Set up a parameters variable.
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "dt": 1,
-        ...           "output_interval": 2.,
-        ...           "run_duration": 200.,
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "v_sc": 0.01,
-        ...           "sediment_porosity": 0,
-        ...           "fraction_fines": 0,
-        ...           "solver": "basic"}
+        >>> from landlab import RasterModelGrid
+        >>> from landlab.values import random
+        >>> from terrainbento import Clock, BasicHy
+        >>> clock = Clock(start=0, stop=100, step=1)
+        >>> grid = RasterModelGrid((5,5))
+        >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
 
-        >>> model = BasicHy(params=params)
+        >>> model = BasicHy(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -134,35 +130,23 @@ class BasicHy(ErosionModel):
         """
 
         # Call ErosionModel"s init
-        super(BasicHy, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
-        )
+        super(BasicHy, self).__init__(clock, grid, **kwargs)
 
-        # Get Parameters and convert units if necessary:
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-        self.K = self._get_parameter_from_exponent("water_erodability") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        # verify correct fields are present.
+        self._verify_fields(self._required_fields)
 
-        # Unit conversion for linear_diffusivity, with units L^2/T
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent("regolith_transport_parameter")
-
-        # Normalized settling velocity (dimensionless)
-        v_sc = self._get_parameter_from_exponent("v_sc")
-
-        # Handle solver option
-        solver = self.params.get("solver", "basic")
+        # Get Parameters
+        self.m = m_sp
+        self.n = n_sp
+        self.K = water_erodability
 
         # Instantiate a Space component
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
-            phi=self.params["sediment_porosity"],
-            F_f=self.params["fraction_fines"],
-            v_s=v_sc,
+            phi=sediment_porosity,
+            F_f=fraction_fines,
+            v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
@@ -174,35 +158,35 @@ class BasicHy(ErosionModel):
             self.grid, linear_diffusivity=regolith_transport_parameter
         )
 
-    def run_one_step(self, dt):
-        """Advance model **BasicHy** for one time-step of duration dt.
+    def run_one_step(self, step):
+        """Advance model **BasicHy** for one time-step of duration step.
 
         The **run_one_step** method does the following:
 
-        1. Directs flow and accumulates drainage area.
+        1. Creates rain and runoff, then directs and accumulates flow.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-           so, uses it to modify the erodability by water.
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
 
         4. Calculates erosion and deposition by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``dt`` and increments model time by ``dt``.
+        6. Finalizes the step using the :py:mod:`ErosionModel` base class
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
+           ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Increment of time for which the model is run.
         """
-
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+        # create and move water
+        self.create_and_move_water(step)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
@@ -214,25 +198,25 @@ class BasicHy(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
+        if "PrecipChanger" in self.boundary_handlers:
             self.eroder.K = (
                 self.K
-                * self.boundary_handler[
+                * self.boundary_handlers[
                     "PrecipChanger"
                 ].get_erodability_adjustment_factor()
             )
         self.eroder.run_one_step(
-            dt,
+            step,
             flooded_nodes=flooded,
             dynamic_dt=True,
             flow_director=self.flow_accumulator.flow_director,
         )
 
         # Do some soil creep
-        self.diffuser.run_one_step(dt)
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
 
 def main():  # pragma: no cover
@@ -245,7 +229,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    ha = BasicHy(input_file=infile)
+    ha = BasicHy.from_file(infile)
     ha.run()
 
 

@@ -1,6 +1,6 @@
 """Base class models in the terrainbento package.
 
-terrainbento includes to base classes useful for creating derived models. The
+terrainbento includes two base classes useful for creating derived models. The
 first of these base classes is **ErosionModel** which is the base class for all
 terrainbento models. **ErosionModel** has extensive common functions useful for
 model initialization, input, and output. The second base class,

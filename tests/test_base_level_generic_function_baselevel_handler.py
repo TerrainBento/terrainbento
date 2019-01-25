@@ -4,14 +4,12 @@ import numpy as np
 import pytest
 
 from landlab import HexModelGrid
-from terrainbento.boundary_condition_handlers import (
-    GenericFuncBaselevelHandler
-)
+from terrainbento.boundary_handlers import GenericFuncBaselevelHandler
 
 
 def test_function_of_four_variables():
     mg = HexModelGrid(5, 5)
-    _ = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
         GenericFuncBaselevelHandler(
@@ -21,7 +19,7 @@ def test_function_of_four_variables():
 
 def test_function_that_returns_wrong_size():
     mg = HexModelGrid(5, 5)
-    _ = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
         GenericFuncBaselevelHandler(
@@ -34,7 +32,7 @@ def test_function_that_returns_wrong_size():
 
 def test_function_that_returns_float():
     mg = HexModelGrid(5, 5)
-    _ = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
         GenericFuncBaselevelHandler(mg, function=lambda mg, t: 1.0)

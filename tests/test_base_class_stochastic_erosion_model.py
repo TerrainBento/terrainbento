@@ -5,27 +5,22 @@ import os
 import numpy as np
 import pytest
 
-from terrainbento import BasicSt, StochasticErosionModel
-from terrainbento.utilities import filecmp, precip_defaults
+from terrainbento import BasicSt, PrecipChanger, StochasticErosionModel
+from terrainbento.utilities import filecmp
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-def test_defaults():
-    params = {"dt": 1, "output_interval": 2., "run_duration": 200.}
-    model = StochasticErosionModel(params=params)
+def test_defaults(clock_simple, grid_1):
+    model = StochasticErosionModel(clock=clock_simple, grid=grid_1)
     assert model.opt_stochastic_duration is False
     assert model.record_rain is False
 
 
-def test_init_record_opt_true():
-    params = {
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "record_rain": True,
-    }
-    model = StochasticErosionModel(params=params)
+def test_init_record_opt_true(clock_simple, grid_1):
+    model = StochasticErosionModel(
+        clock=clock_simple, grid=grid_1, record_rain=True
+    )
     assert model.record_rain is True
     assert isinstance(model.rain_record, dict)
     fields = [
@@ -39,28 +34,22 @@ def test_init_record_opt_true():
         assert len(model.rain_record[f]) == 0
 
 
-def test_init_record_opt_false():
-    params = {
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "record_rain": False,
-    }
-    model = StochasticErosionModel(params=params)
+def test_init_record_opt_false(clock_simple, grid_1):
+    params = {"clock": clock_simple, "record_rain": False, "grid": grid_1}
+    model = StochasticErosionModel(**params)
     assert model.record_rain is False
     assert model.rain_record is None
 
 
-def test_run_stochastic_opt_true():
+def test_run_stochastic_opt_true(clock_04, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": True,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 100000.,
+        "clock": clock_04,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "mean_storm_duration": 2.,
@@ -69,9 +58,9 @@ def test_run_stochastic_opt_true():
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     assert model.opt_stochastic_duration is True
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(model.clock.step, model.clock.stop)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(
         decimals=5
@@ -101,16 +90,15 @@ def test_run_stochastic_opt_true():
     )
 
 
-def test_run_stochastic_opt_false():
+def test_run_stochastic_opt_false(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 200.,
+        "clock": clock_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "rainfall__mean_rate": 1.,
@@ -120,9 +108,9 @@ def test_run_stochastic_opt_false():
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     assert model.opt_stochastic_duration is False
-    model.run_for(params["dt"], 10000.)
+    model.run_for(model.clock.step, 10000.)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"])
     event_duration = np.asarray(model.rain_record["event_duration"])
@@ -133,13 +121,14 @@ def test_run_stochastic_opt_false():
     assert (
         np.array_equiv(
             dry_times,
-            params["dt"] * (1. - params["rainfall_intermittency_factor"]),
+            model.clock.step * (1. - params["rainfall_intermittency_factor"]),
         )
         is True
     )
     assert (
         np.array_equiv(
-            wet_times, params["dt"] * (params["rainfall_intermittency_factor"])
+            wet_times,
+            model.clock.step * (params["rainfall_intermittency_factor"]),
         )
         is True
     )
@@ -151,33 +140,15 @@ def test_run_stochastic_opt_false():
     )
 
 
-def test_freq_file_with_opt_duration_true():
+def test_reset_random_seed_stochastic_duration_true(clock_simple, grid_1):
     params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "random_seed": 3141,
-        "frequency_filename": "yams.txt",
+        "grid": grid_1,
         "opt_stochastic_duration": True,
-    }
-    with pytest.raises(ValueError):
-        _ = StochasticErosionModel(params=params)
-
-
-def test_reset_random_seed_stochastic_duration_true():
-    params = {
-        "opt_stochastic_duration": True,
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
+        "clock": clock_simple,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "mean_storm_duration": 2.,
@@ -186,11 +157,11 @@ def test_reset_random_seed_stochastic_duration_true():
         "random_seed": 0,
     }
 
-    model = BasicSt(params=params)
-    dt = 1
+    model = BasicSt(**params)
+    step = 1
     runtime = 200
 
-    model.rain_generator.delta_t = dt
+    model.rain_generator.delta_t = step
     model.rain_generator.run_time = runtime
     model.reset_random_seed()
     duration_1 = []
@@ -203,7 +174,7 @@ def test_reset_random_seed_stochastic_duration_true():
         precip_1.append(p)
         duration_1.append(tr)
 
-    model.rain_generator.delta_t = dt
+    model.rain_generator.delta_t = step
     model.rain_generator.run_time = runtime
     model.reset_random_seed()
 
@@ -221,16 +192,15 @@ def test_reset_random_seed_stochastic_duration_true():
     np.testing.assert_array_equal(precip_1, precip_2)
 
 
-def test_reset_random_seed_stochastic_duration_false():
+def test_reset_random_seed_stochastic_duration_false(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 200.,
+        "clock": clock_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "rainfall__mean_rate": 1.,
@@ -239,7 +209,7 @@ def test_reset_random_seed_stochastic_duration_false():
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
 
     model.reset_random_seed()
     depth_1 = []
@@ -261,16 +231,15 @@ def test_reset_random_seed_stochastic_duration_false():
     np.testing.assert_array_equal(depth_1, depth_2)
 
 
-def test_float_number_of_sub_time_steps():
+def test_float_number_of_sub_time_steps(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 200.,
+        "clock": clock_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "rainfall__mean_rate": 1.,
@@ -280,19 +249,19 @@ def test_float_number_of_sub_time_steps():
         "random_seed": 1234,
     }
     with pytest.raises(ValueError):
-        _ = BasicSt(params=params)
+        BasicSt(**params)
 
 
-def test_run_opt_false_with_changer():
+def test_run_opt_false_with_changer(clock_06, grid_1, precip_defaults):
+    precip_changer = PrecipChanger(grid_1, **precip_defaults)
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 3.,
+        "clock": clock_06,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "rainfall__mean_rate": 1.,
@@ -300,55 +269,52 @@ def test_run_opt_false_with_changer():
         "rainfall__shape_factor": 0.65,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults,
+        "boundary_handlers": {"PrecipChanger": precip_changer},
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
-    assert "PrecipChanger" in model.boundary_handler
+    model.run_for(model.clock.step, model.clock.stop)
+    assert "PrecipChanger" in model.boundary_handlers
 
-    predicted_intermittency = params["rainfall_intermittency_factor"] + params[
-        "PrecipChanger"
-    ]["daily_rainfall__intermittency_factor_time_rate_of_change"] * (
-        params["run_duration"] - params["dt"]
+    predicted_intermittency = params[
+        "rainfall_intermittency_factor"
+    ] + precip_defaults[
+        "daily_rainfall__intermittency_factor_time_rate_of_change"
+    ] * (
+        model.clock.stop - model.clock.step
     )
 
-    predicted_intensity = params["rainfall__mean_rate"] + params[
-        "PrecipChanger"
-    ]["rainfall__mean_rate_time_rate_of_change"] * (
-        params["run_duration"] - params["dt"]
-    )
+    predicted_intensity = params["rainfall__mean_rate"] + precip_defaults[
+        "rainfall__mean_rate_time_rate_of_change"
+    ] * (model.clock.stop - model.clock.step)
 
     assert model.rainfall_intermittency_factor == predicted_intermittency
     assert model.rainfall__mean_rate == predicted_intensity
 
 
-def test_opt_dur_true_with_changer():
+def test_opt_dur_true_with_changer(clock_02, grid_1, precip_defaults):
+    precip_changer = PrecipChanger(grid_1, **precip_defaults)
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": True,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 1000.,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": precip_defaults,
+        "clock": clock_02,
+        "boundary_handlers": {"PrecipChanger": precip_changer},
     }
 
     with pytest.raises(ValueError):
-        StochasticErosionModel(params=params)
+        StochasticErosionModel(**params)
 
 
-def test_not_specifying_record_rain():
+def test_not_specifying_record_rain(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 200.,
+        "clock": clock_05,
         "record_rain": False,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "rainfall__mean_rate": 1.,
@@ -358,9 +324,9 @@ def test_not_specifying_record_rain():
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(model.clock.step, model.clock.stop)
     with pytest.raises(ValueError):
         model.write_storm_sequence_to_file()
 
@@ -368,16 +334,15 @@ def test_not_specifying_record_rain():
         model.write_exceedance_frequency_file()
 
 
-def test_finalize_opt_duration_stochastic_false_too_short():
+def test_finalize_opt_duration_stochastic_false_too_short(clock_05, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 200.,
+        "clock": clock_05,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "rainfall__mean_rate": 1.,
@@ -387,25 +352,24 @@ def test_finalize_opt_duration_stochastic_false_too_short():
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(model.clock.step, model.clock.stop)
     with pytest.raises(RuntimeError):
         model.finalize()
 
     os.remove("storm_sequence.txt")
 
 
-def test_finalize_opt_duration_stochastic_false_no_rain():
+def test_finalize_opt_duration_stochastic_false_no_rain(clock_07, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 10000.,
+        "clock": clock_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "rainfall__mean_rate": 1.,
@@ -414,23 +378,22 @@ def test_finalize_opt_duration_stochastic_false_no_rain():
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(model.clock.step, model.clock.stop)
     with pytest.raises(ValueError):
         model.finalize()
 
 
-def test_finalize_opt_duration_stochastic_false():
+def test_finalize_opt_duration_stochastic_false(clock_07, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 10.,
-        "output_interval": 2.,
-        "run_duration": 10000.,
+        "clock": clock_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "rainfall__mean_rate": 1.,
@@ -439,9 +402,9 @@ def test_finalize_opt_duration_stochastic_false():
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(model.clock.step, model.clock.stop)
     model.finalize()
 
     # assert that these are correct
@@ -459,16 +422,15 @@ def test_finalize_opt_duration_stochastic_false():
     os.remove("exceedance_summary.txt")
 
 
-def test_finalize_opt_duration_stochastic_true():
+def test_finalize_opt_duration_stochastic_true(clock_07, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": True,
-        "dt": 10.,
-        "output_interval": 2.,
-        "run_duration": 10000.,
+        "clock": clock_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
         "mean_storm_duration": 2.,
@@ -477,9 +439,9 @@ def test_finalize_opt_duration_stochastic_true():
         "random_seed": 1234,
     }
 
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.reset_random_seed()
-    model.run_for(params["dt"], params["run_duration"])
+    model.run_for(model.clock.step, model.clock.stop)
     model.finalize()
 
     # assert that these are correct
@@ -491,16 +453,15 @@ def test_finalize_opt_duration_stochastic_true():
     os.remove("storm_sequence.txt")
 
 
-def test_runoff_equals_zero():
+def test_runoff_equals_zero(clock_07, grid_1):
     params = {
+        "grid": grid_1,
         "opt_stochastic_duration": False,
-        "dt": 10.,
-        "output_interval": 2.,
-        "run_duration": 10000.,
+        "clock": clock_07,
         "record_rain": True,
         "m_sp": 0.5,
         "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
+        "water_erodability": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 100000.,
         "rainfall__mean_rate": 0.0,
@@ -509,7 +470,7 @@ def test_runoff_equals_zero():
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
-    model = BasicSt(params=params)
+    model = BasicSt(**params)
     model.run_one_step(1.)
     runoff = model.calc_runoff_and_discharge()
     assert runoff == 0

@@ -1,3 +1,5 @@
+.. py:class:: BasicChSa
+
 Model BasicChSa
 ===============
 

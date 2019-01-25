@@ -1,3 +1,5 @@
+.. py:class:: StochasticErosionModel
+
 Stochastic Erosion Model
 ------------------------
 

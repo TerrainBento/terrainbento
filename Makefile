@@ -58,6 +58,7 @@ pretty: ## reformat files to make them look pretty
 	find terrainbento -name '*.py' | xargs isort
 	find tests -name '*.py' | xargs isort
 	black setup.py terrainbento tests --line-length=79
+	docformatter --in-place terrainbento/*/*.py
 
 test: ## run tests quickly with the default Python
 	pytest -n4

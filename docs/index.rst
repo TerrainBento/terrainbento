@@ -1,8 +1,3 @@
-.. terrainbento documentation master file, created by
-   sphinx-quickstart on Tue Mar  6 11:22:35 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to the terrainbento documentation!
 ==============================================
 
@@ -17,20 +12,35 @@ in the `GitHub repository`_.
 .. _GitHub repository: https://github.com/TerrainBento/terrainbento
 
 The goal of terrainbento is to make it easier to create alternative Earth
-surface dynamics models. The package has four main parts that support this
-goal. First, a model base class called **ErosionModel** contains the
-functionality requires across models (e.g. reading in input files, writing out
+surface dynamics models. The package has six main parts that support this
+goal. First, a model base class called
+:py:class:`ErosionModel` contains the
+functionality requires across models (e.g. reading in input files, writing
 output). Two specialized base classes also exist for models that use stochastic
-hydrology or multiple lithology layers.
+hydrology
+(:py:class:`~terrainbento.base_class.stochastic_erosion_model.StochasticErosionModel`)
+or multiple lithology layers
+(:py:class:`TwoLithologyErosionModel`)
+.
 
-Second, a set of **Boundary Condition Handlers** provide tools to set and modify
-boundary conditions during a model run. Third, we provide an initial set of
-landscape evolution models derived from the base class. These models increase
-in complexity from a base model to models with one, two, or three differences
-from the base mode.
+Second, a set of :py:mod:`Boundary Condition Handlers <terrainbento.boundary_handlers>`
+provide tools to set and modify boundary conditions during a model run.
 
-Finally, a **ModelTemplate** provides an skeleton of a model made with the main
-base class that can be used to create your own terrainbento model.
+Third, a set of :py:mod:`Precipitators <terrainbento.precipitators>` permits
+alternative approaches to specifying spatially and temporally variable
+precipitation.
+
+Fourth, a set of :py:mod:`Runoff Generators <terrainbento.runoff_generators>`
+allows for alternative approaches for converting rainfall into runoff.
+
+Fifth, we provide an initial set of landscape evolution models derived from the
+base class. These models increase in complexity from a base model to models
+with one, two, or three differences from the base mode.
+
+Finally, a
+:py:class:`~terrainbento.model_template.model_template.ModelTemplate` provides an skeleton of
+a model made with the main base class that can be used to create your own
+terrainbento model.
 
 A number of Jupyter Notebook Tutorials have been developed to highlight how to
 use terrainbento. They can be found in `the terrainbento tutorials repository`_.
@@ -46,13 +56,38 @@ Model Base Class
 
    source/terrainbento.base_class
 
+Clock
+-----
+
+.. toctree::
+   :maxdepth: 2
+
+   source/terrainbento.clock
+
 Boundary Condition Handlers
 ---------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   source/terrainbento.boundary_condition_handlers
+   source/terrainbento.boundary_handlers
+
+Precipitators
+-------------
+
+.. toctree::
+   :maxdepth: 2
+
+   source/terrainbento.precipitators
+
+
+RunoffGenerators
+----------------
+
+.. toctree::
+   :maxdepth: 2
+
+   source/terrainbento.runoff_generators
 
 Derived Models
 --------------

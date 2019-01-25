@@ -1,3 +1,5 @@
+.. py:class:: BasicHy
+
 Model BasicHy
 =============
 

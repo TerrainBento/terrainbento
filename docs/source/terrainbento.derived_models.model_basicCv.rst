@@ -1,3 +1,5 @@
+.. py:class:: BasicCv
+
 Model BasicCv
 =============
 

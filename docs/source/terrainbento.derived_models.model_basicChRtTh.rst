@@ -1,3 +1,5 @@
+.. py:class:: BasicChRtTh
+
 Model BasicChRtTh
 =================
 

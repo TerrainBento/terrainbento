@@ -1,5 +1,7 @@
-Erosion Model
--------------
+.. py:class:: TwoLithologyErosionModel
+
+Two Lithology Erosion Model
+---------------------------
 
 .. automodule:: terrainbento.base_class.two_lithology_erosion_model
     :members:

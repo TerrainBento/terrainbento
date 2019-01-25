@@ -20,65 +20,71 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicCh(ErosionModel):
-    """**BasicCh** model program.
+    r"""**BasicCh** model program.
 
-    **BasicCh** is a model program that evolves a topographic surface described
-    by :math:`\eta` with the following governing equations:
-
+    This model program evolves a topographic surface, :math:`\eta`, with the
+    following governing equation:
 
     .. math::
 
-        \\frac{\partial \eta}{\partial t} = -KA^{m}S^{n} + \\nabla^2 q_h
+        \frac{\partial \eta}{\partial t} = -KQ^{m}S^{n} + \nabla^2 q_h
 
-        q_h = -DS \left[ 1 + \left( \\frac{S}{S_c} \\right)^2 +  \left( \\frac{S}{S_c} \\right)^4 + ... \left( \\frac{S}{S_c} \\right)^{2(N-1)} \\right]
+        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
+              + \left( \frac{S}{S_c} \right)^4
+              + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
+    where :math:`Q` is the local stream discharge, :math:`S` is the local
+    slope, :math:`m` and :math:`n` are the discharge and slope exponent
+    parameters, :math:`K` is the erodability by water, :math:`D` is the
+    regolith transport efficiency, and :math:`S_c` is the critical slope.
+    :math:`q_h` represents the hillslope sediment flux per unit width.
+    :math:`N` is the number of terms in the Taylor Series expansion.
 
-    where :math:`A` is the local drainage area, :math:`S` is the local slope,
-    :math:`m` and :math:`n` are the drainage area and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`D` is the regolith
-    transport efficiency, and :math:`S_c` is the critical slope. :math:`q_h`
-    represents the hillslope sediment flux per unit width. :math:`N` is the
-    number of terms in the Taylor Series expansion. :math:`N` is set at a
-    default value of 11 but can be modified by a user.
+    Refer to
+    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    Table 5 for full list of parameter symbols, names, and dimensions.
 
-    The **BasicCh** program inherits from the terrainbento **ErosionModel** base
-    class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
-
-    +------------------+----------------------------------+
-    | Parameter Symbol | Input File Parameter Name        |
-    +==================+==================================+
-    |:math:`m`         | ``m_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`n`         | ``n_sp``                         |
-    +------------------+----------------------------------+
-    |:math:`K`         | ``water_erodability``            |
-    +------------------+----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter`` |
-    +------------------+----------------------------------+
-    |:math:`S_c`       | ``critical_slope``               |
-    +------------------+----------------------------------+
-    |:math:`N`         | ``number_of_taylor_terms``       |
-    +------------------+----------------------------------+
-
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
-    published) for full list of parameter symbols, names, and dimensions.
-
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
     """
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+    _required_fields = ["topographic__elevation"]
+
+    def __init__(
+        self,
+        clock,
+        grid,
+        m_sp=0.5,
+        n_sp=1.0,
+        water_erodability=0.0001,
+        regolith_transport_parameter=0.1,
+        critical_slope=0.3,
+        number_of_taylor_terms=11,
+        **kwargs
+    ):
         """
         Parameters
         ----------
-        input_file : str
-            Path to model input file. See wiki for discussion of input file
-            formatting. One of input_file or params is required.
-        params : dict
-            Dictionary containing the input file. One of input_file or params is
-            required.
-        OutputWriters : class, function, or list of classes and/or functions, optional
-            Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot).
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        critical_slope : float, optional
+            Critical slope (:math:`S_c`, unitless). Default is 0.3.
+        number_of_taylor_terms : int, optional
+            Number of terms in the Taylor Series Expansion (:math:`N`). Default
+            is 11.
+        **kwargs :
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------
@@ -87,32 +93,21 @@ class BasicCh(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicCh**. Note that a YAML input file can be used instead of
-        a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the terrainbento tutorials.
+        of model **BasicCh**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
-        >>> from terrainbento import BasicCh
-
-        Set up a parameters variable.
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "dt": 1,
-        ...           "output_interval": 2.,
-        ...           "run_duration": 200.,
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "critical_slope": 0.2,
-        ...           "water_erodability": 0.001,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0}
+        >>> from landlab import RasterModelGrid
+        >>> from landlab.values import random
+        >>> from terrainbento import Clock, BasicCh
+        >>> clock = Clock(start=0, stop=100, step=1)
+        >>> grid = RasterModelGrid((5,5))
+        >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
 
-        >>> model = BasicCh(params=params)
+        >>> model = BasicCh(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -124,68 +119,64 @@ class BasicCh(ErosionModel):
         """
 
         # Call ErosionModel"s init
-        super(BasicCh, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
-        )
+        super(BasicCh, self).__init__(clock, grid, **kwargs)
+
+        # verify correct fields are present.
+        self._verify_fields(self._required_fields)
 
         # Get Parameters and convert units if necessary:
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-        self.K = self._get_parameter_from_exponent("water_erodability") * (
-            self._length_factor ** (1. - (2. * self.m))
-        )
+        self.m = m_sp
+        self.n = n_sp
+        self.K = water_erodability
 
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
-
-        # get taylor terms
-        nterms = self.params.get("number_of_taylor_terms", 11)
+        regolith_transport_parameter = regolith_transport_parameter
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid, K_sp=self.K, m_sp=self.m, n_sp=self.n
+            self.grid,
+            K_sp=self.K,
+            m_sp=self.m,
+            n_sp=self.n,
+            discharge_name="surface_water__discharge",
         )
 
         # Instantiate a NonLinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
             self.grid,
             linear_diffusivity=regolith_transport_parameter,
-            slope_crit=self.params["critical_slope"],
-            nterms=nterms,
+            slope_crit=critical_slope,
+            nterms=number_of_taylor_terms,
         )
 
-    def run_one_step(self, dt):
-        """Advance model **BasicCh** for one time-step of duration dt.
+    def run_one_step(self, step):
+        """Advance model **BasicCh** for one time-step of duration step.
 
         The **run_one_step** method does the following:
 
-        1. Directs flow and accumulates drainage area.
+        1. Creates rain and runoff, then directs and accumulates flow.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
            not occur.
 
-        3. Assesses if a ``PrecipChanger`` is an active BoundaryHandler and if
-           so, uses it to modify the erodability by water.
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
 
         4. Calculates detachment-limited erosion by water.
 
         5. Calculates topographic change by nonlinear diffusion.
 
-        6. Finalizes the step using the **ErosionModel** base class function
-           **finalize__run_one_step**. This function updates all BoundaryHandlers
-           by ``dt`` and increments model time by ``dt``.
+        6. Finalizes the step using the :py:mod:`ErosionModel` base class
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
+           ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Increment of time for which the model is run.
         """
-
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+        # create and move water
+        self.create_and_move_water(step)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
@@ -197,22 +188,22 @@ class BasicCh(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
+        if "PrecipChanger" in self.boundary_handlers:
             self.eroder.K = (
                 self.K
-                * self.boundary_handler[
+                * self.boundary_handlers[
                     "PrecipChanger"
                 ].get_erodability_adjustment_factor()
             )
-        self.eroder.run_one_step(dt, flooded_nodes=flooded)
+        self.eroder.run_one_step(step, flooded_nodes=flooded)
 
         # Do some soil creep
         self.diffuser.run_one_step(
-            dt, dynamic_dt=True, if_unstable="raise", courant_factor=0.1
+            step, dynamic_dt=True, if_unstable="raise", courant_factor=0.1
         )
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
 
 def main():  # pragma: no cover
@@ -225,7 +216,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    cdsp = BasicCh(input_file=infile)
+    cdsp = BasicCh.from_file(infile)
     cdsp.run()
 
 

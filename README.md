@@ -29,9 +29,9 @@ The following is the code needed to run the Basic model.
 ```python
 from terrainbento import Basic
 
-model = Basic(params={"dt" : 100,
+model = Basic(params={"step" : 100,
                       "output_interval": 1e3,
-                      "run_duration": 1.5e5,
+                      "stop": 1.5e5,
                       "number_of_node_rows" : 200,
                       "number_of_node_columns" : 320,
                       "node_spacing" : 10.0,

@@ -1,11 +1,15 @@
 """Public classes of the terrainbento package.
 
-terrainbento has three types of public classes: base models, derived models
-and boundary condition handlers. Base models are used to help easily build
-new models. Derived models are models that have inherited from the
-**ErosionModel** base class. Boundary condition handlers are helper classes
-that have been designed to modify model boundary conditions during a model run.
+terrainbento has five types of public classes: base models, derived models
+precipitators, runoff-generators, and boundary condition handlers. Base models
+are used to help easily build new models. Derived models are models that have
+inherited from the **ErosionModel** base class. Precipitators can make different
+types of spatially variable precipitation. Runoff-generators convert
+precipiation to runoff and Boundary condition handlers are helper classes that
+have been designed to modify model boundary conditions during a model run.
 """
+
+from .clock import Clock
 
 from .base_class import ErosionModel
 from .base_class import StochasticErosionModel
@@ -13,11 +17,14 @@ from .base_class import TwoLithologyErosionModel
 
 from .model_template import ModelTemplate
 
-from .boundary_condition_handlers import PrecipChanger
-from .boundary_condition_handlers import SingleNodeBaselevelHandler
-from .boundary_condition_handlers import CaptureNodeBaselevelHandler
-from .boundary_condition_handlers import NotCoreNodeBaselevelHandler
-from .boundary_condition_handlers import GenericFuncBaselevelHandler
+from .boundary_handlers import PrecipChanger
+from .boundary_handlers import SingleNodeBaselevelHandler
+from .boundary_handlers import CaptureNodeBaselevelHandler
+from .boundary_handlers import NotCoreNodeBaselevelHandler
+from .boundary_handlers import GenericFuncBaselevelHandler
+
+from .precipitators import UniformPrecipitator, RandomPrecipitator
+from .runoff_generators import SimpleRunoff
 
 from .derived_models import Basic
 from .derived_models import BasicTh
@@ -50,6 +57,7 @@ from .derived_models import BasicChRtTh
 
 
 __all__ = [
+    "Clock",
     "ModelTemplate",
     "Basic",
     "BasicTh",
@@ -79,6 +87,9 @@ __all__ = [
     "BasicRtVs",
     "BasicRtSa",
     "BasicChRtTh",
+    "UniformPrecipitator",
+    "RandomPrecipitator",
+    "SimpleRunoff",
     "CaptureNodeBaselevelHandler",
     "NotCoreNodeBaselevelHandler",
     "SingleNodeBaselevelHandler",

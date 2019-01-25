@@ -1,3 +1,5 @@
+.. py:class:: BasicStVs
+
 Model BasicStVs
 ===============
 

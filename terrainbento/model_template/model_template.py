@@ -49,19 +49,22 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     Expand on this table to include all required parameters.
     """
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+    _required_fields = ["topographic__elevation"]
+
+    def __init__(
+        self,
+        clock,
+        grid,
+        m_sp=0.5,
+        n_sp=1.0,
+        water_erodability=0.0001,
+        regolith_transport_parameter=0.1,
+        **kwargs
+    ):
         """
         Parameters
         ----------
-        input_file : str
-            Path to model input file. See wiki for discussion of input file
-            formatting. One of input_file or params is required.
-        params : dict
-            Dictionary containing the input file. One of input_file or params
-            is required.
-        OutputWriters : class, function, or list, optional
-            Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot).
+
 
         Examples
         --------
@@ -84,39 +87,40 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
         >>> from terrainbento.model_template import ModelTemplate
 
-        Set up a parameters variable.
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "dt": 1,
-        ...           "output_interval": 2.,
-        ...           "run_duration": 200.}
+        >>> from landlab import RasterModelGrid
+        >>> from landlab.values import random
+        >>> from terrainbento import Clock, BasicStVs
+        >>> clock = Clock(start=0, stop=100, step=1)
+        >>> grid = RasterModelGrid((5,5))
+        >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
 
-        >>> model = ModelTemplate(params=params)
+        >>> model = ModelTemplate(clock, grid)
 
         """
         # Replace  `ModelTemplate` with your model name.
-        super(ModelTemplate, self).__init__(
-            input_file=input_file,
-            params=params,  # Do not change any additional parts of this
-        )  # line.
+        super(ModelTemplate, self).__init__(clock, grid, **kwargs)
+        # Do not change any additional parts of this line.
+
+        # verify correct fields are present.
+        self._verify_fields(self._required_fields)
 
         # put all actions needed to initialize the model below this line.
 
-    def run_one_step(self, dt):
+    def run_one_step(self, step):
         """Run each component for one time step.
 
         Put any additional information about **run_one_step** here.
         Importantly, **run_one_step** should only take on parameter,
-        ``dt``.
+        ``step``.
         """
         # write here all actions needed to run the model forward for a time
-        # increment `dt`.
+        # increment `step`.
 
         # end with finalize__run_one_step which does things at the end of
         # run_one_step that are required by all models.
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
     # if you have additional class functions, you can define them here.
     def my_internal_function(self):
@@ -155,7 +159,7 @@ def main():  # pragma: no cover
         )
         sys.exit(1)
 
-    model = ModelTemplate(input_file=infile)
+    model = ModelTemplate.from_file(infile)
     model.run()
 
 

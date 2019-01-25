@@ -8,9 +8,7 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from landlab import HexModelGrid, RasterModelGrid
-from terrainbento.boundary_condition_handlers import (
-    NotCoreNodeBaselevelHandler
-)
+from terrainbento.boundary_handlers import NotCoreNodeBaselevelHandler
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -39,7 +37,7 @@ def test_hex():
 def test_passing_neither_lowering_method():
     """Test passing no lowering information."""
     mg = RasterModelGrid(5, 5)
-    _ = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
         NotCoreNodeBaselevelHandler(mg)
@@ -48,7 +46,7 @@ def test_passing_neither_lowering_method():
 def test_passing_both_lowering_methods():
     """Test passing both lowering methods."""
     mg = RasterModelGrid(5, 5)
-    _ = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
     with pytest.raises(ValueError):
@@ -61,7 +59,7 @@ def test_outlet_lowering_object_bad_file():
     """Test using an outlet lowering object with a bad file."""
 
     mg = HexModelGrid(5, 5)
-    z = mg.add_zeros("node", "topographic__elevation")
+    mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
         NotCoreNodeBaselevelHandler(mg, lowering_file_path="foo.txt")

@@ -1,36 +1,19 @@
 environment:
 
   matrix:
-    - TARGET_ARCH: x86
-      CONDA_NPY: 111
-      CONDA_PY: 27
-      CONDA_INSTALL_LOCN: C:\\Miniconda
 
     - TARGET_ARCH: x64
-      CONDA_NPY: 111
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
       DISTUTILS_USE_SDK: 1
 
-    - TARGET_ARCH: x86
-      CONDA_NPY: 111
-      CONDA_INSTALL_LOCN: C:\\Miniconda35
-      CONDA_PY: 35
-
     - TARGET_ARCH: x64
-      CONDA_NPY: 111
       CONDA_INSTALL_LOCN: C:\\Miniconda35-x64
-      CONDA_PY: 35
-
-    - TARGET_ARCH: x86
-      CONDA_NPY: 111
-      CONDA_INSTALL_LOCN: C:\\Miniconda36
       CONDA_PY: 36
 
     - TARGET_ARCH: x64
-      CONDA_NPY: 111
       CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      CONDA_PY: 36
+      CONDA_PY: 37
 
 platform:
   - x64
@@ -53,19 +36,16 @@ install:
   - cmd: conda install -q conda-build
   - cmd: conda install -q conda-verify
   - cmd: conda install -q anaconda-client
-  - cmd: conda install -q numpy=1.11
+  - cmd: conda install -q numpy
   - cmd: pip install twine
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
-  - cmd: conda config --add channels landlab
-  - cmd: conda build -q .conda-recipe --old-build-string
-  - cmd: conda install -q terrainbento --use-local
+  - cmd: conda config --add channels conda-forge
+  - cmd: conda install --file=requirements.txt
+  - cmd: python setup.py install
 
 build: false
 
 test_script:
   - cmd: pytest
-
-deploy_script:
-  - cmd: python .ci/appveyor/anaconda_upload.py

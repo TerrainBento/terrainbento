@@ -7,215 +7,71 @@ from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 
 from landlab import CLOSED_BOUNDARY, FIXED_VALUE_BOUNDARY
 from terrainbento import Basic, BasicSt, ErosionModel
-from terrainbento.boundary_condition_handlers import (
+from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
-    PrecipChanger,
+    GenericFuncBaselevelHandler,
+    NotCoreNodeBaselevelHandler,
     SingleNodeBaselevelHandler,
 )
 
 
-def test_bad_boundary_condition_string():
+@pytest.mark.parametrize("keyword", ["BasicSt", "NotCoreNodeBaselevelHandler"])
+def test_bad_boundary_condition_string(
+    clock_simple, almost_default_grid, keyword
+):
     params = {
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 10.,
-        "BoundaryHandlers": "spam",
+        "grid": almost_default_grid,
+        "clock": clock_simple,
+        "boundary_handlers": {keyword: BasicSt},
     }
     with pytest.raises(ValueError):
-        ErosionModel(params=params)
+        ErosionModel(**params)
 
 
-def test_boundary_condition_handler_with_special_part_of_params():
-    U = 0.0001
-    K = 0.001
-    m = 1. / 3.
-    n = 2. / 3.
-    # construct dictionary. note that D is turned off here
+def test_bad_boundary_condition_yaml(bad_handler_yaml, tmpdir):
+    with tmpdir.as_cwd():
+        with open("params.yaml", "w") as fp:
+            fp.write(bad_handler_yaml)
+
+        with pytest.raises(ValueError):
+            ErosionModel.from_file("./params.yaml")
+
+
+def test_single_node_blh_with_closed_boundaries(
+    clock_simple, simple_square_grid
+):
+    snblh = SingleNodeBaselevelHandler(
+        simple_square_grid,
+        modify_outlet_node=False,
+        lowering_rate=-0.0005,
+        outlet_id=3,
+    )
+
     params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
-        },
+        "clock": clock_simple,
+        "grid": simple_square_grid,
+        "boundary_handlers": {"SingleNodeBaselevelHandler": snblh},
     }
-    model = Basic(params=params)
-    bh = model.boundary_handler["NotCoreNodeBaselevelHandler"]
-
-    # assertion tests
-    assert "NotCoreNodeBaselevelHandler" in model.boundary_handler
-    assert bh.lowering_rate == -U
-    assert bh.prefactor == -1
-    assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
-
-
-def test_boundary_condition_handler_with_bad_special_part_of_params():
-    params = {
-        "opt_stochastic_duration": False,
-        "dt": 10,
-        "output_interval": 2.,
-        "run_duration": 1000.,
-        "record_rain": True,
-        "m_sp": 0.5,
-        "n_sp": 1.0,
-        "water_erodability~stochastic": 0.01,
-        "regolith_transport_parameter": 0.1,
-        "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.2,
-        "rainfall_intermittency_factor": 0.1,
-        "rainfall__shape_factor": 0.6,
-        "number_of_sub_time_steps": 1,
-        "random_seed": 1234,
-        "BoundaryHandlers": "PrecipChanger",
-        "PrecipChanger": {
-            "daily_rainfall__intermittency_factor": 0.1,
-            "daily_rainfall__intermittency_factor_time_rate_of_change": 0.0001,
-            "rainfall__mean_rate": 1.,
-            "rainfall__mean_rate_time_rate_of_change": 0.0001,
-            "infiltration_capacity": 0,
-            "rainfall__shape_factor": 0.65,
-        },
-    }
-    with pytest.raises(ValueError):
-        BasicSt(params=params)
-
-
-def test_boundary_condition_handler_with_bad_special_part_of_params_single():
-    params = {
-        "dt": 10,  # years
-        "output_interval": 1e3,  # years
-        "run_duration": 1e6,  # years
-        "number_of_node_rows": 10,
-        "number_of_node_columns": 10,
-        "outlet_id": 1,
-        "node_spacing": 10.0,  # meters
-        "random_seed": 4897,  # set to initialize the topography with
-                              # reproducible random noise
-        "water_erodability": 0.0001,  # years^-1
-        "m_sp": 0.5,  # unitless
-        "n_sp": 1.0,  # unitless
-        "regolith_transport_parameter": 0.01,  # meters^2/year
-        "BoundaryHandlers": "SingleNodeBaselevelHandler",
-        "SingleNodeBaselevelHandler": {
-            "modify_outlet_node": False,
-            "lowering_rate": -0.0005,
-            "outlet_id": 50,
-        },  # meters/year
-    }
-    with pytest.raises(ValueError):
-        Basic(params=params)
-
-
-def test_single_node_blh_with_closed_boundaries():
-    params = {
-        "dt": 10,  # years
-        "output_interval": 1e3,  # years
-        "run_duration": 1e6,  # years
-        "number_of_node_rows": 10,
-        "number_of_node_columns": 10,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "node_spacing": 10.0,  # meters
-        "random_seed": 4897,  # set to initialize the topography with
-                              # reproducible random noise
-        "water_erodability": 0.0001,  # years^-1
-        "m_sp": 0.5,  # unitless
-        "n_sp": 1.0,  # unitless
-        "regolith_transport_parameter": 0.01,  # meters^2/year
-        "BoundaryHandlers": "SingleNodeBaselevelHandler",
-        "SingleNodeBaselevelHandler": {
-            "modify_outlet_node": False,
-            "lowering_rate": -0.0005,
-            "outlet_id": 3,
-        },  # meters/year
-    }
-    model = Basic(params=params)
+    model = Basic(**params)
     assert model.grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
 
 
-def test_boundary_condition_handler_without_special_part_of_params():
-    U = 0.0001
-    K = 0.001
-    m = 1. / 3.
-    n = 2. / 3.
-    # construct dictionary. note that D is turned off here
+def test_pass_two_boundary_handlers(clock_simple, simple_square_grid, U):
+    ncnblh = NotCoreNodeBaselevelHandler(
+        simple_square_grid, modify_core_nodes=True, lowering_rate=-U
+    )
+    snblh = SingleNodeBaselevelHandler(
+        simple_square_grid, modify_outlet_node=False, lowering_rate=-U
+    )
     params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-        "modify_core_nodes": True,
-        "lowering_rate": -U,
-    }
-
-    model = Basic(params=params)
-    bh = model.boundary_handler["NotCoreNodeBaselevelHandler"]
-
-    # assertion tests
-    assert "NotCoreNodeBaselevelHandler" in model.boundary_handler
-    assert bh.lowering_rate == -U
-    assert bh.prefactor == -1
-    assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
-
-
-def test_pass_two_boundary_handlers():
-    U = 0.0001
-    K = 0.001
-    m = 1. / 3.
-    n = 2. / 3.
-    # construct dictionary. note that D is turned off here
-    params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "east_boundary_closed": True,
-        "west_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": [
-            "NotCoreNodeBaselevelHandler",
-            "SingleNodeBaselevelHandler",
-        ],
-        "NotCoreNodeBaselevelHandler": {
-            "modify_core_nodes": True,
-            "lowering_rate": -U,
+        "grid": simple_square_grid,
+        "clock": clock_simple,
+        "boundary_handlers": {
+            "NotCoreNodeBaselevelHandler": ncnblh,
+            "SingleNodeBaselevelHandler": snblh,
         },
-        "SingleNodeBaselevelHandler": {"lowering_rate": -U},
     }
-    model = Basic(params=params)
+    model = Basic(**params)
     model.run_one_step(1.0)
 
     truth = np.zeros(model.z.size)
@@ -229,92 +85,58 @@ def test_pass_two_boundary_handlers():
     assert_array_equal(model.grid.status_at_node, status_at_node)
 
 
-def test_generic_bch():
-    K = 0.001
-    m = 1. / 3.
-    n = 2. / 3.
-    # construct dictionary. note that D is turned off here
+def test_generic_bch(clock_simple, simple_square_grid):
+    gfblh = GenericFuncBaselevelHandler(
+        simple_square_grid,
+        modify_core_nodes=True,
+        function=lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0 * t)),
+    )
     params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "GenericFuncBaselevelHandler",
-        "GenericFuncBaselevelHandler": {
-            "modify_core_nodes": True,
-            "function": lambda grid, t: -(
-                grid.x_of_node + grid.y_of_node + (0 * t)
-            ),
-        },  # returns a rate in meters/year
+        "grid": simple_square_grid,
+        "clock": clock_simple,
+        "boundary_handlers": {"GenericFuncBaselevelHandler": gfblh},
     }
-    model = Basic(params=params)
-    bh = model.boundary_handler["GenericFuncBaselevelHandler"]
+
+    model = Basic(**params)
+    bh = model.boundary_handlers["GenericFuncBaselevelHandler"]
 
     # assertion tests
-    assert "GenericFuncBaselevelHandler" in model.boundary_handler
+    assert "GenericFuncBaselevelHandler" in model.boundary_handlers
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
 
-    dt = 10.
-    model.run_one_step(dt)
+    step = 10.
+    model.run_one_step(step)
 
     dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
-    truth_z = -1. * dzdt * dt
+    truth_z = -1. * dzdt * step
     assert_array_equal(
         model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes]
     )
 
 
-def test_capture_node():
-    K = 0.001
-    m = 1. / 3.
-    n = 2. / 3.
-    # construct dictionary. note that D is turned off here
+def test_capture_node(clock_simple, simple_square_grid):
+    cnblh = CaptureNodeBaselevelHandler(
+        simple_square_grid,
+        capture_node=1,
+        capture_incision_rate=-3.0,
+        capture_start_time=10,
+        capture_stop_time=20,
+        post_capture_incision_rate=-0.1,
+    )
+
     params = {
-        "model_grid": "RasterModelGrid",
-        "dt": 1,
-        "output_interval": 2.,
-        "run_duration": 200.,
-        "number_of_node_rows": 3,
-        "number_of_node_columns": 20,
-        "node_spacing": 100.0,
-        "north_boundary_closed": True,
-        "south_boundary_closed": True,
-        "regolith_transport_parameter": 0.,
-        "water_erodability": K,
-        "m_sp": m,
-        "n_sp": n,
-        "random_seed": 3141,
-        "BoundaryHandlers": "CaptureNodeBaselevelHandler",
-        "CaptureNodeBaselevelHandler": {
-            "capture_node": 1,
-            "capture_incision_rate": -3.0,
-            "capture_start_time": 10,
-            "capture_stop_time": 20,
-            "post_capture_incision_rate": -0.1,
-        },  # returns a rate in meters/year
+        "grid": simple_square_grid,
+        "clock": clock_simple,
+        "boundary_handlers": {"CaptureNodeBaselevelHandler": cnblh},
     }
 
-    model = Basic(params=params)
+    model = Basic(**params)
     # assertion tests
-    assert "CaptureNodeBaselevelHandler" in model.boundary_handler
-    assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == 0
+    assert "CaptureNodeBaselevelHandler" in model.boundary_handlers
+    assert model.z[1] == 0
     model.run_one_step(10.)
-    assert model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == 0
+    assert model.z[1] == 0
     model.run_one_step(10)
-    assert (
-        model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == -30.
-    )
+    assert model.z[1] == -30.
     model.run_one_step(10)
-    assert (
-        model.z[params["CaptureNodeBaselevelHandler"]["capture_node"]] == -31.
-    )
+    assert model.z[1] == -31.

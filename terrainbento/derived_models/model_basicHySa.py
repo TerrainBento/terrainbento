@@ -2,9 +2,9 @@
 # !/usr/env/python
 """terrainbento model **BasicHySa** program.
 
-Erosion model program using exponential weathering, soil-depth-dependent
-linear diffusion, stream-power-driven sediment erosion, mass conservation, and
-bedrock erosion, and discharge proportional to drainage area.
+Erosion model program using exponential weathering, soil-depth-dependent linear
+diffusion, stream-power-driven sediment erosion, mass conservation, and bedrock
+erosion, and discharge proportional to drainage area.
 
 Landlab components used:
     1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
@@ -25,99 +25,118 @@ from terrainbento.base_class import ErosionModel
 
 
 class BasicHySa(ErosionModel):
-    """Model **BasicHySa** program.
+    r"""**BasicHySa** program.
 
-    Model **BasicHySa** is a model program that evolves a topographic surface
-    described by :math:`\eta` with the following governing equation:
-
+    This model program combines :py:class:`BasicHy` and :py:class:`BasicSa` to
+    evolve a topographic surface described by :math:`\eta` with the following
+    governing equation:
 
     .. math::
 
         \eta = \eta_b + H
 
-        \\frac{\partial H}{\partial t} = P_0 \exp (-H/H_s) + \\frac{V_s Q_s}{Ar\left(1 - \phi \\right)} - K_s A^{m}S^{n} (1 - e^{-H/H_*}) -\\nabla q_h
+        \frac{\partial H}{\partial t} = P_0 \exp (-H/H_s)
+                          + \frac{V_s Q_s}{Q(A)\left(1 - \phi \right)}
+                          - K_s Q(A)^{m}S^{n} (1 - e^{-H/H_*})
+                          -\nabla q_h
 
-        \\frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s) - K_r A^{m}S^{n} e^{-H/H_*}
+        \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
+                                             - K_r Q(A)^{m}S^{n} e^{-H/H_*}
 
-        Q_s = \int_0^A \left(K_s A^{m}S^{n} (1-e^{-H/H_*}) + K_r (1-F_f) A^{m}S^{n} e^{-H/H_*} - \\frac{V_s Q_s}{Ar\left(1 - \phi \\right)}\\right) dA
-
+        Q_s = \int_0^A \left(K_s Q(A)^{m}S^{n} (1-e^{-H/H_*})
+              + K_r (1-F_f) Q(A)^{m}S^{n} e^{-H/H_*}
+              - \frac{V_s Q_s}{Q(A)\left(1 - \phi \right)}\right) dA
 
     where :math:`\eta_b` is the bedrock elevation, :math:`H` is the soil depth,
     :math:`P_0` is the maximum soil production rate, :math:`H_s` is the soil
-    production decay depth, :math:`V_s` is effective sediment settling velocity,
-    :math:`Q_s` is volumetric fluvial sediment flux, :math:`A` is the local
-    drainage area, :math:`S` is the local slope, :math:`\phi` is sediment
-    porosity, :math:`F_f` is the fraction of fine sediment, :math:`K_r` and :math:`K_s`
-    are rock and sediment erodibility respectively, :math:`m` and :math:`n` are
-    the drainage area and slope exponent parameters, :math:`H_*` is the bedrock roughness
-    length scale, and :math:`r` is a runoff rate which presently can only be 1.0.
-    Hillslope sediment flux per unit width :math:`q_h` is given by:
-
+    production decay depth, :math:`V_s` is effective sediment settling
+    velocity, :math:`Q_s` is volumetric fluvial sediment flux, :math:`A` is the
+    local drainage area, :math:`Q`, is the local discharge, :math:`S` is the
+    local slope, :math:`\phi` is sediment porosity, :math:`F_f` is the fraction
+    of fine sediment, :math:`K_r` and :math:`K_s` are rock and sediment
+    erodibility respectively, :math:`m` and :math:`n` are the discharge and
+    slope exponent parameters, :math:`H_*` is the bedrock roughness length
+    scale, and :math:`r` is a runoff rate. Hillslope sediment flux per unit
+    width :math:`q_h` is given by:
 
     .. math::
 
-        q_h = -D \left[1-\exp \left( -\\frac{H}{H_0} \\right) \\right] \\nabla \eta.
-
+        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right]
+              \nabla \eta.
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.
 
-    The **BasicHySa** program inherits from the terrainbento **ErosionModel**
-    base class. In addition to the parameters required by the base class, models
-    built with this program require the following parameters.
+    Refer to
+    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    Table 5 for full list of parameter symbols, names, and dimensions.
 
-    +------------------+-----------------------------------+
-    | Parameter Symbol | Input File Parameter Name         |
-    +==================+===================================+
-    |:math:`m`         | ``m_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`n`         | ``n_sp``                          |
-    +------------------+-----------------------------------+
-    |:math:`K_r`       | ``water_erodability~rock``        |
-    +------------------+-----------------------------------+
-    |:math:`K_s`       | ``water_erodability~sediment``    |
-    +------------------+-----------------------------------+
-    |:math:`D`         | ``regolith_transport_parameter``  |
-    +------------------+-----------------------------------+
-    |:math:`V_c`       | ``normalized_settling_velocity``  |
-    +------------------+-----------------------------------+
-    |:math:`F_f`       | ``fraction_fines``                |
-    +------------------+-----------------------------------+
-    |:math:`\phi`      | ``sediment_porosity``             |
-    +------------------+-----------------------------------+
-    |:math:`H_{init}`  | ``soil__initial_thickness``       |
-    +------------------+-----------------------------------+
-    |:math:`P_{0}`     | ``soil_production__maximum_rate`` |
-    +------------------+-----------------------------------+
-    |:math:`H_{s}`     | ``soil_production__decay_depth``  |
-    +------------------+-----------------------------------+
-    |:math:`H_{0}`     | ``soil_transport__decay_depth``   |
-    +------------------+-----------------------------------+
-    |:math:`H_{*}`     | ``roughness__length_scale``       |
-    +------------------+-----------------------------------+
-
-    A value for the parameter ``solver`` can also be used to indicate if the
-    default internal timestepping is used for the **Space** component or if an
-    adaptive internal timestep is used. Refer to the **Space** documentation for
-    details.
-
-    Refer to the terrainbento manuscript Table 5 (URL to manuscript when
-    published) for full list of parameter symbols, names, and dimensions.
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``soil__depth``
     """
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+    _required_fields = ["topographic__elevation", "soil__depth"]
+
+    def __init__(
+        self,
+        clock,
+        grid,
+        m_sp=0.5,
+        n_sp=1.0,
+        water_erodability_sediment=0.001,
+        water_erodability_rock=0.0001,
+        regolith_transport_parameter=0.1,
+        settling_velocity=0.001,
+        sediment_porosity=0.3,
+        fraction_fines=0.5,
+        roughness__length_scale=0.5,
+        solver="basic",
+        soil_production__maximum_rate=0.001,
+        soil_production__decay_depth=0.5,
+        soil_transport_decay_depth=0.5,
+        sp_crit_br=0,
+        sp_crit_sed=0,
+        **kwargs
+    ):
         """
         Parameters
         ----------
-        input_file : str
-            Path to model input file. See wiki for discussion of input file
-            formatting. One of input_file or params is required.
-        params : dict
-            Dictionary containing the input file. One of input_file or params is
-            required.
-        OutputWriters : class, function, or list of classes and/or functions, optional
-            Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot).
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
+        m_sp : float, optional
+            Drainage area exponent (:math:`m`). Default is 0.5.
+        n_sp : float, optional
+            Slope exponent (:math:`n`). Default is 1.0.
+        water_erodability : float, optional
+            Water erodability (:math:`K`). Default is 0.0001.
+        regolith_transport_parameter : float, optional
+            Regolith transport efficiency (:math:`D`). Default is 0.1.
+        settling_velocity : float, optional
+            Normalized settling velocity of entrained sediment (:math:`V_s`).
+            Default is 0.001.
+        sediment_porosity : float, optional
+            Sediment porosity (:math:`\phi`). Default is 0.3.
+        fraction_fines : float, optional
+            Fraction of fine sediment that is permanently detached
+            (:math:`F_f`). Default is 0.5.
+        roughness__length_scale : float, optional
+            Bedrock roughness length scale. Default is 0.5.
+        solver : str, optional
+            Solver option to pass to the Landlab
+            `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.space.html>`_
+            component. Default is "basic".
+        soil_production__maximum_rate : float, optional
+            Maximum rate of soil production (:math:`P_{0}`). Default is 0.001.
+        soil_production__decay_depth : float, optional
+            Decay depth for soil production (:math:`H_{s}`). Default is 0.5.
+        soil_transport_decay_depth : float, optional
+            Decay depth for soil transport (:math:`H_{0}`). Default is 0.5.
+        **kwargs :
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------
@@ -126,43 +145,22 @@ class BasicHySa(ErosionModel):
         Examples
         --------
         This is a minimal example to demonstrate how to construct an instance
-        of model **BasicHySa**. Note that a YAML input file can be used instead of
-        a parameter dictionary. For more detailed examples, including steady-
-        state test examples, see the terrainbento tutorials.
+        of model **BasicHySa**. For more detailed examples, including
+        steady-state test examples, see the terrainbento tutorials.
 
         To begin, import the model class.
 
-        >>> from terrainbento import BasicHySa
-
-        Set up a parameters variable.
-
-        >>> params = {"model_grid": "RasterModelGrid",
-        ...           "dt": 1,
-        ...           "output_interval": 2.,
-        ...           "run_duration": 200.,
-        ...           "number_of_node_rows" : 6,
-        ...           "number_of_node_columns" : 9,
-        ...           "node_spacing" : 10.0,
-        ...           "regolith_transport_parameter": 0.001,
-        ...           "water_erodability~rock": 0.001,
-        ...           "water_erodability~sediment": 0.001,
-        ...           "sp_crit_br": 0,
-        ...           "sp_crit_sed": 0,
-        ...           "m_sp": 0.5,
-        ...           "n_sp": 1.0,
-        ...           "v_sc": 0.01,
-        ...           "sediment_porosity": 0,
-        ...           "fraction_fines": 0,
-        ...           "roughness__length_scale": 0.1,
-        ...           "solver": "basic",
-        ...           "soil_transport_decay_depth": 1,
-        ...           "soil_production__maximum_rate": 0.0001,
-        ...           "soil_production__decay_depth": 0.5,
-        ...           "soil__initial_thickness": 1.0}
+        >>> from landlab import RasterModelGrid
+        >>> from landlab.values import random
+        >>> from terrainbento import Clock, BasicHySa
+        >>> clock = Clock(start=0, stop=100, step=1)
+        >>> grid = RasterModelGrid((5,5))
+        >>> _ = random(grid, "topographic__elevation")
+        >>> _ = random(grid, "soil__depth")
 
         Construct the model.
 
-        >>> model = BasicHySa(params=params)
+        >>> model = BasicHySa(clock, grid)
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
@@ -173,76 +171,36 @@ class BasicHySa(ErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicHySa, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
-        )
+        super(BasicHySa, self).__init__(clock, grid, **kwargs)
 
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
-        self.K_br = self._get_parameter_from_exponent(
-            "water_erodability~rock"
-        ) * (self._length_factor ** (1. - (2. * self.m)))
-        self.K_sed = self._get_parameter_from_exponent(
-            "water_erodability~sediment"
-        ) * (self._length_factor ** (1. - (2. * self.m)))
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
-        v_sc = self._get_parameter_from_exponent(
-            "v_sc"
-        )  # normalized settling velocity. Unitless.
+        # verify correct fields are present.
+        self._verify_fields(self._required_fields)
 
-        regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent(
-            "regolith_transport_parameter"
-        )  # has units length^2/time
+        soil_thickness = self.grid.at_node["soil__depth"]
+        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        bedrock_elev[:] = self.z - soil_thickness
 
-        initial_soil_thickness = (self._length_factor) * self.params[
-            "soil__initial_thickness"
-        ]  # has units length
-
-        soil_transport_decay_depth = (self._length_factor) * self.params[
-            "soil_transport_decay_depth"
-        ]  # has units length
-        max_soil_production_rate = (self._length_factor) * self.params[
-            "soil_production__maximum_rate"
-        ]  # has units length per time
-        soil_production_decay_depth = (self._length_factor) * self.params[
-            "soil_production__decay_depth"
-        ]  # has units length
-
-        # Handle solver option
-        solver = self.params.get("solver", "basic")
+        self.m = m_sp
+        self.n = n_sp
+        self.K_br = water_erodability_rock
+        self.K_sed = water_erodability_sediment
 
         # Instantiate a SPACE component
         self.eroder = Space(
             self.grid,
             K_sed=self.K_sed,
             K_br=self.K_br,
-            sp_crit_br=self.params["sp_crit_br"],
-            sp_crit_sed=self.params["sp_crit_sed"],
-            F_f=self.params["fraction_fines"],
-            phi=self.params["sediment_porosity"],
-            H_star=self.params["roughness__length_scale"],
-            v_s=v_sc,
+            sp_crit_br=sp_crit_br,
+            sp_crit_sed=sp_crit_sed,
+            F_f=fraction_fines,
+            phi=sediment_porosity,
+            H_star=roughness__length_scale,
+            v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
             solver=solver,
         )
-
-        # Get soil thickness (a.k.a. depth) field
-        soil_thickness = self.grid.at_node["soil__depth"]
-
-        # Get bedrock elevation field
-        bedrock_elev = self.grid.at_node["bedrock__elevation"]
-
-        # Set soil thickness and bedrock elevation
-        soil_thickness[:] = initial_soil_thickness
-        bedrock_elev[:] = self.z - initial_soil_thickness
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(
@@ -253,8 +211,8 @@ class BasicHySa(ErosionModel):
 
         self.weatherer = ExponentialWeatherer(
             self.grid,
-            soil_production__maximum_rate=max_soil_production_rate,
-            soil_production__decay_depth=soil_production_decay_depth,
+            soil_production__maximum_rate=soil_production__maximum_rate,
+            soil_production__decay_depth=soil_production__decay_depth,
         )
 
         self.grid.at_node["soil__depth"][:] = (
@@ -262,34 +220,35 @@ class BasicHySa(ErosionModel):
             - self.grid.at_node["bedrock__elevation"]
         )
 
-    def run_one_step(self, dt):
-        """Advance model **BasicHySa** for one time-step of duration dt.
+    def run_one_step(self, step):
+        """Advance model **BasicHySa** for one time-step of duration step.
 
         The **run_one_step** method does the following:
 
-        1. Directs flow and accumulates drainage area.
+        1. Creates rain and runoff, then directs and accumulates flow.
 
         2. Assesses the location, if any, of flooded nodes where erosion should
-        not occur.
+           not occur.
 
-        3. Assesses if a **PrecipChanger** is an active BoundaryHandler and if
-        so, uses it to modify the erodability by water.
+        3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
+           and if so, uses it to modify the erodability by water.
 
         4. Calculates erosion and deposition by water.
 
         5. Calculates topographic change by linear diffusion.
 
-        6. Finalizes the step using the **ErosionModel** base class function
-        **finalize__run_one_step**. This function updates all BoundaryHandlers
-        by ``dt`` and increments model time by ``dt``.
+        6. Finalizes the step using the :py:mod:`ErosionModel` base class
+           function **finalize__run_one_step**. This function updates all
+           boundary handlers handlers by ``step`` and increments model time by
+           ``step``.
 
         Parameters
         ----------
-        dt : float
+        step : float
             Increment of time for which the model is run.
         """
-        # Direct and accumulate flow
-        self.flow_accumulator.run_one_step()
+        # create and move water
+        self.create_and_move_water(step)
 
         # Get IDs of flooded nodes, if any
         if self.flow_accumulator.depression_finder is None:
@@ -301,14 +260,14 @@ class BasicHySa(ErosionModel):
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
-            erode_factor = self.boundary_handler[
+        if "PrecipChanger" in self.boundary_handlers:
+            erode_factor = self.boundary_handlers[
                 "PrecipChanger"
             ].get_erodability_adjustment_factor()
             self.eroder.K_sed = self.K_sed * erode_factor
             self.eroder.K_br = self.K_br * erode_factor
 
-        self.eroder.run_one_step(dt, flooded_nodes=flooded)
+        self.eroder.run_one_step(step, flooded_nodes=flooded)
 
         # We must also now erode the bedrock where relevant. If water erosion
         # into bedrock has occurred, the bedrock elevation will be higher than
@@ -321,10 +280,10 @@ class BasicHySa(ErosionModel):
         self.weatherer.calc_soil_prod_rate()
 
         # Generate and move soil around
-        self.diffuser.run_one_step(dt)
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
-        self.finalize__run_one_step(dt)
+        self.finalize__run_one_step(step)
 
         # Check stability
         self.check_stability()
@@ -351,7 +310,7 @@ def main():  # pragma: no cover
         print("Must include input file name on command line")
         sys.exit(1)
 
-    hysa = BasicHySa(input_file=infile)
+    hysa = BasicHySa.from_file(infile)
     hysa.run()
 
 

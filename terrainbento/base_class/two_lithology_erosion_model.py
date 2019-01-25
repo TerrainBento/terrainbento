@@ -8,44 +8,51 @@ lithologies.
 """
 import numpy as np
 
-from landlab.io import read_esri_ascii
 from terrainbento.base_class import ErosionModel
 
 
 class TwoLithologyErosionModel(ErosionModel):
     """Base class for two lithology terrainbento models.
 
-    A **TwoLithologyErosionModel** inherits from **ErosionModel** and provides
-    functionality needed by all models with two lithologies.
+    A **TwoLithologyErosionModel** inherits from
+    :py:class:`ErosionModel` and
+    provides functionality needed by all models with two lithologies.
 
     This is a base class that handles setting up common parameters and the
     contact zone elevation.
 
-    *Specifying the Lithology Contact*
-
-    In all two-lithology models the spatially variable elevation of the contact
-    elevation must be given as the file path to an ESRII ASCII format file using
-    the parameter ``lithology_contact_elevation__file_name``. If topography was
-    created using an input DEM, then the shape of the field contained in the
-    file must be the same as the input DEM. If synthetic topography is used then
-    the shape of the field must be ``number_of_node_rows-2`` by
-    ``number_of_node_columns-2``. This is because the read-in DEM will be padded
-    by a halo of size 1.
+    The following at-node fields must be specified in the grid:
+        - ``topographic__elevation``
+        - ``lithology_contact__elevation``
     """
 
-    def __init__(self, input_file=None, params=None, OutputWriters=None):
+    _required_fields = [
+        "topographic__elevation",
+        "lithology_contact__elevation",
+    ]
+
+    def __init__(
+        self,
+        clock,
+        grid,
+        m_sp=0.5,
+        n_sp=1.0,
+        water_erodability_lower=0.0001,
+        water_erodability_upper=0.001,
+        regolith_transport_parameter=0.1,
+        contact_zone__width=1.,
+        **kwargs
+    ):
         """
         Parameters
         ----------
-        input_file : str
-            Path to model input file. See wiki for discussion of input file
-            formatting. One of input_file or params is required.
-        params : dict
-            Dictionary containing the input file. One of input_file or params
-            is required.
-        OutputWriters : class, function, or list of classes and/or functions,
-            optional classes or functions used to write incremental output
-            (e.g. make a diagnostic plot).
+        clock : terrainbento Clock instance
+        grid : landlab model grid instance
+            The grid must have all required fields.
+        **kwargs :
+            Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
+            these arguments specify the precipitator and the runoff generator
+            that control the generation of surface water discharge (:math:`Q`).
 
         Returns
         -------
@@ -58,44 +65,27 @@ class TwoLithologyErosionModel(ErosionModel):
         usage.
         """
         # Call ErosionModel"s init
-        super(TwoLithologyErosionModel, self).__init__(
-            input_file=input_file, params=params, OutputWriters=OutputWriters
-        )
+        super(TwoLithologyErosionModel, self).__init__(clock, grid, **kwargs)
+
+        # verify correct fields are present.
+        self._verify_fields(self._required_fields)
+
+        self.m = m_sp
+        self.n = n_sp
 
         # Get all common parameters
-        self.contact_width = (self._length_factor) * self.params[
-            "contact_zone__width"
-        ]  # has units length
+        self.contact_width = contact_zone__width
 
-        self.m = self.params["m_sp"]
-        self.n = self.params["n_sp"]
+        self.regolith_transport_parameter = regolith_transport_parameter
 
-        self.regolith_transport_parameter = (
-            self._length_factor ** 2.
-        ) * self._get_parameter_from_exponent("regolith_transport_parameter")
+        self.K_rock = water_erodability_lower
 
-        self.K_rock = self._get_parameter_from_exponent(
-            "water_erodability~lower"
-        ) * (self._length_factor ** (1. - (2. * self.m)))
-
-        self.K_till = self._get_parameter_from_exponent(
-            "water_erodability~upper"
-        ) * (self._length_factor ** (1. - (2. * self.m)))
+        self.K_till = water_erodability_upper
 
         # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock
         self.till_erody = self.K_till
 
-    def _setup_contact_elevation(self):
-        file_name = self.params["lithology_contact_elevation__file_name"]
-
-        # Read input data on rock-till contact elevation
-        read_esri_ascii(
-            file_name,
-            grid=self.grid,
-            halo=1,
-            name="lithology_contact__elevation",
-        )
         self.rock_till_contact = self.grid.at_node[
             "lithology_contact__elevation"
         ]
@@ -103,8 +93,6 @@ class TwoLithologyErosionModel(ErosionModel):
     def _setup_rock_and_till(self):
         """Set up fields to handle for two layers with different
         erodability."""
-        # Get a reference to the rock-till field
-        self._setup_contact_elevation()
 
         # Create field for erodability
         self.erody = self.grid.add_zeros("node", "substrate__erodability")
@@ -119,8 +107,6 @@ class TwoLithologyErosionModel(ErosionModel):
     def _setup_rock_and_till_with_threshold(self):
         """Set up fields to handle for two layers with different
         erodability."""
-        # Get a reference to the rock-till field\
-        self._setup_contact_elevation()
 
         # Create field for erodability
         self.erody = self.grid.add_zeros("node", "substrate__erodability")
@@ -154,8 +140,8 @@ class TwoLithologyErosionModel(ErosionModel):
 
     def _update_Ks_with_precip(self):
         # (if we're varying K through time, update that first)
-        if "PrecipChanger" in self.boundary_handler:
-            erode_factor = self.boundary_handler[
+        if "PrecipChanger" in self.boundary_handlers:
+            erode_factor = self.boundary_handlers[
                 "PrecipChanger"
             ].get_erodability_adjustment_factor()
             self.till_erody = self.K_till * erode_factor

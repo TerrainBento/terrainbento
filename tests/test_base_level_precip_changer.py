@@ -2,9 +2,10 @@
 # !/usr/env/python
 
 import pytest
+from scipy.integrate import IntegrationWarning
 
 from landlab import HexModelGrid, RasterModelGrid
-from terrainbento.boundary_condition_handlers import PrecipChanger
+from terrainbento.boundary_handlers import PrecipChanger
 
 
 def test_not_passing_daily_rainfall__intermittency_factor():
@@ -156,27 +157,29 @@ def test_bad_intensity():
     """Test rainfall intensity that is too small."""
     mg = RasterModelGrid(5, 5)
     with pytest.raises(ValueError):
-        PrecipChanger(
-            mg,
-            daily_rainfall__intermittency_factor=1.0,
-            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-            rainfall__mean_rate=-1,
-            rainfall__mean_rate_time_rate_of_change=0.2,
-            rainfall__shape_factor=0.65,
-            infiltration_capacity=0,
-        )
+        with pytest.warns(IntegrationWarning):
+            PrecipChanger(
+                mg,
+                daily_rainfall__intermittency_factor=1.0,
+                daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+                rainfall__mean_rate=-1,
+                rainfall__mean_rate_time_rate_of_change=0.2,
+                rainfall__shape_factor=0.65,
+                infiltration_capacity=0,
+            )
 
 
 def test_bad_infiltration():
     """Test infiltration_capacity that is too small."""
     mg = RasterModelGrid(5, 5)
     with pytest.raises(ValueError):
-        PrecipChanger(
-            mg,
-            daily_rainfall__intermittency_factor=1.0,
-            daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
-            rainfall__mean_rate=0.34,
-            rainfall__mean_rate_time_rate_of_change=0.2,
-            rainfall__shape_factor=0.65,
-            infiltration_capacity=-0.001,
-        )
+        with pytest.warns(IntegrationWarning):
+            PrecipChanger(
+                mg,
+                daily_rainfall__intermittency_factor=1.0,
+                daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+                rainfall__mean_rate=0.34,
+                rainfall__mean_rate_time_rate_of_change=0.2,
+                rainfall__shape_factor=0.65,
+                infiltration_capacity=-0.001,
+            )

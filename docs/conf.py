@@ -56,7 +56,6 @@ MOCK_MODULES = [
     "ErosionDeposition",
     "Space",
     "TaylorNonLinearDiffuser",
-    "StreamPowerEroder",
     "DepthDependentDiffuser",
     "ExponentialWeatherer",
     "DepthDependentTaylorDiffuser",

@@ -1,3 +1,5 @@
+.. py:class:: BasicVs
+
 Model BasicVs
 =============
 
