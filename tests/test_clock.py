@@ -1,8 +1,6 @@
 # coding: utf8
 # !/usr/env/python
 
-import os
-
 import pytest
 
 from terrainbento import Clock
