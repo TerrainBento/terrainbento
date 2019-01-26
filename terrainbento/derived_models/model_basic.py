@@ -42,6 +42,35 @@ class Basic(ErosionModel):
 
     _required_fields = ["topographic__elevation"]
 
+    _name = ""
+
+    _input_var_names  = ("field name 1", "var_name") # state variables.
+
+    _output_var_names = ("field 1", )
+
+    _var_info = {
+        "lithosphere__overlying_pressure_increment": {
+            "units": "Pa",
+            "at": "node",
+            "description":"Applied pressure to the lithosphere over a time step",
+        }
+        "lithosphere_surface__elevation_increment": {
+            "units": "m",
+            "at": "node",
+            "description": "The change in elevation of the top of the lithosphere (the land ",
+        }
+    }
+
+    # keyword arguments that I want/can expose
+    _param_info = {
+        "param1": {"units": "m",
+                   "default": foo,
+                   "range" : None, # leave off if no range
+                   "description"},
+        "param2"...
+
+    }
+
     def __init__(
         self,
         clock,

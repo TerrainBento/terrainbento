@@ -185,12 +185,12 @@ class ErosionModel(object):
         # first get contents.
         try:
             contents = file_like.read()
-        except AttributeError:  # was a str
+        except AttributeError:
             if os.path.isfile(file_like):
                 with open(file_like, "r") as fp:
                     contents = fp.read()
             else:
-                contents = file_like  # not tested
+                contents = file_like
 
         # then parse contents.
         params = yaml.safe_load(contents)
@@ -539,8 +539,8 @@ class ErosionModel(object):
         This base-class method increments model time and updates
         boundary conditions.
         """
-        # calculate model time
-        self._model_time += step
+        # update model time
+        self.clock.advance(step)
 
         # Update boundary conditions
         self.update_boundary_conditions(step)
@@ -590,13 +590,12 @@ class ErosionModel(object):
             self._itters.append(0)
             self.write_output()
         self.iteration = 1
-        time_now = self._model_time
-        while time_now < self.clock.stop:
+        while self.clock.time < self.clock.stop:
             next_run_pause = min(
                 time_now + self.output_interval, self.clock.stop
             )
             self.run_for(self.clock.step, next_run_pause - time_now)
-            time_now = self._model_time
+            time_now = self.clock.time
             self.iteration += 1
             self._itters.append(self.iteration)
             self.write_output()

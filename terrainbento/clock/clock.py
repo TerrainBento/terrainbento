@@ -1,7 +1,7 @@
 """Clock sets the run duration and timestep in terrainbento model runs."""
 
 import yaml
-
+#import cfunits
 
 class Clock(object):
     """terrainbento clock."""
@@ -60,7 +60,7 @@ class Clock(object):
         """
         return cls(**params)
 
-    def __init__(self, start=0., step=10., stop=100.):
+    def __init__(self, start=0., step=10., stop=100., units="day"):
         """
         Parameters
         ----------
@@ -70,7 +70,8 @@ class Clock(object):
             Model stop time. Default is 100.
         step : float, optional
             Model time step. Default is 10.
-
+        units : str, optional
+            Default is "day".
         Examples
         --------
         >>> from terrainbento import Clock
@@ -95,6 +96,9 @@ class Clock(object):
         >>> clock.step
         200.0
         """
+        # verify that unit is a valid CFUNITS
+        #raise ValueError()
+
         try:
             self.start = float(start)
         except ValueError:
@@ -125,3 +129,35 @@ class Clock(object):
         if self.start > self.stop:
             msg = "Clock: *start* is larger than *stop*."
             raise ValueError(msg)
+
+
+        @property
+        def time(self):
+            """Current time."""
+            return self._time
+
+        @property
+        def start(self):
+            """Start time."""
+            return self._start
+
+        @property
+        def stop(self):
+            """Stop time."""
+            return self._stop
+
+        @property
+        def step(self):
+            """Time Step."""
+            return self._step
+
+        @step.setter
+        def step(self, new_val):
+            """Change the time step."""
+            self._step = new_val
+
+        def advance(self):
+            """Advance the time stepper by one time step."""
+            self._time += self.step
+            if self._stop is not None and self._time > self._stop:
+                raise StopIteration()
