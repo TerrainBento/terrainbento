@@ -48,7 +48,6 @@ install:
 - conda install -q conda-build
 - conda install -q conda-verify
 - conda install -q anaconda-client
-- conda install -q numpy
 - conda install -q coverage
 - conda install -q coveralls
 - conda install -q sphinx
