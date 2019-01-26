@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/TerrainBento/terrainbento.svg?branch=master)](https://travis-ci.org/TerrainBento/terrainbento)
 [![Build status](https://ci.appveyor.com/api/projects/status/kwwpjifg8vrwe51x/branch/master?svg=true)](https://ci.appveyor.com/project/kbarnhart/terrainbento/branch/master)
-[![Anaconda-Server Badge](https://anaconda.org/terrainbento/terrainbento/badges/version.svg)](https://anaconda.org/terrainbento/terrainbento)
+
+Put conda forge here
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/123941145.svg)](https://zenodo.org/badge/latestdoi/123941145)
 
@@ -12,15 +14,13 @@
 
 # terrainbento
 
-Currently in development.
-
 A modular landscape evolution modeling package built on top of the [Landlab Toolkit](http://landlab.github.io).
 
 terrainbento"s User Manual is located at our [Read The Docs page](http://terrainbento.readthedocs.io/).
 
 We recommend that you start with [this set of Jupyter notebooks](https://github.com/TerrainBento/examples_tests_and_tutorials) that introduce terrainbento .
 
-A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/). Please consider contributing comments or feedback as part of the review process.
+A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/).
 
 ## A quick example
 
@@ -29,7 +29,12 @@ The following is the code needed to run the Basic model.
 ```python
 from terrainbento import Basic
 
-model = Basic(params={"step" : 100,
+model = Basic(
+
+change this!
+
+
+params={"step" : 100,
                       "output_interval": 1e3,
                       "stop": 1.5e5,
                       "number_of_node_rows" : 200,
@@ -84,8 +89,8 @@ Before installing terrainbento you will need a python distribution. We recommend
 To install the release version of terrainbento (this is probably what you want) open a terminal and execute the following:
 
 ```
-conda config --add channels landlab
-conda install -c terrainbento terrainbento
+conda config --add channels conda-forge
+conda install terrainbento
 ```
 
 ### From source code
@@ -118,4 +123,4 @@ If you plan to develop with terrainbento, please fork terrainbento, clone the fo
 
 ## How to cite
 
-There will be a GMD paper.
+A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/).
