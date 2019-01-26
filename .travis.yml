@@ -51,7 +51,7 @@ install:
 - conda install -q conda-build
 - conda install -q conda-verify
 - conda install -q anaconda-client
-- conda install -q numpy=1.11
+- conda install -q numpy
 - conda install -q coverage
 - conda install -q coveralls
 - conda install -q sphinx
@@ -59,7 +59,6 @@ install:
 - conda install -q pytest-cov
 - conda install -q flake8
 - pip install --upgrade pip
-- pip install pytest
 - pip install codacy-coverage
 - conda info -a && conda list
 - conda config --add channels conda-forge
