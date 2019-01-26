@@ -32,6 +32,7 @@ install:
   - cmd: conda info
   - cmd: conda config --set always_yes yes
   - cmd: conda update conda
+  - cmd: conda config --add channels conda-forge
   - cmd: conda install -q --force --no-deps psutil ruamel_yaml requests
   - cmd: conda install -q conda-build
   - cmd: conda install -q conda-verify
@@ -40,7 +41,6 @@ install:
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
-  - cmd: conda config --add channels conda-forge
   - cmd: conda install --file=requirements.txt
   - cmd: python setup.py install
 

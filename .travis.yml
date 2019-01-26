@@ -42,6 +42,7 @@ install:
 - conda info
 - conda config --set always_yes yes --set changeps1 no
 - conda update -q conda
+- conda config --add channels conda-forge
   # Useful for debugging any issues with conda
 - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
 - source activate test-environment
@@ -57,7 +58,6 @@ install:
 - pip install --upgrade pip
 - pip install codacy-coverage
 - conda info -a && conda list
-- conda config --add channels conda-forge
 - conda install --file=requirements.txt
 - python setup.py install
 
