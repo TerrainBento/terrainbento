@@ -68,11 +68,12 @@ from landlab import imshow_grid
 
 filenames = []
 ds = model.to_xarray_dataset()
-model.remove_output_netcdfs()
 for i in range(ds.topographic__elevation.shape[0]):
     filename = "temp_output."+str(i)+".png"
-    imshow_grid(model.grid, ds.topographic__elevation[i, :, :], cmap="viridis", limits=(0, 12), output=filename)
+    imshow_grid(model.grid, ds.topographic__elevation.values[i, :, :], cmap="viridis", limits=(0, 12), output=filename)
     filenames.append(filename)
+model.remove_output_netcdfs()
+
 ```
 
 Finally we compile the images into a gif.
