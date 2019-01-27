@@ -54,7 +54,7 @@ output_interval: 1e3
 fields:
   - topographic__elevation
 """  
-model = Basic.fromfile(filelike)
+model = Basic.from_file(filelike)
 model.run()
 ```
 
