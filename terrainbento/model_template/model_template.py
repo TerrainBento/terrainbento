@@ -31,7 +31,6 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     2. Links to all landlab components used.
 
     3. Description of the governing equation of the model.
-
     """
 
     _required_fields = ["topographic__elevation"]
