@@ -114,7 +114,8 @@ python setup.py install
 #### Option B: You do not have landlab installed
 
 ```
-conda install -c landlab landlab
+conda config --add channels conda-forge
+conda install landlab
 git clone https://github.com/TerrainBento/terrainbento.git
 cd terrainbento
 conda install --file=requirements.txt
