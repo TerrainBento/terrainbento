@@ -127,7 +127,7 @@ python setup.py install
 
 #### A note to developers
 
-If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and replace `python setup.py install` with `python setup.py develop`.
+If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and replace `python setup.py install` with `python setup.py develop`. If you have any questions, please contact us by making an Issue.
 
 
 ## How to cite
