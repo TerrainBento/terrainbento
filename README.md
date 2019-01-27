@@ -26,28 +26,36 @@ The following is the code needed to run the Basic model.
 ```python
 from terrainbento import Basic
 
-model = Basic(
+filelike = """
+grid:
+  grid:
+    RasterModelGrid:
+      - [200, 320]
+      - xy_spacing: 10
+  fields:
+    at_node:
+      topographic__elevation:
+        random:
+          - where: "CORE_NODE"
+clock:
+  step: 100
+  stop: 1.5e5
 
-change this!
+boundary_handlers:
+  NotCoreNodeBaselevelHandler:
+    modify_core_nodes: True
+    lowering_rate: -0.01
 
-
-params={"step" : 100,
-                      "output_interval": 1e3,
-                      "stop": 1.5e5,
-                      "number_of_node_rows" : 200,
-                      "number_of_node_columns" : 320,
-                      "node_spacing" : 10.0,
-                      "add_random_noise": True,
-                      "initial_noise_std": 1.,
-                      "random_seed": 4897,
-                      "water_erodability" : 0.001,
-                      "m_sp" : 0.5,
-                      "n_sp" : 1.0,
-                      "regolith_transport_parameter" : 0.2,
-                      "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-                      "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
-                                                      "lowering_rate": -0.001}})
-model.run(output_fields='topographic__elevation')
+water_erodability: 0.001
+m_sp: 1
+n_sp: 0.5
+regolith_transport_parameter: 0.2
+output_interval: 1e3
+fields:
+  - topographic__elevation
+"""  
+model = Basic.fromfile(filelike)
+model.run()
 ```
 
 Next we make an image for each output interval.
