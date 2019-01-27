@@ -21,7 +21,10 @@ A manuscript describing terrainbento is currently in discussion at GMD. The disc
 
 ## A quick example
 
-The following is the code needed to run the Basic model.
+The following is all the code needed to run the Basic model. There are a few
+different options available to create a model, here we will create one from a
+file-like object. The string will contain the same information as a YAML style
+input file that specifies the model construction and run.
 
 ```python
 from terrainbento import Basic
