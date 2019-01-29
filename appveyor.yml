@@ -32,7 +32,6 @@ install:
   - cmd: set PYTHONUNBUFFERED=1
   - cmd: conda info
   - cmd: conda config --add channels conda-forge
-  - cmd: conda install -q --force --no-deps psutil ruamel_yaml requests
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
