@@ -28,7 +28,7 @@ init:
 install:
   - cmd: call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
   - cmd: conda config --set always_yes yes
-  - cmd: conda install -q conda=4.5
+  - cmd: conda install -q conda=4.5.12
   - cmd: set PYTHONUNBUFFERED=1
   - cmd: conda info
   - cmd: conda config --add channels conda-forge
