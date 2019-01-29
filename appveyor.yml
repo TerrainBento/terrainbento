@@ -27,11 +27,10 @@ init:
 
 install:
   - cmd: call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
-  - cmd: conda update --yes --quiet conda
+  - cmd: conda install -q conda=4.5
   - cmd: set PYTHONUNBUFFERED=1
   - cmd: conda info
   - cmd: conda config --set always_yes yes
-  - cmd: conda install -q conda=4.5
   - cmd: conda config --add channels conda-forge
   - cmd: conda install -q --force --no-deps psutil ruamel_yaml requests
   - cmd: pip install pytest
