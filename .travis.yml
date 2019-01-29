@@ -41,7 +41,7 @@ install:
 - hash -r
 - conda info
 - conda config --set always_yes yes --set changeps1 no
-- conda update -q conda
+- conda install -q conda=4.5
 - conda config --add channels conda-forge
   # Useful for debugging any issues with conda
 - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
