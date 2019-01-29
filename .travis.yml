@@ -19,11 +19,11 @@ before_install:
     rm -rf $(brew --cache)
   fi
 - |
-  if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" && "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_EVENT_TYPE" == "push" ]]; then
+  if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" && "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_EVENT_TYPE" == "push" ]]; then
     REPORT_TO_COVERALLS=1
   fi
 - |
-  if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+  if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" && "$TRAVIS_OS_NAME" == "linux" ]]; then
     BUILD_DOCS=1
   fi
 
