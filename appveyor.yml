@@ -37,7 +37,6 @@ install:
   - cmd: conda install -q conda-build
   - cmd: conda install -q conda-verify
   - cmd: conda install -q anaconda-client
-  - cmd: pip install twine
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
