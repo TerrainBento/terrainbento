@@ -29,35 +29,32 @@ input file that specifies the model construction and run.
 ```python
 from terrainbento import Basic
 
-filelike = """
-grid:
-  grid:
-    RasterModelGrid:
-      - [200, 320]
-      - xy_spacing: 10
-  fields:
-    at_node:
-      topographic__elevation:
-        random:
-          - where: "CORE_NODE"
-clock:
-  step: 100
-  stop: 1.5e5
+params = {
+    # create the Clock.
+    "clock": {"start": 0,
+              "step": 10,
+              "stop": 1.5e5},
 
-boundary_handlers:
-  NotCoreNodeBaselevelHandler:
-    modify_core_nodes: True
-    lowering_rate: -0.01
+    # Create the Grid.
+    "grid": {"grid": {"RasterModelGrid":[(200, 320), {"xy_spacing": 10}]},
+             "fields": {"at_node": {"topographic__elevation":{"random":[{"where":"CORE_NODE"}]}}}},
 
-water_erodability: 0.001
-m_sp: 1
-n_sp: 0.5
-regolith_transport_parameter: 0.2
-output_interval: 1e3
-fields:
-  - topographic__elevation
-"""  
-model = Basic.from_file(filelike)
+    # Set up Boundary Handlers
+    "boundary_handlers":{"NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
+                                                         "lowering_rate": -0.001}},
+    # Parameters that control output.
+    "output_interval": 1e3,
+    "save_first_timestep": True,
+    "fields":["topographic__elevation"],
+
+    # Parameters that control process and rates.
+    "water_erodability" : 0.001,
+    "m_sp" : 0.5,
+    "n_sp" : 1.0,
+    "regolith_transport_parameter" : 0.2,           
+         }
+
+model = Basic.from_dict(params)
 model.run()
 ```
 
