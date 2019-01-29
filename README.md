@@ -33,7 +33,7 @@ params = {
     # create the Clock.
     "clock": {"start": 0,
               "step": 10,
-              "stop": 1.5e5},
+              "stop": 1e5},
 
     # Create the Grid.
     "grid": {"grid": {"RasterModelGrid":[(200, 320), {"xy_spacing": 10}]},
