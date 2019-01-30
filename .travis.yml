@@ -46,6 +46,7 @@ install:
   # Useful for debugging any issues with conda
 - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION
 - source activate test-environment
+- conda update curl
 - conda install -q libcurl
 - conda install -q coverage
 - conda install -q coveralls
