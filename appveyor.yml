@@ -8,11 +8,11 @@ environment:
       DISTUTILS_USE_SDK: 1
 
     - TARGET_ARCH: x64
-      CONDA_INSTALL_LOCN: C:\\Miniconda35-x64
+      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
       CONDA_PY: 36
 
     - TARGET_ARCH: x64
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
+      CONDA_INSTALL_LOCN: C:\\Miniconda37-x64
       CONDA_PY: 37
 
 platform:
