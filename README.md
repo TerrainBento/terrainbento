@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/TerrainBento/terrainbento.svg?branch=master)](https://travis-ci.org/TerrainBento/terrainbento)
 [![Build status](https://ci.appveyor.com/api/projects/status/kwwpjifg8vrwe51x/branch/master?svg=true)](https://ci.appveyor.com/project/kbarnhart/terrainbento/branch/master)
-[![Anaconda-Server Badge](https://anaconda.org/terrainbento/terrainbento/badges/version.svg)](https://anaconda.org/terrainbento/terrainbento)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/123941145.svg)](https://zenodo.org/badge/latestdoi/123941145)
 
@@ -12,40 +11,51 @@
 
 # terrainbento
 
-Currently in development.
-
 A modular landscape evolution modeling package built on top of the [Landlab Toolkit](http://landlab.github.io).
 
 terrainbento"s User Manual is located at our [Read The Docs page](http://terrainbento.readthedocs.io/).
 
 We recommend that you start with [this set of Jupyter notebooks](https://github.com/TerrainBento/examples_tests_and_tutorials) that introduce terrainbento .
 
-A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/). Please consider contributing comments or feedback as part of the review process.
+A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/).
 
 ## A quick example
 
-The following is the code needed to run the Basic model.
+The following is all the code needed to run the Basic model. There are a few
+different options available to create a model, here we will create one from a
+file-like object. The string will contain the same information as a YAML style
+input file that specifies the model construction and run.
 
 ```python
 from terrainbento import Basic
 
-model = Basic(params={"step" : 100,
-                      "output_interval": 1e3,
-                      "stop": 1.5e5,
-                      "number_of_node_rows" : 200,
-                      "number_of_node_columns" : 320,
-                      "node_spacing" : 10.0,
-                      "add_random_noise": True,
-                      "initial_noise_std": 1.,
-                      "random_seed": 4897,
-                      "water_erodability" : 0.001,
-                      "m_sp" : 0.5,
-                      "n_sp" : 1.0,
-                      "regolith_transport_parameter" : 0.2,
-                      "BoundaryHandlers": "NotCoreNodeBaselevelHandler",
-                      "NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
-                                                      "lowering_rate": -0.001}})
-model.run(output_fields='topographic__elevation')
+params = {
+    # create the Clock.
+    "clock": {"start": 0,
+              "step": 10,
+              "stop": 1e5},
+
+    # Create the Grid.
+    "grid": {"grid": {"RasterModelGrid":[(200, 320), {"xy_spacing": 10}]},
+             "fields": {"at_node": {"topographic__elevation":{"random":[{"where":"CORE_NODE"}]}}}},
+
+    # Set up Boundary Handlers
+    "boundary_handlers":{"NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,
+                                                         "lowering_rate": -0.001}},
+    # Parameters that control output.
+    "output_interval": 1e3,
+    "save_first_timestep": True,
+    "fields":["topographic__elevation"],
+
+    # Parameters that control process and rates.
+    "water_erodability" : 0.001,
+    "m_sp" : 0.5,
+    "n_sp" : 1.0,
+    "regolith_transport_parameter" : 0.2,           
+         }
+
+model = Basic.from_dict(params)
+model.run()
 ```
 
 Next we make an image for each output interval.
@@ -55,11 +65,12 @@ from landlab import imshow_grid
 
 filenames = []
 ds = model.to_xarray_dataset()
-model.remove_output_netcdfs()
 for i in range(ds.topographic__elevation.shape[0]):
     filename = "temp_output."+str(i)+".png"
-    imshow_grid(model.grid, ds.topographic__elevation[i, :, :], cmap="viridis", limits=(0, 12), output=filename)
+    imshow_grid(model.grid, ds.topographic__elevation.values[i, :, :], cmap="viridis", limits=(0, 12), output=filename)
     filenames.append(filename)
+model.remove_output_netcdfs()
+
 ```
 
 Finally we compile the images into a gif.
@@ -84,8 +95,8 @@ Before installing terrainbento you will need a python distribution. We recommend
 To install the release version of terrainbento (this is probably what you want) open a terminal and execute the following:
 
 ```
-conda config --add channels landlab
-conda install -c terrainbento terrainbento
+conda config --add channels conda-forge
+conda install terrainbento
 ```
 
 ### From source code
@@ -104,7 +115,8 @@ python setup.py install
 #### Option B: You do not have landlab installed
 
 ```
-conda install -c landlab landlab
+conda config --add channels conda-forge
+conda install landlab
 git clone https://github.com/TerrainBento/terrainbento.git
 cd terrainbento
 conda install --file=requirements.txt
@@ -113,9 +125,9 @@ python setup.py install
 
 #### A note to developers
 
-If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and replace `python setup.py install` with `python setup.py develop`.
+If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and replace `python setup.py install` with `python setup.py develop`. If you have any questions, please contact us by making an Issue.
 
 
 ## How to cite
 
-There will be a GMD paper.
+A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/).
