@@ -49,7 +49,7 @@ class StochasticErosionModel(ErosionModel):
     ``rainfall__shape_factor`` and with a scale factor calculated so that the
     mean of the distribution has the value given by ``rainfall__mean_rate``.
 
-    The following parameter are used:
+    The following parameters are used:
 
         - rainfall__shape_factor
         - number_of_sub_time_steps
@@ -58,7 +58,7 @@ class StochasticErosionModel(ErosionModel):
 
     The hydrology uses calculation of drainage area using the user-specified
     routing method. It then performs one of two options, depending on the
-    user"s choice of ``opt_stochastic_duration`` (True or False).
+    user's choice of ``opt_stochastic_duration`` (True or False).
 
     If the user requests stochastic duration, the model iterates through a sequence
     of storm and interstorm periods. Storm depth is drawn at random from a gamma
@@ -89,7 +89,7 @@ class StochasticErosionModel(ErosionModel):
     :math:`I` is the mean. Hence, there are always some spots within any given grid cell
     that will generate runoff. This approach yields a smooth transition from
     near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P`
-    (when :math`P>>I`), without a "hard threshold."
+    (when :math:`P>>I`), without a "hard threshold."
 
     The following at-node fields must be specified in the grid:
         - ``topographic__elevation``
@@ -317,7 +317,7 @@ class StochasticErosionModel(ErosionModel):
         have been calculated already. It might be zero, in which case we
         are between storms, so we don't do water erosion.
 
-        If we're NOT doing stochastic duration, then we"ll run water
+        If we're NOT doing stochastic duration, then we'll run water
         erosion for one or more sub-time steps, each with its own
         randomly drawn precipitation intensity.
 
