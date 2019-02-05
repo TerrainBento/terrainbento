@@ -86,7 +86,7 @@ with imageio.get_writer("terrainbento_example.gif", mode="I") as writer:
 
 ## Installation instructions
 
-Before installing terrainbento you will need a python distribution. We recommend that you use the [Anaconda python distribution](https://www.anaconda.com/download/). Unless you have a specific reason to want Python 2.7 we strongly suggest that you install Python 3.6 (or the current 3.* version provided by Anaconda).
+Before installing terrainbento you will need a python distribution. We recommend that you use the [Anaconda python distribution](https://www.anaconda.com/download/). Unless you have a specific reason to want Python 2.7 we strongly suggest that you install Python 3.7 (or the current 3.* version provided by Anaconda).
 
 ### Using conda
 To install the release version of terrainbento (this is probably what you want) open a terminal and execute the following:
