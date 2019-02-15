@@ -17,6 +17,7 @@ from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io.netcdf import write_raster_netcdf
 from terrainbento import Clock
+from terrainbento.base_class.model import Model
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -126,7 +127,7 @@ def _setup_boundary_handlers(grid, name, params):
     return boundary_handler
 
 
-class ErosionModel(object):
+class ErosionModel(Model):
 
     """Base class providing common functionality for terrainbento models.
 
@@ -370,6 +371,8 @@ class ErosionModel(object):
         recommend that you look at the terrainbento tutorials for examples of
         usage.
         """
+        super...
+
         flow_accumulator_kwargs = flow_accumulator_kwargs or {}
         boundary_handlers = boundary_handlers or {}
         output_writers = output_writers or {}

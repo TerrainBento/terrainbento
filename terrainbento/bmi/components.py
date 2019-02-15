@@ -1,11 +1,12 @@
 import sys
 import warnings
 
-from ..components import COMPONENTS
+from terrainbento.derived_models import MODELS
+
 from .bmi_bridge import wrap_as_bmi
 
 __all__ = []
-for cls in COMPONENTS:
+for cls in MODELS:
     try:
         as_bmi = wrap_as_bmi(cls)
     except TypeError:

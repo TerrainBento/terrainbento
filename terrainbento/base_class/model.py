@@ -8,7 +8,6 @@ import os
 import textwrap
 import warnings
 
-
 _VAR_HELP_MESSAGE = """
 name: {name}
 description:
@@ -54,6 +53,7 @@ class Model(object):
         ~landlab.core.model_component.Component.imshow
     """
 
+    _name = ""
     _input_var_names = set()
     _output_var_names = set()
     _optional_var_names = set()
@@ -69,7 +69,9 @@ class Model(object):
 
         for (location, vars) in map_vars.items():
             for (dest, src) in vars.items():
-                grid.add_field(location, dest, grid.field_values(location, src))
+                grid.add_field(
+                    location, dest, grid.field_values(location, src)
+                )
 
         for key in kwds:
             component_name = inspect.getmro(self.__class__)[0].__name__
@@ -309,7 +311,12 @@ class Model(object):
             init_vals = self.grid.zeros(grp, dtype=type_in)
             units_in = self.var_units(field_to_set)
             self.grid.add_field(
-                grp, field_to_set, init_vals, units=units_in, copy=False, noclobber=True
+                grp,
+                field_to_set,
+                init_vals,
+                units=units_in,
+                copy=False,
+                noclobber=True,
             )
 
     def initialize_optional_output_fields(self):
@@ -322,7 +329,9 @@ class Model(object):
         initialized to zero. New fields are created as arrays of floats, unless
         the component also contains the specifying property _var_type.
         """
-        for field_to_set in set(self.optional_var_names) - set(self.input_var_names):
+        for field_to_set in set(self.optional_var_names) - set(
+            self.input_var_names
+        ):
             self.grid.add_field(
                 self.var_loc(field_to_set),
                 field_to_set,
@@ -346,8 +355,3 @@ class Model(object):
         """Return the coordinates of nodes on grid attached to the component.
         """
         return (self.grid.node_x, self.grid.node_y)
-
-    def imshow(self, name, **kwds):
-        """Plot data on the grid attached to the component.
-        """
-        self._grid.imshow(name, **kwds)

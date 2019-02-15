@@ -1,14 +1,8 @@
 """
-========================================================================================
-Wrap landlab component with the Basic Modeling Interface (:mod:`landlab.bmi.bmi_bridge`)
-========================================================================================
+Wrap terrainbento model with a bmi
+----------------------------------
 
-.. sectionauthor:: Eric Hutton
-
-Function reference
-------------------
-
-The `wrap_as_bmi` function wraps a landlab component class so that it
+The `wrap_as_bmi` function wraps a terrainbento model class so that it
 exposes a Basic Modelling Interface.
 
 """
@@ -17,8 +11,8 @@ import os
 import numpy as np
 import yaml
 
-from ..core.model_component import Component
-from ..grid import RasterModelGrid
+from terrainbento.base_class.model import Model
+
 
 def wrap_as_bmi(cls):
     """Wrap a landlab class so it exposes a BMI.
@@ -35,15 +29,13 @@ def wrap_as_bmi(cls):
 
     Examples
     --------
-    >>> from landlab.bmi import wrap_as_bmi
-    >>> from landlab.components.flexure import Flexure
+    >>> from terrainbento.bmi import wrap_as_bmi
+    >>> from terrainbento import Basic
 
-    >>> BmiFlexure = wrap_as_bmi(Flexure)
-    >>> flexure = BmiFlexure()
+    >>> BmiBasic = wrap_as_bmi(Basic)
+    >>> basic = BmiBasic()
 
     >>> config = \"\"\"
-    ... eet: 10.e+3
-    ... method: flexure
     ... clock:
     ...     start: 0.
     ...     stop: 10.
@@ -53,41 +45,40 @@ def wrap_as_bmi(cls):
     ...     shape: [20, 40]
     ...     spacing: [1000., 2000.]
     ... \"\"\"
-    >>> flexure.initialize(config)
-    >>> flexure.get_output_var_names()
+    >>> basic.initialize(config)
+    >>> basic.get_output_var_names()
     ('lithosphere_surface__elevation_increment',)
-    >>> flexure.get_var_grid('lithosphere_surface__elevation_increment')
+    >>> basic.get_var_grid('lithosphere_surface__elevation_increment')
     0
-    >>> flexure.get_grid_shape(0)
+    >>> basic.get_grid_shape(0)
     (20, 40)
-    >>> dz = flexure.get_value('lithosphere_surface__elevation_increment')
+    >>> dz = basic.get_value('lithosphere_surface__elevation_increment')
     >>> dz.shape == (800, )
     True
 
     >>> np.all(dz == 0.)
     True
-    >>> flexure.get_current_time()
+    >>> basic.get_current_time()
     0.0
 
-    >>> flexure.get_input_var_names()
+    >>> basic.get_input_var_names()
     ('lithosphere__overlying_pressure_increment',)
     >>> load = np.zeros((20, 40), dtype=float)
     >>> load[0, 0] = 1.
-    >>> flexure.set_value('lithosphere__overlying_pressure_increment', load)
-    >>> flexure.update()
-    >>> flexure.get_current_time()
+    >>> basic.set_value('lithosphere__overlying_pressure_increment', load)
+    >>> basic.update()
+    >>> basic.get_current_time()
     2.0
-    >>> dz = flexure.get_value('lithosphere_surface__elevation_increment')
+    >>> dz = basic.get_value('lithosphere_surface__elevation_increment')
     >>> np.all(dz == 0.)
     False
     """
-    if not issubclass(cls, Component):
-        raise TypeError("class must inherit from Component")
-
+    if not issubclass(cls, Model):
+        raise TypeError("class must inherit from Model")
 
     class BmiWrapper(object):
         __doc__ = """
-        Basic Modeling Interface for the {name} component.
+        Basic Modeling Interface for the {name} model.
         """.format(
             name=cls.__name__
         ).strip()

@@ -1,7 +1,9 @@
 """Clock sets the run duration and timestep in terrainbento model runs."""
 
 import yaml
-#import cfunits
+
+# import cfunits
+
 
 class Clock(object):
     """terrainbento clock."""
@@ -97,7 +99,7 @@ class Clock(object):
         200.0
         """
         # verify that unit is a valid CFUNITS
-        #raise ValueError()
+        # raise ValueError()
 
         try:
             self.start = float(start)
@@ -129,7 +131,6 @@ class Clock(object):
         if self.start > self.stop:
             msg = "Clock: *start* is larger than *stop*."
             raise ValueError(msg)
-
 
         @property
         def time(self):
