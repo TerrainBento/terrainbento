@@ -9,7 +9,7 @@ class RandomPrecipitator(object):
     **RandomPrecipitator** populates the at-node field "rainfall__flux" with
     random values drawn from a distribution. All distributions provided in the
     `numpy.random submodule
-    <https://docs.scipy.org/doc/numpy-1.15.1/reference/routines.random.html#distributions>`_.
+    <https://docs.scipy.org/doc/numpy-1.15.1/reference/routines.random.html#distributions>`_
     are supported.
 
     Examples
