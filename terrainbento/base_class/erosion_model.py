@@ -325,7 +325,7 @@ class ErosionModel(object):
 
             If the default values of both the precipitator and
             runoff_generator are used, then :math:`Q` will be equal to drainage
-            area. XXXX might acknowledge that Kq = K R**m  and with R=1...
+            area.
 
         flow_director : str, optional
             String name of a
