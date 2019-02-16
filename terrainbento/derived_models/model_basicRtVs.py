@@ -72,11 +72,11 @@ class BasicRtVs(TwoLithologyErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = [
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
         "soil__depth",
-    ]
+    )
 
     def __init__(self, clock, grid, hydraulic_conductivity=0.1, **kwargs):
         """
@@ -147,7 +147,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         self._ensure_precip_runoff_are_vanilla()
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

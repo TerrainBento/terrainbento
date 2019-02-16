@@ -40,35 +40,33 @@ class Basic(ErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "Basic"
 
-    _name = ""
+    _input_var_names = ("topographic__elevation", "water__unit_flux_in")
 
-    _input_var_names  = ("field name 1", "var_name") # state variables.
-
-    _output_var_names = ("field 1", )
+    _output_var_names = "topographic__elevation"
 
     _var_info = {
-        "lithosphere__overlying_pressure_increment": {
-            "units": "Pa",
-            "at": "node",
-            "description":"Applied pressure to the lithosphere over a time step",
-        }
-        "lithosphere_surface__elevation_increment": {
+        "topographic__elevation": {
             "units": "m",
             "at": "node",
-            "description": "The change in elevation of the top of the lithosphere (the land ",
-        }
+            "description": "Land surface topographic elevation",
+        },
+        "water__unit_flux_in": {
+            "units": "m/s",
+            "at": "node",
+            "description": "Volume water per area per time input to each node.",
+        },
     }
 
-    # keyword arguments that I want/can expose
     _param_info = {
-        "param1": {"units": "m",
-                   "default": foo,
-                   "range" : None, # leave off if no range
-                   "description"},
-        "param2"...
-
+        "water_erodability": {
+            "units": None,
+            "default": None,
+            "range": None,  # leave off if no range
+            "description": "",
+        },
+        "regolith_transport_parameter": {},
     }
 
     def __init__(
@@ -135,7 +133,7 @@ class Basic(ErosionModel):
         super(Basic, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters:
         self.m = m_sp

@@ -61,10 +61,10 @@ class BasicRt(TwoLithologyErosionModel):
         - ``lithology_contact__elevation``
     """
 
-    _required_fields = [
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-    ]
+    )
 
     def __init__(self, clock, grid, **kwargs):
         """
@@ -129,7 +129,7 @@ class BasicRt(TwoLithologyErosionModel):
         super(BasicRt, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

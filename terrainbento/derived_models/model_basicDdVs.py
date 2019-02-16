@@ -67,7 +67,7 @@ class BasicDdVs(ErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = ["topographic__elevation", "soil__depth"]
+    _input_var_names = ("topographic__elevation", "soil__depth")
 
     def __init__(
         self,
@@ -148,7 +148,7 @@ class BasicDdVs(ErosionModel):
         self._ensure_precip_runoff_are_vanilla(vsa_precip=True)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         if float(n_sp) != 1.0:
             raise ValueError("Model BasicDdVs only supports n = 1.")

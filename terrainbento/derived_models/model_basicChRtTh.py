@@ -78,10 +78,10 @@ class BasicChRtTh(TwoLithologyErosionModel):
         - ``lithology_contact__elevation``
     """
 
-    _required_fields = [
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-    ]
+    )
 
     def __init__(
         self,
@@ -168,7 +168,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
             raise ValueError("Model only supports n equals 1.")
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Save the threshold values for rock and till
         self.rock_thresh = water_erosion_rule_lower__threshold

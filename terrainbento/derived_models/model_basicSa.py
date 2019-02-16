@@ -70,7 +70,7 @@ class BasicSa(ErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = ["topographic__elevation", "soil__depth"]
+    _input_var_names = ("topographic__elevation", "soil__depth")
 
     def __init__(
         self,
@@ -147,7 +147,7 @@ class BasicSa(ErosionModel):
         super(BasicSa, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters and convert units if necessary:
         self.m = m_sp

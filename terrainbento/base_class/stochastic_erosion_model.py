@@ -95,7 +95,7 @@ class StochasticErosionModel(ErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _input_var_names = ("topographic__elevation")
 
     def __init__(
         self,

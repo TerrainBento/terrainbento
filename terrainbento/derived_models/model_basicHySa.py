@@ -76,7 +76,7 @@ class BasicHySa(ErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = ["topographic__elevation", "soil__depth"]
+    _input_var_names = ("topographic__elevation", "soil__depth")
 
     def __init__(
         self,
@@ -174,7 +174,7 @@ class BasicHySa(ErosionModel):
         super(BasicHySa, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         soil_thickness = self.grid.at_node["soil__depth"]
         bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")

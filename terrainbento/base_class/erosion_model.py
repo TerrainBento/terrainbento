@@ -146,7 +146,7 @@ class ErosionModel(Model):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _input_var_names = ("topographic__elevation")
 
     @classmethod
     def from_file(cls, file_like):
@@ -371,7 +371,8 @@ class ErosionModel(Model):
         recommend that you look at the terrainbento tutorials for examples of
         usage.
         """
-        super...
+        # call ErosionModel's base class init
+        super(ErosionModel, self).__init__()
 
         flow_accumulator_kwargs = flow_accumulator_kwargs or {}
         boundary_handlers = boundary_handlers or {}
@@ -388,7 +389,7 @@ class ErosionModel(Model):
         self.clock = clock
 
         # first pass of verifying fields
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # save reference to elevation
         self.z = grid.at_node["topographic__elevation"]

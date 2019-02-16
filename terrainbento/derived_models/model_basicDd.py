@@ -56,7 +56,7 @@ class BasicDd(ErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _input_var_names = ("topographic__elevation")
 
     def __init__(
         self,
@@ -129,7 +129,7 @@ class BasicDd(ErosionModel):
         super(BasicDd, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters and convert units if necessary:
         self.m = m_sp

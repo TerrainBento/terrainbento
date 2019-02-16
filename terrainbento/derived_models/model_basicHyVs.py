@@ -62,7 +62,7 @@ class BasicHyVs(ErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = ["topographic__elevation", "soil__depth"]
+    _input_var_names = ("topographic__elevation", "soil__depth")
 
     def __init__(
         self,
@@ -152,7 +152,7 @@ class BasicHyVs(ErosionModel):
         self._ensure_precip_runoff_are_vanilla(vsa_precip=True)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         self.m = m_sp
         self.n = n_sp

@@ -1,7 +1,5 @@
 #! /usr/bin/env python
-"""
-Defines the base component class from which terrainbento models inherit.
-"""
+"""Defines the base component class from which terrainbento models inherit."""
 
 import inspect
 import os
@@ -24,8 +22,7 @@ class classproperty(property):
 
 
 class Model(object):
-    """
-    Defines the base component class from which Landlab components inherit.
+    """Defines the base component class from which Landlab components inherit.
 
     **Base component class methods**
 
@@ -131,8 +128,7 @@ class Model(object):
     @classproperty
     @classmethod
     def optional_var_names(self):
-        """
-        Names of fields that are optionally provided by the component, if
+        """Names of fields that are optionally provided by the component, if
         any.
 
         Returns
@@ -147,9 +143,8 @@ class Model(object):
 
     @classmethod
     def var_type(cls, name):
-        """
-        Returns the dtype of a field (float, int, bool, str...), if declared.
-        Default is float.
+        """Returns the dtype of a field (float, int, bool, str...), if
+        declared. Default is float.
 
         Parameters
         ----------
@@ -292,14 +287,15 @@ class Model(object):
         return cls._var_mapping[name]
 
     def initialize_output_fields(self):
-        """
-        Create fields for a component based on its input and output var names.
+        """Create fields for a component based on its input and output var
+        names.
 
-        This method will create new fields (without overwrite) for any fields
-        output by, but not supplied to, the component. New fields are
-        initialized to zero. Ignores optional fields, if specified by
-        _optional_var_names. New fields are created as arrays of floats, unless
-        the component also contains the specifying property _var_type.
+        This method will create new fields (without overwrite) for any
+        fields output by, but not supplied to, the component. New fields
+        are initialized to zero. Ignores optional fields, if specified
+        by _optional_var_names. New fields are created as arrays of
+        floats, unless the component also contains the specifying
+        property _var_type.
         """
         for field_to_set in (
             set(self.output_var_names)
@@ -320,14 +316,14 @@ class Model(object):
             )
 
     def initialize_optional_output_fields(self):
-        """
-        Create fields for a component based on its optional field outputs,
+        """Create fields for a component based on its optional field outputs,
         if declared in _optional_var_names.
 
-        This method will create new fields (without overwrite) for any fields
-        output by the component as optional. New fields are
-        initialized to zero. New fields are created as arrays of floats, unless
-        the component also contains the specifying property _var_type.
+        This method will create new fields (without overwrite) for any
+        fields output by the component as optional. New fields are
+        initialized to zero. New fields are created as arrays of floats,
+        unless the component also contains the specifying property
+        _var_type.
         """
         for field_to_set in set(self.optional_var_names) - set(
             self.input_var_names
@@ -352,6 +348,6 @@ class Model(object):
 
     @property
     def coords(self):
-        """Return the coordinates of nodes on grid attached to the component.
-        """
+        """Return the coordinates of nodes on grid attached to the
+        component."""
         return (self.grid.node_x, self.grid.node_y)

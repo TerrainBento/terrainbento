@@ -33,7 +33,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
     3. Description of the governing equation of the model.
     """
 
-    _required_fields = ["topographic__elevation"]
+    _input_var_names = ("topographic__elevation")
 
     def __init__(
         self,
@@ -88,7 +88,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         # Do not change any additional parts of this line.
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # put all actions needed to initialize the model below this line.
 

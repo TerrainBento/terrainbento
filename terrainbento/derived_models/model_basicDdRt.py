@@ -74,10 +74,10 @@ class BasicDdRt(TwoLithologyErosionModel):
         - ``lithology_contact__elevation``
     """
 
-    _required_fields = [
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-    ]
+    )
 
     def __init__(
         self,
@@ -154,7 +154,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         super(BasicDdRt, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         if float(self.n) != 1.0:
             raise ValueError("Model only supports n equals 1.")
