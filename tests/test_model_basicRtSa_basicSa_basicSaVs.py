@@ -9,8 +9,8 @@ from terrainbento import (
     NotCoreNodeBaselevelHandler,
 )
 
-_RT_params = {"water_erodability_lower": 0, "water_erodability_upper": 0}
-_OTHER_params = {"water_erodability": 0}
+_RT_params = {"water_erodibility_lower": 0, "water_erodibility_upper": 0}
+_OTHER_params = {"water_erodibility": 0}
 
 
 @pytest.mark.parametrize(

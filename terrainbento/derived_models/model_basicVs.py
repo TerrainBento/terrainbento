@@ -35,7 +35,7 @@ class BasicVs(ErosionModel):
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the discharge and slope exponent
-    parameters, :math:`K` is the erodability by water, and :math:`D` is the
+    parameters, :math:`K` is the erodibility by water, and :math:`D` is the
     regolith transport parameter.
 
     :math:`\alpha` is the saturation area scale used for transforming area into
@@ -60,7 +60,7 @@ class BasicVs(ErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         hydraulic_conductivity=0.1,
         **kwargs
@@ -75,8 +75,8 @@ class BasicVs(ErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability : float, optional
-            Water erodability (:math:`K`). Default is 0.0001.
+        water_erodibility : float, optional
+            Water erodibility (:math:`K`). Default is 0.0001.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         hydraulic_conductivity : float, optional
@@ -131,7 +131,7 @@ class BasicVs(ErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability
+        self.K = water_erodibility
 
         # Add a field for effective drainage area
         self.grid.at_node["surface_water__discharge"] = self.grid.add_zeros(
@@ -185,7 +185,7 @@ class BasicVs(ErosionModel):
            not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
-           and if so, uses it to modify the erodability by water.
+           and if so, uses it to modify the erodibility by water.
 
         4. Calculates detachment-limited erosion by water.
 
@@ -225,7 +225,7 @@ class BasicVs(ErosionModel):
                 self.K
                 * self.boundary_handlers[
                     "PrecipChanger"
-                ].get_erodability_adjustment_factor()
+                ].get_erodibility_adjustment_factor()
             )
         self.eroder.run_one_step(step)
 

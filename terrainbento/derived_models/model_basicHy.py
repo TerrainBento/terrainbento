@@ -37,7 +37,7 @@ class BasicHy(ErosionModel):
     where :math:`Q` is the local stream discharge, :math:`A` is the local
     upstream drainage area,:math:`S` is the local slope, :math:`m` and
     :math:`n` are the discharge and slope exponent parameters, :math:`K` is the
-    erodability by water, :math:`V` is effective sediment settling velocity,
+    erodibility by water, :math:`V` is effective sediment settling velocity,
     :math:`Q_s` is volumetric sediment flux, :math:`r` is a runoff rate,
     :math:`\phi` is sediment porosity, and :math:`D` is the regolith transport
     efficiency.
@@ -58,7 +58,7 @@ class BasicHy(ErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
         sediment_porosity=0.3,
@@ -76,8 +76,8 @@ class BasicHy(ErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability : float, optional
-            Water erodability (:math:`K`). Default is 0.0001.
+        water_erodibility : float, optional
+            Water erodibility (:math:`K`). Default is 0.0001.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         settling_velocity : float, optional
@@ -138,7 +138,7 @@ class BasicHy(ErosionModel):
         # Get Parameters
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability
+        self.K = water_erodibility
 
         # Instantiate a Space component
         self.eroder = ErosionDeposition(
@@ -169,7 +169,7 @@ class BasicHy(ErosionModel):
            not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
-           and if so, uses it to modify the erodability by water.
+           and if so, uses it to modify the erodibility by water.
 
         4. Calculates erosion and deposition by water.
 
@@ -203,7 +203,7 @@ class BasicHy(ErosionModel):
                 self.K
                 * self.boundary_handlers[
                     "PrecipChanger"
-                ].get_erodability_adjustment_factor()
+                ].get_erodibility_adjustment_factor()
             )
         self.eroder.run_one_step(
             step,

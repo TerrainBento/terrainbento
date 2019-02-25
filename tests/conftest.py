@@ -244,7 +244,7 @@ def basic_inputs_bad_precipitator_yaml():
       stop: 200.
 
     output_interval: 50.
-    water_erodability: 0.001
+    water_erodibility: 0.001
     m_sp: 1
     n_sp: 0.5
     regolith_transport_parameter: 0.01
@@ -274,7 +274,7 @@ def basic_inputs_no_clock_yaml():
               - constant: 0
 
     output_interval: 50.
-    water_erodability: 0.001
+    water_erodibility: 0.001
     m_sp: 1
     n_sp: 0.5
     regolith_transport_parameter: 0.01
@@ -290,7 +290,7 @@ def basic_inputs_no_grid_yaml():
       stop: 200.
 
     output_interval: 50.
-    water_erodability: 0.001
+    water_erodibility: 0.001
     m_sp: 1
     n_sp: 0.5
     regolith_transport_parameter: 0.01
@@ -317,7 +317,7 @@ def basic_inputs_yaml():
       stop: 200.
 
     output_interval: 50.
-    water_erodability: 0.001
+    water_erodibility: 0.001
     m_sp: 1
     n_sp: 0.5
     regolith_transport_parameter: 0.01
@@ -340,7 +340,7 @@ def basic_raster_inputs_yaml():
     clock:
       step: 1
       stop: 200.
-    water_erodability: 0.001
+    water_erodibility: 0.001
     m_sp: 1
     n_sp: 0.5
     regolith_transport_parameter: 0.01
@@ -364,7 +364,7 @@ def basic_raster_inputs_for_nc_yaml():
     clock:
       step: 100
       stop: 2000.
-    water_erodability: 0.0001
+    water_erodibility: 0.0001
     m_sp: 1
     n_sp: 0.5
     regolith_transport_parameter: 0.01

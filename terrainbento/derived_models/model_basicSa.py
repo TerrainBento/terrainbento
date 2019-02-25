@@ -49,7 +49,7 @@ class BasicSa(ErosionModel):
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the discharge and slope exponent parameters,
-    :math:`K` is the erodability by water, :math:`D` is the regolith transport
+    :math:`K` is the erodibility by water, :math:`D` is the regolith transport
     parameter, :math:`H` is the regolith thickness, :math:`H_s` is the sediment
     production decay depth, :math:`P_0` is the maximum sediment production
     rate, and :math:`H_0` is the sediment transport decay depth. :math:`q_s`
@@ -78,7 +78,7 @@ class BasicSa(ErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         soil_production__maximum_rate=0.001,
         soil_production__decay_depth=0.5,
@@ -95,8 +95,8 @@ class BasicSa(ErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability : float, optional
-            Water erodability (:math:`K`). Default is 0.0001.
+        water_erodibility : float, optional
+            Water erodibility (:math:`K`). Default is 0.0001.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         soil_production__maximum_rate : float, optional
@@ -152,7 +152,7 @@ class BasicSa(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability
+        self.K = water_erodibility
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
@@ -191,7 +191,7 @@ class BasicSa(ErosionModel):
            not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
-           and if so, uses it to modify the erodability by water.
+           and if so, uses it to modify the erodibility by water.
 
         4. Calculates detachment-limited erosion by water.
 
@@ -227,7 +227,7 @@ class BasicSa(ErosionModel):
                 self.K
                 * self.boundary_handlers[
                     "PrecipChanger"
-                ].get_erodability_adjustment_factor()
+                ].get_erodibility_adjustment_factor()
             )
         self.eroder.run_one_step(step, flooded_nodes=flooded)
 

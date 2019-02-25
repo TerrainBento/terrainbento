@@ -84,8 +84,8 @@ class BasicHySa(ErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability_sediment=0.001,
-        water_erodability_rock=0.0001,
+        water_erodibility_sediment=0.001,
+        water_erodibility_rock=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
         sediment_porosity=0.3,
@@ -109,8 +109,8 @@ class BasicHySa(ErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability : float, optional
-            Water erodability (:math:`K`). Default is 0.0001.
+        water_erodibility : float, optional
+            Water erodibility (:math:`K`). Default is 0.0001.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         settling_velocity : float, optional
@@ -182,8 +182,8 @@ class BasicHySa(ErosionModel):
 
         self.m = m_sp
         self.n = n_sp
-        self.K_br = water_erodability_rock
-        self.K_sed = water_erodability_sediment
+        self.K_br = water_erodibility_rock
+        self.K_sed = water_erodibility_sediment
 
         # Instantiate a SPACE component
         self.eroder = Space(
@@ -231,7 +231,7 @@ class BasicHySa(ErosionModel):
            not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
-           and if so, uses it to modify the erodability by water.
+           and if so, uses it to modify the erodibility by water.
 
         4. Calculates erosion and deposition by water.
 
@@ -263,7 +263,7 @@ class BasicHySa(ErosionModel):
         if "PrecipChanger" in self.boundary_handlers:
             erode_factor = self.boundary_handlers[
                 "PrecipChanger"
-            ].get_erodability_adjustment_factor()
+            ].get_erodibility_adjustment_factor()
             self.eroder.K_sed = self.K_sed * erode_factor
             self.eroder.K_br = self.K_br * erode_factor
 

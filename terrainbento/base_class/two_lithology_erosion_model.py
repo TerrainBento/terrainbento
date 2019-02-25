@@ -37,8 +37,8 @@ class TwoLithologyErosionModel(ErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability_lower=0.0001,
-        water_erodability_upper=0.001,
+        water_erodibility_lower=0.0001,
+        water_erodibility_upper=0.001,
         regolith_transport_parameter=0.1,
         contact_zone__width=1.,
         **kwargs
@@ -78,11 +78,11 @@ class TwoLithologyErosionModel(ErosionModel):
 
         self.regolith_transport_parameter = regolith_transport_parameter
 
-        self.K_rock = water_erodability_lower
+        self.K_rock = water_erodibility_lower
 
-        self.K_till = water_erodability_upper
+        self.K_till = water_erodibility_upper
 
-        # Set the erodability values, these need to be double stated because a PrecipChanger may adjust them
+        # Set the erodibility values, these need to be double stated because a PrecipChanger may adjust them
         self.rock_erody = self.K_rock
         self.till_erody = self.K_till
 
@@ -92,39 +92,39 @@ class TwoLithologyErosionModel(ErosionModel):
 
     def _setup_rock_and_till(self):
         """Set up fields to handle for two layers with different
-        erodability."""
+        erodibility."""
 
-        # Create field for erodability
-        self.erody = self.grid.add_zeros("node", "substrate__erodability")
+        # Create field for erodibility
+        self.erody = self.grid.add_zeros("node", "substrate__erodibility")
 
-        # Create array for erodability weighting function
+        # Create array for erodibility weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
 
         # Set values correctly
         self._update_erodywt()
-        self._update_erodability_field()
+        self._update_erodibility_field()
 
     def _setup_rock_and_till_with_threshold(self):
         """Set up fields to handle for two layers with different
-        erodability."""
+        erodibility."""
 
-        # Create field for erodability
-        self.erody = self.grid.add_zeros("node", "substrate__erodability")
+        # Create field for erodibility
+        self.erody = self.grid.add_zeros("node", "substrate__erodibility")
 
         # Create field for threshold values
         self.threshold = self.grid.add_zeros(
             "node", "water_erosion_rule__threshold"
         )
 
-        # Create array for erodability weighting function
+        # Create array for erodibility weighting function
         self.erody_wt = np.zeros(self.grid.number_of_nodes)
 
         # set values correctly
         self._update_erodywt()
-        self._update_erodability_and_threshold_fields()
+        self._update_erodibility_and_threshold_fields()
 
     def _update_erodywt(self):
-        # Update the erodability weighting function (this is "F")
+        # Update the erodibility weighting function (this is "F")
         core = self.grid.core_nodes
         if self.contact_width > 0.0:
             self.erody_wt[core] = 1.0 / (
@@ -143,14 +143,14 @@ class TwoLithologyErosionModel(ErosionModel):
         if "PrecipChanger" in self.boundary_handlers:
             erode_factor = self.boundary_handlers[
                 "PrecipChanger"
-            ].get_erodability_adjustment_factor()
+            ].get_erodibility_adjustment_factor()
             self.till_erody = self.K_till * erode_factor
             self.rock_erody = self.K_rock * erode_factor
 
-    def _update_erodability_field(self):
-        """Update erodability at each node.
+    def _update_erodibility_field(self):
+        """Update erodibility at each node.
 
-        The erodability at each node is a smooth function between the
+        The erodibility at each node is a smooth function between the
         rock and till erodabilities and is based on the contact zone
         width and the elevation of the surface relative to contact
         elevation.
@@ -164,10 +164,10 @@ class TwoLithologyErosionModel(ErosionModel):
             + (1.0 - self.erody_wt) * self.rock_erody
         )
 
-    def _update_erodability_and_threshold_fields(self):
-        """Update erodability at each node.
+    def _update_erodibility_and_threshold_fields(self):
+        """Update erodibility at each node.
 
-        The erodability at each node is a smooth function between the
+        The erodibility at each node is a smooth function between the
         rock and till erodabilities and is based on the contact zone
         width and the elevation of the surface relative to contact
         elevation.
