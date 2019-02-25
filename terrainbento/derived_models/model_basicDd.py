@@ -33,7 +33,7 @@ class BasicDd(ErosionModel):
 
     where :math:`Q` is the local stream discharge and :math:`S` is the local
     slope, :math:`m` and :math:`n` are the discharge and slope exponent
-    parameters, :math:`K` is the erodability by water, :math:`D` is the
+    parameters, :math:`K` is the erodibility by water, :math:`D` is the
     regolith transport efficiency, and :math:`\omega_{ct}` is the critical
     stream power needed for erosion to occur. :math:`\omega_{ct}` changes
     through time as it increases with cumulative incision depth:
@@ -64,7 +64,7 @@ class BasicDd(ErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
         water_erosion_rule__thresh_depth_derivative=0.0,
@@ -80,8 +80,8 @@ class BasicDd(ErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability : float, optional
-            Water erodability (:math:`K`). Default is 0.0001.
+        water_erodibility : float, optional
+            Water erodibility (:math:`K`). Default is 0.0001.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         water_erosion_rule__threshold : float, optional
@@ -134,7 +134,7 @@ class BasicDd(ErosionModel):
         # Get Parameters and convert units if necessary:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability
+        self.K = water_erodibility
 
         if float(self.n) != 1.0:
             raise ValueError("Model only supports n equals 1.")
@@ -213,7 +213,7 @@ class BasicDd(ErosionModel):
            not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
-           and if so, uses it to modify the erodability by water.
+           and if so, uses it to modify the erodibility by water.
 
         4. Calculates detachment-limited, threshold-modified erosion by water.
 
@@ -250,7 +250,7 @@ class BasicDd(ErosionModel):
                 self.K
                 * self.boundary_handlers[
                     "PrecipChanger"
-                ].get_erodability_adjustment_factor()
+                ].get_erodibility_adjustment_factor()
             )
         self.eroder.run_one_step(step, flooded_nodes=flooded)
 

@@ -3,7 +3,7 @@
 """terrainbento **BasicChRt** model program.
 
 Erosion model program using non-linear diffusion, stream power with spatially
-varying erodability based on two bedrock units, and discharge proportional to
+varying erodibility based on two bedrock units, and discharge proportional to
 drainage area.
 
 Landlab components used:
@@ -49,13 +49,13 @@ class BasicChRt(TwoLithologyErosionModel):
     and :math:`D` is the regolith transport parameter. :math:`S_c` is the
     critical slope parameter and :math:`N` is the number of terms in the Taylor
     Series expansion. :math:`w` is a weight used to calculate the effective
-    erodability :math:`K(\eta, \eta_C)` based on the depth to the contact zone
+    erodibility :math:`K(\eta, \eta_C)` based on the depth to the contact zone
     and the width of the contact zone.
 
-    The weight :math:`w` promotes smoothness in the solution of erodability at
+    The weight :math:`w` promotes smoothness in the solution of erodibility at
     a given point. When the surface elevation is at the contact elevation, the
-    erodability is the average of :math:`K_1` and :math:`K_2`; above and below
-    the contact, the erodability approaches the value of :math:`K_1` and
+    erodibility is the average of :math:`K_1` and :math:`K_2`; above and below
+    the contact, the erodibility approaches the value of :math:`K_1` and
     :math:`K_2` at a rate related to the contact zone width. Thus, to make a
     very sharp transition, use a small value for the contact zone width.
 
@@ -91,11 +91,11 @@ class BasicChRt(TwoLithologyErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability_upper : float, optional
-            Water erodability of the upper layer (:math:`K_{1}`). Default is
+        water_erodibility_upper : float, optional
+            Water erodibility of the upper layer (:math:`K_{1}`). Default is
             0.001.
-        water_erodability_lower : float, optional
-            Water erodability of the upper layer (:math:`K_{2}`). Default is
+        water_erodibility_lower : float, optional
+            Water erodibility of the upper layer (:math:`K_{2}`). Default is
             0.0001.
         contact_zone__width : float, optional
             Thickness of the contact zone (:math:`W_c`). Default is 1.
@@ -177,9 +177,9 @@ class BasicChRt(TwoLithologyErosionModel):
            not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
-           and if so, uses it to modify the erodability by water.
+           and if so, uses it to modify the erodibility by water.
 
-        4. Updates the spatially variable erodability value based on the
+        4. Updates the spatially variable erodibility value based on the
            relative distance between the topographic surface and the lithology
            contact.
 
@@ -208,8 +208,8 @@ class BasicChRt(TwoLithologyErosionModel):
                 self.flow_accumulator.depression_finder.flood_status == 3
             )[0]
 
-        # Update the erodability field
-        self._update_erodability_field()
+        # Update the erodibility field
+        self._update_erodibility_field()
 
         # Do some erosion (but not on the flooded nodes)
         self.eroder.run_one_step(

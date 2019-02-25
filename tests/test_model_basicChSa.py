@@ -29,7 +29,7 @@ def test_diffusion_only(clock_08, grid_4):
         "soil_production__maximum_rate": max_soil_production_rate,
         "soil_production__decay_depth": soil_production_decay_depth,
         "critical_slope": S_c,
-        "water_erodability": 0,
+        "water_erodibility": 0,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 

@@ -45,7 +45,7 @@ params = {
     "fields":["topographic__elevation"],
 
     # Parameters that control process and rates.
-    "water_erodability" : 0.001,
+    "water_erodibility" : 0.001,
     "m_sp" : 0.5,
     "n_sp" : 1.0,
     "regolith_transport_parameter" : 0.2,           

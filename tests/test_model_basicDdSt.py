@@ -33,7 +33,7 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
         "grid": grid_2,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability": K,
+        "water_erodibility": K,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "water_erosion_rule__threshold": threshold,
