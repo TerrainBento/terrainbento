@@ -27,7 +27,7 @@ def test_channel_erosion(
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability": K,
+        "water_erodibility": K,
         "settling_velocity": v_sc,
         "sediment_porosity": phi,
         "fraction_fines": F_f,

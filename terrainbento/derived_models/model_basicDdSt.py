@@ -43,7 +43,7 @@ class BasicDdSt(StochasticErosionModel):
     indicates that it is a random-in-time variable) and :math:`S` is the local
     slope gradient. :math:`m` and :math:`n` are the discharge and slope
     exponent, respectively, :math:`\omega_c` is the critical stream power
-    required for erosion to occur, :math:`K` is the erodability by water, and
+    required for erosion to occur, :math:`K` is the erodibility by water, and
     :math:`D` is the regolith transport parameter.
 
     :math:`\omega_{ct}` may change through time as it increases with cumulative
@@ -75,7 +75,7 @@ class BasicDdSt(StochasticErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
         water_erosion_rule__thresh_depth_derivative=0.,
@@ -92,8 +92,8 @@ class BasicDdSt(StochasticErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability : float, optional
-            Water erodability (:math:`K`). Default is 0.0001.
+        water_erodibility : float, optional
+            Water erodibility (:math:`K`). Default is 0.0001.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         water_erosion_rule__threshold : float, optional
@@ -148,7 +148,7 @@ class BasicDdSt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability
+        self.K = water_erodibility
         self.threshold_value = water_erosion_rule__threshold
         self.thresh_change_per_depth = (
             water_erosion_rule__thresh_depth_derivative
@@ -212,7 +212,7 @@ class BasicDdSt(StochasticErosionModel):
            not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
-           and if so, uses it to modify the erodability by water.
+           and if so, uses it to modify the erodibility by water.
 
         4. Calculates detachment-limited, threshold-modified erosion by water.
 

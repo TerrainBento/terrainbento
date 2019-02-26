@@ -24,7 +24,7 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
         "grid": grid_2,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability": K,
+        "water_erodibility": K,
         "hydraulic_conductivity": 0.02,
         "m_sp": m_sp,
         "n_sp": n_sp,

@@ -43,7 +43,7 @@ class BasicHySt(StochasticErosionModel):
     indicates that it is a random-in-time variable), :math:`S` is the local
     slope, :math:`A` is the local upstream drainage area, :math:`m` and
     :math:`n` are the discharge and slope exponent parameters, :math:`K` is
-    the erodability by water, :math:`V` is effective sediment settling
+    the erodibility by water, :math:`V` is effective sediment settling
     velocity, :math:`Q_s` is volumetric sediment flux, :math:`r` is a runoff
     rate, :math:`\phi` is sediment porosity, and :math:`D` is the regolith
     transport efficiency.
@@ -64,7 +64,7 @@ class BasicHySt(StochasticErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
         infiltration_capacity=1.0,
@@ -83,8 +83,8 @@ class BasicHySt(StochasticErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability : float, optional
-            Water erodability (:math:`K_s`). Default is 0.0001.
+        water_erodibility : float, optional
+            Water erodibility (:math:`K_s`). Default is 0.0001.
         nfiltration_capacity: float, optional
             Infiltration capacity (:math:`I_m`). Default is 1.0.
         regolith_transport_parameter : float, optional
@@ -145,7 +145,7 @@ class BasicHySt(StochasticErosionModel):
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
-        self.K = water_erodability
+        self.K = water_erodibility
         self.infilt = infiltration_capacity
 
         # instantiate rain generator
@@ -183,7 +183,7 @@ class BasicHySt(StochasticErosionModel):
            not occur.
 
         3. Assesses if a :py:mod:`PrecipChanger` is an active boundary handler
-           and if so, uses it to modify the erodability by water.
+           and if so, uses it to modify the erodibility by water.
 
         4. Calculates erosion and deposition by water.
 

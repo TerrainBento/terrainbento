@@ -42,7 +42,7 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 1,
-        "water_erodability": 0,
+        "water_erodibility": 0,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
@@ -95,7 +95,7 @@ def test_diffusion_only(clock_simple, grid_1, U, Model):
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 1,
-        "water_erodability": 0,
+        "water_erodibility": 0,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
@@ -136,8 +136,8 @@ def test_rock_till_linear_diffusion(clock_simple, grid_1, U, Model):
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 1,
-        "water_erodability_lower": 0,
-        "water_erodability_upper": 0,
+        "water_erodibility_lower": 0,
+        "water_erodibility_upper": 0,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
