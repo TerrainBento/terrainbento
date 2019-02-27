@@ -37,8 +37,8 @@ def test_channel_erosion(
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability_rock": K_rock_sp,
-        "water_erodability_sediment": K_sed_sp,
+        "water_erodibility_rock": K_rock_sp,
+        "water_erodibility_sediment": K_sed_sp,
         "sp_crit_br": sp_crit_br,
         "sp_crit_sed": sp_crit_sed,
         "m_sp": m_sp,
@@ -89,20 +89,20 @@ def test_with_precip_changer(
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability_rock": 0.001,
-        "water_erodability_sediment": 0.01,
+        "water_erodibility_rock": 0.001,
+        "water_erodibility_sediment": 0.01,
         "boundary_handlers": {"PrecipChanger": precip_changer},
     }
     model = BasicHySa(**params)
 
-    assert model.eroder.K_sed[0] == params["water_erodability_sediment"]
-    assert model.eroder.K_br[0] == params["water_erodability_rock"]
+    assert model.eroder.K_sed[0] == params["water_erodibility_sediment"]
+    assert model.eroder.K_br[0] == params["water_erodibility_rock"]
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
     model.run_one_step(1.0)
     assert round(model.eroder.K_sed, 5) == round(
-        params["water_erodability_sediment"] * precip_testing_factor, 5
+        params["water_erodibility_sediment"] * precip_testing_factor, 5
     )
     assert round(model.eroder.K_br, 5) == round(
-        params["water_erodability_rock"] * precip_testing_factor, 5
+        params["water_erodibility_rock"] * precip_testing_factor, 5
     )

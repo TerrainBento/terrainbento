@@ -19,8 +19,8 @@ def test_diffusion_only(clock_09, grid_4, Model):
         "grid": grid_4,
         "clock": clock_09,
         "regolith_transport_parameter": D,
-        "water_erodability_lower": 0,
-        "water_erodability_upper": 0,
+        "water_erodibility_lower": 0,
+        "water_erodibility_upper": 0,
         "critical_slope": S_c,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }

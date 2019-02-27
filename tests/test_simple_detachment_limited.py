@@ -32,8 +32,8 @@ def test_rock_till_steady_no_precip_changer(
         "grid": grid_2,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability_lower": Kr,
-        "water_erodability_upper": Kt,
+        "water_erodibility_lower": Kr,
+        "water_erodibility_upper": Kt,
         "depression_finder": depression_finder,
         "m_sp": m_sp,
         "n_sp": n_sp,
@@ -78,8 +78,8 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
         "grid": grid_2,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability_lower": Kr,
-        "water_erodability_upper": Kt,
+        "water_erodibility_lower": Kr,
+        "water_erodibility_upper": Kt,
         "depression_finder": depression_finder,
         "m_sp": m_sp,
         "n_sp": n_sp,
@@ -128,7 +128,7 @@ def test_detachment_steady_no_precip_changer(
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability": 0.001,
+        "water_erodibility": 0.001,
         "depression_finder": depression_finder,
         "m_sp": m_sp,
         "n_sp": n_sp,
@@ -143,7 +143,7 @@ def test_detachment_steady_no_precip_changer(
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
     predicted_slopes = (
-        U / (params["water_erodability"] * (actual_areas ** params["m_sp"]))
+        U / (params["water_erodibility"] * (actual_areas ** params["m_sp"]))
     ) ** (1. / params["n_sp"])
 
     # assert actual and predicted slopes are the same.

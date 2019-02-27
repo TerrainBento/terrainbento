@@ -54,7 +54,7 @@ def test_simple_precip_changer(
         "grid": grid_1,
         "clock": clock_simple,
         "regolith_transport_parameter": 0.,
-        "water_erodability": K,
+        "water_erodibility": K,
         "boundary_handlers": {"PrecipChanger": precip_changer},
     }
     model = Model(**params)
@@ -89,13 +89,13 @@ def test_rock_till_precip_changer(
     params = {
         "grid": grid_3,
         "clock": clock_simple,
-        "water_erodability_lower": Kr,
-        "water_erodability_upper": Kt,
+        "water_erodibility_lower": Kr,
+        "water_erodibility_upper": Kt,
         "boundary_handlers": {"PrecipChanger": precip_changer},
     }
 
     model = Model(**params)
-    model._update_erodability_field()
+    model._update_erodibility_field()
 
     assert (
         np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True

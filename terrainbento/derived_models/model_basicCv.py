@@ -29,7 +29,7 @@ class BasicCv(ErosionModel):
 
         \frac{\partial \eta}{\partial t} = -KQ^{m}S^{n} + D\nabla^2 \eta
 
-    where :math:`K` is the fluviel erodability coefficient, :math:`Q` is the
+    where :math:`K` is the fluviel erodibility coefficient, :math:`Q` is the
     local stream discharge, :math:`S` is the local slope, :math:`m` and
     :math:`n` are the discharge and slope exponent parameters, and :math:`D` is
     the regolith transport parameter.
@@ -56,7 +56,7 @@ class BasicCv(ErosionModel):
         grid,
         m_sp=0.5,
         n_sp=1.0,
-        water_erodability=0.0001,
+        water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         climate_factor=0.5,
         climate_constant_date=0.0,
@@ -72,15 +72,15 @@ class BasicCv(ErosionModel):
             Drainage area exponent (:math:`m`). Default is 0.5.
         n_sp : float, optional
             Slope exponent (:math:`n`). Default is 1.0.
-        water_erodability : float, optional
-            Water erodability (:math:`K`). Default is 0.0001.
+        water_erodibility : float, optional
+            Water erodibility (:math:`K`). Default is 0.0001.
         regolith_transport_parameter : float, optional
             Regolith transport efficiency (:math:`D`). Default is 0.1.
         climate_factor : float, optional.
              Default is 0.5.(:math:`f` )
         climate_constant_date : float, optional.
             Model time at which climate becomes constant (:math:`T_s`) and
-            water erodability stabilizes at a  value of :math:`K`. Default
+            water erodibility stabilizes at a  value of :math:`K`. Default
             is 0.0.
         **kwargs :
             Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
@@ -135,9 +135,9 @@ class BasicCv(ErosionModel):
             self.clock.stop + self.clock.step,
         ]
         K = [
-            water_erodability * self.climate_factor,
-            water_erodability,
-            water_erodability,
+            water_erodibility * self.climate_factor,
+            water_erodibility,
+            water_erodibility,
         ]
         self.K_through_time = interp1d(time, K)
 

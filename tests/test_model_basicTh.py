@@ -24,7 +24,7 @@ def test_steady_Kss_no_precip_changer(
         "regolith_transport_parameter": 0.,
         "m_sp": m_sp,
         "n_sp": n_sp,
-        "water_erodability": K,
+        "water_erodibility": K,
         "water_erosion_rule__threshold": threshold,
         "depression_finder": depression_finder,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
