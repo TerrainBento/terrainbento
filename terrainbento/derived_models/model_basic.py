@@ -55,18 +55,27 @@ class Basic(ErosionModel):
         "water__unit_flux_in": {
             "units": "m/s",
             "at": "node",
-            "description": "Volume water per area per time input to each node.",
+            "description": ("Volume water per area per time input to each "
+                            "node."),
         },
     }
 
     _param_info = {
         "water_erodability": {
             "units": None,
-            "default": None,
-            "range": None,  # leave off if no range
-            "description": "",
+            "default": [0.001],  # these values assume yr instead of second
+            "range": [1e-7, 1e-2],  # these values assume yr instead of second
+            "description": (
+                "Water erodibility coefficient. Units depend on "
+                "values of m_sp and n_sp."
+            ),
         },
-        "regolith_transport_parameter": {},
+        "regolith_transport_parameter": {
+            "units": "m/(s^2)",
+            "default": [0.1],  # these values assume yr instead of second
+            "range": [1e-3, 1e-1],  # these values assume yr instead of second
+            "description": ("Hillslope diffusivity."),
+        },
     }
 
     def __init__(
