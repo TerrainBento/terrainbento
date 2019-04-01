@@ -31,6 +31,8 @@ class TwoLithologyErosionModel(ErosionModel):
         "lithology_contact__elevation",
     )
 
+    _output_var_names = ("topographic__elevation",)
+
     def __init__(
         self,
         clock,

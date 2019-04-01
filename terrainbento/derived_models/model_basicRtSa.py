@@ -92,8 +92,11 @@ class BasicRtSa(TwoLithologyErosionModel):
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
+         "water__unit_flux_in",
         "soil__depth",
     )
+
+    _output_var_names = ("topographic__elevation", "soil__depth")
 
     def __init__(
         self,

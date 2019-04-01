@@ -75,7 +75,10 @@ class BasicRtTh(TwoLithologyErosionModel):
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
+         "water__unit_flux_in",
     )
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,

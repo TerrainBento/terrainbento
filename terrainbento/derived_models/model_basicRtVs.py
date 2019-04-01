@@ -75,8 +75,11 @@ class BasicRtVs(TwoLithologyErosionModel):
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
+         "water__unit_flux_in",
         "soil__depth",
     )
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(self, clock, grid, hydraulic_conductivity=0.1, **kwargs):
         """

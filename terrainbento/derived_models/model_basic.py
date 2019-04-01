@@ -44,7 +44,7 @@ class Basic(ErosionModel):
 
     _input_var_names = ("topographic__elevation", "water__unit_flux_in")
 
-    _output_var_names = "topographic__elevation"
+    _output_var_names = ("topographic__elevation",)
 
     _var_info = {
         "topographic__elevation": {
@@ -55,8 +55,9 @@ class Basic(ErosionModel):
         "water__unit_flux_in": {
             "units": "m/s",
             "at": "node",
-            "description": ("Volume water per area per time input to each "
-                            "node."),
+            "description": (
+                "Volume water per area per time input to each " "node."
+            ),
         },
     }
 

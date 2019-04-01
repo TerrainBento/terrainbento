@@ -146,7 +146,9 @@ class ErosionModel(Model):
         - ``topographic__elevation``
     """
 
-    _input_var_names = ("topographic__elevation")
+    _input_var_names = ("topographic__elevation",)
+
+    _output_var_names = ("topographic__elevation",)
 
     @classmethod
     def from_file(cls, file_like):

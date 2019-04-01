@@ -64,6 +64,8 @@ class BasicHyVs(ErosionModel):
 
     _input_var_names = ("topographic__elevation", "soil__depth")
 
+    _output_var_names = ("topographic__elevation",)
+
     def __init__(
         self,
         clock,
