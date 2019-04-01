@@ -734,7 +734,11 @@ class ErosionModel(object):
         space_unit: str, optional
             Name of space unit. Default is "space unit".
         """
-        ds = self.to_xarray_dataset(time_unit=time_unit, space_unit=space_unit)
+        ds = self.to_xarray_dataset(
+            time_unit=time_unit,
+            space_unit=space_unit,
+            reference_time=reference_time,
+        )
         ds.to_netcdf(filename, engine="netcdf4", format="NETCDF4")
         ds.close()
 
