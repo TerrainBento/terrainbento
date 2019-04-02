@@ -147,7 +147,7 @@ class BasicCv(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=K[0],
             m_sp=self.m,
             n_sp=self.n,
@@ -156,7 +156,7 @@ class BasicCv(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def run_one_step(self, step):

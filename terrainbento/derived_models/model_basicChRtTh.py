@@ -184,7 +184,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         # Instantiate a StreamPowerSmoothThresholdEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             K_sp=self.erody,
             threshold_sp=self.threshold,
             m_sp=self.m,
@@ -194,7 +194,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
-            self.grid,
+            self._grid,
             linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=critical_slope,
             nterms=number_of_taylor_terms,

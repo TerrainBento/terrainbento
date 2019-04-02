@@ -404,9 +404,9 @@ class ErosionModel(Model):
         # save reference to elevation
         self.z = grid.at_node["topographic__elevation"]
 
-        self.grid.add_zeros("node", "cumulative_elevation_change")
+        self._grid.add_zeros("node", "cumulative_elevation_change")
 
-        self.grid.add_field(
+        self._grid.add_field(
             "node", "initial_topographic__elevation", self.z.copy()
         )
 
@@ -431,7 +431,7 @@ class ErosionModel(Model):
 
         # verify that precipitator is valid
         if precipitator is None:
-            precipitator = UniformPrecipitator(self.grid)
+            precipitator = UniformPrecipitator(self._grid)
         else:
             if isinstance(precipitator, _VALID_PRECIPITATORS) is False:
                 raise ValueError("Provided value for precipitator not valid.")
@@ -439,7 +439,7 @@ class ErosionModel(Model):
 
         # verify that runoff_generator is valid
         if runoff_generator is None:
-            runoff_generator = SimpleRunoff(self.grid)
+            runoff_generator = SimpleRunoff(self._grid)
         else:
             if isinstance(runoff_generator, _VALID_RUNOFF_GENERATORS) is False:
                 raise ValueError(
@@ -457,14 +457,14 @@ class ErosionModel(Model):
             flow_director == "FlowDirectorSteepest"
         ):
             self.flow_accumulator = FlowAccumulator(
-                self.grid,
+                self._grid,
                 routing="D4",
                 depression_finder=depression_finder,
                 **flow_accumulator_kwargs
             )
         else:
             self.flow_accumulator = FlowAccumulator(
-                self.grid,
+                self._grid,
                 depression_finder=depression_finder,
                 **flow_accumulator_kwargs
             )
@@ -486,7 +486,7 @@ class ErosionModel(Model):
     def _verify_fields(self, required_fields):
         """Verify all required fields are present."""
         for field in required_fields:
-            if field not in self.grid.at_node:
+            if field not in self._grid.at_node:
                 raise ValueError(
                     "Required field {field} not present.".format(field=field)
                 )
@@ -498,9 +498,9 @@ class ErosionModel(Model):
 
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
-        self.grid.at_node["cumulative_elevation_change"][:] = (
-            self.grid.at_node["topographic__elevation"]
-            - self.grid.at_node["initial_topographic__elevation"]
+        self._grid.at_node["cumulative_elevation_change"][:] = (
+            self._grid.at_node["topographic__elevation"]
+            - self._grid.at_node["initial_topographic__elevation"]
         )
 
     def create_and_move_water(self, step):
@@ -526,21 +526,21 @@ class ErosionModel(Model):
         self._output_files.append(filename)
         try:
             write_raster_netcdf(
-                filename, self.grid, names=self.output_fields, format="NETCDF4"
+                filename, self._grid, names=self.output_fields, format="NETCDF4"
             )
         except NotImplementedError:
             graph = Graph.from_dict(
                 {
-                    "y_of_node": self.grid.y_of_node,
-                    "x_of_node": self.grid.x_of_node,
-                    "nodes_at_link": self.grid.nodes_at_link,
+                    "y_of_node": self._grid.y_of_node,
+                    "x_of_node": self._grid.x_of_node,
+                    "nodes_at_link": self._grid.nodes_at_link,
                 }
             )
 
             for field_name in self.output_fields:
 
                 graph._ds.__setitem__(
-                    field_name, ("node", self.grid.at_node[field_name])
+                    field_name, ("node", self._grid.at_node[field_name])
                 )
 
             graph.to_netcdf(path=filename, mode="w", format="NETCDF4")

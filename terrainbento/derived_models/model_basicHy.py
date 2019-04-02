@@ -146,7 +146,7 @@ class BasicHy(ErosionModel):
 
         # Instantiate a Space component
         self.eroder = ErosionDeposition(
-            self.grid,
+            self._grid,
             K=self.K,
             phi=sediment_porosity,
             F_f=fraction_fines,
@@ -159,7 +159,7 @@ class BasicHy(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def run_one_step(self, step):

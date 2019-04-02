@@ -156,7 +156,7 @@ class BasicChRt(TwoLithologyErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             m_sp=self.m,
             n_sp=self.n,
             K_sp=self.erody,
@@ -165,7 +165,7 @@ class BasicChRt(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
-            self.grid,
+            self._grid,
             linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=critical_slope,
             nterms=number_of_taylor_terms,

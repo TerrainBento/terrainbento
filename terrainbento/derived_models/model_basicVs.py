@@ -138,16 +138,16 @@ class BasicVs(ErosionModel):
         self.K = water_erodibility
 
         # Add a field for effective drainage area
-        self.grid.at_node["surface_water__discharge"] = self.grid.add_zeros(
+        self._grid.at_node["surface_water__discharge"] = self._grid.add_zeros(
             "node", "effective_drainage_area"
         )
 
         # Get the effective-area parameter
-        self._Kdx = hydraulic_conductivity * self.grid.dx
+        self._Kdx = hydraulic_conductivity * self._grid.dx
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             discharge_name="surface_water__discharge",
             K_sp=self.K,
             m_sp=self.m,
@@ -156,26 +156,26 @@ class BasicVs(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area."""
-        area = self.grid.at_node["drainage_area"]
-        slope = self.grid.at_node["topographic__steepest_slope"]
-        cores = self.grid.core_nodes
+        area = self._grid.at_node["drainage_area"]
+        slope = self._grid.at_node["topographic__steepest_slope"]
+        cores = self._grid.core_nodes
 
         sat_param = (
             self._Kdx
-            * self.grid.at_node["soil__depth"]
-            / self.grid.at_node["rainfall__flux"]
+            * self._grid.at_node["soil__depth"]
+            / self._grid.at_node["rainfall__flux"]
         )
 
         eff_area = area[cores] * (
             np.exp(-sat_param[cores] * slope[cores] / area[cores])
         )
 
-        self.grid.at_node["surface_water__discharge"][cores] = eff_area
+        self._grid.at_node["surface_water__discharge"][cores] = eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicVs** for one time-step of duration step.
@@ -220,7 +220,7 @@ class BasicVs(ErosionModel):
             )[0]
 
         # Zero out effective area in flooded nodes
-        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
+        self._grid.at_node["surface_water__discharge"][flooded] = 0.0
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)

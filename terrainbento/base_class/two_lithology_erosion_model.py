@@ -90,7 +90,7 @@ class TwoLithologyErosionModel(ErosionModel):
         self.rock_erody = self.K_rock
         self.till_erody = self.K_till
 
-        self.rock_till_contact = self.grid.at_node[
+        self.rock_till_contact = self._grid.at_node[
             "lithology_contact__elevation"
         ]
 
@@ -99,10 +99,10 @@ class TwoLithologyErosionModel(ErosionModel):
         erodibility."""
 
         # Create field for erodibility
-        self.erody = self.grid.add_zeros("node", "substrate__erodibility")
+        self.erody = self._grid.add_zeros("node", "substrate__erodibility")
 
         # Create array for erodibility weighting function
-        self.erody_wt = np.zeros(self.grid.number_of_nodes)
+        self.erody_wt = np.zeros(self._grid.number_of_nodes)
 
         # Set values correctly
         self._update_erodywt()
@@ -113,15 +113,15 @@ class TwoLithologyErosionModel(ErosionModel):
         erodibility."""
 
         # Create field for erodibility
-        self.erody = self.grid.add_zeros("node", "substrate__erodibility")
+        self.erody = self._grid.add_zeros("node", "substrate__erodibility")
 
         # Create field for threshold values
-        self.threshold = self.grid.add_zeros(
+        self.threshold = self._grid.add_zeros(
             "node", "water_erosion_rule__threshold"
         )
 
         # Create array for erodibility weighting function
-        self.erody_wt = np.zeros(self.grid.number_of_nodes)
+        self.erody_wt = np.zeros(self._grid.number_of_nodes)
 
         # set values correctly
         self._update_erodywt()
@@ -129,7 +129,7 @@ class TwoLithologyErosionModel(ErosionModel):
 
     def _update_erodywt(self):
         # Update the erodibility weighting function (this is "F")
-        core = self.grid.core_nodes
+        core = self._grid.core_nodes
         if self.contact_width > 0.0:
             self.erody_wt[core] = 1.0 / (
                 1.0

@@ -170,14 +170,14 @@ class BasicDdRt(TwoLithologyErosionModel):
         self._setup_rock_and_till()
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
+        self.threshold = self._grid.add_zeros(
             "node", "water_erosion_rule__threshold"
         )
         self.threshold[:] = self.threshold_value
 
         # Instantiate a StreamPowerSmoothThresholdEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             K_sp=self.erody,
             m_sp=self.m,
             n_sp=self.n,
@@ -192,7 +192,7 @@ class BasicDdRt(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=self.regolith_transport_parameter
+            self._grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def _update_erosion_threshold_values(self):
@@ -204,9 +204,9 @@ class BasicDdRt(TwoLithologyErosionModel):
         # The second line handles the case where there is growth, in which case
         # we want the threshold to stay at its initial value rather than
         # getting smaller.
-        cum_ero = self.grid.at_node["cumulative_elevation_change"]
+        cum_ero = self._grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
+            self.z - self._grid.at_node["initial_topographic__elevation"]
         )
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero

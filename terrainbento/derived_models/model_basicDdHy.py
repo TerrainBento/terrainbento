@@ -170,14 +170,14 @@ class BasicDdHy(ErosionModel):
         self.sp_crit = water_erosion_rule__threshold
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
+        self.threshold = self._grid.add_zeros(
             "node", "water_erosion_rule__threshold"
         )
         self.threshold[:] = self.sp_crit  # starting value
 
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
-            self.grid,
+            self._grid,
             K=self.K,
             F_f=fraction_fines,
             phi=sediment_porosity,
@@ -196,7 +196,7 @@ class BasicDdHy(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def run_one_step(self, step):
@@ -238,9 +238,9 @@ class BasicDdHy(ErosionModel):
             )[0]
 
         # Calculate cumulative erosion and update threshold
-        cum_ero = self.grid.at_node["cumulative_elevation_change"]
+        cum_ero = self._grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
+            self.z - self._grid.at_node["initial_topographic__elevation"]
         )
         self.threshold[:] = self.sp_crit - (
             self.thresh_change_per_depth * cum_ero

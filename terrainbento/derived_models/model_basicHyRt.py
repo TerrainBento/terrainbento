@@ -173,7 +173,7 @@ class BasicHyRt(TwoLithologyErosionModel):
 
         # Instantiate an ErosionDeposition ("hybrid") component
         self.eroder = ErosionDeposition(
-            self.grid,
+            self._grid,
             K="substrate__erodibility",
             F_f=fraction_fines,
             phi=sediment_porosity,
@@ -186,7 +186,7 @@ class BasicHyRt(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=self.regolith_transport_parameter
+            self._grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def run_one_step(self, step):

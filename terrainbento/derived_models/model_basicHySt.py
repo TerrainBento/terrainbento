@@ -160,7 +160,7 @@ class BasicHySt(StochasticErosionModel):
 
         # Instantiate an ErosionDeposition component
         self.eroder = ErosionDeposition(
-            self.grid,
+            self._grid,
             K=self.K,
             F_f=fraction_fines,
             phi=sediment_porosity,
@@ -173,7 +173,7 @@ class BasicHySt(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def run_one_step(self, step):

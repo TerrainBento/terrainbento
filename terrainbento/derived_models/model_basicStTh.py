@@ -144,7 +144,7 @@ class BasicStTh(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -154,7 +154,7 @@ class BasicStTh(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def run_one_step(self, step):

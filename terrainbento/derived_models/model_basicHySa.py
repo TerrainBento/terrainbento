@@ -180,8 +180,8 @@ class BasicHySa(ErosionModel):
         # verify correct fields are present.
         self._verify_fields(self._input_var_names)
 
-        soil_thickness = self.grid.at_node["soil__depth"]
-        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        soil_thickness = self._grid.at_node["soil__depth"]
+        bedrock_elev = self._grid.add_zeros("node", "bedrock__elevation")
         bedrock_elev[:] = self.z - soil_thickness
 
         self.m = m_sp
@@ -191,7 +191,7 @@ class BasicHySa(ErosionModel):
 
         # Instantiate a SPACE component
         self.eroder = Space(
-            self.grid,
+            self._grid,
             K_sed=self.K_sed,
             K_br=self.K_br,
             sp_crit_br=sp_crit_br,
@@ -208,20 +208,20 @@ class BasicHySa(ErosionModel):
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(
-            self.grid,
+            self._grid,
             linear_diffusivity=regolith_transport_parameter,
             soil_transport_decay_depth=soil_transport_decay_depth,
         )
 
         self.weatherer = ExponentialWeatherer(
-            self.grid,
+            self._grid,
             soil_production__maximum_rate=soil_production__maximum_rate,
             soil_production__decay_depth=soil_production__decay_depth,
         )
 
-        self.grid.at_node["soil__depth"][:] = (
-            self.grid.at_node["topographic__elevation"]
-            - self.grid.at_node["bedrock__elevation"]
+        self._grid.at_node["soil__depth"][:] = (
+            self._grid.at_node["topographic__elevation"]
+            - self._grid.at_node["bedrock__elevation"]
         )
 
     def run_one_step(self, step):
@@ -277,8 +277,8 @@ class BasicHySa(ErosionModel):
         # into bedrock has occurred, the bedrock elevation will be higher than
         # the actual elevation, so we simply re-set bedrock elevation to the
         # lower of itself or the current elevation.
-        b = self.grid.at_node["bedrock__elevation"]
-        b[:] = np.minimum(b, self.grid.at_node["topographic__elevation"])
+        b = self._grid.at_node["bedrock__elevation"]
+        b[:] = np.minimum(b, self._grid.at_node["topographic__elevation"])
 
         # Calculate regolith-production rate
         self.weatherer.calc_soil_prod_rate()
@@ -294,10 +294,10 @@ class BasicHySa(ErosionModel):
 
     def check_stability(self):
         """Check model stability and exit if unstable."""
-        fields = self.grid.at_node.keys()
+        fields = self._grid.at_node.keys()
         for f in fields:
-            if np.any(np.isnan(self.grid.at_node[f])) or np.any(
-                np.isinf(self.grid.at_node[f])
+            if np.any(np.isnan(self._grid.at_node[f])) or np.any(
+                np.isinf(self._grid.at_node[f])
             ):
                 raise SystemExit(
                     "terrainbento ModelHySa: Model became unstable"

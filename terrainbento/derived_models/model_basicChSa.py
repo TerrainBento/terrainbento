@@ -169,13 +169,13 @@ class BasicChSa(ErosionModel):
         self.K = water_erodibility
 
         # Create bedrock elevation field
-        soil_thickness = self.grid.at_node["soil__depth"]
-        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        soil_thickness = self._grid.at_node["soil__depth"]
+        bedrock_elev = self._grid.add_zeros("node", "bedrock__elevation")
         bedrock_elev[:] = self.z - soil_thickness
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -184,14 +184,14 @@ class BasicChSa(ErosionModel):
 
         # Instantiate a weathering component
         self.weatherer = ExponentialWeatherer(
-            self.grid,
+            self._grid,
             soil_production__maximum_rate=soil_production__maximum_rate,
             soil_production__decay_depth=soil_production__decay_depth,
         )
 
         # Instantiate a soil-transport component
         self.diffuser = DepthDependentTaylorDiffuser(
-            self.grid,
+            self._grid,
             linear_diffusivity=regolith_transport_parameter,
             slope_crit=critical_slope,
             soil_transport_decay_depth=soil_transport_decay_depth,
@@ -255,8 +255,8 @@ class BasicChSa(ErosionModel):
         # into bedrock has occurred, the bedrock elevation will be higher than
         # the actual elevation, so we simply re-set bedrock elevation to the
         # lower of itself or the current elevation.
-        b = self.grid.at_node["bedrock__elevation"]
-        b[:] = np.minimum(b, self.grid.at_node["topographic__elevation"])
+        b = self._grid.at_node["bedrock__elevation"]
+        b[:] = np.minimum(b, self._grid.at_node["topographic__elevation"])
 
         # Calculate regolith-production rate
         self.weatherer.calc_soil_prod_rate()

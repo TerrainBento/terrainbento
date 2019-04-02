@@ -24,6 +24,11 @@ class classproperty(property):
 class BmiModel(object):
     """Defines the base model class from which terrainbento models inherit.
 
+    This class, ``BmiModel`` allows for all terrainbento models to have a BMI
+    compatible with the Community Surface Modeling System PyMT package.
+
+    todo: add CSDMS url link.
+
     **Base model class methods**
 
     .. autosummary::
@@ -65,7 +70,7 @@ class BmiModel(object):
 
     def __init__(self, clock, grid):
         # save the grid, clock, and parameters.
-        self.grid = grid
+        self._grid = grid
         self.clock = clock
 
     @classproperty
@@ -254,9 +259,9 @@ class BmiModel(object):
         ):
             grp = self.var_loc(field_to_set)
             type_in = self.var_type(field_to_set)
-            init_vals = self.grid.zeros(grp, dtype=type_in)
+            init_vals = self._grid.zeros(grp, dtype=type_in)
             units_in = self.var_units(field_to_set)
-            self.grid.add_field(
+            self._grid.add_field(
                 grp,
                 field_to_set,
                 init_vals,
@@ -268,7 +273,7 @@ class BmiModel(object):
     @property
     def shape(self):
         """Return the grid shape attached to the component, if defined."""
-        return self.grid._shape
+        return self._grid._shape
 
     @property
     def grid(self):
@@ -279,7 +284,7 @@ class BmiModel(object):
     def coords(self):
         """Return the coordinates of nodes on grid attached to the
         component."""
-        return (self.grid.node_x, self.grid.node_y)
+        return (self._grid.node_x, self._grid.node_y)
 
      def get_component_name(self):
          """Name of the component."""

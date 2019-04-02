@@ -233,8 +233,8 @@ class StochasticErosionModel(ErosionModel):
                 runoff = 0  # pragma: no cover
         else:
             runoff = self.rain_rate
-        self.grid.at_node["surface_water__discharge"][:] = (
-            runoff * self.grid.at_node["drainage_area"]
+        self._grid.at_node["surface_water__discharge"][:] = (
+            runoff * self._grid.at_node["drainage_area"]
         )
         return runoff
 

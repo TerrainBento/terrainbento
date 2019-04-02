@@ -169,14 +169,14 @@ class BasicDdSt(StochasticErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
+        self.threshold = self._grid.add_zeros(
             "node", "water_erosion_rule__threshold"
         )
         self.threshold[:] = self.threshold_value
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             m_sp=self.m,
             n_sp=self.n,
             K_sp=self.K,
@@ -186,14 +186,14 @@ class BasicDdSt(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
-        cum_ero = self.grid.at_node["cumulative_elevation_change"]
+        cum_ero = self._grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
+            self.z - self._grid.at_node["initial_topographic__elevation"]
         )
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero

@@ -137,7 +137,7 @@ class BasicCh(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -146,7 +146,7 @@ class BasicCh(ErosionModel):
 
         # Instantiate a NonLinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
-            self.grid,
+            self._grid,
             linear_diffusivity=regolith_transport_parameter,
             slope_crit=critical_slope,
             nterms=number_of_taylor_terms,
