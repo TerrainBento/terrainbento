@@ -146,9 +146,21 @@ class ErosionModel(Model):
         - ``topographic__elevation``
     """
 
+    _name = "ErosionModel"
+
     _input_var_names = ("topographic__elevation",)
 
     _output_var_names = ("topographic__elevation",)
+
+    _var_info = {
+        "topographic__elevation": {
+            "units": "m",
+            "at": "node",
+            "description": "Land surface topographic elevation",
+        },
+    }
+
+    _param_info = {}
 
     @classmethod
     def from_file(cls, file_like):
