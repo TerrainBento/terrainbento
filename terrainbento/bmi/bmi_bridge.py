@@ -20,7 +20,7 @@ def wrap_as_bmi(cls):
     Parameters
     ----------
     cls : class
-        A landlab class that inherits from `Component`.
+        A terrainbento class that inherits from `Model`. TODO: link.
 
     Returns
     -------
@@ -47,12 +47,12 @@ def wrap_as_bmi(cls):
     ... \"\"\"
     >>> basic.initialize(config)
     >>> basic.get_output_var_names()
-    ('lithosphere_surface__elevation_increment',)
-    >>> basic.get_var_grid('lithosphere_surface__elevation_increment')
+    ('topographic__elevation',)
+    >>> basic.get_var_grid('topographic__elevation')
     0
     >>> basic.get_grid_shape(0)
     (20, 40)
-    >>> dz = basic.get_value('lithosphere_surface__elevation_increment')
+    >>> dz = basic.get_value('topographic__elevation')
     >>> dz.shape == (800, )
     True
 
@@ -62,16 +62,18 @@ def wrap_as_bmi(cls):
     0.0
 
     >>> basic.get_input_var_names()
-    ('lithosphere__overlying_pressure_increment',)
-    >>> load = np.zeros((20, 40), dtype=float)
-    >>> load[0, 0] = 1.
-    >>> basic.set_value('lithosphere__overlying_pressure_increment', load)
+    ('topographic__elevation',)
+    >>> z = np.zeros((20, 40), dtype=float)
+    >>> z[0, 0] = 1.
+    >>> basic.set_value('topographic__elevation', z)
     >>> basic.update()
     >>> basic.get_current_time()
     2.0
-    >>> dz = basic.get_value('lithosphere_surface__elevation_increment')
+    >>> dz = basic.get_value('topographic__elevation')
     >>> np.all(dz == 0.)
     False
+
+    >>> some examples with parameter values.
     """
     if not issubclass(cls, Model):
         raise TypeError("class must inherit from Model")
