@@ -74,6 +74,8 @@ class BasicDdRt(TwoLithologyErosionModel):
         - ``lithology_contact__elevation``
     """
 
+    _name = "BasicDdRt"
+
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",

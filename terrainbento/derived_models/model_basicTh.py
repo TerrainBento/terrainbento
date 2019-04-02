@@ -44,6 +44,8 @@ class BasicTh(ErosionModel):
         - ``topographic__elevation``
     """
 
+    _name = "BasicTh"
+
     _input_var_names = ("topographic__elevation", "water__unit_flux_in")
 
     _output_var_names = ("topographic__elevation",)

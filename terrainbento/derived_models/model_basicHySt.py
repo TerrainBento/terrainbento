@@ -56,6 +56,8 @@ class BasicHySt(StochasticErosionModel):
         - ``topographic__elevation``
     """
 
+    _name = "BasicHySt"
+
     _input_var_names = ("topographic__elevation",)
 
     _output_var_names = ("topographic__elevation",)

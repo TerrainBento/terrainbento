@@ -67,6 +67,9 @@ class BasicChRt(TwoLithologyErosionModel):
         - ``topographic__elevation``
         - ``lithology_contact__elevation``
     """
+
+    _name = "BasicChRt"
+
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",

@@ -55,6 +55,8 @@ class BasicThVs(ErosionModel):
         - ``soil__depth``
     """
 
+    _name = "BasicThVs"
+
     _input_var_names = ("topographic__elevation", "soil__depth")
 
     _output_var_names = ("topographic__elevation",)

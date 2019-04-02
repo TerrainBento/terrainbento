@@ -26,6 +26,8 @@ class TwoLithologyErosionModel(ErosionModel):
         - ``lithology_contact__elevation``
     """
 
+    _name = "TwoLithologyErosionModel"
+
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",

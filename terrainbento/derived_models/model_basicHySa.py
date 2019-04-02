@@ -76,6 +76,8 @@ class BasicHySa(ErosionModel):
         - ``soil__depth``
     """
 
+    _name = "BasicHySa"
+
     _input_var_names = ("topographic__elevation", "soil__depth")
 
     _output_var_names = ("topographic__elevation", "soil__depth")

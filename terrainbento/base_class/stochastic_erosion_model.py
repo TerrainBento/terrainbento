@@ -95,6 +95,8 @@ class StochasticErosionModel(ErosionModel):
         - ``topographic__elevation``
     """
 
+    _name = "StochasticErosionModel"
+
     _input_var_names = ("topographic__elevation",)
 
     _output_var_names = ("topographic__elevation",)

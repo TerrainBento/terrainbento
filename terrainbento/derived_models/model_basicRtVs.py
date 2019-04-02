@@ -72,6 +72,8 @@ class BasicRtVs(TwoLithologyErosionModel):
         - ``soil__depth``
     """
 
+    _name = "BasicRtVs"
+
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
