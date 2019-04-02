@@ -22,84 +22,51 @@ class classproperty(property):
 
 
 class Model(object):
-    """Defines the base component class from which Landlab components inherit.
+    """Defines the base model class from which terrainbento models inherit.
 
-    **Base component class methods**
+    **Base model class methods**
 
     .. autosummary::
         :toctree: generated/
 
-        ~landlab.core.model_component.Component.from_path
-        ~landlab.core.model_component.Component.name
-        ~landlab.core.model_component.Component.units
-        ~landlab.core.model_component.Component.definitions
-        ~landlab.core.model_component.Component.input_var_names
-        ~landlab.core.model_component.Component.output_var_names
-        ~landlab.core.model_component.Component.optional_var_names
-        ~landlab.core.model_component.Component.var_type
-        ~landlab.core.model_component.Component.var_units
-        ~landlab.core.model_component.Component.var_definition
-        ~landlab.core.model_component.Component.var_mapping
-        ~landlab.core.model_component.Component.var_loc
-        ~landlab.core.model_component.Component.var_help
-        ~landlab.core.model_component.Component.initialize_output_fields
-        ~landlab.core.model_component.Component.initialize_optional_output_fields
-        ~landlab.core.model_component.Component.shape
-        ~landlab.core.model_component.Component.grid
-        ~landlab.core.model_component.Component.coords
-        ~landlab.core.model_component.Component.imshow
+        ~terrainbento.base_class.model.Model.from_path
+        ~terrainbento.base_class.model.Model.name
+        ~terrainbento.base_class.model.Model.units
+        ~terrainbento.base_class.model.Model.definitions
+        ~terrainbento.base_class.model.Model.input_var_names
+        ~terrainbento.base_class.model.Model.output_var_names
+        ~terrainbento.base_class.model.Model.optional_var_names
+        ~terrainbento.base_class.model.Model.var_type
+        ~terrainbento.base_class.model.Model.var_units
+        ~terrainbento.base_class.model.Model.var_definition
+        ~terrainbento.base_class.model.Model.var_mapping
+        ~terrainbento.base_class.model.Model.var_loc
+        ~terrainbento.base_class.model.Model.var_help
+        ~terrainbento.base_class.model.Model.initialize_output_fields
+        ~terrainbento.base_class.model.Model.initialize_optional_output_fields
+        ~terrainbento.base_class.model.Model.shape
+        ~terrainbento.base_class.model.Model.grid
+        ~terrainbento.base_class.model.Model.coords
+        ~terrainbento.base_class.model.Model.imshow
     """
 
-    _name = ""
+    _name = "Model"
+
     _input_var_names = set()
+
     _output_var_names = set()
-    _optional_var_names = set()
-    _var_units = dict()
+
+    _var_info = dict()
+
+    _param_info = dict()
 
     def __new__(cls, *args, **kwds):
-        registry.add(cls)
         return object.__new__(cls)
 
-    def __init__(self, grid, map_vars=None, **kwds):
-        map_vars = map_vars or {}
-        self._grid = grid
-
-        for (location, vars) in map_vars.items():
-            for (dest, src) in vars.items():
-                grid.add_field(
-                    location, dest, grid.field_values(location, src)
-                )
-
-        for key in kwds:
-            component_name = inspect.getmro(self.__class__)[0].__name__
-            warnings.warn(
-                "Ingnoring unrecognized input parameter, '{param}', for "
-                "{name} component".format(name=component_name, param=key)
-            )
-
-    @classmethod
-    def from_path(cls, grid, path):
-        """Create a component from an input file.
-
-        Parameters
-        ----------
-        grid : ModelGrid
-            A landlab grid.
-        path : str or file_like
-            Path to a parameter file, contents of a parameter file, or
-            a file-like object.
-
-        Returns
-        -------
-        Component
-            A newly-created component.
-        """
-        if os.path.isfile(path):
-            with open(path, "r") as fp:
-                params = load_params(fp)
-        else:
-            params = load_params(path)
-        return cls(grid, **params)
+    def __init__(self, clock, grid):
+        # save the grid, clock, and parameters.
+        self.grid = grid
+        self.clock = clock
 
     @classproperty
     @classmethod
@@ -124,22 +91,6 @@ class Model(object):
             Tuple of field names.
         """
         return tuple(self._output_var_names)
-
-    @classproperty
-    @classmethod
-    def optional_var_names(self):
-        """Names of fields that are optionally provided by the component, if
-        any.
-
-        Returns
-        -------
-        tuple of str
-            Tuple of field names.
-        """
-        try:
-            return tuple(self._optional_var_names)
-        except AttributeError:
-            return ()
 
     @classmethod
     def var_type(cls, name):
@@ -300,7 +251,6 @@ class Model(object):
         for field_to_set in (
             set(self.output_var_names)
             - set(self.input_var_names)
-            - set(self.optional_var_names)
         ):
             grp = self.var_loc(field_to_set)
             type_in = self.var_type(field_to_set)
@@ -312,27 +262,6 @@ class Model(object):
                 init_vals,
                 units=units_in,
                 copy=False,
-                noclobber=True,
-            )
-
-    def initialize_optional_output_fields(self):
-        """Create fields for a component based on its optional field outputs,
-        if declared in _optional_var_names.
-
-        This method will create new fields (without overwrite) for any
-        fields output by the component as optional. New fields are
-        initialized to zero. New fields are created as arrays of floats,
-        unless the component also contains the specifying property
-        _var_type.
-        """
-        for field_to_set in set(self.optional_var_names) - set(
-            self.input_var_names
-        ):
-            self.grid.add_field(
-                self.var_loc(field_to_set),
-                field_to_set,
-                self.grid.zeros(dtype=self.var_type(field_to_set)),
-                units=self.var_units(field_to_set),
                 noclobber=True,
             )
 

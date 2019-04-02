@@ -386,7 +386,7 @@ class ErosionModel(Model):
         usage.
         """
         # call ErosionModel's base class init
-        super(ErosionModel, self).__init__()
+        super(ErosionModel, self).__init__(clock, grid)
 
         flow_accumulator_kwargs = flow_accumulator_kwargs or {}
         boundary_handlers = boundary_handlers or {}
@@ -397,10 +397,6 @@ class ErosionModel(Model):
             raise ValueError("Provided Clock is not valid.")
         if isinstance(grid, ModelGrid) is False:
             raise ValueError("Provided Grid is not valid.")
-
-        # save the grid, clock, and parameters.
-        self.grid = grid
-        self.clock = clock
 
         # first pass of verifying fields
         self._verify_fields(self._input_var_names)
