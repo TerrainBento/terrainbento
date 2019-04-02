@@ -48,11 +48,13 @@ class Basic(ErosionModel):
 
     _var_info = {
         "topographic__elevation": {
+            "type": float,
             "units": "m",
             "at": "node",
             "description": "Land surface topographic elevation",
         },
         "water__unit_flux_in": {
+            "type": float,
             "units": "m/s",
             "at": "node",
             "description": (
@@ -63,6 +65,7 @@ class Basic(ErosionModel):
 
     _param_info = {
         "water_erodability": {
+            "type": float,
             "units": None,
             "default": [0.001],  # these values assume yr instead of second
             "range": [1e-7, 1e-2],  # these values assume yr instead of second
@@ -72,6 +75,7 @@ class Basic(ErosionModel):
             ),
         },
         "regolith_transport_parameter": {
+            "type": float,
             "units": "m/(s^2)",
             "default": [0.1],  # these values assume yr instead of second
             "range": [1e-3, 1e-1],  # these values assume yr instead of second

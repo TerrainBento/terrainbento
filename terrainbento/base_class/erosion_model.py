@@ -154,6 +154,7 @@ class ErosionModel(Model):
 
     _var_info = {
         "topographic__elevation": {
+            "type": float,
             "units": "m",
             "at": "node",
             "description": "Land surface topographic elevation",

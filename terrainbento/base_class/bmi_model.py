@@ -40,7 +40,6 @@ class BmiModel(object):
         ~terrainbento.base_class.bmi_model.Model.definitions
         ~terrainbento.base_class.bmi_model.Model.input_var_names
         ~terrainbento.base_class.bmi_model.Model.output_var_names
-        ~terrainbento.base_class.bmi_model.Model.optional_var_names
         ~terrainbento.base_class.bmi_model.Model.var_type
         ~terrainbento.base_class.bmi_model.Model.var_units
         ~terrainbento.base_class.bmi_model.Model.var_definition
@@ -48,11 +47,14 @@ class BmiModel(object):
         ~terrainbento.base_class.bmi_model.Model.var_loc
         ~terrainbento.base_class.bmi_model.Model.var_help
         ~terrainbento.base_class.bmi_model.Model.initialize_output_fields
-        ~terrainbento.base_class.bmi_model.Model.initialize_optional_output_fields
         ~terrainbento.base_class.bmi_model.Model.shape
         ~terrainbento.base_class.bmi_model.Model.grid
         ~terrainbento.base_class.bmi_model.Model.coords
-        ~terrainbento.base_class.bmi_model.Model.imshow
+
+        todo add the others
+        todo add ones in BMI
+
+
     """
 
     _name = "Model"
@@ -113,7 +115,7 @@ class BmiModel(object):
             The dtype of the field.
         """
         try:
-            return cls._var_type[name]
+            return cls._varinfo[name]["type"]
         except AttributeError:
             return float
 
@@ -139,7 +141,8 @@ class BmiModel(object):
         tuple or str
             Units for each field.
         """
-        return tuple(self._var_units.items())
+        units = [info["units"] for info in self._var_info]
+        return tuple(units)
 
     @classmethod
     def var_units(cls, name):
@@ -155,7 +158,7 @@ class BmiModel(object):
         str
             Units for the given field.
         """
-        return cls._var_units[name]
+        return cls._var_info[name]["units"]
 
     @classproperty
     @classmethod
@@ -167,6 +170,7 @@ class BmiModel(object):
         tuple of (*name*, *description*)
             A description of each field.
         """
+        todo. this needs uupdating.
         return tuple(cls._var_doc.items())
 
     @classmethod
@@ -183,6 +187,7 @@ class BmiModel(object):
         tuple of (*name*, *description*)
             A description of each field.
         """
+        this needs updating
         return cls._var_doc[name]
 
     @classmethod
@@ -242,6 +247,7 @@ class BmiModel(object):
         """
         return cls._var_mapping[name]
 
+    def param...:
     def initialize_output_fields(self):
         """Create fields for a component based on its input and output var
         names.
@@ -282,8 +288,7 @@ class BmiModel(object):
 
     @property
     def coords(self):
-        """Return the coordinates of nodes on grid attached to the
-        component."""
+        """Return the coordinates of nodes on grid attached to the component."""
         return (self._grid.node_x, self._grid.node_y)
 
     def get_component_name(self):
@@ -321,12 +326,12 @@ class BmiModel(object):
     def initialize(self, fname):
         """Initialize the component from a file.
 
-        BMI-wrapped Landlab components use input files in YAML format.
+        BMI-wrapped terrainbento models use input files in YAML format.
+
         Component-specific parameters are listed at the top level,
         followed by grid and then time information. An example input
         file looks like::
 
-         eet: 15.e+3
          clock:
              start: 0
              stop: 100.
