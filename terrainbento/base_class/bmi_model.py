@@ -21,7 +21,7 @@ class classproperty(property):
         return self.fget.__get__(None, owner)()
 
 
-class Model(object):
+class BmiModel(object):
     """Defines the base model class from which terrainbento models inherit.
 
     **Base model class methods**
@@ -29,25 +29,25 @@ class Model(object):
     .. autosummary::
         :toctree: generated/
 
-        ~terrainbento.base_class.model.Model.from_path
-        ~terrainbento.base_class.model.Model.name
-        ~terrainbento.base_class.model.Model.units
-        ~terrainbento.base_class.model.Model.definitions
-        ~terrainbento.base_class.model.Model.input_var_names
-        ~terrainbento.base_class.model.Model.output_var_names
-        ~terrainbento.base_class.model.Model.optional_var_names
-        ~terrainbento.base_class.model.Model.var_type
-        ~terrainbento.base_class.model.Model.var_units
-        ~terrainbento.base_class.model.Model.var_definition
-        ~terrainbento.base_class.model.Model.var_mapping
-        ~terrainbento.base_class.model.Model.var_loc
-        ~terrainbento.base_class.model.Model.var_help
-        ~terrainbento.base_class.model.Model.initialize_output_fields
-        ~terrainbento.base_class.model.Model.initialize_optional_output_fields
-        ~terrainbento.base_class.model.Model.shape
-        ~terrainbento.base_class.model.Model.grid
-        ~terrainbento.base_class.model.Model.coords
-        ~terrainbento.base_class.model.Model.imshow
+        ~terrainbento.base_class.bmi_model.Model.from_path
+        ~terrainbento.base_class.bmi_model.Model.name
+        ~terrainbento.base_class.bmi_model.Model.units
+        ~terrainbento.base_class.bmi_model.Model.definitions
+        ~terrainbento.base_class.bmi_model.Model.input_var_names
+        ~terrainbento.base_class.bmi_model.Model.output_var_names
+        ~terrainbento.base_class.bmi_model.Model.optional_var_names
+        ~terrainbento.base_class.bmi_model.Model.var_type
+        ~terrainbento.base_class.bmi_model.Model.var_units
+        ~terrainbento.base_class.bmi_model.Model.var_definition
+        ~terrainbento.base_class.bmi_model.Model.var_mapping
+        ~terrainbento.base_class.bmi_model.Model.var_loc
+        ~terrainbento.base_class.bmi_model.Model.var_help
+        ~terrainbento.base_class.bmi_model.Model.initialize_output_fields
+        ~terrainbento.base_class.bmi_model.Model.initialize_optional_output_fields
+        ~terrainbento.base_class.bmi_model.Model.shape
+        ~terrainbento.base_class.bmi_model.Model.grid
+        ~terrainbento.base_class.bmi_model.Model.coords
+        ~terrainbento.base_class.bmi_model.Model.imshow
     """
 
     _name = "Model"
