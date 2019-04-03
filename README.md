@@ -12,9 +12,8 @@ A modular landscape evolution modeling package built on top of the [Landlab Tool
 
 terrainbento"s User Manual is located at our [Read The Docs page](http://terrainbento.readthedocs.io/).
 
-We recommend that you start with [this set of Jupyter notebooks](https://github.com/TerrainBento/examples_tests_and_tutorials) that introduce terrainbento .
+We recommend that you start with [this set of Jupyter notebooks](https://github.com/TerrainBento/examples_tests_and_tutorials) that introduce terrainbento and the model description paper [Barnhart et al. (2019)]. (https://doi.org/10.5194/gmd-12-1267-2019).
 
-A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/).
 
 ## A quick example
 
@@ -127,4 +126,4 @@ If you plan to develop with terrainbento, please fork terrainbento, clone the fo
 
 ## How to cite
 
-A manuscript describing terrainbento is currently in discussion at GMD. The discussion paper can be found [here](https://www.geosci-model-dev-discuss.net/gmd-2018-204/).
+Barnhart, K. R., Glade, R. C., Shobe, C. M., and Tucker, G. E.: Terrainbento 1.0: a Python package for multi-model analysis in long-term drainage basin evolution, Geosci. Model Dev., 12, 1267-1297, https://doi.org/10.5194/gmd-12-1267-2019, 2019.
