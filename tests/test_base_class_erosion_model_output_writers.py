@@ -14,13 +14,13 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 def output_writer_function_a(model):
     average_elevation = np.mean(model.z[model.grid.core_nodes])
-    with open("ow_func_a." + str(model.model_time) + ".txt", "w") as f:
+    with open("ow_func_a." + str(model.clock.time) + ".txt", "w") as f:
         f.write(str(average_elevation))
 
 
 def output_writer_function_b(model):
     minimum_elevation = np.min(model.z[model.grid.core_nodes])
-    with open("ow_func_b." + str(model.model_time) + ".txt", "w") as f:
+    with open("ow_func_b." + str(model.clock.time) + ".txt", "w") as f:
         f.write(str(minimum_elevation))
 
 
@@ -32,7 +32,7 @@ class output_writer_class_a(object):
     def run_one_step(self):
         average_change = np.mean(self.change[self.model.grid.core_nodes])
         with open(
-            "ow_class_a." + str(self.model.model_time) + ".txt", "w"
+            "ow_class_a." + str(self.model.clock.time) + ".txt", "w"
         ) as f:
             f.write(str(average_change))
 
@@ -45,7 +45,7 @@ class output_writer_class_b(object):
     def run_one_step(self):
         min_change = np.min(self.change[self.model.grid.core_nodes])
         with open(
-            "ow_class_b." + str(self.model.model_time) + ".txt", "w"
+            "ow_class_b." + str(self.model.clock.time) + ".txt", "w"
         ) as f:
             f.write(str(min_change))
 

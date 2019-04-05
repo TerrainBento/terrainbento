@@ -153,7 +153,7 @@ class BasicChSa(ErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(10)
-        >>> model.model_time
+        >>> model.clock.time
         10.0
 
         """

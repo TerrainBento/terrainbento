@@ -34,22 +34,22 @@ class BmiModel(object):
     .. autosummary::
         :toctree: generated/
 
-        ~terrainbento.base_class.bmi_model.Model.from_path
-        ~terrainbento.base_class.bmi_model.Model.name
-        ~terrainbento.base_class.bmi_model.Model.units
-        ~terrainbento.base_class.bmi_model.Model.definitions
-        ~terrainbento.base_class.bmi_model.Model.input_var_names
-        ~terrainbento.base_class.bmi_model.Model.output_var_names
-        ~terrainbento.base_class.bmi_model.Model.var_type
-        ~terrainbento.base_class.bmi_model.Model.var_units
-        ~terrainbento.base_class.bmi_model.Model.var_definition
-        ~terrainbento.base_class.bmi_model.Model.var_mapping
-        ~terrainbento.base_class.bmi_model.Model.var_loc
-        ~terrainbento.base_class.bmi_model.Model.var_help
-        ~terrainbento.base_class.bmi_model.Model.initialize_output_fields
-        ~terrainbento.base_class.bmi_model.Model.shape
-        ~terrainbento.base_class.bmi_model.Model.grid
-        ~terrainbento.base_class.bmi_model.Model.coords
+        ~terrainbento.bmi.bmi_model.Model.file
+        ~terrainbento.bmi.bmi_model.Model.name
+        ~terrainbento.bmi.bmi_model.Model.units
+        ~terrainbento.bmi.bmi_model.Model.definitions
+        ~terrainbento.bmi.bmi_model.Model.input_var_names
+        ~terrainbento.bmi.bmi_model.Model.output_var_names
+        ~terrainbento.bmi.bmi_model.Model.var_type
+        ~terrainbento.bmi.bmi_model.Model.var_units
+        ~terrainbento.bmi.bmi_model.Model.var_definition
+        ~terrainbento.bmi.bmi_model.Model.var_mapping
+        ~terrainbento.bmi.bmi_model.Model.var_loc
+        ~terrainbento.bmi.bmi_model.Model.var_help
+        ~terrainbento.bmi.bmi_model.Model.initialize_output_fields
+        ~terrainbento.bmi.bmi_model.Model.shape
+        ~terrainbento.bmi.bmi_model.Model.grid
+        ~terrainbento.bmi.bmi_model.Model.coords
 
         todo add the others
         todo add ones in BMI
@@ -57,7 +57,7 @@ class BmiModel(object):
 
     """
 
-    _name = "Model"
+    _name = "BmiModel"
 
     _input_var_names = set()
 
@@ -75,6 +75,58 @@ class BmiModel(object):
         self._grid = grid
         self.clock = clock
 
+    @classmethod
+    def from_file(cls, file_like):
+        """Construct a terrainbento model from a file.
+
+        Parameters
+        ----------
+        file_like : file_like or str
+            Contents of a parameter file, a file-like object, or the path to
+            a parameter file.
+
+        Examples
+        --------
+        >>> from six import StringIO
+        >>> from terrainbento import ErosionModel
+        >>> filelike = StringIO('''
+        ... grid:
+        ...   grid:
+        ...     RasterModelGrid:
+        ...       - [4, 5]
+        ...   fields:
+        ...     at_node:
+        ...       topographic__elevation:
+        ...         constant:
+        ...           - constant: 0
+        ... clock:
+        ...   step: 1
+        ...   stop: 200
+        ... ''')
+        >>> model = ErosionModel.from_file(filelike)
+        >>> model.clock.step
+        1.0
+        >>> model.clock.stop
+        200.0
+        >>> model.grid.shape
+        (4, 5)
+        """
+        # first get contents.
+        try:
+            contents = file_like.read()
+        except AttributeError:
+            if os.path.isfile(file_like):
+                with open(file_like, "r") as fp:
+                    contents = fp.read()
+            else:
+                contents = file_like
+
+        # then parse contents.
+        params = yaml.safe_load(contents)
+
+        # construct instance
+        return cls.from_dict(params)
+
     @classproperty
     @classmethod
     def input_var_names(cls):
@@ -84,6 +136,28 @@ class BmiModel(object):
         -------
         tuple of str
             Tuple of field names.
+
+        Examples
+        --------
+        >>> from six import StringIO
+        >>> from terrainbento import Basic
+        >>> filelike = StringIO('''
+        ... grid:
+        ...   grid:
+        ...     RasterModelGrid:
+        ...       - [4, 5]
+        ...   fields:
+        ...     at_node:
+        ...       topographic__elevation:
+        ...         constant:
+        ...           - constant: 0
+        ... clock:
+        ...   step: 1
+        ...   stop: 200
+        ... ''')
+        >>> model = Basic.from_file(filelike)
+        >>> model.input_var_names
+
         """
         return tuple(cls._input_var_names)
 
@@ -96,6 +170,27 @@ class BmiModel(object):
         -------
         tuple of str
             Tuple of field names.
+
+        Examples
+        --------
+        >>> from six import StringIO
+        >>> from terrainbento import Basic
+        >>> filelike = StringIO('''
+        ... grid:
+        ...   grid:
+        ...     RasterModelGrid:
+        ...       - [4, 5]
+        ...   fields:
+        ...     at_node:
+        ...       topographic__elevation:
+        ...         constant:
+        ...           - constant: 0
+        ... clock:
+        ...   step: 1
+        ...   stop: 200
+        ... ''')
+        >>> model = Basic.from_file(filelike)
+        >>> model.output_var_names
         """
         return tuple(self._output_var_names)
 
@@ -114,10 +209,7 @@ class BmiModel(object):
         dtype
             The dtype of the field.
         """
-        try:
-            return cls._varinfo[name]["type"]
-        except AttributeError:
-            return float
+        return cls._varinfo[name]["type"]
 
     @classproperty
     @classmethod
@@ -170,7 +262,7 @@ class BmiModel(object):
         tuple of (*name*, *description*)
             A description of each field.
         """
-        todo. this needs uupdating.
+        # todo. this needs uupdating.
         return tuple(cls._var_doc.items())
 
     @classmethod
@@ -187,7 +279,7 @@ class BmiModel(object):
         tuple of (*name*, *description*)
             A description of each field.
         """
-        this needs updating
+        # this needs updating
         return cls._var_doc[name]
 
     @classmethod
@@ -247,7 +339,7 @@ class BmiModel(object):
         """
         return cls._var_mapping[name]
 
-    def param...:
+    # def param...:
     def initialize_output_fields(self):
         """Create fields for a component based on its input and output var
         names.

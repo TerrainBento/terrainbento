@@ -97,12 +97,36 @@ class Clock(object):
         2400.0
         >>> clock.step
         200.0
+
+        There are two ways to advance the model time stored in `clock.time`.
+
+        >>> clock.time
+        0.0
+
+        First, to advance by the step size provided, use `advance`:
+
+        >>> clock.advance()
+        >>> clock.time
+        200.0
+
+        To  advance by an arbitrary time pass the `dt` value to `advance`:
+
+        >>> clock.advance(2.)
+        >>> clock.time
+        202.0
+
+        It is also possible to change the timestep.
+
+        >>> clock.step = 18.
+        >>> clock.advance()
+        >>> clock.time
+        220.0
         """
         # verify that unit is a valid CFUNITS
         # raise ValueError()
 
         try:
-            self.start = float(start)
+            self._start = float(start)
         except ValueError:
             msg = (
                 "Clock: Required parameter *start* is "
@@ -111,7 +135,7 @@ class Clock(object):
             raise ValueError(msg)
 
         try:
-            self.step = float(step)
+            self._step = float(step)
         except ValueError:
             msg = (
                 "Clock: Required parameter *step* is "
@@ -120,7 +144,7 @@ class Clock(object):
             raise ValueError(msg)
 
         try:
-            self.stop = float(stop)
+            self._stop = float(stop)
         except ValueError:
             msg = (
                 "Clock: Required parameter *stop* is "
@@ -132,33 +156,43 @@ class Clock(object):
             msg = "Clock: *start* is larger than *stop*."
             raise ValueError(msg)
 
-        @property
-        def time(self):
-            """Current time."""
-            return self._time
+        self._time = 0.0
 
-        @property
-        def start(self):
-            """Start time."""
-            return self._start
+    def advance(self, dt=None):
+        """Advance the time stepper by one time step or a provided value.
 
-        @property
-        def stop(self):
-            """Stop time."""
-            return self._stop
+        Parameters
+        ----------
+        dt : float, optional
+            Model time step. Default is to use the step provided at
+            instantiation.
+        """
+        step = dt or self._step
+        self._time += step
+        if self._stop is not None and self._time > self._stop:
+            raise StopIteration()
 
-        @property
-        def step(self):
-            """Time Step."""
-            return self._step
+    @property
+    def time(self):
+        """Current time."""
+        return self._time
 
-        @step.setter
-        def step(self, new_val):
-            """Change the time step."""
-            self._step = new_val
+    @property
+    def start(self):
+        """Start time."""
+        return self._start
 
-        def advance(self):
-            """Advance the time stepper by one time step."""
-            self._time += self.step
-            if self._stop is not None and self._time > self._stop:
-                raise StopIteration()
+    @property
+    def stop(self):
+        """Stop time."""
+        return self._stop
+
+    @property
+    def step(self):
+        """Time Step."""
+        return self._step
+
+    @step.setter
+    def step(self, new_val):
+        """Change the time step."""
+        self._step = new_val

@@ -17,7 +17,7 @@ from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io.netcdf import write_raster_netcdf
 from terrainbento import Clock
-from terrainbento.base_class.bmi_model import BmiModel
+from terrainbento.bmi.bmi_model import BmiModel
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -127,7 +127,7 @@ def _setup_boundary_handlers(grid, name, params):
     return boundary_handler
 
 
-class ErosionModel(Model):
+class ErosionModel(BmiModel):
 
     """Base class providing common functionality for terrainbento models.
 
@@ -162,57 +162,6 @@ class ErosionModel(Model):
     }
 
     _param_info = {}
-
-    @classmethod
-    def from_file(cls, file_like):
-        """Construct a terrainbento model from a file.
-
-        Parameters
-        ----------
-        file_like : file_like or str
-            Contents of a parameter file, a file-like object, or the path to
-            a parameter file.
-
-        Examples
-        --------
-        >>> from six import StringIO
-        >>> filelike = StringIO('''
-        ... grid:
-        ...   grid:
-        ...     RasterModelGrid:
-        ...       - [4, 5]
-        ...   fields:
-        ...     at_node:
-        ...       topographic__elevation:
-        ...         constant:
-        ...           - constant: 0
-        ... clock:
-        ...   step: 1
-        ...   stop: 200
-        ... ''')
-        >>> model = ErosionModel.from_file(filelike)
-        >>> model.clock.step
-        1.0
-        >>> model.clock.stop
-        200.0
-        >>> model.grid.shape
-        (4, 5)
-        """
-        # first get contents.
-        try:
-            contents = file_like.read()
-        except AttributeError:
-            if os.path.isfile(file_like):
-                with open(file_like, "r") as fp:
-                    contents = fp.read()
-            else:
-                contents = file_like
-
-        # then parse contents.
-        params = yaml.safe_load(contents)
-
-        # construct instance
-        return cls.from_dict(params)
 
     @classmethod
     def from_dict(cls, params, output_writers=None):
@@ -399,9 +348,6 @@ class ErosionModel(Model):
         if isinstance(grid, ModelGrid) is False:
             raise ValueError("Provided Grid is not valid.")
 
-        # first pass of verifying fields
-        self._verify_fields(self._input_var_names)
-
         # save reference to elevation
         self.z = grid.at_node["topographic__elevation"]
 
@@ -419,9 +365,6 @@ class ErosionModel(Model):
         if output_interval is None:
             output_interval = clock.stop
         self.output_interval = output_interval
-
-        # instantiate model time.
-        self._model_time = 0.
 
         # instantiate container for computational timestep:
         self._compute_time = [tm.time()]
@@ -470,6 +413,9 @@ class ErosionModel(Model):
                 **flow_accumulator_kwargs
             )
 
+        # first pass of verifying fields
+        self._verify_fields(self._input_var_names)
+
         ###################################################################
         # Boundary Conditions and Output Writers
         ###################################################################
@@ -491,11 +437,6 @@ class ErosionModel(Model):
                 raise ValueError(
                     "Required field {field} not present.".format(field=field)
                 )
-
-    @property
-    def model_time(self):
-        """Return current time of model integration in model time units."""
-        return self._model_time
 
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
