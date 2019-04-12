@@ -16,7 +16,7 @@ _STRING_LENGTH = 80
 
 
 class StochasticErosionModel(ErosionModel):
-    """Base class for stochastic-precipitation terrainbento models.
+    r"""Base class for stochastic-precipitation terrainbento models.
 
     A **StochasticErosionModel** inherits from
     :py:class:`ErosionModel` and provides functionality needed by all
@@ -60,11 +60,11 @@ class StochasticErosionModel(ErosionModel):
     routing method. It then performs one of two options, depending on the
     user's choice of ``opt_stochastic_duration`` (True or False).
 
-    If the user requests stochastic duration, the model iterates through a sequence
-    of storm and interstorm periods. Storm depth is drawn at random from a gamma
-    distribution, and storm duration from an exponential distribution; storm
-    intensity is then depth divided by duration. This sequencing is implemented by
-    overriding the run_for method.
+    If the user requests stochastic duration, the model iterates through a
+    sequence of storm and interstorm periods. Storm depth is drawn at random
+    from a gamma distribution, and storm duration from an exponential
+    distribution; storm intensity is then depth divided by duration. This
+    sequencing is implemented by overriding the run_for method.
 
     If the user does not request stochastic duration (indicated by setting
     ``opt_stochastic_duration`` to ``False``), then the default
@@ -84,12 +84,12 @@ class StochasticErosionModel(ErosionModel):
 
         R = P - I (1 - \exp ( -P / I ))
 
-    where :math:`I` is the soil infiltration capacity. At the sub-grid scale, soil
-    infiltration capacity is assumed to have an exponential distribution of which
-    :math:`I` is the mean. Hence, there are always some spots within any given grid cell
-    that will generate runoff. This approach yields a smooth transition from
-    near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P`
-    (when :math:`P>>I`), without a "hard threshold."
+    where :math:`I` is the soil infiltration capacity. At the sub-grid scale,
+    soil infiltration capacity is assumed to have an exponential distribution
+    of which :math:`I` is the mean. Hence, there are always some spots within
+    any given grid cell that will generate runoff. This approach yields a
+    smooth transition from near-zero runoff (when :math:`I>>P`) to
+    :math:`R \\approx P` (when :math:`P>>I`), without a "hard threshold."
 
     The following at-node fields must be specified in the grid:
         - ``topographic__elevation``
@@ -205,8 +205,8 @@ class StochasticErosionModel(ErosionModel):
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the step may
         # change. Thus, rather than writing routines to reconstruct the time
-        # series of precipitation from the step could change based on users use,
-        # we"ll record this with the model run instead of re-running.
+        # series of precipitation from the step could change based on users
+        # use, we"ll record this with the model run instead of re-running.
 
         # make this the non-default option.
 
