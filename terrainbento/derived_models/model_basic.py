@@ -66,7 +66,7 @@ class Basic(ErosionModel):
     _param_info = {
         "water_erodability": {
             "type": float,
-            "units": None,
+            "units": None,  # should I put in dependence on M?
             "default": 0.001,  # these values assume yr instead of second
             "range": [1e-7, 1e-2],  # these values assume yr instead of second
             "description": (

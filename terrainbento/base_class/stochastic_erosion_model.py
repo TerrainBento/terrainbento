@@ -362,13 +362,13 @@ class StochasticErosionModel(ErosionModel):
             if self.record_rain:
                 # save record into the rain record
                 self.record_rain_event(
-                    self.model_time, step, self.rain_rate, runoff
+                    self.clock.time, step, self.rain_rate, runoff
                 )
 
         elif self.opt_stochastic_duration and self.rain_rate <= 0.0:
             # calculate and record the time with no rain:
             if self.record_rain:
-                self.record_rain_event(self.model_time, step, 0, 0)
+                self.record_rain_event(self.clock.time, step, 0, 0)
 
         elif not self.opt_stochastic_duration:
 
@@ -386,7 +386,7 @@ class StochasticErosionModel(ErosionModel):
                 self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
                 # save record into the rain record
                 if self.record_rain:
-                    event_start_time = self.model_time + (i * dt_water)
+                    event_start_time = self.clock.time + (i * dt_water)
                     self.record_rain_event(
                         event_start_time, dt_water, self.rain_rate, runoff
                     )
@@ -400,7 +400,7 @@ class StochasticErosionModel(ErosionModel):
 
                 # if dry time is greater than zero, record.
                 if dt_dry > 0:
-                    event_start_time = self.model_time + (
+                    event_start_time = self.clock.time + (
                         self.n_sub_steps * dt_water
                     )
                     self.record_rain_event(event_start_time, dt_dry, 0.0, 0.0)

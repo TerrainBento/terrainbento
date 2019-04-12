@@ -120,7 +120,7 @@ class CaptureNodeBaselevelHandler(object):
          [  0.   0.   0.   0.   0.]]
 
         """
-        self.model_time = 0.0
+        self.clock.time = 0.0
         self._grid = grid
         self.z = grid.at_node["topographic__elevation"]
         self.node = capture_node
@@ -160,13 +160,13 @@ class CaptureNodeBaselevelHandler(object):
             Duration of model time to advance forward.
         """
         # lower the correct amount.
-        if self.model_time >= self.start:
+        if self.clock.time >= self.start:
             if self.capture_ends:
-                if self.model_time < self.stop:
+                if self.clock.time < self.stop:
                     self.z[self.node] += self.rate * step
                 else:
                     self.z[self.node] += self.post_capture_incision_rate * step
             else:
                 self.z[self.node] += self.rate * step
         # increment model time
-        self.model_time += step
+        self.clock.time += step

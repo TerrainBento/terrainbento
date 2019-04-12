@@ -197,7 +197,7 @@ class BasicCv(ErosionModel):
             )[0]
 
         # Update erosion based on climate
-        self.eroder.K = float(self.K_through_time(self.model_time))
+        self.eroder.K = float(self.K_through_time(self.clock.time))
 
         # Do some erosion (but not on the flooded nodes)
         self.eroder.run_one_step(step, flooded_nodes=flooded)

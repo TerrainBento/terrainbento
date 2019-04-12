@@ -139,7 +139,7 @@ class GenericFuncBaselevelHandler(object):
         (n_nodes,).
 
         """
-        self.model_time = 0.0
+        self.clock.time = 0.0
         self._grid = grid
 
         # test the function behaves well
@@ -150,7 +150,7 @@ class GenericFuncBaselevelHandler(object):
             )
             raise ValueError(msg)
 
-        test_dzdt = function(self._grid, self.model_time)
+        test_dzdt = function(self._grid, self.clock.time)
 
         if hasattr(test_dzdt, "shape"):
             if test_dzdt.shape != self._grid.x_of_node.shape:
@@ -197,7 +197,7 @@ class GenericFuncBaselevelHandler(object):
         step : float
             Duration of model time to advance forward.
         """
-        self.dzdt = self.function(self._grid, self.model_time)
+        self.dzdt = self.function(self._grid, self.clock.time)
 
         # calculate lowering amount and subtract
         self.z[self.nodes_to_lower] += (
@@ -213,4 +213,4 @@ class GenericFuncBaselevelHandler(object):
                 )
 
         # increment model time
-        self.model_time += step
+        self.clock.time += step
