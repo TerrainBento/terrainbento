@@ -109,6 +109,7 @@ def test_run_stochastic_opt_false(clock_05, grid_1):
     }
 
     model = BasicSt(**params)
+    model.clock.stop = 20000.
     assert model.opt_stochastic_duration is False
     model.run_for(model.clock.step, 10000.)
 
