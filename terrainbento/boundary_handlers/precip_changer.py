@@ -429,7 +429,7 @@ class PrecipChanger(object):
             )
             raise ValueError(msg)
 
-        self.clock.time = 0.0
+        self._time = 0.0
 
         if precipchanger_stop_time is None:
             self.no_stop_time = True
@@ -497,16 +497,16 @@ class PrecipChanger(object):
         rainfall__mean_rate : float
         """
         # if after start time
-        if self.clock.time > self.start_time:
+        if self._time > self.start_time:
 
             # get current evaluation time
             if self.no_stop_time:
-                time = self.clock.time
+                time = self._time
             else:
-                if self.clock.time > self.stop_time:
+                if self._time > self.stop_time:
                     time = self.stop_time
                 else:
-                    time = self.clock.time
+                    time = self._time
 
             # calculate and return updated values
             frac_wet_days = (
@@ -541,7 +541,7 @@ class PrecipChanger(object):
         erodibility_adjustment_factor : float
         """
         # if after start time
-        if self.clock.time > self.start_time:
+        if self._time > self.start_time:
 
             # get the updated precipitation parameters
             frac_wet, mean_depth = self.get_current_precip_params()
@@ -586,4 +586,4 @@ class PrecipChanger(object):
         step : float
             Duration of model time to advance forward.
         """
-        self.clock.time += step
+        self._time += step
