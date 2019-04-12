@@ -121,6 +121,12 @@ class Clock(object):
         >>> clock.advance()
         >>> clock.time
         220.0
+
+        And to change the stop time.
+
+        >>> clock.stop = 1000.
+        >>> clock.stop
+        1000.
         """
         # verify that unit is a valid CFUNITS
         # raise ValueError()
@@ -186,6 +192,13 @@ class Clock(object):
     def stop(self):
         """Stop time."""
         return self._stop
+
+    @stop.setter
+    def stop(self, new_val):
+        """Change the stop time."""
+        if self._time > new_val:
+            raise ValueError("")
+        self._stop = new_val
 
     @property
     def step(self):
