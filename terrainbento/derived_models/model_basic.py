@@ -67,7 +67,7 @@ class Basic(ErosionModel):
         "water_erodability": {
             "type": float,
             "units": None,
-            "default": [0.001],  # these values assume yr instead of second
+            "default": 0.001,  # these values assume yr instead of second
             "range": [1e-7, 1e-2],  # these values assume yr instead of second
             "description": (
                 "Water erodibility coefficient. Units depend on "
@@ -77,7 +77,7 @@ class Basic(ErosionModel):
         "regolith_transport_parameter": {
             "type": float,
             "units": "m/(s^2)",
-            "default": [0.1],  # these values assume yr instead of second
+            "default": 0.1,  # these values assume yr instead of second
             "range": [1e-3, 1e-1],  # these values assume yr instead of second
             "description": ("Hillslope diffusivity."),
         },
