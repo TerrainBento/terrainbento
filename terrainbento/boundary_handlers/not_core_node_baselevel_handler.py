@@ -134,7 +134,7 @@ class NotCoreNodeBaselevelHandler(object):
         ``lowering_file_path``.
 
         """
-        self.clock.time = 0.0
+        self.model_time = 0.0
         self._grid = grid
         self.modify_core_nodes = modify_core_nodes
         self.z = self._grid.at_node["topographic__elevation"]
@@ -255,7 +255,7 @@ class NotCoreNodeBaselevelHandler(object):
             # is lowered
             mean_z = np.mean(self.z[self.nodes_to_lower])
             self.topo_change = mean_z - self.outlet_elevation_obj(
-                self.clock.time
+                self.model_time
             )
 
             other_fields = [
@@ -272,4 +272,4 @@ class NotCoreNodeBaselevelHandler(object):
             self.z[self.nodes_to_lower] -= self.topo_change
 
         # increment model time
-        self.clock.time += step
+        self.model_time += step

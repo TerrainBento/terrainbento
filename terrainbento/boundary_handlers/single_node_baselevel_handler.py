@@ -107,7 +107,7 @@ class SingleNodeBaselevelHandler(object):
         # ensure that the outlet has a node status of FIXED_VALUE_BOUNDARY.
         grid.status_at_node[outlet_id] = FIXED_VALUE_BOUNDARY
 
-        self.clock.time = 0.0
+        self.model_time = 0.0
         self._grid = grid
         self.outlet_id = outlet_id
         self.z = self._grid.at_node["topographic__elevation"]
@@ -244,7 +244,7 @@ class SingleNodeBaselevelHandler(object):
             # be done before the topography is lowered
 
             topo_change = self.z[self.outlet_id] - self.outlet_elevation_obj(
-                self.clock.time
+                self.model_time
             )
 
             other_fields = [
@@ -259,4 +259,4 @@ class SingleNodeBaselevelHandler(object):
             self.z[self.outlet_id] -= topo_change
 
         # increment model time
-        self.clock.time += step
+        self.model_time += step
