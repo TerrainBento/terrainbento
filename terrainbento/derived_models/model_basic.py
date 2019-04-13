@@ -51,13 +51,13 @@ class Basic(ErosionModel):
             "type": float,
             "units": "m",
             "at": "node",
-            "description": "Land surface topographic elevation",
+            "definition": "Land surface topographic elevation",
         },
         "water__unit_flux_in": {
             "type": float,
             "units": "m/s",
             "at": "node",
-            "description": (
+            "definition": (
                 "Volume water per area per time input to each " "node."
             ),
         },
@@ -69,7 +69,7 @@ class Basic(ErosionModel):
             "units": None,  # should I put in dependence on M?
             "default": 0.001,  # these values assume yr instead of second
             "range": [1e-7, 1e-2],  # these values assume yr instead of second
-            "description": (
+            "definition": (
                 "Water erodibility coefficient. Units depend on "
                 "values of m_sp and n_sp."
             ),
@@ -79,7 +79,7 @@ class Basic(ErosionModel):
             "units": "m/(s^2)",
             "default": 0.1,  # these values assume yr instead of second
             "range": [1e-3, 1e-1],  # these values assume yr instead of second
-            "description": ("Hillslope diffusivity."),
+            "definition": ("Hillslope diffusivity."),
         },
     }
 

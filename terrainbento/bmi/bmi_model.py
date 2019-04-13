@@ -194,23 +194,6 @@ class BmiModel(object):
         """
         return tuple(self._output_var_names)
 
-    @classmethod
-    def var_type(cls, name):
-        """Returns the dtype of a field (float, int, bool, str...), if
-        declared. Default is float.
-
-        Parameters
-        ----------
-        name : str
-            A field name.
-
-        Returns
-        -------
-        dtype
-            The dtype of the field.
-        """
-        return cls._varinfo[name]["type"]
-
     @classproperty
     @classmethod
     def name(self):
@@ -230,11 +213,30 @@ class BmiModel(object):
 
         Returns
         -------
-        tuple or str
+        tuple of (*name*, *units*)
             Units for each field.
         """
-        units = [info["units"] for info in self._var_info]
+        units = [(key, self.var_info[key]["units"])
+                 for key in self._var_info.keys()]
         return tuple(units)
+
+    @classmethod
+    def var_type(cls, name):
+        """Returns the dtype of a field (float, int, bool, str...), if
+        declared. Default is float.
+
+        Parameters
+        ----------
+        name : str
+            A field name.
+
+        Returns
+        -------
+        dtype
+            The dtype of the field.
+        """
+        return cls._var_info[name]["type"]
+
 
     @classmethod
     def var_units(cls, name):
@@ -262,8 +264,9 @@ class BmiModel(object):
         tuple of (*name*, *description*)
             A description of each field.
         """
-        # todo. this needs uupdating.
-        return tuple(cls._var_doc.items())
+        definition = [(key, self.var_info[key]["definitions"])
+                      for key in self._var_info.keys()]
+        return tuple(definition)
 
     @classmethod
     def var_definition(cls, name):
@@ -280,7 +283,7 @@ class BmiModel(object):
             A description of each field.
         """
         # this needs updating
-        return cls._var_doc[name]
+        return cls._var_doc[name]["definition"]
 
     @classmethod
     def var_help(cls, name):
@@ -293,11 +296,13 @@ class BmiModel(object):
         """
         desc = os.linesep.join(
             textwrap.wrap(
-                cls._var_doc[name], initial_indent="  ", subsequent_indent="  "
+                cls._var_info[name]["description"],
+                initial_indent="  ",
+                subsequent_indent="  "
             )
         )
-        units = cls._var_units[name]
-        loc = cls._var_mapping[name]
+        units = cls._var_info[name]["units"]
+        loc = cls._var_info[name]["at"]
 
         intent = ""
         if name in cls._input_var_names:
@@ -321,7 +326,9 @@ class BmiModel(object):
         tuple of (name, location)
             Tuple of variable name and location ('node', 'link', etc.) pairs.
         """
-        return tuple(self._var_mapping.items())
+        at = [(key, self.var_info[key]["at"])
+                      for key in self._var_info.keys()]
+        return tuple(at)
 
     @classmethod
     def var_loc(cls, name):
@@ -337,9 +344,10 @@ class BmiModel(object):
         str
             The location ('node', 'link', etc.) where a variable is defined.
         """
-        return cls._var_mapping[name]
+        return cls._var_info[name]["at"]
 
-    # def param...:
+    # TODO Parameter values. HERE AND BELOW as GETS??
+
     def initialize_output_fields(self):
         """Create fields for a component based on its input and output var
         names.
