@@ -140,7 +140,7 @@ class ErosionModel(BmiModel):
 
     It is expected that a derived model will define an **__init__** and a
     **run_one_step** method. If desired, the derived model can overwrite the
-    existing **run_for**, **run**, and **finalize** methods.
+    existing **run_for** and **run** methods.
 
     The following at-node fields must be specified in the grid:
         - ``topographic__elevation``
@@ -552,14 +552,6 @@ class ErosionModel(BmiModel):
 
         # Update boundary conditions
         self.update_boundary_conditions(step)
-
-    def finalize(self):
-        """Finalize model.
-
-        This base-class method does nothing. Derived classes can
-        override it to run any required finalization steps.
-        """
-        pass
 
     def run_for(self, step, runtime):
         """Run model without interruption for a specified time period.
