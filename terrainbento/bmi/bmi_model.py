@@ -75,57 +75,6 @@ class BmiModel(object):
         self._grid = grid
         self.clock = clock
 
-    @classmethod
-    def from_file(cls, file_like):
-        """Construct a terrainbento model from a file.
-
-        Parameters
-        ----------
-        file_like : file_like or str
-            Contents of a parameter file, a file-like object, or the path to
-            a parameter file.
-
-        Examples
-        --------
-        >>> from six import StringIO
-        >>> from terrainbento import ErosionModel
-        >>> filelike = StringIO('''
-        ... grid:
-        ...   grid:
-        ...     RasterModelGrid:
-        ...       - [4, 5]
-        ...   fields:
-        ...     at_node:
-        ...       topographic__elevation:
-        ...         constant:
-        ...           - constant: 0
-        ... clock:
-        ...   step: 1
-        ...   stop: 200
-        ... ''')
-        >>> model = ErosionModel.from_file(filelike)
-        >>> model.clock.step
-        1.0
-        >>> model.clock.stop
-        200.0
-        >>> model.grid.shape
-        (4, 5)
-        """
-        # first get contents.
-        try:
-            contents = file_like.read()
-        except AttributeError:
-            if os.path.isfile(file_like):
-                with open(file_like, "r") as fp:
-                    contents = fp.read()
-            else:
-                contents = file_like
-
-        # then parse contents.
-        params = yaml.safe_load(contents)
-
-        # construct instance
-        return cls.from_dict(params)
 
     @classproperty
     @classmethod
