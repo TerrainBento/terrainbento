@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 """Defines the base component class from which terrainbento models inherit."""
 
+from bmi import Bmi
 import inspect
 import os
 import textwrap
@@ -21,7 +22,7 @@ class classproperty(property):
         return self.fget.__get__(None, owner)()
 
 
-class BmiModel(object):
+class BmiModel(Bmi):
     """Defines the base model class from which terrainbento models inherit.
 
     This class, ``BmiModel`` allows for all terrainbento models to have a BMI
@@ -29,32 +30,78 @@ class BmiModel(object):
 
     todo: add CSDMS url link.
 
-    **Base model class methods**
+    Major functions to run the model.
 
     .. autosummary::
         :toctree: generated/
 
-        ~terrainbento.bmi.bmi_model.Model.file
-        ~terrainbento.bmi.bmi_model.Model.name
-        ~terrainbento.bmi.bmi_model.Model.units
-        ~terrainbento.bmi.bmi_model.Model.definitions
-        ~terrainbento.bmi.bmi_model.Model.input_var_names
-        ~terrainbento.bmi.bmi_model.Model.output_var_names
-        ~terrainbento.bmi.bmi_model.Model.var_type
-        ~terrainbento.bmi.bmi_model.Model.var_units
-        ~terrainbento.bmi.bmi_model.Model.var_definition
-        ~terrainbento.bmi.bmi_model.Model.var_mapping
-        ~terrainbento.bmi.bmi_model.Model.var_loc
-        ~terrainbento.bmi.bmi_model.Model.var_help
-        ~terrainbento.bmi.bmi_model.Model.initialize_output_fields
-        ~terrainbento.bmi.bmi_model.Model.shape
-        ~terrainbento.bmi.bmi_model.Model.grid
-        ~terrainbento.bmi.bmi_model.Model.coords
+        ~terrainbento.bmi.bmi_model.BmiModel.initialize
+        ~terrainbento.bmi.bmi_model.BmiModel.update
+        ~terrainbento.bmi.bmi_model.BmiModel.finalize
 
-        todo add the others
-        todo add ones in BMI
+    Name, input and output state variables.
 
+    .. autosummary::
+        :toctree: generated/
 
+        ~terrainbento.bmi.bmi_model.BmiModel.get_component_name
+        ~terrainbento.bmi.bmi_model.BmiModel.get_input_var_names
+        ~terrainbento.bmi.bmi_model.BmiModel.get_output_var_names
+
+    Information about  time.
+
+    .. autosummary::
+        :toctree: generated/
+
+        ~terrainbento.bmi.bmi_model.BmiModel.get_current_time
+        ~terrainbento.bmi.bmi_model.BmiModel.get_start_time
+        ~terrainbento.bmi.bmi_model.BmiModel.get_end_time
+        ~terrainbento.bmi.bmi_model.BmiModel.get_time_units
+        ~terrainbento.bmi.bmi_model.BmiModel.get_time_step
+
+    Information about state variables
+
+    .. autosummary::
+        :toctree: generated/
+
+        ~terrainbento.bmi.bmi_model.BmiModel.get_var_grid
+        ~terrainbento.bmi.bmi_model.BmiModel.get_var_type
+        ~terrainbento.bmi.bmi_model.BmiModel.get_var_units
+        ~terrainbento.bmi.bmi_model.BmiModel.get_var_itemsize
+        ~terrainbento.bmi.bmi_model.BmiModel.get_var_nbytes
+        ~terrainbento.bmi.bmi_model.BmiModel.get_var_location
+
+    Getters and setters for state variabbles.
+
+    .. autosummary::
+        :toctree: generated/
+
+        ~terrainbento.bmi.bmi_model.BmiModel.get_value
+        ~terrainbento.bmi.bmi_model.BmiModel.get_value_ptr
+        ~terrainbento.bmi.bmi_model.BmiModel.get_value_at_indicies
+        ~terrainbento.bmi.bmi_model.BmiModel.set_value
+        ~terrainbento.bmi.bmi_model.BmiModel.set_value_at_indicies
+
+    Information about the grid.
+
+    .. autosummary::
+        :toctree: generated/
+
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_rank
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_size
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_type
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_shape
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_spacing
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_origin
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_x
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_y
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_size
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_node_count
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_edge_count
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_face_count
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_edge_nodes
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_face_nodes
+        ~terrainbento.bmi.bmi_model.BmiModel.get_grid_nodes_per_face
     """
 
     _name = "BmiModel"
@@ -72,6 +119,7 @@ class BmiModel(object):
 
     def __init__(self, clock, grid):
         # save the grid, clock, and parameters.
+        super()
         self._grid = grid
         self.clock = clock
 
