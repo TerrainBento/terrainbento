@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 """Defines the base component class from which terrainbento models inherit."""
 
-from bmi import Bmi
+from .bmi import Bmi
 import inspect
 import os
 import textwrap
