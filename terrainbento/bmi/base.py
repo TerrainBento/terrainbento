@@ -31,12 +31,12 @@ class BmiBase(object):
         recommended. A template of a model's configuration file
         with placeholder values is used by the BMI.
 
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int initialize(void *self, char * filename);
         """
-        pass
+        raise NotImplementedError()
 
     def update(self):
         """Advance model state by one time step.
@@ -49,12 +49,12 @@ class BmiBase(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int update(void *self);
         """
-        pass
+        raise NotImplementedError()
 
     def update_until(self, time):
         """Advance model state until the given time.
@@ -70,12 +70,12 @@ class BmiBase(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int update_until(void *self, double time);
         """
-        pass
+        raise NotImplementedError()
 
     def update_frac(self, time_frac):
         """Advance model state by a fraction of a time step.
@@ -91,12 +91,12 @@ class BmiBase(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int update_frac(void *self, double time_frac);
         """
-        pass
+        raise NotImplementedError()
 
     def finalize(self):
         """Perform tear-down tasks for the model.
@@ -107,9 +107,9 @@ class BmiBase(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int finalize(void *self);
         """
-        pass
+        raise NotImplementedError()

@@ -39,13 +39,13 @@ class BmiGridRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_shape(void * self, const char * var_name,
                                int * shape);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_x(self, grid_id):
         """Get coordinates of grid nodes in the streamwise direction.
@@ -66,12 +66,12 @@ class BmiGridRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_x(void * self, const char * var_name, double * x);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_y(self, grid_id):
         """Get coordinates of grid nodes in the transverse direction.
@@ -92,12 +92,12 @@ class BmiGridRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_y(void * self, const char * var_name, double * y);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_z(self, grid_id):
         """Get coordinates of grid nodes in the normal direction.
@@ -118,9 +118,9 @@ class BmiGridRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_z(void * self, const char * var_name, double * z);
         """
-        pass
+        raise NotImplementedError()

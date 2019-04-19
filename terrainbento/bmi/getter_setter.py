@@ -30,14 +30,14 @@ class BmiGetter(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_value(void * self, const char * var_name, void * buffer);
         """
-        pass
+        raise NotImplementedError()
 
-    def get_value_ref(self, var_name):
+    def get_value_ptr(self, var_name):
         """Get a reference to values of the given variable.
 
         This is a getter for the model, used to access the model's
@@ -56,13 +56,13 @@ class BmiGetter(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_value_ref(void * self, const char * var_name,
                               void ** buffer);
         """
-        pass
+        raise NotImplementedError()
 
     def get_value_at_indices(self, var_name, indices):
         """Get values at particular indices.
@@ -81,13 +81,13 @@ class BmiGetter(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_value_at_indices(void * self, const char * var_name,
                                      void * buffer, int * indices, int len);
         """
-        pass
+        raise NotImplementedError()
 
 
 class BmiSetter(object):
@@ -114,12 +114,12 @@ class BmiSetter(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int set_value(void * self, const char * var_name, void * src);
         """
-        pass
+        raise NotImplementedError()
 
     def set_value_at_indices(self, var_name, indices, src):
         """Specify a new value for a model variable at particular indices.
@@ -135,10 +135,10 @@ class BmiSetter(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int set_value_at_indices(void * self, const char * var_name,
                                      int * indices, int len, void * src);
         """
-        pass
+        raise NotImplementedError()

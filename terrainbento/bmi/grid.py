@@ -27,12 +27,12 @@ class BmiGrid(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_rank(void * self, int grid_id, int * rank);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_size(self, grid_id):
         """Get the total number of elements in the computational grid.
@@ -53,12 +53,12 @@ class BmiGrid(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_size(void * self, int grid_id, int * size);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_type(self, grid_id):
         """Get the grid type as a string.
@@ -79,9 +79,9 @@ class BmiGrid(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_type(void * self, int grid_id, char * type);
         """
-        pass
+        raise NotImplementedError()

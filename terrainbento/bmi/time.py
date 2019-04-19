@@ -19,12 +19,12 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_start_time(void * self, double * time);
         """
-        pass
+        raise NotImplementedError()
 
     def get_current_time(self):
         """Current time of the model.
@@ -40,12 +40,12 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_current_time(void * self, double * time);
         """
-        pass
+        raise NotImplementedError()
 
     def get_end_time(self):
         """End time of the model.
@@ -61,12 +61,12 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_end_time(void * self, double * time);
         """
-        pass
+        raise NotImplementedError()
 
     def get_time_step(self):
         """Current time step of the model.
@@ -81,12 +81,12 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_time_step(void * self, double * dt);
         """
-        pass
+        raise NotImplementedError()
 
     def get_time_units(self):
         """Time units of the model.
@@ -100,9 +100,9 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_time_units(void * self, char * units);
         """
-        pass
+        raise NotImplementedError()

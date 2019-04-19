@@ -27,12 +27,12 @@ class BmiVars(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_var_type(void * self, const char * var_name, char * type);
         """
-        pass
+        raise NotImplementedError()
 
     def get_var_units(self, var_name):
         """Get units of the given variable.
@@ -59,7 +59,7 @@ class BmiVars(object):
         -----
         CSDMS uses the `UDUNITS`_ standard from Unidata.
 
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_var_units(void * self, const char * var_name,
@@ -68,7 +68,7 @@ class BmiVars(object):
         .. _UDUNITS: http://www.unidata.ucar.edu/software/udunits
 
         """
-        pass
+        raise NotImplementedError()
 
     def get_var_itemsize(self, var_name):
         """Get memory use for each array element in bytes.
@@ -85,13 +85,13 @@ class BmiVars(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_var_itemsize(void * self, const char * var_name,
                                  int * itemsize);
         """
-        pass
+        raise NotImplementedError()
 
     def get_var_nbytes(self, var_name):
         """Get size, in bytes, of the given variable.
@@ -108,13 +108,13 @@ class BmiVars(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_var_nbytes(void * self, const char * var_name,
                                int * nbytes);
         """
-        pass
+        raise NotImplementedError()
 
     def get_var_grid(self, var_name):
         """Get grid identifier for the given variable.
@@ -136,9 +136,9 @@ class BmiVars(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_var_grid(void * self, const char * var_name, int * id);
         """
-        pass
+        raise NotImplementedError()

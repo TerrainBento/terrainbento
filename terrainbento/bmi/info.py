@@ -16,7 +16,7 @@ class BmiInfo(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_component_name(void * self, char * name);
@@ -43,13 +43,13 @@ class BmiInfo(object):
 
         Standard Names do not have to be used within the model.
 
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_input_var_name_count(void * self, int * count);
             int get_input_var_names(void * self, char ** names);
         """
-        pass
+        raise NotImplementedError()
 
     def get_output_var_names(self):
         """List of a model's output variables.
@@ -68,10 +68,10 @@ class BmiInfo(object):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_output_var_name_count(void * self, int * count);
             int get_output_var_names(void * self, char ** names);
         """
-        pass
+        raise NotImplementedError()

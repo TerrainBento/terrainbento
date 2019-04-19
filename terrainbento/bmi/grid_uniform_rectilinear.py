@@ -46,12 +46,12 @@ class BmiGridUniformRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_shape(void * self, int grid_id, int * shape);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_spacing(self, grid_id):
         """Get distance between nodes of the computational grid.
@@ -72,12 +72,12 @@ class BmiGridUniformRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_spacing(void * self, int grid_id, double * spacing);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_origin(self, grid_id):
         """Get coordinates for the origin of the computational grid.
@@ -98,9 +98,9 @@ class BmiGridUniformRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_origin(void * self, int grid_id, double * origin);
         """
-        pass
+        raise NotImplementedError()

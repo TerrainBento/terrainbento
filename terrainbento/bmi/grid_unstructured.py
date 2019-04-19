@@ -33,12 +33,12 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_x(void * self, int grid_id, double * x);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_y(self, grid_id):
         """Get coordinates of grid nodes in the transverse direction.
@@ -59,12 +59,12 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_y(void * self, int grid_id, double * y);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_z(self, grid_id):
         """Get coordinates of grid nodes in the normal direction.
@@ -85,12 +85,12 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_z(void * self, int grid_id, double * z);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_connectivity(self, grid_id):
         """Get connectivity array of the grid.
@@ -111,13 +111,13 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_connectivity(void * self, int grid_id,
                                       int * connectivity);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_offset(self, grid_id):
         """Get offsets for the grid nodes.
@@ -138,9 +138,9 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_offset(void * self, int grid_id, int * offset);
         """
-        pass
+        raise NotImplementedError()

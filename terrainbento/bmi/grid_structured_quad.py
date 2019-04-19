@@ -33,12 +33,12 @@ class BmiGridStructuredQuad(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_shape(void * self, int grid_id, int * shape);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_x(self, grid_id):
         """Get coordinates of grid nodes in the streamwise direction.
@@ -59,12 +59,12 @@ class BmiGridStructuredQuad(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_x(void * self, int grid_id, double * x);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_y(self, grid_id):
         """Get coordinates of grid nodes in the transverse direction.
@@ -85,12 +85,12 @@ class BmiGridStructuredQuad(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_y(void * self, int grid_id, double * y);
         """
-        pass
+        raise NotImplementedError()
 
     def get_grid_z(self, grid_id):
         """Get coordinates of grid nodes in the normal direction.
@@ -111,9 +111,9 @@ class BmiGridStructuredQuad(BmiGrid):
 
         Notes
         -----
-        .. code-block:: c
+        .. code-block:: python
 
             /* C */
             int get_grid_z(void * self, int grid_id, double * z);
         """
-        pass
+        raise NotImplementedError()
