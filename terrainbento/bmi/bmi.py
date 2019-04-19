@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 """The complete Basic Model Interface."""
 
-from .bmi import Bmi
+from .bmi_abc import Bmi
 from .base import BmiBase
 from .info import BmiInfo
 from .time import BmiTime

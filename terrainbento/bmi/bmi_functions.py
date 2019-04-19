@@ -1,3 +1,5 @@
+from .bmi_abc import Bmi
+
 class BmiModel(Bmi):
     """
     """
@@ -313,24 +315,24 @@ class BmiModel(Bmi):
         """
         ...
 
-  def get_value_at_indices(self, str, dest, inds):
-      """Get values at particular indices.
+    def get_value_at_indices(self, str, dest, inds):
+        """Get values at particular indices.
 
-      Parameters
-      ----------
-      name : str
+        Parameters
+        ----------
+        name : str
           An input or output variable name, a CSDMS Standard Name.
-      dest : ndarray
+        dest : ndarray
           A numpy array into which to place the values.
-      indices : array_like
+        indices : array_like
           The indices into the variable array.
 
-      Returns
-      -------
-      array_like
+        Returns
+        -------
+        array_like
           Value of the model variable at the given location.
-      """
-      ...
+        """
+        ...
 
     def set_value(self, str, values):
         """Specify a new value for a model variable.
@@ -349,19 +351,19 @@ class BmiModel(Bmi):
         """
         ...
 
-  def set_value_at_indices(self, str, inds, src):
-      """Specify a new value for a model variable at particular indices.
+    def set_value_at_indices(self, str, inds, src):
+        """Specify a new value for a model variable at particular indices.
 
-      Parameters
-      ----------
-      var_name : str
+        Parameters
+        ----------
+        var_name : str
           An input or output variable name, a CSDMS Standard Name.
-      indices : array_like
+        indices : array_like
           The indices into the variable array.
-      src : array_like
+        src : array_like
           The new value for the specified variable.
-      """
-      ...
+        """
+        ...
 
     def get_grid_rank(self, grid):
         """Get number of dimensions of the computational grid.
