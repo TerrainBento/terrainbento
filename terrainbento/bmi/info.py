@@ -21,7 +21,7 @@ class BmiInfo(object):
             /* C */
             int get_component_name(void * self, char * name);
         """
-        pass
+        return self._name
 
     def get_input_var_names(self):
         """List of a model's input variables.

@@ -17,7 +17,7 @@ from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io.netcdf import write_raster_netcdf
 from terrainbento import Clock
-from terrainbento.bmi.bmi_model import BmiModel
+from terrainbento.bmi import BmiModel
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
