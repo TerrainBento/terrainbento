@@ -10,8 +10,8 @@ STANDARD_NAME = {
     "topographic__gradient": "land_surface__slope",
     "topographic__slope": "land_surface__slope_angle",
     "topographic__steepest_slope": "model_grid_cell__max_of_d8_slope",
-    "soil_depth": "spam",
-    "contact_elevation": "eggs"
+    "soil__depth": "spam",
+    "lithology_contact__elevation": "eggs",
     "surface_water__discharge": "land_surface_water__volume_flow_rate",
     "water__unit_flux_in": "model_grid_cell_water~incoming__volume_flow_rate",
 }

@@ -21,5 +21,7 @@ def test_wrap_as_bmi(Model):
     pass
 
 
-# TODO: ask questions on github about: information about parameter values and ranges.
+# TODO:
 # BMI expectations about file writing.
+# Post BMI explaination
+# What about Grid ID what should that be...?
