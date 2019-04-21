@@ -30,10 +30,14 @@ class BmiGetter(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_value(void * self, const char * var_name, void * buffer);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -56,11 +60,15 @@ class BmiGetter(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_value_ref(void * self, const char * var_name,
                               void ** buffer);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -81,11 +89,15 @@ class BmiGetter(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_value_at_indices(void * self, const char * var_name,
                                      void * buffer, int * indices, int len);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -114,10 +126,14 @@ class BmiSetter(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int set_value(void * self, const char * var_name, void * src);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -135,10 +151,13 @@ class BmiSetter(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int set_value_at_indices(void * self, const char * var_name,
                                      int * indices, int len, void * src);
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()

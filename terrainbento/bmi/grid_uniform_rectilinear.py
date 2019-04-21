@@ -46,10 +46,14 @@ class BmiGridUniformRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_shape(void * self, int grid_id, int * shape);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -72,10 +76,14 @@ class BmiGridUniformRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_spacing(void * self, int grid_id, double * spacing);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -98,9 +106,13 @@ class BmiGridUniformRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_origin(void * self, int grid_id, double * origin);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()

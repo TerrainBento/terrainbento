@@ -33,10 +33,14 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_x(void * self, int grid_id, double * x);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -59,10 +63,14 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_y(void * self, int grid_id, double * y);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -85,10 +93,14 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_z(void * self, int grid_id, double * z);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -111,11 +123,15 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_connectivity(void * self, int grid_id,
                                       int * connectivity);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -138,9 +154,13 @@ class BmiGridUnstructured(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_offset(void * self, int grid_id, int * offset);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()

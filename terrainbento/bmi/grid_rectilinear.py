@@ -39,11 +39,14 @@ class BmiGridRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_shape(void * self, const char * var_name,
                                int * shape);
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -66,10 +69,14 @@ class BmiGridRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_x(void * self, const char * var_name, double * x);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -92,10 +99,14 @@ class BmiGridRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_y(void * self, const char * var_name, double * y);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -118,9 +129,13 @@ class BmiGridRectilinear(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_z(void * self, const char * var_name, double * z);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()

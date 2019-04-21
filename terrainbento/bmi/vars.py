@@ -27,10 +27,14 @@ class BmiVars(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_var_type(void * self, const char * var_name, char * type);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -59,7 +63,7 @@ class BmiVars(object):
         -----
         CSDMS uses the `UDUNITS`_ standard from Unidata.
 
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_var_units(void * self, const char * var_name,
@@ -67,6 +71,9 @@ class BmiVars(object):
 
         .. _UDUNITS: http://www.unidata.ucar.edu/software/udunits
 
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -85,11 +92,15 @@ class BmiVars(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_var_itemsize(void * self, const char * var_name,
                                  int * itemsize);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -108,11 +119,15 @@ class BmiVars(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_var_nbytes(void * self, const char * var_name,
                                int * nbytes);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -136,9 +151,65 @@ class BmiVars(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_var_grid(void * self, const char * var_name, int * id);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
+        """
+        raise NotImplementedError()
+
+    def get_var_location(self, var_name):
+        """Get the grid element type that the a given variable is defined on.
+
+        The grid topology can be composed of *nodes*, *edges*, and *faces*.
+
+        *node*
+            A point that has a coordinate pair or triplet: the most
+            basic element of the topology.
+
+        *edge*
+            A line or curve bounded by two *nodes*.
+
+        *face*
+            A plane or surface enclosed by a set of edges. In a 2D
+            horizontal application one may consider the word “polygon”,
+            but in the hierarchy of elements the word “face” is most common.
+
+        Parameters
+        ----------
+        var_name : str
+            An input or output variable name, a CSDMS Standard Name.
+
+        Returns
+        -------
+        str
+            The grid location on which the variable is defined. Must be one of
+            `"node"`, `"edge"`, or `"face"`.
+
+        Notes
+        -----
+        CSDMS uses the `ugrid conventions`_ to define unstructured grids.
+
+        .. _UGRID: http://ugrid-conventions.github.io/ugrid-conventions
+
+        See Also
+        --------
+        bmi.info.BmiInfo.get_input_var_names : Get *var_name* from this
+            method or from :func:`~bmi.info.BmiInfo.get_output_var_names`.
+
+        Notes
+        -----
+        .. code-block:: c
+
+            /* C */
+            int get_var_grid(void * self, const char * var_name, int * id);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()

@@ -31,10 +31,14 @@ class BmiBase(object):
         recommended. A template of a model's configuration file
         with placeholder values is used by the BMI.
 
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int initialize(void *self, char * filename);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -49,10 +53,14 @@ class BmiBase(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int update(void *self);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -70,10 +78,14 @@ class BmiBase(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int update_until(void *self, double time);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -91,10 +103,14 @@ class BmiBase(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int update_frac(void *self, double time_frac);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -107,9 +123,13 @@ class BmiBase(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int finalize(void *self);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()

@@ -19,10 +19,14 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_start_time(void * self, double * time);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -40,10 +44,14 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_current_time(void * self, double * time);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -61,18 +69,21 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_end_time(void * self, double * time);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
     def get_time_step(self):
         """Current time step of the model.
 
-        The model time step should be of type float. The default time
-        step is 1.0.
+        The model time step should be of type float.
 
         Returns
         -------
@@ -81,10 +92,14 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_time_step(void * self, double * dt);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -100,9 +115,13 @@ class BmiTime(object):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_time_units(void * self, char * units);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()

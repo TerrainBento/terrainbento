@@ -33,10 +33,14 @@ class BmiGridStructuredQuad(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_shape(void * self, int grid_id, int * shape);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -59,10 +63,14 @@ class BmiGridStructuredQuad(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_x(void * self, int grid_id, double * x);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -85,10 +93,14 @@ class BmiGridStructuredQuad(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_y(void * self, int grid_id, double * y);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
 
@@ -111,9 +123,13 @@ class BmiGridStructuredQuad(BmiGrid):
 
         Notes
         -----
-        .. code-block:: python
+        .. code-block:: c
 
             /* C */
             int get_grid_z(void * self, int grid_id, double * z);
+
+        Examples
+        --------
+        >>> # insert model specific example here.
         """
         raise NotImplementedError()
