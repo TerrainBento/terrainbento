@@ -11,7 +11,7 @@ class BmiGetter(object):
     current values.
     """
 
-    def get_value(self, var_name):
+    def get_value(self, var_name, dest):
         """Get a copy of values of the given variable.
 
         This is a getter for the model, used to access the model's
@@ -20,13 +20,15 @@ class BmiGetter(object):
 
         Parameters
         ----------
-        var_name : str
-          An input or output variable name, a CSDMS Standard Name.
+        name : str
+            An input or output variable name, a CSDMS Standard Name.
+        dest : ndarray
+            A numpy array into which to place the values.
 
         Returns
         -------
-        array_like
-          The value of a model variable.
+        ndarray
+            The same numpy array that was passed as an input buffer.
 
         Notes
         -----
@@ -72,15 +74,17 @@ class BmiGetter(object):
         """
         raise NotImplementedError()
 
-    def get_value_at_indices(self, var_name, indices):
+    def get_value_at_indices(self, var_name, dest, indices):
         """Get values at particular indices.
 
         Parameters
         ----------
-        var_name : str
-          An input or output variable name, a CSDMS Standard Name.
+        name : str
+            An input or output variable name, a CSDMS Standard Name.
+        dest : ndarray
+            A numpy array into which to place the values.
         indices : array_like
-          The indices into the variable array.
+            The indices into the variable array.
 
         Returns
         -------
