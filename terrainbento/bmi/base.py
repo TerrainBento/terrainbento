@@ -64,7 +64,7 @@ class BmiBase(object):
         """
         raise NotImplementedError()
 
-    def update_until(self, time):
+    def update_until(self, time): # not required methods
         """Advance model state until the given time.
 
         Parameters
@@ -89,7 +89,7 @@ class BmiBase(object):
         """
         raise NotImplementedError()
 
-    def update_frac(self, time_frac):
+    def update_frac(self, time_frac): # not required methods.
         """Advance model state by a fraction of a time step.
 
         Parameters
