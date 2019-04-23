@@ -38,7 +38,9 @@ class BmiBase(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> assert True == False # insert a meaningful example
         """
         raise NotImplementedError()
 
@@ -60,57 +62,10 @@ class BmiBase(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
-        """
-        raise NotImplementedError()
-
-    def update_until(self, time): # not required methods
-        """Advance model state until the given time.
-
-        Parameters
-        ----------
-        time : float
-          A model time value.
-
-        See Also
-        --------
-        update
-
-        Notes
-        -----
-        .. code-block:: c
-
-            /* C */
-            int update_until(void *self, double time);
-
-        Examples
-        --------
-        >>> # insert model specific example here.
-        """
-        raise NotImplementedError()
-
-    def update_frac(self, time_frac): # not required methods.
-        """Advance model state by a fraction of a time step.
-
-        Parameters
-        ----------
-        time_frac : float
-          A fraction of a model time step value.
-
-        See Also
-        --------
-        update
-
-        Notes
-        -----
-        .. code-block:: c
-
-            /* C */
-            int update_frac(void *self, double time_frac);
-
-        Examples
-        --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.update()
+        >>> assert True == False # insert a meaningful example
         """
         raise NotImplementedError()
 
@@ -130,6 +85,10 @@ class BmiBase(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.update()
+        >>> instance.finalize()
+        >>> assert True == False # insert a meaningful example
         """
         raise NotImplementedError()

@@ -39,7 +39,9 @@ class BmiGetter(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_value(var_name, dest)
         """
         raise NotImplementedError()
 
@@ -70,7 +72,9 @@ class BmiGetter(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_value_ptr(var_name)
         """
         raise NotImplementedError()
 
@@ -101,7 +105,9 @@ class BmiGetter(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_value(var_name, dest, indices)
         """
         raise NotImplementedError()
 
@@ -137,7 +143,9 @@ class BmiSetter(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.set_value(var_name, src)
         """
         raise NotImplementedError()
 
@@ -162,6 +170,8 @@ class BmiSetter(object):
                                      int * indices, int len, void * src);
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.set_value_at_indices(var_name, indices, src)
         """
         raise NotImplementedError()

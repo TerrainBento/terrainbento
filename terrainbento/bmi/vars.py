@@ -34,7 +34,9 @@ class BmiVars(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_var_type(var_name)
         """
         raise NotImplementedError()
 
@@ -73,7 +75,9 @@ class BmiVars(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_var_units(var_name)
         """
         raise NotImplementedError()
 
@@ -100,7 +104,9 @@ class BmiVars(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_var_itemsize(var_name)
         """
         raise NotImplementedError()
 
@@ -127,7 +133,9 @@ class BmiVars(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_var_nbytes(var_name)
         """
         raise NotImplementedError()
 
@@ -158,7 +166,9 @@ class BmiVars(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_var_grid(var_name)
         """
         raise NotImplementedError()
 
@@ -210,6 +220,8 @@ class BmiVars(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_var_location(var_name)
         """
         raise NotImplementedError()

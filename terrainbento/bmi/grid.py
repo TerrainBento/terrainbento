@@ -6,65 +6,97 @@ class BmiGrid(object):
 
     """Methods that describe a grid.
 
-    Unstructured
+    Four grid types are supported: unstructured, structured quadrilateral,
+    rectilinear, and uniform rectilinear. Each grid type requires a different
+    set of BMI functions. Additionally, depending on the grid rank (0, 1, 2, 3)
+    cooresponding to scalar, 1D, 2D, or 3D models, the BMI functions may
+    change. If a function is not appropriate for a particular model, it should
+    raise a `NotImplementedError`.
 
-        Methods that describe an unstructured grid.
+    get_grid_rank (all)
+    get_grid_size (all)
+    get_grid_type (all)
 
-        .. figure:: _static/grid_unstructured.png
-            :scale: 10%
-            :align: center
-            :alt: An example of an unstructured grid.
+    get_grid_x (all but uniform rectilinear)(for rank 1 = 1D)
+    get_grid_y (all but uniform rectilinear)(for rank 2 = 2D)
+    get_grid_z (all but uniform rectilinear)(for rank 3 = 3D)
 
-    Structured Quad
+    get_grid_edge_count  (unstructured)
+    get_grid_face_count (unstructured)
+    get_grid_node_count (unstructured)
 
-        Methods that describe a structured grid of quadrilaterals.
+    get_grid_edge_nodes (unstructured)
+    get_grid_face_nodes (unstructured)
+    get_grid_face_edges (unstructured)
+    get_grid_nodes_per_face (unstructured)
 
-        .. figure:: _static/grid_structured_quad.png
-            :scale: 10%
-            :align: center
-            :alt: An example of a structured quad grid.
+    get_grid_shape (structured quad, rectilinear, uniform rectilinear)
 
-    Rectilinear
+    get_grid_spacing (uniform rectilinear)
+    get_grid_origin (uniform rectilinear)
 
-        "Methods that describe a rectilinear grid.
 
-        In a 2D rectilinear grid, every grid cell (or element) is a rectangle but
-        different cells can have different dimensions. All cells in the same row
-        have the same grid spacing in the y direction and all cells in the same
-        column have the same grid spacing in the x direction. Grid spacings can
-        be computed as the difference of successive x or y values.
+    1. Methods that describe an unstructured grid.
 
-        .. figure:: _static/grid_rectilinear.png
-            :scale: 10%
-            :align: center
-            :alt: An example of a rectilinear gri
+    This is the most general grid type and can be used for any type of grid.
+    However, most grids that consist of 4-sided polygons can be represented
+    using one of the other grid types. This grid type must be used if the grid
+    consists of any elements or cells that do not have four sides.
 
-    Uniform Rectilinear
+    Note that a grid of equilateral triangles, while is most certainly
+    structured, would need to be represented as an unstructured grid. The same
+    is true for a grid of hexagons.
 
-        Methods that describe a uniform rectilinear grid.
+    .. figure:: _static/grid_unstructured.png
+        :scale: 10%
+        :align: center
+        :alt: An example of an unstructured grid.
 
-        In a 2D uniform grid, every grid cell (or element) is a rectangle and all
-        cells have the same dimensions. If the dimensions are equal, then the
-        grid is a tiling of squares.
+    2. Methods that describe a structured grid of quadrilaterals.
 
-        Each of these functions returns information about each dimension of a
-        grid. The dimensions are ordered with "ij" indexing (as opposed to "xy").
-        For example, the :func:`get_grid_shape` function for the example grid would
-        return the array ``[4, 5]``. If there were a third dimension, the length of
-        the z dimension would be listed first. This same convention is used in
-        NumPy. Note that the grid shape is the number of nodes in the coordinate
-        directions and not the number of cells or elements. It is possible for
-        grid values to be associated with the nodes or with the cells.
+    The most general structured quadrilateral grid is one whose rows (and
+    columns) do not share a common coordinate. In this case, coordinates are
+    required for each grid element.
 
-        .. figure:: _static/grid_uniform_rectilinear.png
-            :scale: 10%
-            :align: center
-            :alt: An example of a uniform rectilinear grid
+    .. figure:: _static/grid_structured_quad.png
+        :scale: 10%
+        :align: center
+        :alt: An example of a structured quad grid.
+
+    3. Methods that describe a rectilinear grid.
+
+    In a 2D rectilinear grid, every grid cell (or element) is a rectangle but
+    different cells can have different dimensions. All cells in the same row
+    have the same grid spacing in the y direction and all cells in the same
+    column have the same grid spacing in the x direction. Grid spacings can
+    be computed as the difference of successive x or y values.
+
+    .. figure:: _static/grid_rectilinear.png
+        :scale: 10%
+        :align: center
+        :alt: An example of a rectilinear grid
+
+    4. Methods that describe a uniform rectilinear grid.
+
+    In a 2D uniform grid, every grid cell (or element) is a rectangle and all
+    cells have the same dimensions. If the dimensions are equal, then the
+    grid is a tiling of squares.
+
+    Each of these functions returns information about each dimension of a
+    grid. The dimensions are ordered with "ij" indexing (as opposed to "xy").
+    For example, the :func:`get_grid_shape` function for the example grid would
+    return the array ``[4, 5]``. If there were a third dimension, the length of
+    the z dimension would be listed first. This same convention is used in
+    NumPy. Note that the grid shape is the number of nodes in the coordinate
+    directions and not the number of cells or elements. It is possible for
+    grid values to be associated with the nodes or with the cells.
+
+    .. figure:: _static/grid_uniform_rectilinear.png
+        :scale: 10%
+        :align: center
+        :alt: An example of a uniform rectilinear grid
 
     """
-
-    def __init__(self):
-        pass
 
     def get_grid_rank(self, grid_id):
         """Get number of dimensions of the computational grid.
@@ -92,8 +124,11 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_rank(grid_id)
         """
+        # needed for all grid types
         raise NotImplementedError()
 
     def get_grid_size(self, grid_id):
@@ -122,7 +157,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_size()
         """
         raise NotImplementedError()
 
@@ -137,7 +174,9 @@ class BmiGrid(object):
         Returns
         -------
         str
-          Type of grid as a string.
+          Type of grid as a string. Valid return values are
+          "uniform_rectilinear", "rectilinear", "structured_quadrilateral",
+          and "unstructured".
 
         See Also
         --------
@@ -152,7 +191,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_type(grid_id)
         """
         raise NotImplementedError()
 
@@ -182,7 +223,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_x(grid_id)
         """
         raise NotImplementedError()
 
@@ -212,7 +255,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_y(grid_id)
         """
         raise NotImplementedError()
 
@@ -242,7 +287,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_z(grid_id)
         """
         raise NotImplementedError()
 
@@ -268,7 +315,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_edge_count(grid_id)
         """
         raise NotImplementedError()
 
@@ -298,7 +347,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_edge_nodes(grid_id, edge_nodes)
         """
         raise NotImplementedError()
 
@@ -324,7 +375,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_face_count(grid_id)
         """
         raise NotImplementedError()
 
@@ -354,7 +407,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_face_nodes(grid_id, face_nodes)
         """
         raise NotImplementedError()
 
@@ -380,7 +435,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_node_count(grid_id)
         """
         raise NotImplementedError()
 
@@ -408,7 +465,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_nodes_per_face(grid_id, nodes_per_face)
         """
         raise NotImplementedError()
 
@@ -438,7 +497,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_shape(grid_id)
         """
         raise NotImplementedError()
 
@@ -468,7 +529,9 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_spacing(grid_id)
         """
         raise NotImplementedError()
 
@@ -498,6 +561,13 @@ class BmiGrid(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_grid_origin(grid_id)
         """
         raise NotImplementedError()
+
+def get_grid_face_edges(self, grid_id):
+    """
+    """
+    raise NotImplementedError()

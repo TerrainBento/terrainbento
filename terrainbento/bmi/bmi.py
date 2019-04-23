@@ -10,8 +10,8 @@ from .getter_setter import BmiGetter, BmiSetter
 from .grid import BmiGrid
 
 
-class BmiModel(Bmi, BmiBase, BmiInfo, BmiTime, BmiVars, BmiGetter, BmiSetter,
-          BmiGrid):
+class BmiModel(BmiBase, BmiInfo, BmiTime, BmiVars, BmiGetter, BmiSetter,
+          BmiGrid, Bmi):
 
     """The complete Basic Model Interface for terrainbento.
 
@@ -21,5 +21,6 @@ class BmiModel(Bmi, BmiBase, BmiInfo, BmiTime, BmiVars, BmiGetter, BmiSetter,
 
     def __init__(self, clock, grid):
         # save the grid, clock, and parameters.
+
         self._grid = grid
         self.clock = clock

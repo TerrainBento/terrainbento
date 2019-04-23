@@ -26,7 +26,9 @@ class BmiTime(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_start_time
         """
         raise NotImplementedError()
 
@@ -51,7 +53,9 @@ class BmiTime(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_current_time
         """
         raise NotImplementedError()
 
@@ -76,7 +80,9 @@ class BmiTime(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_end_time
         """
         raise NotImplementedError()
 
@@ -99,7 +105,9 @@ class BmiTime(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_time_step
         """
         raise NotImplementedError()
 
@@ -122,6 +130,8 @@ class BmiTime(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_time_units
         """
         raise NotImplementedError()

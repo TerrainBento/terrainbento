@@ -23,9 +23,11 @@ class BmiInfo(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_component_name()
         """
-        return self._name
+        raise NotImplementedError
 
     def get_input_var_names(self):
         """List of a model's input variables.
@@ -55,7 +57,9 @@ class BmiInfo(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_input_var_names()
         """
         raise NotImplementedError()
 
@@ -84,6 +88,8 @@ class BmiInfo(object):
 
         Examples
         --------
-        >>> # insert model specific example here.
+        >>> from module import object
+        >>> instance = Object.initialize(example_input_file)
+        >>> instance.get_output_var_names()
         """
         raise NotImplementedError()
