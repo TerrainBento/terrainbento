@@ -13,28 +13,37 @@ class BmiGrid(object):
     change. If a function is not appropriate for a particular model, it should
     raise a `NotImplementedError`.
 
-    get_grid_rank (all)
-    get_grid_size (all)
-    get_grid_type (all)
+    terrainbento uses either uniform rectilinear grids or unstructured grids.
+    As terrainbento creates 2D models (the third dimension is the  state
+    variable, "topographic__elevation"), they are of rank 2.
 
-    get_grid_x (all but uniform rectilinear)(for rank 1 = 1D)
-    get_grid_y (all but uniform rectilinear)(for rank 2 = 2D)
-    get_grid_z (all but uniform rectilinear)(for rank 3 = 3D)
 
-    get_grid_edge_count  (unstructured)
-    get_grid_face_count (unstructured)
-    get_grid_node_count (unstructured)
+    Function                Unstructured    Structured quadrilateral    Rectilinear     Uniform rectilinear
+    ========                ============    ========================    ===========     ===================
+    get_grid_rank           x               x                           x               x
+    get_grid_size           x               x                           x               x
+    get_grid_type           x               x                           x               x
 
-    get_grid_edge_nodes (unstructured)
-    get_grid_face_nodes (unstructured)
-    get_grid_face_edges (unstructured)
-    get_grid_nodes_per_face (unstructured)
+    get_grid_x              if rank > 0     x                           x
+    get_grid_y              if rank > 1     x                           x
+    get_grid_z              if rank >  2    x                           x
 
-    get_grid_shape (structured quad, rectilinear, uniform rectilinear)
+    get_grid_edge_count     x
+    get_grid_face_count     x
+    get_grid_node_count     x
 
-    get_grid_spacing (uniform rectilinear)
-    get_grid_origin (uniform rectilinear)
+    get_grid_edge_nodes     x
+    get_grid_face_nodes     x
+    get_grid_face_edges     x
+    get_grid_nodes_per_face x
 
+    get_grid_shape                          x                          x                x
+
+    get_grid_spacing                                                                    x
+    get_grid_origin                                                                     x
+
+
+    Todo: add links to functions.
 
     1. Methods that describe an unstructured grid.
 
