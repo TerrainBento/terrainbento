@@ -12,6 +12,8 @@ import six
 import xarray as xr
 import yaml
 
+import cfunits
+
 from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
@@ -387,8 +389,10 @@ class ErosionModel(BmiModel):
         recommend that you look at the terrainbento tutorials for examples of
         usage.
         """
+        self.clock = clock
+        self._grid = grid
         # call ErosionModel's base class init
-        super(ErosionModel, self).__init__(clock, grid)
+        super(ErosionModel, self).__init__()
 
         flow_accumulator_kwargs = flow_accumulator_kwargs or {}
         boundary_handlers = boundary_handlers or {}
@@ -481,6 +485,8 @@ class ErosionModel(BmiModel):
             output_writers["class"] = instantiated_classes
 
         self.output_writers = output_writers
+
+        # todo: check field units
 
     def _verify_fields(self, required_fields):
         """Verify all required fields are present."""
