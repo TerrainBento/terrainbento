@@ -35,10 +35,9 @@ install:
   - cmd: pip install pytest
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
-  - cmd: conda install --file=requirements.txt
-  - cmd: python setup.py install
 
 build: false
 
 test_script:
-  - cmd: pytest
+   - "%WITH_COMPILER% pip install -e ."
+   - pytest -vvv
