@@ -48,7 +48,11 @@ class BasicCv(ErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "BasicCv"
+
+    _input_var_names = ("topographic__elevation", "water__unit_flux_in")
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -114,7 +118,7 @@ class BasicCv(ErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -122,7 +126,7 @@ class BasicCv(ErosionModel):
         super(BasicCv, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         self.m = m_sp
         self.n = n_sp
@@ -143,7 +147,7 @@ class BasicCv(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=K[0],
             m_sp=self.m,
             n_sp=self.n,
@@ -152,7 +156,7 @@ class BasicCv(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def run_one_step(self, step):
@@ -193,7 +197,7 @@ class BasicCv(ErosionModel):
             )[0]
 
         # Update erosion based on climate
-        self.eroder.K = float(self.K_through_time(self.model_time))
+        self.eroder.K = float(self.K_through_time(self.clock.time))
 
         # Do some erosion (but not on the flooded nodes)
         self.eroder.run_one_step(step, flooded_nodes=flooded)

@@ -69,10 +69,15 @@ class BasicHyRt(TwoLithologyErosionModel):
         - ``lithology_contact__elevation``
     """
 
-    _required_fields = [
+    _name = "BasicHyRt"
+
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-    ]
+        "water__unit_flux_in",
+    )
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -150,25 +155,25 @@ class BasicHyRt(TwoLithologyErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
         """
         # Call ErosionModel"s init
         super(BasicHyRt, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Save the threshold values for rock and till
-        self.rock_thresh = 0.
-        self.till_thresh = 0.
+        self.rock_thresh = 0.0
+        self.till_thresh = 0.0
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()
 
         # Instantiate an ErosionDeposition ("hybrid") component
         self.eroder = ErosionDeposition(
-            self.grid,
+            self._grid,
             K="substrate__erodibility",
             F_f=fraction_fines,
             phi=sediment_porosity,
@@ -181,7 +186,7 @@ class BasicHyRt(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=self.regolith_transport_parameter
+            self._grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def run_one_step(self, step):

@@ -72,17 +72,22 @@ class BasicRtTh(TwoLithologyErosionModel):
         - ``lithology_contact__elevation``
     """
 
-    _required_fields = [
+    _name = "BasicRtTh"
+
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-    ]
+        "water__unit_flux_in",
+    )
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
         clock,
         grid,
-        water_erosion_rule_upper__threshold=1.,
-        water_erosion_rule_lower__threshold=1.,
+        water_erosion_rule_upper__threshold=1.0,
+        water_erosion_rule_lower__threshold=1.0,
         **kwargs
     ):
         """
@@ -145,7 +150,7 @@ class BasicRtTh(TwoLithologyErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -156,7 +161,7 @@ class BasicRtTh(TwoLithologyErosionModel):
             raise ValueError("Model only supports n equals 1.")
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Save the threshold values for rock and till
         self.rock_thresh = water_erosion_rule_lower__threshold
@@ -167,7 +172,7 @@ class BasicRtTh(TwoLithologyErosionModel):
 
         # Instantiate a StreamPowerSmoothThresholdEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             K_sp=self.erody,
             threshold_sp=self.threshold,
             m_sp=self.m,
@@ -177,7 +182,7 @@ class BasicRtTh(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=self.regolith_transport_parameter
+            self._grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def run_one_step(self, step):

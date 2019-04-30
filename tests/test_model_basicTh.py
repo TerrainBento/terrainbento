@@ -21,7 +21,7 @@ def test_steady_Kss_no_precip_changer(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "water_erodibility": K,
@@ -35,23 +35,23 @@ def test_steady_Kss_no_precip_changer(
     for _ in range(200):
         model.run_one_step(1000)
 
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
     predicted_slopes_upper = (
         (U + threshold) / (K * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+    ) ** (1.0 / n_sp)
     predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
-        1. / n_sp
+        1.0 / n_sp
     )
 
     # assert actual and predicted slopes are in the correct range for the
     # slopes.
     assert np.all(
-        actual_slopes[model.grid.core_nodes[1:-1]]
-        > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+        actual_slopes[model._grid.core_nodes[1:-1]]
+        > predicted_slopes_lower[model._grid.core_nodes[1:-1]]
     )
 
     assert np.all(
-        actual_slopes[model.grid.core_nodes[1:-1]]
-        < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
+        actual_slopes[model._grid.core_nodes[1:-1]]
+        < predicted_slopes_upper[model._grid.core_nodes[1:-1]]
     )

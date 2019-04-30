@@ -16,7 +16,7 @@ _STRING_LENGTH = 80
 
 
 class StochasticErosionModel(ErosionModel):
-    """Base class for stochastic-precipitation terrainbento models.
+    r"""Base class for stochastic-precipitation terrainbento models.
 
     A **StochasticErosionModel** inherits from
     :py:class:`ErosionModel` and provides functionality needed by all
@@ -60,11 +60,11 @@ class StochasticErosionModel(ErosionModel):
     routing method. It then performs one of two options, depending on the
     user's choice of ``opt_stochastic_duration`` (True or False).
 
-    If the user requests stochastic duration, the model iterates through a sequence
-    of storm and interstorm periods. Storm depth is drawn at random from a gamma
-    distribution, and storm duration from an exponential distribution; storm
-    intensity is then depth divided by duration. This sequencing is implemented by
-    overriding the run_for method.
+    If the user requests stochastic duration, the model iterates through a
+    sequence of storm and interstorm periods. Storm depth is drawn at random
+    from a gamma distribution, and storm duration from an exponential
+    distribution; storm intensity is then depth divided by duration. This
+    sequencing is implemented by overriding the run_for method.
 
     If the user does not request stochastic duration (indicated by setting
     ``opt_stochastic_duration`` to ``False``), then the default
@@ -84,18 +84,22 @@ class StochasticErosionModel(ErosionModel):
 
         R = P - I (1 - \exp ( -P / I ))
 
-    where :math:`I` is the soil infiltration capacity. At the sub-grid scale, soil
-    infiltration capacity is assumed to have an exponential distribution of which
-    :math:`I` is the mean. Hence, there are always some spots within any given grid cell
-    that will generate runoff. This approach yields a smooth transition from
-    near-zero runoff (when :math:`I>>P`) to :math:`R \\approx P`
-    (when :math:`P>>I`), without a "hard threshold."
+    where :math:`I` is the soil infiltration capacity. At the sub-grid scale,
+    soil infiltration capacity is assumed to have an exponential distribution
+    of which :math:`I` is the mean. Hence, there are always some spots within
+    any given grid cell that will generate runoff. This approach yields a
+    smooth transition from near-zero runoff (when :math:`I>>P`) to
+    :math:`R \\approx P` (when :math:`P>>I`), without a "hard threshold."
 
     The following at-node fields must be specified in the grid:
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "StochasticErosionModel"
+
+    _input_var_names = ("topographic__elevation",)
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -201,8 +205,8 @@ class StochasticErosionModel(ErosionModel):
         # initialize record for storms. Depending on how this model is run
         # (stochastic time, number_time_steps>1, more manually) the step may
         # change. Thus, rather than writing routines to reconstruct the time
-        # series of precipitation from the step could change based on users use,
-        # we"ll record this with the model run instead of re-running.
+        # series of precipitation from the step could change based on users
+        # use, we"ll record this with the model run instead of re-running.
 
         # make this the non-default option.
 
@@ -229,8 +233,8 @@ class StochasticErosionModel(ErosionModel):
                 runoff = 0  # pragma: no cover
         else:
             runoff = self.rain_rate
-        self.grid.at_node["surface_water__discharge"][:] = (
-            runoff * self.grid.at_node["drainage_area"]
+        self._grid.at_node["surface_water__discharge"][:] = (
+            runoff * self._grid.at_node["drainage_area"]
         )
         return runoff
 
@@ -358,13 +362,13 @@ class StochasticErosionModel(ErosionModel):
             if self.record_rain:
                 # save record into the rain record
                 self.record_rain_event(
-                    self.model_time, step, self.rain_rate, runoff
+                    self.clock.time, step, self.rain_rate, runoff
                 )
 
         elif self.opt_stochastic_duration and self.rain_rate <= 0.0:
             # calculate and record the time with no rain:
             if self.record_rain:
-                self.record_rain_event(self.model_time, step, 0, 0)
+                self.record_rain_event(self.clock.time, step, 0, 0)
 
         elif not self.opt_stochastic_duration:
 
@@ -382,7 +386,7 @@ class StochasticErosionModel(ErosionModel):
                 self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
                 # save record into the rain record
                 if self.record_rain:
-                    event_start_time = self.model_time + (i * dt_water)
+                    event_start_time = self.clock.time + (i * dt_water)
                     self.record_rain_event(
                         event_start_time, dt_water, self.rain_rate, runoff
                     )
@@ -396,12 +400,12 @@ class StochasticErosionModel(ErosionModel):
 
                 # if dry time is greater than zero, record.
                 if dt_dry > 0:
-                    event_start_time = self.model_time + (
+                    event_start_time = self.clock.time + (
                         self.n_sub_steps * dt_water
                     )
                     self.record_rain_event(event_start_time, dt_dry, 0.0, 0.0)
 
-    def finalize(self):
+    def finalize_terrainbento_run(self):
         """Finalize stochastic erosion models.
 
         The finalization step of stochastic erosion models in
@@ -581,11 +585,11 @@ class StochasticErosionModel(ErosionModel):
 
             # calculate the predictions for 10, 25, and 100 year event based on
             # the analytical form of the exceedance function.
-            event_intervals = np.array([10., 25, 100.])
+            event_intervals = np.array([10.0, 25, 100.0])
 
             # calculate the probability of each event based on the number of years
             # and the number of wet days per year.
-            daily_distribution_exceedance_probabilities = 1. / (
+            daily_distribution_exceedance_probabilities = 1.0 / (
                 nwet * event_intervals
             )
 
@@ -601,8 +605,8 @@ class StochasticErosionModel(ErosionModel):
             # po = P * (- ln (P(p>po))) ^ (1 / c)
 
             expected_rainfall = self.scale_factor * (
-                -1. * np.log(daily_distribution_exceedance_probabilities)
-            ) ** (1. / self.shape_factor)
+                -1.0 * np.log(daily_distribution_exceedance_probabilities)
+            ) ** (1.0 / self.shape_factor)
 
             exceedance_file.write("\n\nSection 2: Theoretical Predictions\n")
 
@@ -706,7 +710,7 @@ class StochasticErosionModel(ErosionModel):
                 )
                 * (
                     np.exp(
-                        -1.
+                        -1.0
                         * (expected_rainfall / self.scale_factor)
                         ** self.shape_factor
                     )
@@ -779,7 +783,7 @@ class StochasticErosionModel(ErosionModel):
                 ] = selected_wet_day_totals.max()
 
             # calculate the distribution percentiles associated with each interval
-            event_percentiles = (1. - (1. / event_intervals)) * 100.
+            event_percentiles = (1.0 - (1.0 / event_intervals)) * 100.0
 
             # calculated the event magnitudes associated with the percentiles.
             event_magnitudes = np.percentile(

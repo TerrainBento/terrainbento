@@ -23,7 +23,7 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "hydraulic_conductivity": 0.02,
         "m_sp": m_sp,
@@ -38,8 +38,8 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
         model.run_one_step(10)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["drainage_area"]
 
     alpha = (
         params["hydraulic_conductivity"]
@@ -54,7 +54,9 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
 
     # assert aeff internally calculated correclty
     assert_array_almost_equal(
-        model.grid.at_node["surface_water__discharge"][model.grid.core_nodes],
-        A_eff_predicted[model.grid.core_nodes],
+        model._grid.at_node["surface_water__discharge"][
+            model._grid.core_nodes
+        ],
+        A_eff_predicted[model._grid.core_nodes],
         decimal=1,
     )

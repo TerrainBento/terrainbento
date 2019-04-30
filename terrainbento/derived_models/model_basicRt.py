@@ -61,10 +61,15 @@ class BasicRt(TwoLithologyErosionModel):
         - ``lithology_contact__elevation``
     """
 
-    _required_fields = [
+    _name = "BasicRt"
+
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-    ]
+        "water__unit_flux_in",
+    )
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(self, clock, grid, **kwargs):
         """
@@ -121,7 +126,7 @@ class BasicRt(TwoLithologyErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -129,14 +134,14 @@ class BasicRt(TwoLithologyErosionModel):
         super(BasicRt, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=self.erody,
             m_sp=self.m,
             n_sp=self.n,
@@ -145,7 +150,7 @@ class BasicRt(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=self.regolith_transport_parameter
+            self._grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def run_one_step(self, step):

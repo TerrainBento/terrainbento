@@ -1,5 +1,6 @@
 """Clock sets the run duration and timestep in terrainbento model runs."""
 
+import cfunits
 import yaml
 
 
@@ -60,7 +61,7 @@ class Clock(object):
         """
         return cls(**params)
 
-    def __init__(self, start=0., step=10., stop=100.):
+    def __init__(self, start=0.0, step=10.0, stop=100.0, units="day"):
         """
         Parameters
         ----------
@@ -70,7 +71,8 @@ class Clock(object):
             Model stop time. Default is 100.
         step : float, optional
             Model time step. Default is 10.
-
+        units : str, optional
+            Default is "day".
         Examples
         --------
         >>> from terrainbento import Clock
@@ -94,9 +96,42 @@ class Clock(object):
         2400.0
         >>> clock.step
         200.0
+
+        There are two ways to advance the model time stored in `clock.time`.
+
+        >>> clock.time
+        0.0
+
+        First, to advance by the step size provided, use `advance`:
+
+        >>> clock.advance()
+        >>> clock.time
+        200.0
+
+        To  advance by an arbitrary time pass the `dt` value to `advance`:
+
+        >>> clock.advance(2.)
+        >>> clock.time
+        202.0
+
+        It is also possible to change the timestep.
+
+        >>> clock.step = 18.
+        >>> clock.advance()
+        >>> clock.time
+        220.0
+
+        And to change the stop time.
+
+        >>> clock.stop = 1000.
+        >>> clock.stop
+        1000.0
         """
+        # verify that unit is a valid CFUNITS
+        # raise ValueError()
+
         try:
-            self.start = float(start)
+            self._start = float(start)
         except ValueError:
             msg = (
                 "Clock: Required parameter *start* is "
@@ -105,7 +140,7 @@ class Clock(object):
             raise ValueError(msg)
 
         try:
-            self.step = float(step)
+            self._step = float(step)
         except ValueError:
             msg = (
                 "Clock: Required parameter *step* is "
@@ -114,7 +149,7 @@ class Clock(object):
             raise ValueError(msg)
 
         try:
-            self.stop = float(stop)
+            self._stop = float(stop)
         except ValueError:
             msg = (
                 "Clock: Required parameter *stop* is "
@@ -125,3 +160,51 @@ class Clock(object):
         if self.start > self.stop:
             msg = "Clock: *start* is larger than *stop*."
             raise ValueError(msg)
+
+        self._time = 0.0
+
+    def advance(self, dt=None):
+        """Advance the time stepper by one time step or a provided value.
+
+        Parameters
+        ----------
+        dt : float, optional
+            Model time step. Default is to use the step provided at
+            instantiation.
+        """
+        step = dt or self._step
+        self._time += step
+        if self._stop is not None and self._time > self._stop:
+            raise StopIteration()
+
+    @property
+    def time(self):
+        """Current time."""
+        return self._time
+
+    @property
+    def start(self):
+        """Start time."""
+        return self._start
+
+    @property
+    def stop(self):
+        """Stop time."""
+        return self._stop
+
+    @stop.setter
+    def stop(self, new_val):
+        """Change the stop time."""
+        if self._time > new_val:
+            raise ValueError("")
+        self._stop = new_val
+
+    @property
+    def step(self):
+        """Time Step."""
+        return self._step
+
+    @step.setter
+    def step(self, new_val):
+        """Change the time step."""
+        self._step = new_val

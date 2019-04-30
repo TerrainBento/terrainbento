@@ -48,7 +48,11 @@ class BasicCh(ErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "BasicCh"
+
+    _input_var_names = ("topographic__elevation", "water__unit_flux_in")
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -113,7 +117,7 @@ class BasicCh(ErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -122,7 +126,7 @@ class BasicCh(ErosionModel):
         super(BasicCh, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters and convert units if necessary:
         self.m = m_sp
@@ -133,7 +137,7 @@ class BasicCh(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -142,7 +146,7 @@ class BasicCh(ErosionModel):
 
         # Instantiate a NonLinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
-            self.grid,
+            self._grid,
             linear_diffusivity=regolith_transport_parameter,
             slope_crit=critical_slope,
             nterms=number_of_taylor_terms,

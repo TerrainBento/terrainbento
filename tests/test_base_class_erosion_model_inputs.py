@@ -64,17 +64,17 @@ def test_input_file(tmpdir, inputs_yaml):
 
         em = ErosionModel.from_file("./params.yaml")
 
-    assert isinstance(em.grid, HexModelGrid)
-    assert em.grid.number_of_nodes == 56
+    assert isinstance(em._grid, HexModelGrid)
+    assert em._grid.number_of_nodes == 56
     for field in at_node_fields:
-        assert field in em.grid.at_node
+        assert field in em._grid.at_node
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
     assert em.boundary_handlers == {}
     assert em.output_writers == {}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
-    assert em._model_time == 0.
+    assert em.clock.time == 0.0
 
 
 def test_parameters(clock_simple):
@@ -96,17 +96,17 @@ def test_parameters(clock_simple):
     }
 
     em = ErosionModel.from_dict(params)
-    assert isinstance(em.grid, HexModelGrid)
-    assert em.grid.number_of_nodes == 56
+    assert isinstance(em._grid, HexModelGrid)
+    assert em._grid.number_of_nodes == 56
     for field in at_node_fields:
-        assert field in em.grid.at_node
+        assert field in em._grid.at_node
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
     assert em.boundary_handlers == {}
     assert em.output_writers == {}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
-    assert em._model_time == 0.
+    assert em.clock.time == 0.0
 
 
 def test_string(tmpdir, inputs_yaml):
@@ -118,14 +118,14 @@ def test_string(tmpdir, inputs_yaml):
             contents = f.read()
 
     em = ErosionModel.from_file(contents)
-    assert isinstance(em.grid, HexModelGrid)
-    assert em.grid.number_of_nodes == 56
+    assert isinstance(em._grid, HexModelGrid)
+    assert em._grid.number_of_nodes == 56
     for field in at_node_fields:
-        assert field in em.grid.at_node
+        assert field in em._grid.at_node
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
     assert em.boundary_handlers == {}
     assert em.output_writers == {}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
-    assert em._model_time == 0.
+    assert em.clock.time == 0.0

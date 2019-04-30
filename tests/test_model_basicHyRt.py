@@ -7,7 +7,7 @@ from numpy.testing import assert_array_almost_equal
 from terrainbento import BasicHyRt, NotCoreNodeBaselevelHandler
 
 
-@pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
+@pytest.mark.parametrize("m_sp,n_sp", [(1.0 / 3, 2.0 / 3.0), (0.5, 1.0)])
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
@@ -27,7 +27,7 @@ def test_channel_erosion(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility_upper": Kt,
         "water_erodibility_lower": Kr,
         "settling_velocity": v_sc,
@@ -46,17 +46,17 @@ def test_channel_erosion(
         model.run_one_step(10)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["drainage_area"]
     rock_predicted_slopes = np.power(
         ((U * v_sc) / (Kr * np.power(actual_areas, m_sp)))
         + (U / (Kr * np.power(actual_areas, m_sp))),
-        1. / n_sp,
+        1.0 / n_sp,
     )
     till_predicted_slopes = np.power(
         ((U * v_sc) / (Kt * np.power(actual_areas, m_sp)))
         + (U / (Kt * np.power(actual_areas, m_sp))),
-        1. / n_sp,
+        1.0 / n_sp,
     )
 
     # assert actual and predicted slopes are the same for rock and till

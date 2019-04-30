@@ -49,7 +49,11 @@ class BasicStTh(StochasticErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "BasicStTh"
+
+    _input_var_names = ("topographic__elevation",)
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -113,7 +117,7 @@ class BasicStTh(StochasticErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -121,7 +125,7 @@ class BasicStTh(StochasticErosionModel):
         super(BasicStTh, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters:
         self.m = m_sp
@@ -140,7 +144,7 @@ class BasicStTh(StochasticErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -150,7 +154,7 @@ class BasicStTh(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def run_one_step(self, step):

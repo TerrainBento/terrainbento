@@ -53,7 +53,7 @@ def test_simple_precip_changer(
     params = {
         "grid": grid_1,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "boundary_handlers": {"PrecipChanger": precip_changer},
     }
@@ -98,10 +98,10 @@ def test_rock_till_precip_changer(
     model._update_erodibility_field()
 
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
+        np.array_equiv(model.eroder.K[model._grid.core_nodes[:8]], Kt) is True
     )
     assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
+        np.array_equiv(model.eroder.K[model._grid.core_nodes[10:]], Kr) is True
     )
 
     assert "PrecipChanger" in model.boundary_handlers
@@ -109,10 +109,10 @@ def test_rock_till_precip_changer(
     model.run_one_step(1.0)
 
     assert_array_almost_equal(
-        model.eroder.K[model.grid.core_nodes[:8]],
+        model.eroder.K[model._grid.core_nodes[:8]],
         Kt * precip_testing_factor * np.ones((8)),
     )
     assert_array_almost_equal(
-        model.eroder.K[model.grid.core_nodes[10:]],
+        model.eroder.K[model._grid.core_nodes[10:]],
         Kr * precip_testing_factor * np.ones((9)),
     )

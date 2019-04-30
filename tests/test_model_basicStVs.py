@@ -8,7 +8,7 @@ def test_bad_transmiss(grid_2, clock_simple):
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "hydraulic_conductivity": 0.,
+        "hydraulic_conductivity": 0.0,
     }
 
     with pytest.raises(ValueError):
@@ -30,7 +30,7 @@ def test_steady_without_stochastic_duration(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "m_sp": m_sp,
         "n_sp": n_sp,
@@ -50,10 +50,10 @@ def test_steady_without_stochastic_duration(
         model.run_one_step(1.0)
 
     # construct actual and predicted slopes
-    ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
-    predicted_slopes = (U / (K * (actual_areas ** m_sp))) ** (1. / n_sp)
+    ic = model._grid.core_nodes[1:-1]  # "inner" core nodes
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
+    predicted_slopes = (U / (K * (actual_areas ** m_sp))) ** (1.0 / n_sp)
     assert_array_almost_equal(
         actual_slopes[ic], predicted_slopes[ic], decimal=4
     )

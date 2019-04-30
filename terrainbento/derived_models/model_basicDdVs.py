@@ -67,7 +67,11 @@ class BasicDdVs(ErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = ["topographic__elevation", "soil__depth"]
+    _name = "BasicDdVs"
+
+    _input_var_names = ("topographic__elevation", "soil__depth")
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -78,7 +82,7 @@ class BasicDdVs(ErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
-        water_erosion_rule__thresh_depth_derivative=0.,
+        water_erosion_rule__thresh_depth_derivative=0.0,
         hydraulic_conductivity=0.1,
         **kwargs
     ):
@@ -137,7 +141,7 @@ class BasicDdVs(ErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -148,7 +152,7 @@ class BasicDdVs(ErosionModel):
         self._ensure_precip_runoff_are_vanilla(vsa_precip=True)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         if float(n_sp) != 1.0:
             raise ValueError("Model BasicDdVs only supports n = 1.")
@@ -159,17 +163,17 @@ class BasicDdVs(ErosionModel):
         self.threshold_value = water_erosion_rule__threshold
 
         # Get the effective-area parameter
-        self._Kdx = hydraulic_conductivity * self.grid.dx
+        self._Kdx = hydraulic_conductivity * self._grid.dx
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
+        self.threshold = self._grid.add_zeros(
             "node", "water_erosion_rule__threshold"
         )
         self.threshold[:] = self.threshold_value
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             use_Q="surface_water__discharge",
             K_sp=self.K,
             m_sp=self.m,
@@ -184,27 +188,27 @@ class BasicDdVs(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area."""
 
-        area = self.grid.at_node["drainage_area"]
-        slope = self.grid.at_node["topographic__steepest_slope"]
-        cores = self.grid.core_nodes
+        area = self._grid.at_node["drainage_area"]
+        slope = self._grid.at_node["topographic__steepest_slope"]
+        cores = self._grid.core_nodes
 
         sat_param = (
             self._Kdx
-            * self.grid.at_node["soil__depth"]
-            / self.grid.at_node["rainfall__flux"]
+            * self._grid.at_node["soil__depth"]
+            / self._grid.at_node["rainfall__flux"]
         )
 
         eff_area = area[cores] * (
             np.exp(-sat_param[cores] * slope[cores] / area[cores])
         )
 
-        self.grid.at_node["surface_water__discharge"][cores] = eff_area
+        self._grid.at_node["surface_water__discharge"][cores] = eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicVs** for one time-step of duration step.
@@ -249,7 +253,7 @@ class BasicDdVs(ErosionModel):
             )[0]
 
         # Zero out effective area in flooded nodes
-        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
+        self._grid.at_node["surface_water__discharge"][flooded] = 0.0
 
         # Set the erosion threshold.
         #
@@ -258,9 +262,9 @@ class BasicDdVs(ErosionModel):
         # The second line handles the case where there is growth, in which case
         # we want the threshold to stay at its initial value rather than
         # getting smaller.
-        cum_ero = self.grid.at_node["cumulative_elevation_change"]
+        cum_ero = self._grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
+            self.z - self._grid.at_node["initial_topographic__elevation"]
         )
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero

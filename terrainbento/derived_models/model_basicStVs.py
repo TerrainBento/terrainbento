@@ -60,7 +60,11 @@ class BasicStVs(StochasticErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "BasicStVs"
+
+    _input_var_names = ("topographic__elevation",)
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -123,7 +127,7 @@ class BasicStVs(StochasticErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -131,20 +135,20 @@ class BasicStVs(StochasticErosionModel):
         super(BasicStVs, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
         self.K = water_erodibility
 
-        soil_thickness = self.grid.at_node["soil__depth"]
+        soil_thickness = self._grid.at_node["soil__depth"]
 
         # instantiate rain generator
         self.instantiate_rain_generator()
 
         # Add a field for subsurface discharge
-        self.qss = self.grid.add_zeros("node", "subsurface_water__discharge")
+        self.qss = self._grid.add_zeros("node", "subsurface_water__discharge")
 
         # Get the transmissivity parameter
         # transmissivity is hydraulic condiuctivity times soil thickness
@@ -153,14 +157,14 @@ class BasicStVs(StochasticErosionModel):
         if np.any(self.trans) <= 0.0:
             raise ValueError("BasicStVs: Transmissivity must be > 0")
 
-        self.tlam = self.trans * self.grid._dx  # assumes raster
+        self.tlam = self.trans * self._grid._dx  # assumes raster
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.m,
@@ -169,24 +173,24 @@ class BasicStVs(StochasticErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def calc_runoff_and_discharge(self):
         """Calculate runoff rate and discharge; return runoff."""
 
         # Here"s the total (surface + subsurface) discharge
-        pa = self.rain_rate * self.grid.at_node["drainage_area"]
+        pa = self.rain_rate * self._grid.at_node["drainage_area"]
 
         # slope > 0
         active_nodes = np.where(
-            self.grid.at_node["topographic__steepest_slope"] > 0.0
+            self._grid.at_node["topographic__steepest_slope"] > 0.0
         )[0]
 
         # Transmissivity x lambda x slope = subsurface discharge capacity
         tls = (
             self.tlam[active_nodes]
-            * self.grid.at_node["topographic__steepest_slope"][active_nodes]
+            * self._grid.at_node["topographic__steepest_slope"][active_nodes]
         )
 
         # Subsurface discharge: zero where slope is flat
@@ -197,9 +201,9 @@ class BasicStVs(StochasticErosionModel):
         #
         # Note that roundoff errors can sometimes produce a tiny negative
         # value when qss and pa are close; make sure these are set to 0
-        self.grid.at_node["surface_water__discharge"][:] = pa - self.qss
-        self.grid.at_node["surface_water__discharge"][
-            self.grid.at_node["surface_water__discharge"] < 0.0
+        self._grid.at_node["surface_water__discharge"][:] = pa - self.qss
+        self._grid.at_node["surface_water__discharge"][
+            self._grid.at_node["surface_water__discharge"] < 0.0
         ] = 0.0
 
         return np.nan

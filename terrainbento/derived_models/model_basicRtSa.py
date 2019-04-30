@@ -89,11 +89,16 @@ class BasicRtSa(TwoLithologyErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = [
+    _name = "BasicRtSa"
+
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
+        "water__unit_flux_in",
         "soil__depth",
-    ]
+    )
+
+    _output_var_names = ("topographic__elevation", "soil__depth")
 
     def __init__(
         self,
@@ -165,7 +170,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -173,33 +178,33 @@ class BasicRtSa(TwoLithologyErosionModel):
         super(BasicRtSa, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=self.erody,
             m_sp=self.m,
             n_sp=self.n,
             discharge_name="surface_water__discharge",
         )
 
-        soil_thickness = self.grid.at_node["soil__depth"]
-        bedrock_elev = self.grid.add_zeros("node", "bedrock__elevation")
+        soil_thickness = self._grid.at_node["soil__depth"]
+        bedrock_elev = self._grid.add_zeros("node", "bedrock__elevation")
         bedrock_elev[:] = self.z - soil_thickness
 
         # Instantiate diffusion and weathering components
         self.diffuser = DepthDependentDiffuser(
-            self.grid,
+            self._grid,
             linear_diffusivity=self.regolith_transport_parameter,
             soil_transport_decay_depth=soil_transport_decay_depth,
         )
 
         self.weatherer = ExponentialWeatherer(
-            self.grid,
+            self._grid,
             soil_production__maximum_rate=soil_production__maximum_rate,
             soil_production__decay_depth=soil_production__decay_depth,
         )
@@ -258,8 +263,8 @@ class BasicRtSa(TwoLithologyErosionModel):
         # into bedrock has occurred, the bedrock elevation will be higher than
         # the actual elevation, so we simply re-set bedrock elevation to the
         # lower of itself or the current elevation.
-        b = self.grid.at_node["bedrock__elevation"]
-        b[:] = np.minimum(b, self.grid.at_node["topographic__elevation"])
+        b = self._grid.at_node["bedrock__elevation"]
+        b[:] = np.minimum(b, self._grid.at_node["topographic__elevation"])
 
         # Calculate regolith-production rate
         self.weatherer.calc_soil_prod_rate()

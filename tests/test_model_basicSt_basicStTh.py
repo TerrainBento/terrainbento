@@ -83,7 +83,7 @@ def test_steady_without_stochastic_duration(
     m = 1.0
     n = 1.0
 
-    grid = RasterModelGrid((3, 6), xy_spacing=100.)
+    grid = RasterModelGrid((3, 6), xy_spacing=100.0)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
     s = grid.add_zeros("node", "soil__depth")
@@ -97,7 +97,7 @@ def test_steady_without_stochastic_duration(
     params = {
         "grid": grid,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "m_sp": m,
         "n_sp": n,
@@ -119,9 +119,9 @@ def test_steady_without_stochastic_duration(
         model.run_one_step(1.0)
 
     # construct actual and predicted slopes
-    ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"][ic]
-    actual_areas = model.grid.at_node["drainage_area"][ic]
+    ic = model._grid.core_nodes[1:-1]  # "inner" core nodes
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"][ic]
+    actual_areas = model._grid.at_node["drainage_area"][ic]
     predicted_slopes = 2 * U / (K * (actual_areas))
 
     # assert actual and predicted slopes are the same.
@@ -138,7 +138,7 @@ def test_stochastic_duration_rainfall_means():
     m = 1.0
     n = 1.0
 
-    grid = RasterModelGrid((3, 6), xy_spacing=100.)
+    grid = RasterModelGrid((3, 6), xy_spacing=100.0)
     grid.set_closed_boundaries_at_grid_edges(True, False, True, False)
     grid.add_zeros("node", "topographic__elevation")
 
@@ -151,7 +151,7 @@ def test_stochastic_duration_rainfall_means():
     params = {
         "grid": grid,
         "clock": clock,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "m_sp": m,
         "n_sp": n,

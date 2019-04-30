@@ -10,7 +10,7 @@ from numpy.testing import assert_array_almost_equal
 from terrainbento import BasicHySa, NotCoreNodeBaselevelHandler, PrecipChanger
 
 
-@pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
+@pytest.mark.parametrize("m_sp,n_sp", [(1.0 / 3, 2.0 / 3.0), (0.5, 1.0)])
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
@@ -36,7 +36,7 @@ def test_channel_erosion(
     params = {
         "grid": grid_1,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility_rock": K_rock_sp,
         "water_erodibility_sediment": K_sed_sp,
         "sp_crit_br": sp_crit_br,
@@ -61,18 +61,18 @@ def test_channel_erosion(
         model.run_one_step(10)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
     predicted_slopes = np.power(
         ((U * v_sc) / (K_sed_sp * np.power(actual_areas, m_sp)))
         + (U / (K_rock_sp * np.power(actual_areas, m_sp))),
-        1. / n_sp,
+        1.0 / n_sp,
     )
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
+        actual_slopes[model._grid.core_nodes[1:-1]],
+        predicted_slopes[model._grid.core_nodes[1:-1]],
         decimal=4,
     )
 
@@ -88,7 +88,7 @@ def test_with_precip_changer(
     params = {
         "grid": grid_1,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility_rock": 0.001,
         "water_erodibility_sediment": 0.01,
         "boundary_handlers": {"PrecipChanger": precip_changer},

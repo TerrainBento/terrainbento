@@ -27,7 +27,7 @@ def test_steady_Ksp_no_precip_changer(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility_lower": Kr,
         "water_erodibility_upper": Kt,
         "water_erosion_rule_upper__threshold": Tt,
@@ -43,25 +43,25 @@ def test_steady_Ksp_no_precip_changer(
     for _ in range(200):
         model.run_one_step(1000)
 
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
 
     # note that since we have a smooth threshold, we do not have a true
     # analytical solution, but a bracket within wich we expect the actual
     # slopes to fall.
     rock_predicted_slopes_upper = (
         (U + Tr) / (Kr * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+    ) ** (1.0 / n_sp)
     till_predicted_slopes_upper = (
         (U + Tt) / (Kt * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+    ) ** (1.0 / n_sp)
 
     rock_predicted_slopes_lower = (
-        (U + 0.) / (Kr * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+        (U + 0.0) / (Kr * (actual_areas ** m_sp))
+    ) ** (1.0 / n_sp)
     till_predicted_slopes_lower = (
-        (U + 0.) / (Kt * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+        (U + 0.0) / (Kt * (actual_areas ** m_sp))
+    ) ** (1.0 / n_sp)
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.

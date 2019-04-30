@@ -55,7 +55,11 @@ class BasicThVs(ErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = ["topographic__elevation", "soil__depth"]
+    _name = "BasicThVs"
+
+    _input_var_names = ("topographic__elevation", "soil__depth")
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -121,7 +125,7 @@ class BasicThVs(ErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -132,7 +136,7 @@ class BasicThVs(ErosionModel):
         self._ensure_precip_runoff_are_vanilla(vsa_precip=True)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         self.m = m_sp
         self.n = n_sp
@@ -142,11 +146,11 @@ class BasicThVs(ErosionModel):
             raise ValueError("Model only supports n = 1.")
 
         # Get the effective-area parameter
-        self._Kdx = hydraulic_conductivity * self.grid.dx
+        self._Kdx = hydraulic_conductivity * self._grid.dx
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -156,27 +160,27 @@ class BasicThVs(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def _calc_effective_drainage_area(self):
         """Calculate and store effective drainage area."""
 
-        area = self.grid.at_node["drainage_area"]
-        slope = self.grid.at_node["topographic__steepest_slope"]
-        cores = self.grid.core_nodes
+        area = self._grid.at_node["drainage_area"]
+        slope = self._grid.at_node["topographic__steepest_slope"]
+        cores = self._grid.core_nodes
 
         sat_param = (
             self._Kdx
-            * self.grid.at_node["soil__depth"]
-            / self.grid.at_node["rainfall__flux"]
+            * self._grid.at_node["soil__depth"]
+            / self._grid.at_node["rainfall__flux"]
         )
 
         eff_area = area[cores] * (
             np.exp(-sat_param[cores] * slope[cores] / area[cores])
         )
 
-        self.grid.at_node["surface_water__discharge"][cores] = eff_area
+        self._grid.at_node["surface_water__discharge"][cores] = eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicThVs** for one time-step of duration step.
@@ -221,7 +225,7 @@ class BasicThVs(ErosionModel):
             )[0]
 
         # Zero out effective area in flooded nodes
-        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
+        self._grid.at_node["surface_water__discharge"][flooded] = 0.0
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)

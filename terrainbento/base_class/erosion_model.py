@@ -6,6 +6,7 @@ import os
 import sys
 import time as tm
 
+import cfunits
 import dask
 import numpy as np
 import six
@@ -16,7 +17,7 @@ from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io.netcdf import write_raster_netcdf
-from terrainbento import Clock
+from terrainbento.bmi import BmiModel
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -24,6 +25,7 @@ from terrainbento.boundary_handlers import (
     PrecipChanger,
     SingleNodeBaselevelHandler,
 )
+from terrainbento.clock import Clock
 from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
 from terrainbento.runoff_generators import SimpleRunoff
 
@@ -126,7 +128,7 @@ def _setup_boundary_handlers(grid, name, params):
     return boundary_handler
 
 
-class ErosionModel(object):
+class ErosionModel(BmiModel):
 
     """Base class providing common functionality for terrainbento models.
 
@@ -139,13 +141,28 @@ class ErosionModel(object):
 
     It is expected that a derived model will define an **__init__** and a
     **run_one_step** method. If desired, the derived model can overwrite the
-    existing **run_for**, **run**, and **finalize** methods.
+    existing **run_for** and **run** methods.
 
     The following at-node fields must be specified in the grid:
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "ErosionModel"
+
+    _input_var_names = ("topographic__elevation",)
+
+    _output_var_names = ("topographic__elevation",)
+
+    _var_info = {
+        "topographic__elevation": {
+            "type": float,
+            "units": "m",
+            "at": "node",
+            "description": "Land surface topographic elevation",
+        }
+    }
+
+    _param_info = {}
 
     @classmethod
     def from_file(cls, file_like):
@@ -160,6 +177,7 @@ class ErosionModel(object):
         Examples
         --------
         >>> from six import StringIO
+        >>> from terrainbento import ErosionModel
         >>> filelike = StringIO('''
         ... grid:
         ...   grid:
@@ -179,18 +197,18 @@ class ErosionModel(object):
         1.0
         >>> model.clock.stop
         200.0
-        >>> model.grid.shape
+        >>> model._grid.shape
         (4, 5)
         """
         # first get contents.
         try:
             contents = file_like.read()
-        except AttributeError:  # was a str
+        except AttributeError:
             if os.path.isfile(file_like):
                 with open(file_like, "r") as fp:
                     contents = fp.read()
             else:
-                contents = file_like  # not tested
+                contents = file_like
 
         # then parse contents.
         params = yaml.safe_load(contents)
@@ -204,7 +222,7 @@ class ErosionModel(object):
 
         The input parameter dictionary portion associated with the "grid"
         keword will be passed directly to the Landlab
-        `create_grid <https://landlab.readthedocs.io/en/latest/landlab.grid.create.html>`_.
+        `create_grid <https://landlab.readthedocs.io/en/latest/landlab._grid.create.html>`_.
         function.
 
         Parameters
@@ -237,7 +255,7 @@ class ErosionModel(object):
         1.0
         >>> model.clock.stop
         200.0
-        >>> model.grid.shape
+        >>> model._grid.shape
         (4, 5)
         """
         cls._validate(params)
@@ -370,29 +388,30 @@ class ErosionModel(object):
         recommend that you look at the terrainbento tutorials for examples of
         usage.
         """
+        self.clock = clock
+        self._grid = grid
+        # call ErosionModel's base class init
+        super(ErosionModel, self).__init__()
+
         flow_accumulator_kwargs = flow_accumulator_kwargs or {}
         boundary_handlers = boundary_handlers or {}
         output_writers = output_writers or {}
         fields = fields or ["topographic__elevation"]
+
         # type checking
         if isinstance(clock, Clock) is False:
             raise ValueError("Provided Clock is not valid.")
         if isinstance(grid, ModelGrid) is False:
             raise ValueError("Provided Grid is not valid.")
 
-        # save the grid, clock, and parameters.
-        self.grid = grid
-        self.clock = clock
-
-        # first pass of verifying fields
-        self._verify_fields(self._required_fields)
-
         # save reference to elevation
+        self._verify_fields(ErosionModel._input_var_names)
+
         self.z = grid.at_node["topographic__elevation"]
 
-        self.grid.add_zeros("node", "cumulative_elevation_change")
+        self._grid.add_zeros("node", "cumulative_elevation_change")
 
-        self.grid.add_field(
+        self._grid.add_field(
             "node", "initial_topographic__elevation", self.z.copy()
         )
 
@@ -405,9 +424,6 @@ class ErosionModel(object):
             output_interval = clock.stop
         self.output_interval = output_interval
 
-        # instantiate model time.
-        self._model_time = 0.
-
         # instantiate container for computational timestep:
         self._compute_time = [tm.time()]
 
@@ -417,7 +433,7 @@ class ErosionModel(object):
 
         # verify that precipitator is valid
         if precipitator is None:
-            precipitator = UniformPrecipitator(self.grid)
+            precipitator = UniformPrecipitator(self._grid)
         else:
             if isinstance(precipitator, _VALID_PRECIPITATORS) is False:
                 raise ValueError("Provided value for precipitator not valid.")
@@ -425,7 +441,7 @@ class ErosionModel(object):
 
         # verify that runoff_generator is valid
         if runoff_generator is None:
-            runoff_generator = SimpleRunoff(self.grid)
+            runoff_generator = SimpleRunoff(self._grid)
         else:
             if isinstance(runoff_generator, _VALID_RUNOFF_GENERATORS) is False:
                 raise ValueError(
@@ -443,17 +459,20 @@ class ErosionModel(object):
             flow_director == "FlowDirectorSteepest"
         ):
             self.flow_accumulator = FlowAccumulator(
-                self.grid,
+                self._grid,
                 routing="D4",
                 depression_finder=depression_finder,
                 **flow_accumulator_kwargs
             )
         else:
             self.flow_accumulator = FlowAccumulator(
-                self.grid,
+                self._grid,
                 depression_finder=depression_finder,
                 **flow_accumulator_kwargs
             )
+
+        # first pass of verifying fields
+        self._verify_fields(self._input_var_names)
 
         ###################################################################
         # Boundary Conditions and Output Writers
@@ -469,24 +488,21 @@ class ErosionModel(object):
 
         self.output_writers = output_writers
 
+        # todo: check field units
+
     def _verify_fields(self, required_fields):
         """Verify all required fields are present."""
         for field in required_fields:
-            if field not in self.grid.at_node:
+            if field not in self._grid.at_node:
                 raise ValueError(
                     "Required field {field} not present.".format(field=field)
                 )
 
-    @property
-    def model_time(self):
-        """Return current time of model integration in model time units."""
-        return self._model_time
-
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
-        self.grid.at_node["cumulative_elevation_change"][:] = (
-            self.grid.at_node["topographic__elevation"]
-            - self.grid.at_node["initial_topographic__elevation"]
+        self._grid.at_node["cumulative_elevation_change"][:] = (
+            self._grid.at_node["topographic__elevation"]
+            - self._grid.at_node["initial_topographic__elevation"]
         )
 
     def create_and_move_water(self, step):
@@ -512,21 +528,24 @@ class ErosionModel(object):
         self._output_files.append(filename)
         try:
             write_raster_netcdf(
-                filename, self.grid, names=self.output_fields, format="NETCDF4"
+                filename,
+                self._grid,
+                names=self.output_fields,
+                format="NETCDF4",
             )
         except NotImplementedError:
             graph = Graph.from_dict(
                 {
-                    "y_of_node": self.grid.y_of_node,
-                    "x_of_node": self.grid.x_of_node,
-                    "nodes_at_link": self.grid.nodes_at_link,
+                    "y_of_node": self._grid.y_of_node,
+                    "x_of_node": self._grid.x_of_node,
+                    "nodes_at_link": self._grid.nodes_at_link,
                 }
             )
 
             for field_name in self.output_fields:
 
                 graph._ds.__setitem__(
-                    field_name, ("node", self.grid.at_node[field_name])
+                    field_name, ("node", self._grid.at_node[field_name])
                 )
 
             graph.to_netcdf(path=filename, mode="w", format="NETCDF4")
@@ -539,18 +558,14 @@ class ErosionModel(object):
         This base-class method increments model time and updates
         boundary conditions.
         """
-        # calculate model time
-        self._model_time += step
+        # update model time
+        self.clock.advance(step)
 
         # Update boundary conditions
         self.update_boundary_conditions(step)
 
-    def finalize(self):
-        """Finalize model.
-
-        This base-class method does nothing. Derived classes can
-        override it to run any required finalization steps.
-        """
+    def finalize_terrainbento_run(self):
+        """Finalize erosion models."""
         pass
 
     def run_for(self, step, runtime):
@@ -566,7 +581,7 @@ class ErosionModel(object):
         runtime : float
             Total duration for which to run model.
         """
-        elapsed_time = 0.
+        elapsed_time = 0.0
         keep_running = True
         while keep_running:
             if elapsed_time + step >= runtime:
@@ -590,19 +605,18 @@ class ErosionModel(object):
             self._itters.append(0)
             self.write_output()
         self.iteration = 1
-        time_now = self._model_time
-        while time_now < self.clock.stop:
+        while self.clock.time < self.clock.stop:
             next_run_pause = min(
-                time_now + self.output_interval, self.clock.stop
+                self.clock.time + self.output_interval, self.clock.stop
             )
-            self.run_for(self.clock.step, next_run_pause - time_now)
-            time_now = self._model_time
+            self.run_for(self.clock.step, next_run_pause - self.clock.time)
+
             self.iteration += 1
             self._itters.append(self.iteration)
             self.write_output()
 
         # now that the model is finished running, execute finalize.
-        self.finalize()
+        self.finalize_terrainbento_run()
 
     def _ensure_precip_runoff_are_vanilla(self, vsa_precip=False):
         """Ensure only default versions of precipitator/runoff are used.

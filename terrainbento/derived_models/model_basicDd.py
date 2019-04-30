@@ -56,7 +56,11 @@ class BasicDd(ErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "BasicDd"
+
+    _input_var_names = ("topographic__elevation", "water__unit_flux_in")
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -122,14 +126,14 @@ class BasicDd(ErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
         """
         # Call ErosionModel"s init
         super(BasicDd, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters and convert units if necessary:
         self.m = m_sp
@@ -144,14 +148,14 @@ class BasicDd(ErosionModel):
         self.threshold_value = water_erosion_rule__threshold
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
+        self.threshold = self._grid.add_zeros(
             "node", "water_erosion_rule__threshold"
         )
         self.threshold[:] = self.threshold_value
 
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
-            self.grid,
+            self._grid,
             m_sp=self.m,
             n_sp=self.n,
             K_sp=self.K,
@@ -166,7 +170,7 @@ class BasicDd(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def update_erosion_threshold_values(self):
@@ -191,9 +195,9 @@ class BasicDd(ErosionModel):
         # The second line handles the case where there is growth, in which case
         # we want the threshold to stay at its initial value rather than
         # getting smaller.
-        cum_ero = self.grid.at_node["cumulative_elevation_change"]
+        cum_ero = self._grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
+            self.z - self._grid.at_node["initial_topographic__elevation"]
         )
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero

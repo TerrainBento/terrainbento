@@ -50,7 +50,11 @@ class BasicHy(ErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "BasicHy"
+
+    _input_var_names = ("topographic__elevation", "water__unit_flux_in")
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -124,7 +128,7 @@ class BasicHy(ErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -133,7 +137,7 @@ class BasicHy(ErosionModel):
         super(BasicHy, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters
         self.m = m_sp
@@ -142,7 +146,7 @@ class BasicHy(ErosionModel):
 
         # Instantiate a Space component
         self.eroder = ErosionDeposition(
-            self.grid,
+            self._grid,
             K=self.K,
             phi=sediment_porosity,
             F_f=fraction_fines,
@@ -155,7 +159,7 @@ class BasicHy(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=regolith_transport_parameter
+            self._grid, linear_diffusivity=regolith_transport_parameter
         )
 
     def run_one_step(self, step):

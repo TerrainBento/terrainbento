@@ -40,7 +40,51 @@ class Basic(ErosionModel):
         - ``topographic__elevation``
     """
 
-    _required_fields = ["topographic__elevation"]
+    _name = "Basic"
+
+    _input_var_names = ("topographic__elevation", "water__unit_flux_in")
+
+    _output_var_names = ("topographic__elevation",)
+
+    _var_info = {
+        "topographic__elevation": {
+            "type": float,
+            "units": "m",
+            "at": "node",
+            "long_name": "Land surface topographic elevation",
+            "_FillValue": -999.0,
+        },
+        "water__unit_flux_in": {
+            "type": float,
+            "units": "m/s",
+            "at": "node",
+            "long_name": (
+                "Volume water per area per time input to each node."
+            ),
+        },
+    }
+
+    _param_info = {
+        "water_erodability": {
+            "type": float,
+            "units": None,  # should I put in dependence on M?
+            "default": 0.001,  # these values assume yr instead of second
+            "range": [1e-7, 1e-2],  # these values assume yr instead of second
+            "long_name": "",
+            "definition": (
+                "Water erodibility coefficient. Units depend on "
+                "values of m_sp and n_sp."
+            ),
+        },
+        "regolith_transport_parameter": {
+            "type": float,
+            "units": "m/(s^2)",
+            "default": 0.1,  # these values assume yr instead of second
+            "range": [1e-3, 1e-1],  # these values assume yr instead of second
+            "long_name": "",
+            "definition": ("Hillslope diffusivity."),
+        },
+    }
 
     def __init__(
         self,
@@ -98,7 +142,7 @@ class Basic(ErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -106,7 +150,7 @@ class Basic(ErosionModel):
         super(Basic, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Get Parameters:
         self.m = m_sp
@@ -117,7 +161,7 @@ class Basic(ErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -126,7 +170,7 @@ class Basic(ErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=self.regolith_transport_parameter
+            self._grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def run_one_step(self, step):

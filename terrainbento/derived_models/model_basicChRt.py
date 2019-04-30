@@ -68,10 +68,15 @@ class BasicChRt(TwoLithologyErosionModel):
         - ``lithology_contact__elevation``
     """
 
-    _required_fields = [
+    _name = "BasicChRt"
+
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-    ]
+        "water__unit_flux_in",
+    )
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(
         self,
@@ -140,7 +145,7 @@ class BasicChRt(TwoLithologyErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
         """
         # Call ErosionModel"s init
@@ -151,7 +156,7 @@ class BasicChRt(TwoLithologyErosionModel):
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             m_sp=self.m,
             n_sp=self.n,
             K_sp=self.erody,
@@ -160,7 +165,7 @@ class BasicChRt(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = TaylorNonLinearDiffuser(
-            self.grid,
+            self._grid,
             linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=critical_slope,
             nterms=number_of_taylor_terms,

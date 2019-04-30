@@ -72,11 +72,16 @@ class BasicRtVs(TwoLithologyErosionModel):
         - ``soil__depth``
     """
 
-    _required_fields = [
+    _name = "BasicRtVs"
+
+    _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
+        "water__unit_flux_in",
         "soil__depth",
-    ]
+    )
+
+    _output_var_names = ("topographic__elevation",)
 
     def __init__(self, clock, grid, hydraulic_conductivity=0.1, **kwargs):
         """
@@ -136,7 +141,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         will just run it one step.
 
         >>> model.run_one_step(1.)
-        >>> model.model_time
+        >>> model.clock.time
         1.0
 
         """
@@ -147,17 +152,17 @@ class BasicRtVs(TwoLithologyErosionModel):
         self._ensure_precip_runoff_are_vanilla()
 
         # verify correct fields are present.
-        self._verify_fields(self._required_fields)
+        self._verify_fields(self._input_var_names)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()
 
         # Get the effective-area parameter
-        self._Kdx = hydraulic_conductivity * self.grid.dx
+        self._Kdx = hydraulic_conductivity * self._grid.dx
 
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
-            self.grid,
+            self._grid,
             K_sp=self.erody,
             m_sp=self.m,
             n_sp=self.n,
@@ -166,7 +171,7 @@ class BasicRtVs(TwoLithologyErosionModel):
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
-            self.grid, linear_diffusivity=self.regolith_transport_parameter
+            self._grid, linear_diffusivity=self.regolith_transport_parameter
         )
 
     def _calc_effective_drainage_area(self):
@@ -182,21 +187,21 @@ class BasicRtVs(TwoLithologyErosionModel):
         drainage area, :math:`R_r` is the runoff ratio, and :math:`\alpha` is
         the saturation parameter.
         """
-        area = self.grid.at_node["drainage_area"]
-        slope = self.grid.at_node["topographic__steepest_slope"]
-        cores = self.grid.core_nodes
+        area = self._grid.at_node["drainage_area"]
+        slope = self._grid.at_node["topographic__steepest_slope"]
+        cores = self._grid.core_nodes
 
         sat_param = (
             self._Kdx
-            * self.grid.at_node["soil__depth"]
-            / self.grid.at_node["rainfall__flux"]
+            * self._grid.at_node["soil__depth"]
+            / self._grid.at_node["rainfall__flux"]
         )
 
         eff_area = area[cores] * (
             np.exp(-sat_param[cores] * slope[cores] / area[cores])
         )
 
-        self.grid.at_node["surface_water__discharge"][cores] = eff_area
+        self._grid.at_node["surface_water__discharge"][cores] = eff_area
 
     def run_one_step(self, step):
         """Advance model **BasicRtVs** for one time-step of duration step.
@@ -245,7 +250,7 @@ class BasicRtVs(TwoLithologyErosionModel):
             )[0]
 
         # Zero out effective area in flooded nodes
-        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
+        self._grid.at_node["surface_water__discharge"][flooded] = 0.0
 
         # Update the erodibility field
         self._update_erodibility_field()
