@@ -29,7 +29,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     regolith_transport_parameter = 1.0
     soil_transport_decay_depth = 0.5
 
-    grid_4.at_node["soil__depth"][:] = 0.
+    grid_4.at_node["soil__depth"][:] = 0.0
 
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_4, modify_core_nodes=True, lowering_rate=-U
@@ -66,7 +66,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
 
     domain = np.arange(0, max(model.grid.node_x + dx), dx)
 
-    half_domain = np.arange(0, max(domain) / 2. + dx, dx)
+    half_domain = np.arange(0, max(domain) / 2.0 + dx, dx)
 
     one_minus_h_hstar = 1 - np.exp(
         -predicted_depth / soil_transport_decay_depth
@@ -75,7 +75,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     half_domain_z = (
         -half_domain ** 2
         * U
-        / (regolith_transport_parameter * 2. * one_minus_h_hstar)
+        / (regolith_transport_parameter * 2.0 * one_minus_h_hstar)
     )
 
     steady_z_profile = np.concatenate(

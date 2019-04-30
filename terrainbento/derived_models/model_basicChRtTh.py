@@ -83,7 +83,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-         "water__unit_flux_in",
+        "water__unit_flux_in",
     )
 
     _output_var_names = ("topographic__elevation",)

@@ -94,7 +94,7 @@ class BasicRtSa(TwoLithologyErosionModel):
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-         "water__unit_flux_in",
+        "water__unit_flux_in",
         "soil__depth",
     )
 

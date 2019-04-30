@@ -44,7 +44,7 @@ class TwoLithologyErosionModel(ErosionModel):
         water_erodibility_lower=0.0001,
         water_erodibility_upper=0.001,
         regolith_transport_parameter=0.1,
-        contact_zone__width=1.,
+        contact_zone__width=1.0,
         **kwargs
     ):
         """

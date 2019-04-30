@@ -56,7 +56,7 @@ class RandomPrecipitator(object):
             grid.add_ones("node", "rainfall__flux")
         self.function = np.random.__dict__[distribution]
         self._kwargs = kwargs
-        self.run_one_step(0.)
+        self.run_one_step(0.0)
 
     def run_one_step(self, step):
         """Run **RandomPrecipitator** forward by duration ``step``"""

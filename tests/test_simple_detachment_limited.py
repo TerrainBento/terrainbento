@@ -17,8 +17,8 @@ from terrainbento import (
 
 
 @pytest.mark.parametrize("Model", [BasicRt, BasicChRt, BasicRtSa])
-@pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
-@pytest.mark.parametrize("n_sp", [2. / 3., 1.])
+@pytest.mark.parametrize("m_sp", [1.0 / 3, 0.5, 0.75, 0.25])
+@pytest.mark.parametrize("n_sp", [2.0 / 3.0, 1.0])
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
@@ -31,7 +31,7 @@ def test_rock_till_steady_no_precip_changer(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility_lower": Kr,
         "water_erodibility_upper": Kt,
         "depression_finder": depression_finder,
@@ -48,8 +48,8 @@ def test_rock_till_steady_no_precip_changer(
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
-    rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1. / n_sp)
-    till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1. / n_sp)
+    rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1.0 / n_sp)
+    till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1.0 / n_sp)
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
@@ -63,8 +63,8 @@ def test_rock_till_steady_no_precip_changer(
 
 
 @pytest.mark.parametrize("Model", [BasicRtTh, BasicChRtTh])
-@pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
-@pytest.mark.parametrize("n_sp", [1.])
+@pytest.mark.parametrize("m_sp", [1.0 / 3, 0.5, 0.75, 0.25])
+@pytest.mark.parametrize("n_sp", [1.0])
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
@@ -77,7 +77,7 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility_lower": Kr,
         "water_erodibility_upper": Kt,
         "depression_finder": depression_finder,
@@ -96,8 +96,8 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
     # construct actual and predicted slopes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
-    rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1. / n_sp)
-    till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1. / n_sp)
+    rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1.0 / n_sp)
+    till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1.0 / n_sp)
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
@@ -113,8 +113,8 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
 @pytest.mark.parametrize(
     "Model", [Basic, BasicCv, BasicCh, BasicChSa, BasicSa]
 )
-@pytest.mark.parametrize("m_sp", [1. / 3, 0.5, 0.75, 0.25])
-@pytest.mark.parametrize("n_sp", [2. / 3., 1.])
+@pytest.mark.parametrize("m_sp", [1.0 / 3, 0.5, 0.75, 0.25])
+@pytest.mark.parametrize("n_sp", [2.0 / 3.0, 1.0])
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
@@ -127,7 +127,7 @@ def test_detachment_steady_no_precip_changer(
     params = {
         "grid": grid_1,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility": 0.001,
         "depression_finder": depression_finder,
         "m_sp": m_sp,
@@ -144,7 +144,7 @@ def test_detachment_steady_no_precip_changer(
     actual_areas = model.grid.at_node["surface_water__discharge"]
     predicted_slopes = (
         U / (params["water_erodibility"] * (actual_areas ** params["m_sp"]))
-    ) ** (1. / params["n_sp"])
+    ) ** (1.0 / params["n_sp"])
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(

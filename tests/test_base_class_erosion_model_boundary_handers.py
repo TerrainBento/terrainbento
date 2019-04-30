@@ -104,11 +104,11 @@ def test_generic_bch(clock_simple, simple_square_grid):
     assert "GenericFuncBaselevelHandler" in model.boundary_handlers
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
 
-    step = 10.
+    step = 10.0
     model.run_one_step(step)
 
     dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
-    truth_z = -1. * dzdt * step
+    truth_z = -1.0 * dzdt * step
     assert_array_equal(
         model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes]
     )
@@ -134,9 +134,9 @@ def test_capture_node(clock_simple, simple_square_grid):
     # assertion tests
     assert "CaptureNodeBaselevelHandler" in model.boundary_handlers
     assert model.z[1] == 0
-    model.run_one_step(10.)
+    model.run_one_step(10.0)
     assert model.z[1] == 0
     model.run_one_step(10)
-    assert model.z[1] == -30.
+    assert model.z[1] == -30.0
     model.run_one_step(10)
-    assert model.z[1] == -31.
+    assert model.z[1] == -31.0

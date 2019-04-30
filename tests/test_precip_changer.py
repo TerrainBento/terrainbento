@@ -53,7 +53,7 @@ def test_simple_precip_changer(
     params = {
         "grid": grid_1,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "boundary_handlers": {"PrecipChanger": precip_changer},
     }

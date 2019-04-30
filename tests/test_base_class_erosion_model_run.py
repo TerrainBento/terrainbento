@@ -10,8 +10,8 @@ def test_run_for(tmpdir, basic_inputs_yaml):
             fp.write(basic_inputs_yaml)
         model = Basic.from_file("./params.yaml")
     model._out_file_name = "run_for_output"
-    model.run_for(10., 100.)
-    assert model.clock.time == 100.
+    model.run_for(10.0, 100.0)
+    assert model.clock.time == 100.0
 
 
 def test_finalize(tmpdir, basic_inputs_yaml):
@@ -29,5 +29,5 @@ def test_run(tmpdir, basic_inputs_yaml):
         model = Basic.from_file("./params.yaml")
     model._out_file_name = "run_output"
     model.run()
-    assert model.clock.time == 200.
+    assert model.clock.time == 200.0
     model.remove_output_netcdfs()

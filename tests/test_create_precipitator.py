@@ -1,4 +1,3 @@
-
 import pytest
 
 from terrainbento import ErosionModel

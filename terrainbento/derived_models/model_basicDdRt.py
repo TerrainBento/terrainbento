@@ -79,7 +79,7 @@ class BasicDdRt(TwoLithologyErosionModel):
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-         "water__unit_flux_in"
+        "water__unit_flux_in",
     )
 
     _output_var_names = ("topographic__elevation",)
@@ -89,7 +89,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         clock,
         grid,
         water_erosion_rule__threshold=0.01,
-        water_erosion_rule__thresh_depth_derivative=0.,
+        water_erosion_rule__thresh_depth_derivative=0.0,
         **kwargs
     ):
         """

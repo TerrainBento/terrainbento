@@ -74,7 +74,7 @@ class BasicHyRt(TwoLithologyErosionModel):
     _input_var_names = (
         "topographic__elevation",
         "lithology_contact__elevation",
-         "water__unit_flux_in",
+        "water__unit_flux_in",
     )
 
     _output_var_names = ("topographic__elevation",)
@@ -165,8 +165,8 @@ class BasicHyRt(TwoLithologyErosionModel):
         self._verify_fields(self._input_var_names)
 
         # Save the threshold values for rock and till
-        self.rock_thresh = 0.
-        self.till_thresh = 0.
+        self.rock_thresh = 0.0
+        self.till_thresh = 0.0
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()

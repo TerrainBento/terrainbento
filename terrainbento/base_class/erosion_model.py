@@ -6,19 +6,18 @@ import os
 import sys
 import time as tm
 
+import cfunits
 import dask
 import numpy as np
 import six
 import xarray as xr
 import yaml
 
-import cfunits
-
 from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io.netcdf import write_raster_netcdf
-from terrainbento import Clock
+from terrainbento.clock import Clock
 from terrainbento.bmi import BmiModel
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
@@ -160,7 +159,7 @@ class ErosionModel(BmiModel):
             "units": "m",
             "at": "node",
             "description": "Land surface topographic elevation",
-        },
+        }
     }
 
     _param_info = {}
@@ -526,7 +525,10 @@ class ErosionModel(BmiModel):
         self._output_files.append(filename)
         try:
             write_raster_netcdf(
-                filename, self._grid, names=self.output_fields, format="NETCDF4"
+                filename,
+                self._grid,
+                names=self.output_fields,
+                format="NETCDF4",
             )
         except NotImplementedError:
             graph = Graph.from_dict(
@@ -572,7 +574,7 @@ class ErosionModel(BmiModel):
         runtime : float
             Total duration for which to run model.
         """
-        elapsed_time = 0.
+        elapsed_time = 0.0
         keep_running = True
         while keep_running:
             if elapsed_time + step >= runtime:
@@ -598,10 +600,10 @@ class ErosionModel(BmiModel):
         self.iteration = 1
         while self.clock.time < self.clock.stop:
             next_run_pause = min(
-                time_now + self.output_interval, self.clock.stop
+                self.clock.time + self.output_interval, self.clock.stop
             )
-            self.run_for(self.clock.step, next_run_pause - time_now)
-            time_now = self.clock.time
+            self.run_for(self.clock.step, next_run_pause - self.clock.time)
+
             self.iteration += 1
             self._itters.append(self.iteration)
             self.write_output()

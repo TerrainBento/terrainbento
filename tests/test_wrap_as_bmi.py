@@ -1,8 +1,8 @@
 import sys
 import warnings
 
-import pytest
 import cfunits
+import pytest
 
 from terrainbento.derived_models import MODELS
 
