@@ -46,8 +46,8 @@ def test_channel_erosion(
         model.run_one_step(10)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["drainage_area"]
     rock_predicted_slopes = np.power(
         ((U * v_sc) / (Kr * np.power(actual_areas, m_sp)))
         + (U / (Kr * np.power(actual_areas, m_sp))),

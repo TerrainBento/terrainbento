@@ -55,8 +55,8 @@ def test_stream_DdHy(
         model.run_one_step(10)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
     predicted_slopes = np.power(
         ((U * v_sc) / (K * np.power(actual_areas, m_sp)))
         + (U / (K * np.power(actual_areas, m_sp))),
@@ -65,14 +65,14 @@ def test_stream_DdHy(
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
+        actual_slopes[model._grid.core_nodes[1:-1]],
+        predicted_slopes[model._grid.core_nodes[1:-1]],
         decimal=4,
     )
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
+        actual_slopes[model._grid.core_nodes[1:-1]],
+        predicted_slopes[model._grid.core_nodes[1:-1]],
         decimal=4,
     )

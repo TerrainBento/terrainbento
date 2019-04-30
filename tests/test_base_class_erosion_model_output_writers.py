@@ -13,13 +13,13 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 def output_writer_function_a(model):
-    average_elevation = np.mean(model.z[model.grid.core_nodes])
+    average_elevation = np.mean(model.z[model._grid.core_nodes])
     with open("ow_func_a." + str(model.clock.time) + ".txt", "w") as f:
         f.write(str(average_elevation))
 
 
 def output_writer_function_b(model):
-    minimum_elevation = np.min(model.z[model.grid.core_nodes])
+    minimum_elevation = np.min(model.z[model._grid.core_nodes])
     with open("ow_func_b." + str(model.clock.time) + ".txt", "w") as f:
         f.write(str(minimum_elevation))
 
@@ -27,10 +27,10 @@ def output_writer_function_b(model):
 class output_writer_class_a(object):
     def __init__(self, model):
         self.model = model
-        self.change = model.grid.at_node["cumulative_elevation_change"]
+        self.change = model._grid.at_node["cumulative_elevation_change"]
 
     def run_one_step(self):
-        average_change = np.mean(self.change[self.model.grid.core_nodes])
+        average_change = np.mean(self.change[self.model._grid.core_nodes])
         with open(
             "ow_class_a." + str(self.model.clock.time) + ".txt", "w"
         ) as f:
@@ -40,10 +40,10 @@ class output_writer_class_a(object):
 class output_writer_class_b(object):
     def __init__(self, model):
         self.model = model
-        self.change = model.grid.at_node["cumulative_elevation_change"]
+        self.change = model._grid.at_node["cumulative_elevation_change"]
 
     def run_one_step(self):
-        min_change = np.min(self.change[self.model.grid.core_nodes])
+        min_change = np.min(self.change[self.model._grid.core_nodes])
         with open(
             "ow_class_b." + str(self.model.clock.time) + ".txt", "w"
         ) as f:

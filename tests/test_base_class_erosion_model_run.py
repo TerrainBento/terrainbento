@@ -19,7 +19,7 @@ def test_finalize(tmpdir, basic_inputs_yaml):
         with open("params.yaml", "w") as fp:
             fp.write(basic_inputs_yaml)
         model = Basic.from_file("./params.yaml")
-    model.finalize()
+    model.finalize_terrainbento_run()
 
 
 def test_run(tmpdir, basic_inputs_yaml):

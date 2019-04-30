@@ -1,7 +1,7 @@
 """Clock sets the run duration and timestep in terrainbento model runs."""
 
-import yaml
 import cfunits
+import yaml
 
 
 class Clock(object):
@@ -125,7 +125,7 @@ class Clock(object):
 
         >>> clock.stop = 1000.
         >>> clock.stop
-        1000.
+        1000.0
         """
         # verify that unit is a valid CFUNITS
         # raise ValueError()

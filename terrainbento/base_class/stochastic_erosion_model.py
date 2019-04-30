@@ -405,7 +405,7 @@ class StochasticErosionModel(ErosionModel):
                     )
                     self.record_rain_event(event_start_time, dt_dry, 0.0, 0.0)
 
-    def finalize(self):
+    def finalize_terrainbento_run(self):
         """Finalize stochastic erosion models.
 
         The finalization step of stochastic erosion models in

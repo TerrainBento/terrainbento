@@ -14,8 +14,8 @@ def test_no_contact_zone_width(clock_simple, grid_5):
     model = TwoLithologyErosionModel(**params)
     model._setup_rock_and_till()
 
-    truth = np.ones(model.grid.size("node"))
-    truth[model.grid.core_nodes[14:]] = 0.0
+    truth = np.ones(model._grid.size("node"))
+    truth[model._grid.core_nodes[14:]] = 0.0
 
     assert_array_equal(model.erody_wt, truth)
 

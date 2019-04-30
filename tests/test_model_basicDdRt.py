@@ -49,8 +49,8 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
     for _ in range(100):
         model.run_one_step(1000)
 
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["drainage_area"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["drainage_area"]
     rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1.0 / n_sp)
     till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1.0 / n_sp)
 

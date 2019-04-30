@@ -119,9 +119,9 @@ def test_steady_without_stochastic_duration(
         model.run_one_step(1.0)
 
     # construct actual and predicted slopes
-    ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"][ic]
-    actual_areas = model.grid.at_node["drainage_area"][ic]
+    ic = model._grid.core_nodes[1:-1]  # "inner" core nodes
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"][ic]
+    actual_areas = model._grid.at_node["drainage_area"][ic]
     predicted_slopes = 2 * U / (K * (actual_areas))
 
     # assert actual and predicted slopes are the same.

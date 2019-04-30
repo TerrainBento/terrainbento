@@ -357,7 +357,7 @@ def test_finalize_opt_duration_stochastic_false_too_short(clock_05, grid_1):
     model.reset_random_seed()
     model.run_for(model.clock.step, model.clock.stop)
     with pytest.raises(RuntimeError):
-        model.finalize()
+        model.finalize_terrainbento_run()
 
     os.remove("storm_sequence.txt")
 
@@ -383,7 +383,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain(clock_07, grid_1):
     model.reset_random_seed()
     model.run_for(model.clock.step, model.clock.stop)
     with pytest.raises(ValueError):
-        model.finalize()
+        model.finalize_terrainbento_run()
 
 
 def test_finalize_opt_duration_stochastic_false(clock_07, grid_1):
@@ -406,7 +406,7 @@ def test_finalize_opt_duration_stochastic_false(clock_07, grid_1):
     model = BasicSt(**params)
     model.reset_random_seed()
     model.run_for(model.clock.step, model.clock.stop)
-    model.finalize()
+    model.finalize_terrainbento_run()
 
     # assert that these are correct
     truth_file = os.path.join(
@@ -443,7 +443,7 @@ def test_finalize_opt_duration_stochastic_true(clock_07, grid_1):
     model = BasicSt(**params)
     model.reset_random_seed()
     model.run_for(model.clock.step, model.clock.stop)
-    model.finalize()
+    model.finalize_terrainbento_run()
 
     # assert that these are correct
     truth_file = os.path.join(

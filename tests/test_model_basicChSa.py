@@ -39,7 +39,7 @@ def test_diffusion_only(clock_08, grid_4):
         model.run_one_step(clock_08.step)
 
     # test steady state soil depth
-    actual_depth = model.grid.at_node["soil__depth"][30]
+    actual_depth = model._grid.at_node["soil__depth"][30]
     predicted_depth = -soil_production_decay_depth * np.log(
         U / max_soil_production_rate
     )
@@ -61,6 +61,6 @@ def test_diffusion_only(clock_08, grid_4):
     p_roots = np.roots(p)
     predicted_slope = np.abs(np.real(p_roots[-1]))
     actual_slope = np.abs(
-        model.grid.at_node["topographic__steepest_slope"][39]
+        model._grid.at_node["topographic__steepest_slope"][39]
     )
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)

@@ -17,7 +17,6 @@ from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io.netcdf import write_raster_netcdf
-from terrainbento.clock import Clock
 from terrainbento.bmi import BmiModel
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
@@ -26,6 +25,7 @@ from terrainbento.boundary_handlers import (
     PrecipChanger,
     SingleNodeBaselevelHandler,
 )
+from terrainbento.clock import Clock
 from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
 from terrainbento.runoff_generators import SimpleRunoff
 
@@ -197,7 +197,7 @@ class ErosionModel(BmiModel):
         1.0
         >>> model.clock.stop
         200.0
-        >>> model.grid.shape
+        >>> model._grid.shape
         (4, 5)
         """
         # first get contents.
@@ -222,7 +222,7 @@ class ErosionModel(BmiModel):
 
         The input parameter dictionary portion associated with the "grid"
         keword will be passed directly to the Landlab
-        `create_grid <https://landlab.readthedocs.io/en/latest/landlab.grid.create.html>`_.
+        `create_grid <https://landlab.readthedocs.io/en/latest/landlab._grid.create.html>`_.
         function.
 
         Parameters
@@ -255,7 +255,7 @@ class ErosionModel(BmiModel):
         1.0
         >>> model.clock.stop
         200.0
-        >>> model.grid.shape
+        >>> model._grid.shape
         (4, 5)
         """
         cls._validate(params)
@@ -397,6 +397,7 @@ class ErosionModel(BmiModel):
         boundary_handlers = boundary_handlers or {}
         output_writers = output_writers or {}
         fields = fields or ["topographic__elevation"]
+
         # type checking
         if isinstance(clock, Clock) is False:
             raise ValueError("Provided Clock is not valid.")
@@ -404,6 +405,8 @@ class ErosionModel(BmiModel):
             raise ValueError("Provided Grid is not valid.")
 
         # save reference to elevation
+        self._verify_fields(ErosionModel._input_var_names)
+
         self.z = grid.at_node["topographic__elevation"]
 
         self._grid.add_zeros("node", "cumulative_elevation_change")
@@ -561,6 +564,10 @@ class ErosionModel(BmiModel):
         # Update boundary conditions
         self.update_boundary_conditions(step)
 
+    def finalize_terrainbento_run(self):
+        """Finalize erosion models."""
+        pass
+
     def run_for(self, step, runtime):
         """Run model without interruption for a specified time period.
 
@@ -609,7 +616,7 @@ class ErosionModel(BmiModel):
             self.write_output()
 
         # now that the model is finished running, execute finalize.
-        self.finalize()
+        self.finalize_terrainbento_run()
 
     def _ensure_precip_runoff_are_vanilla(self, vsa_precip=False):
         """Ensure only default versions of precipitator/runoff are used.

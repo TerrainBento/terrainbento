@@ -55,16 +55,16 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     dx = grid_4.dx
 
     # test steady state soil depthf
-    actual_depth = model.grid.at_node["soil__depth"][28]
+    actual_depth = model._grid.at_node["soil__depth"][28]
     predicted_depth = -soil_production_decay_depth * np.log(
         U / max_soil_production_rate
     )
     assert_array_almost_equal(actual_depth, predicted_depth, decimal=3)
 
     # test steady state slope
-    actual_profile = model.grid.at_node["topographic__elevation"][21:42]
+    actual_profile = model._grid.at_node["topographic__elevation"][21:42]
 
-    domain = np.arange(0, max(model.grid.node_x + dx), dx)
+    domain = np.arange(0, max(model._grid.node_x + dx), dx)
 
     half_domain = np.arange(0, max(domain) / 2.0 + dx, dx)
 

@@ -51,8 +51,8 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
     # note that since we have a smooth threshold, we do not have a true
     # analytical solution, but a bracket within wich we expect the actual
     # slopes to fall.
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
     predicted_slopes_upper = (
         (U + threshold) / (K * (actual_areas ** m_sp))
     ) ** (1.0 / n_sp)
@@ -63,11 +63,11 @@ def test_steady_Ksp_no_precip_changer_no_thresh_change(
     # assert actual and predicted slopes are in the correct range for the
     # slopes.
     assert np.all(
-        actual_slopes[model.grid.core_nodes[1:-1]]
-        > predicted_slopes_lower[model.grid.core_nodes[1:-1]]
+        actual_slopes[model._grid.core_nodes[1:-1]]
+        > predicted_slopes_lower[model._grid.core_nodes[1:-1]]
     )
 
     assert np.all(
-        actual_slopes[model.grid.core_nodes[1:-1]]
-        < predicted_slopes_upper[model.grid.core_nodes[1:-1]]
+        actual_slopes[model._grid.core_nodes[1:-1]]
+        < predicted_slopes_upper[model._grid.core_nodes[1:-1]]
     )

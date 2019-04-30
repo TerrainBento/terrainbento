@@ -139,13 +139,13 @@ def clock_07():
 
 @pytest.fixture()
 def clock_08():
-    clock_08 = Clock(step=1.0, stop=20.0)
+    clock_08 = Clock(step=1.0, stop=50000)
     return clock_08
 
 
 @pytest.fixture()
 def clock_09():
-    clock_09 = Clock(step=2.0, stop=200.0)
+    clock_09 = Clock(step=2.0, stop=60000.0)
     return clock_09
 
 

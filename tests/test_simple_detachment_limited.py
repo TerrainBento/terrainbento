@@ -46,8 +46,8 @@ def test_rock_till_steady_no_precip_changer(
         model.run_one_step(1000)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
     rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1.0 / n_sp)
     till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1.0 / n_sp)
 
@@ -94,8 +94,8 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
         model.run_one_step(1000)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
     rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1.0 / n_sp)
     till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1.0 / n_sp)
 
@@ -140,14 +140,14 @@ def test_detachment_steady_no_precip_changer(
         model.run_one_step(1000)
 
     # construct actual and predicted slopes
-    actual_slopes = model.grid.at_node["topographic__steepest_slope"]
-    actual_areas = model.grid.at_node["surface_water__discharge"]
+    actual_slopes = model._grid.at_node["topographic__steepest_slope"]
+    actual_areas = model._grid.at_node["surface_water__discharge"]
     predicted_slopes = (
         U / (params["water_erodibility"] * (actual_areas ** params["m_sp"]))
     ) ** (1.0 / params["n_sp"])
 
     # assert actual and predicted slopes are the same.
     assert_array_almost_equal(
-        actual_slopes[model.grid.core_nodes[1:-1]],
-        predicted_slopes[model.grid.core_nodes[1:-1]],
+        actual_slopes[model._grid.core_nodes[1:-1]],
+        predicted_slopes[model._grid.core_nodes[1:-1]],
     )

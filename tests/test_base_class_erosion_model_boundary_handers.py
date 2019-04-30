@@ -53,7 +53,7 @@ def test_single_node_blh_with_closed_boundaries(
         "boundary_handlers": {"SingleNodeBaselevelHandler": snblh},
     }
     model = Basic(**params)
-    assert model.grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
+    assert model._grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
 
 
 def test_pass_two_boundary_handlers(clock_simple, simple_square_grid, U):
@@ -76,13 +76,13 @@ def test_pass_two_boundary_handlers(clock_simple, simple_square_grid, U):
 
     truth = np.zeros(model.z.size)
     truth[0] -= U
-    truth[model.grid.core_nodes] += U
+    truth[model._grid.core_nodes] += U
     assert_array_equal(model.z, truth)
 
     status_at_node = np.zeros(model.z.size)
-    status_at_node[model.grid.boundary_nodes] = CLOSED_BOUNDARY
+    status_at_node[model._grid.boundary_nodes] = CLOSED_BOUNDARY
     status_at_node[0] = FIXED_VALUE_BOUNDARY
-    assert_array_equal(model.grid.status_at_node, status_at_node)
+    assert_array_equal(model._grid.status_at_node, status_at_node)
 
 
 def test_generic_bch(clock_simple, simple_square_grid):
@@ -102,15 +102,15 @@ def test_generic_bch(clock_simple, simple_square_grid):
 
     # assertion tests
     assert "GenericFuncBaselevelHandler" in model.boundary_handlers
-    assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
+    assert_array_equal(np.where(bh.nodes_to_lower)[0], model._grid.core_nodes)
 
     step = 10.0
     model.run_one_step(step)
 
-    dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
+    dzdt = -(model._grid.x_of_node + model._grid.y_of_node)
     truth_z = -1.0 * dzdt * step
     assert_array_equal(
-        model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes]
+        model.z[model._grid.core_nodes], truth_z[model._grid.core_nodes]
     )
 
 

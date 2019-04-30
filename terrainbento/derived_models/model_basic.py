@@ -52,7 +52,7 @@ class Basic(ErosionModel):
             "units": "m",
             "at": "node",
             "long_name": "Land surface topographic elevation",
-            "_FillValue": -999.0
+            "_FillValue": -999.0,
         },
         "water__unit_flux_in": {
             "type": float,
