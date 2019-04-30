@@ -33,9 +33,9 @@ jobs:
       on:
         all_branches: true
       provider: pypi
-      user: katy.barnhart
+      user: katybarnhart
       password:
-        secure:
+        secure: cIpKmAd9nhoJsBF/PRxtEBZMYfbvHI0Fre6YUaM9mH+v+lp8fYSKLAg6trjnGK/f++8/TIVnWcsk/o0Z+jWSWJAXuWy8+9GUOp3fFEsrRYEih/OOB735teRh+SIyLM3DLHuWW8oYgfTELcjyhEQmF8sowrU+YDsIlGgP7Zng8wi9JbnJro4Dv5uIVB1iwwkFZ5HlPHUPyDX5kyy7WQuHFn/zXx/9awnxFpsaHpEsFYygWUN1TfTRLGhssBmb8fWopugV7c34usXduJnC4LCFv9jhqpaShsKZucnW5Vj46LkV1Gstl8g5Zd3U0rEZZRewd9dISZm5hVSx4Ukpjgskfj03w6QAqLWaRM6z8yDsPLtdh2fp0f72PmIEEoQGwN9KypO8J+M8KXYQLvCkbKGL5SpN+GNU00edKY4xUXr0Ebg747Yrgb5ZF++XouHjNI1dhUwtUAVVBshXQixxvvzje8SgiuHcTU0aLAI9G+my4gsGgJy3sXdf4BODWguNuQfE2XzbTs/2vX8AxvrT5xGdFpZrVNX41LeZyRmnZ2I1/43la5OUNBxHrsjt72Jt6k8LnWQZFTO0/XcFK8XRodP6/MSoNEma40VLJcvYrtLr1XWShMpxSwKNR2TIiq0zIlBqT/PQAiTwJAkK7Yko1tnVVMA3fhy6wvgXOuztozYpGfc=
 before_install:
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
@@ -65,3 +65,4 @@ script:
 - pip install pytest pytest-cov coveralls
 - pytest --cov --cov-report=xml:$(pwd)/coverage.xml
 after_success: coveralls
+deploy:
