@@ -2,6 +2,7 @@ import sys
 import warnings
 
 import pytest
+import cfunits
 
 from terrainbento.derived_models import MODELS
 
@@ -19,9 +20,3 @@ def test_wrap_as_bmi(Model):
     # verify that all units are either None or UDUNITS compatible.
 
     pass
-
-
-# TODO:
-# BMI expectations about file writing.
-# Post BMI explaination
-# What about Grid ID what should that be...?
