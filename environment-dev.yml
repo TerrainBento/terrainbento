@@ -1,4 +1,4 @@
-name: landlab_dev
+name: terrainbento_dev
  channels:
    - conda-forge
  dependencies:
@@ -6,13 +6,10 @@ name: landlab_dev
  - black
  - flake8
  - isort
- - matplotlib
- - netcdf4
- - pyshp
  - pytest
  - pytest-cov
- - pyyaml
  - scipy
- - six
- - statsmodels
+ - numpy
  - xarray
+ - dask
+ - landlab>=1.7
