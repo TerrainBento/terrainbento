@@ -15,6 +15,6 @@ setup(
     long_description=open("README.md").read(),
     zip_safe=False,
     packages=find_packages(),
-    install_requires=["scipy", "numpy", "xarray", "dask", "landlab"]
+    install_requires=["scipy", "numpy", "xarray", "dask", "landlab"],
     package_data={"": ["tests/*txt", "data/*txt", "data/*asc", "data/*nc"]},
 )
