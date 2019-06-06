@@ -84,7 +84,7 @@ def test_parameters(clock_simple):
                 {"base_num_rows": 8, "base_num_cols": 5, "dx": 10},
                 {
                     "fields": {
-                        "at_node": {
+                        "node": {
                             "topographic__elevation": {
                                 "constant": [{"value": 0}]
                             }

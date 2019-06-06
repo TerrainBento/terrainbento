@@ -155,7 +155,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
         >>> _ = random(grid, "soil__depth")
-        >>> _ = constant(grid, "lithology_contact__elevation", constant=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
 
         Construct the model.
 

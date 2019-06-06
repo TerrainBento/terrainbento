@@ -161,14 +161,13 @@ class ErosionModel(object):
         >>> from six import StringIO
         >>> filelike = StringIO('''
         ... grid:
-        ...   grid:
-        ...     RasterModelGrid:
-        ...       - [4, 5]
-        ...   fields:
-        ...     at_node:
-        ...       topographic__elevation:
-        ...         constant:
-        ...           - value: 0
+        ...   RasterModelGrid:
+        ...     - [4, 5]
+        ...     - fields:
+        ...         node:
+        ...           topographic__elevation:
+        ...             constant:
+        ...               - value: 0
         ... clock:
         ...   step: 1
         ...   stop: 200
@@ -219,18 +218,23 @@ class ErosionModel(object):
 
         Examples
         --------
-        Examples
-        --------
         >>> params = {
-        ... "grid": {
-        ...   "grid": {"RasterModelGrid": [(4, 5)]},
-        ...   "fields": {
-        ...     "at_node":
-        ...       {"topographic__elevation": {"constant": [{"constant": 0}]}}
-        ...              },
-        ...          },
-        ... "clock": {"step": 1, "stop": 200}
-        ...           }
+        ...     "grid": {
+        ...         "RasterModelGrid": [
+        ...             (4, 5),
+        ...             {
+        ...                 "fields": {
+        ...                     "node": {
+        ...                         "topographic__elevation": {
+        ...                             "constant": [{"value": 0}]
+        ...                         }
+        ...                     }
+        ...                 }
+        ...             },
+        ...         ]
+        ...     },
+        ...     "clock": {"step": 1, "stop": 200},
+        ... }
         >>> model = ErosionModel.from_dict(params)
         >>> model.clock.step
         1.0

@@ -320,13 +320,11 @@ def basic_inputs_yaml():
 
 
 @pytest.fixture()
-def basic_inputs_D8_yaml():
+def inputs_D8_yaml():
     out = """
     grid:
-      HexModelGrid:
-        - base_num_rows: 8
-          base_num_cols: 5
-          dx: 10
+      RasterModelGrid:
+        - [4, 5]
         - fields:
             node:
               topographic__elevation:
@@ -334,14 +332,10 @@ def basic_inputs_D8_yaml():
                   - value: 0
     clock:
       step: 1
-      stop: 200.
+      stop: 10.
 
-    output_interval: 50.
-    water_erodibility: 0.001
+    output_interval: 2.
     flow_director: "FlowDirectorD8"
-    m_sp: 1
-    n_sp: 0.5
-    regolith_transport_parameter: 0.01
     """
     return out
 

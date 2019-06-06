@@ -137,7 +137,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
-        >>> _ = constant(grid, "lithology_contact__elevation", constant=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
 
         Construct the model.
 
