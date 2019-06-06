@@ -136,14 +136,14 @@ def test_string(tmpdir, inputs_yaml):
 def test_string_D8(tmpdir, inputs_D8_yaml):
     with tmpdir.as_cwd():
         with open("params.yaml", "w") as fp:
-            fp.write(inputs_yaml)
+            fp.write(inputs_D8_yaml)
 
         with open("./params.yaml", "r") as f:
             contents = f.read()
 
     em = ErosionModel.from_file(contents)
-    assert isinstance(em.grid, HexModelGrid)
-    assert em.grid.number_of_nodes == 56
+    assert isinstance(em.grid, RasterModelGrid)
+    assert em.grid.number_of_nodes == 20
     for field in at_node_fields:
         assert field in em.grid.at_node
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
