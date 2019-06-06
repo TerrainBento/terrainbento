@@ -66,12 +66,11 @@ def _verify_boundary_handler(handler):
         if handler not in _SUPPORTED_BOUNDARY_HANDLERS:
             bad_name = True
     else:  # if a dictionary {name, handler}
-        for name in handler:
+        for key in handler:
+            name = handler[key].__class__.__name__
             if name not in _SUPPORTED_BOUNDARY_HANDLERS:
                 bad_name = True
-            else:
-                if isinstance(handler[name], _HANDLER_METHODS[name]) is False:
-                    bad_instance = True
+
     if bad_name:
         raise ValueError(
             (
