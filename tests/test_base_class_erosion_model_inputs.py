@@ -131,3 +131,25 @@ def test_string(tmpdir, inputs_yaml):
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
     assert em._model_time == 0.
+
+
+def test_string_D8(tmpdir, inputs_D8_yaml):
+    with tmpdir.as_cwd():
+        with open("params.yaml", "w") as fp:
+            fp.write(inputs_yaml)
+
+        with open("./params.yaml", "r") as f:
+            contents = f.read()
+
+    em = ErosionModel.from_file(contents)
+    assert isinstance(em.grid, HexModelGrid)
+    assert em.grid.number_of_nodes == 56
+    for field in at_node_fields:
+        assert field in em.grid.at_node
+    assert isinstance(em.flow_accumulator, FlowAccumulator) is True
+    assert em.flow_accumulator.flow_director._name == "FlowDirectorD8"
+    assert em.boundary_handlers == {}
+    assert em.output_writers == {}
+    assert em.save_first_timestep is True
+    assert em._out_file_name == "terrainbento_output"
+    assert em._model_time == 0.0
