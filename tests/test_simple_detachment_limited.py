@@ -22,8 +22,20 @@ from terrainbento import (
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
+@pytest.mark.parametrize(
+    "flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"]
+)
 def test_rock_till_steady_no_precip_changer(
-    clock_simple, grid_2, m_sp, n_sp, depression_finder, U, Kr, Kt, Model
+    clock_simple,
+    grid_2,
+    m_sp,
+    n_sp,
+    depression_finder,
+    U,
+    Kr,
+    Kt,
+    Model,
+    flow_director,
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
@@ -35,6 +47,7 @@ def test_rock_till_steady_no_precip_changer(
         "water_erodibility_lower": Kr,
         "water_erodibility_upper": Kt,
         "depression_finder": depression_finder,
+        "flow_director": flow_director,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
@@ -68,8 +81,20 @@ def test_rock_till_steady_no_precip_changer(
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
+@pytest.mark.parametrize(
+    "flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"]
+)
 def test_rock_till_steady_no_precip_changer_ChRtTh(
-    clock_simple, Model, grid_2, m_sp, n_sp, depression_finder, U, Kr, Kt
+    clock_simple,
+    Model,
+    grid_2,
+    m_sp,
+    n_sp,
+    depression_finder,
+    U,
+    Kr,
+    Kt,
+    flow_director,
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
@@ -81,6 +106,7 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
         "water_erodibility_lower": Kr,
         "water_erodibility_upper": Kt,
         "depression_finder": depression_finder,
+        "flow_director": flow_director,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "water_erosion_rule_upper__threshold": 0.0000001,
@@ -118,8 +144,19 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
+@pytest.mark.parametrize(
+    "flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"]
+)
 def test_detachment_steady_no_precip_changer(
-    clock_simple, grid_1, m_sp, n_sp, depression_finder, U, K, Model
+    clock_simple,
+    grid_1,
+    m_sp,
+    n_sp,
+    depression_finder,
+    U,
+    K,
+    Model,
+    flow_director,
 ):
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_1, modify_core_nodes=True, lowering_rate=-U

@@ -451,6 +451,7 @@ class ErosionModel(object):
         else:
             self.flow_accumulator = FlowAccumulator(
                 self.grid,
+                flow_director=flow_director,
                 depression_finder=depression_finder,
                 **flow_accumulator_kwargs
             )
