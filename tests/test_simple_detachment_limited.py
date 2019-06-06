@@ -167,6 +167,7 @@ def test_detachment_steady_no_precip_changer(
         "regolith_transport_parameter": 0.,
         "water_erodibility": 0.001,
         "depression_finder": depression_finder,
+        "flow_director": flow_director,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
