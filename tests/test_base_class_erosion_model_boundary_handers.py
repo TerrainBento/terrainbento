@@ -67,8 +67,8 @@ def test_pass_two_boundary_handlers(clock_simple, simple_square_grid, U):
         "grid": simple_square_grid,
         "clock": clock_simple,
         "boundary_handlers": {
-            "NotCoreNodeBaselevelHandler": ncnblh,
-            "SingleNodeBaselevelHandler": snblh,
+            "mybh1": ncnblh,
+            "mybh2": snblh,
         },
     }
     model = Basic(**params)
@@ -94,14 +94,14 @@ def test_generic_bch(clock_simple, simple_square_grid):
     params = {
         "grid": simple_square_grid,
         "clock": clock_simple,
-        "boundary_handlers": {"GenericFuncBaselevelHandler": gfblh},
+        "boundary_handlers": {"mynew_bh": gfblh},
     }
 
     model = Basic(**params)
-    bh = model.boundary_handlers["GenericFuncBaselevelHandler"]
+    bh = model.boundary_handlers["mynew_bh"]
 
     # assertion tests
-    assert "GenericFuncBaselevelHandler" in model.boundary_handlers
+    assert "mynew_bh" in model.boundary_handlers
     assert_array_equal(np.where(bh.nodes_to_lower)[0], model.grid.core_nodes)
 
     step = 10.
