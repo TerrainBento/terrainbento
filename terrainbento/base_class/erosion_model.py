@@ -168,7 +168,7 @@ class ErosionModel(object):
         ...     at_node:
         ...       topographic__elevation:
         ...         constant:
-        ...           - constant: 0
+        ...           - value: 0
         ... clock:
         ...   step: 1
         ...   stop: 200

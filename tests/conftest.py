@@ -182,16 +182,15 @@ def clock_yaml():
 def inputs_yaml():
     out = """
     grid:
-      grid:
-        HexModelGrid:
-          - base_num_rows: 8
-            base_num_cols: 5
-            dx: 10
-      fields:
-        at_node:
-          topographic__elevation:
-            constant:
-              - constant: 0
+      HexModelGrid:
+        - base_num_rows: 8
+          base_num_cols: 5
+          dx: 10
+        - fields:
+            node:
+              topographic__elevation:
+                constant:
+                  - value: 0
     clock:
       step: 1
       stop: 10.
@@ -205,14 +204,13 @@ def inputs_yaml():
 def bad_handler_yaml():
     out = """
     grid:
-      grid:
-        RasterModelGrid:
-          - [4, 5]
-      fields:
-        at_node:
-          topographic__elevation:
-            constant:
-              - constant: 0
+      RasterModelGrid:
+        - [4, 5]
+        - fields:
+            node:
+              topographic__elevation:
+                constant:
+                  - value: 0
     clock:
       step: 100
       stop: 2000.
@@ -229,16 +227,15 @@ def bad_handler_yaml():
 def basic_inputs_bad_precipitator_yaml():
     out = """
     grid:
-      grid:
-        HexModelGrid:
-          - base_num_rows: 8
-            base_num_cols: 5
-            dx: 10
-      fields:
-        at_node:
-          topographic__elevation:
-            constant:
-              - constant: 0
+      HexModelGrid:
+        - base_num_rows: 8
+          base_num_cols: 5
+          dx: 10
+        - fields:
+            node:
+              topographic__elevation:
+                constant:
+                  - value: 0
     clock:
       step: 1
       stop: 200.
@@ -262,17 +259,15 @@ def basic_inputs_bad_precipitator_yaml():
 def basic_inputs_no_clock_yaml():
     out = """
     grid:
-      grid:
-        HexModelGrid:
-          - base_num_rows: 8
-            base_num_cols: 5
-            dx: 10
-      fields:
-        at_node:
-          topographic__elevation:
-            constant:
-              - constant: 0
-
+      HexModelGrid:
+        - base_num_rows: 8
+          base_num_cols: 5
+          dx: 10
+        - fields:
+            node:
+              topographic__elevation:
+                constant:
+                  - value: 0
     output_interval: 50.
     water_erodibility: 0.001
     m_sp: 1
@@ -302,16 +297,15 @@ def basic_inputs_no_grid_yaml():
 def basic_inputs_yaml():
     out = """
     grid:
-      grid:
-        HexModelGrid:
-          - base_num_rows: 8
-            base_num_cols: 5
-            dx: 10
-      fields:
-        at_node:
-          topographic__elevation:
-            constant:
-              - constant: 0
+      HexModelGrid:
+        - base_num_rows: 8
+          base_num_cols: 5
+          dx: 10
+        - fields:
+            node:
+              topographic__elevation:
+                constant:
+                  - value: 0
     clock:
       step: 1
       stop: 200.
@@ -326,17 +320,43 @@ def basic_inputs_yaml():
 
 
 @pytest.fixture()
+def basic_inputs_D8_yaml():
+    out = """
+    grid:
+      HexModelGrid:
+        - base_num_rows: 8
+          base_num_cols: 5
+          dx: 10
+        - fields:
+            node:
+              topographic__elevation:
+                constant:
+                  - value: 0
+    clock:
+      step: 1
+      stop: 200.
+
+    output_interval: 50.
+    water_erodibility: 0.001
+    flow_director: "FlowDirectorD8"
+    m_sp: 1
+    n_sp: 0.5
+    regolith_transport_parameter: 0.01
+    """
+    return out
+
+
+@pytest.fixture()
 def basic_raster_inputs_yaml():
     out = """
     grid:
-      grid:
-        RasterModelGrid:
-          - [4, 5]
-      fields:
-        at_node:
-          topographic__elevation:
-            constant:
-              - constant: 0
+      RasterModelGrid:
+        - [4, 5]
+        - fields:
+            node:
+              topographic__elevation:
+                constant:
+                  - value: 0
     clock:
       step: 1
       stop: 200.
@@ -353,14 +373,13 @@ def basic_raster_inputs_yaml():
 def basic_raster_inputs_for_nc_yaml():
     out = """
     grid:
-      grid:
-        RasterModelGrid:
-          - [4, 5]
-      fields:
-        at_node:
-          topographic__elevation:
-            constant:
-              - constant: 0
+      RasterModelGrid:
+        - [4, 5]
+        - fields:
+            node:
+              topographic__elevation:
+                constant:
+                  - value: 0
     clock:
       step: 100
       stop: 2000.
