@@ -32,6 +32,7 @@ params = {
               "stop": 1e5},
 
     # Create the Grid.
+    # THIS NEEDS TO CHANGE!!
     "grid": {"grid": {"RasterModelGrid":[(200, 320), {"xy_spacing": 10}]},
              "fields": {"at_node": {"topographic__elevation":{"random":[{"where":"CORE_NODE"}]}}}},
 
