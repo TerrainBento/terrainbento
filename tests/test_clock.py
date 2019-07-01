@@ -11,9 +11,9 @@ def test_from_file(tmpdir, clock_yaml):
         with open("params.yaml", "w") as fp:
             fp.write(clock_yaml)
         clock = Clock.from_file("./params.yaml")
-    assert clock.start == 1.
-    assert clock.stop == 11.
-    assert clock.step == 2.
+    assert clock.start == 1.0
+    assert clock.stop == 11.0
+    assert clock.step == 2.0
 
 
 @pytest.mark.parametrize("bad", ["start", "stop", "step"])

@@ -52,9 +52,9 @@ def test_run_stochastic_opt_true(clock_04, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "mean_storm_duration": 2.,
-        "mean_interstorm_duration": 3.,
-        "mean_storm_depth": 1.,
+        "mean_storm_duration": 2.0,
+        "mean_interstorm_duration": 3.0,
+        "mean_storm_depth": 1.0,
         "random_seed": 1234,
     }
 
@@ -101,7 +101,7 @@ def test_run_stochastic_opt_false(clock_05, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.,
+        "rainfall__mean_rate": 1.0,
         "rainfall_intermittency_factor": 0.1,
         "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
@@ -110,7 +110,7 @@ def test_run_stochastic_opt_false(clock_05, grid_1):
 
     model = BasicSt(**params)
     assert model.opt_stochastic_duration is False
-    model.run_for(model.clock.step, 10000.)
+    model.run_for(model.clock.step, 10000.0)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"])
     event_duration = np.asarray(model.rain_record["event_duration"])
@@ -121,7 +121,7 @@ def test_run_stochastic_opt_false(clock_05, grid_1):
     assert (
         np.array_equiv(
             dry_times,
-            model.clock.step * (1. - params["rainfall_intermittency_factor"]),
+            model.clock.step * (1.0 - params["rainfall_intermittency_factor"]),
         )
         is True
     )
@@ -151,9 +151,9 @@ def test_reset_random_seed_stochastic_duration_true(clock_simple, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "mean_storm_duration": 2.,
-        "mean_interstorm_duration": 3.,
-        "mean_storm_depth": 1.,
+        "mean_storm_duration": 2.0,
+        "mean_interstorm_duration": 3.0,
+        "mean_storm_depth": 1.0,
         "random_seed": 0,
     }
 
@@ -203,7 +203,7 @@ def test_reset_random_seed_stochastic_duration_false(clock_05, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.,
+        "rainfall__mean_rate": 1.0,
         "rainfall_intermittency_factor": 0.1,
         "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
@@ -242,7 +242,7 @@ def test_float_number_of_sub_time_steps(clock_05, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.,
+        "rainfall__mean_rate": 1.0,
         "rainfall_intermittency_factor": 0.1,
         "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1.5,
@@ -264,7 +264,7 @@ def test_run_opt_false_with_changer(clock_06, grid_1, precip_defaults):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.,
+        "rainfall__mean_rate": 1.0,
         "rainfall_intermittency_factor": 0.5,
         "rainfall__shape_factor": 0.65,
         "number_of_sub_time_steps": 1,
@@ -317,7 +317,7 @@ def test_not_specifying_record_rain(clock_05, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.,
+        "rainfall__mean_rate": 1.0,
         "rainfall_intermittency_factor": 0.1,
         "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
@@ -345,7 +345,7 @@ def test_finalize_opt_duration_stochastic_false_too_short(clock_05, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.,
+        "rainfall__mean_rate": 1.0,
         "rainfall_intermittency_factor": 0.1,
         "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
@@ -372,7 +372,7 @@ def test_finalize_opt_duration_stochastic_false_no_rain(clock_07, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.,
+        "rainfall__mean_rate": 1.0,
         "rainfall_intermittency_factor": 0.0,
         "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
@@ -396,7 +396,7 @@ def test_finalize_opt_duration_stochastic_false(clock_07, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "rainfall__mean_rate": 1.,
+        "rainfall__mean_rate": 1.0,
         "rainfall_intermittency_factor": 0.1,
         "rainfall__shape_factor": 0.6,
         "number_of_sub_time_steps": 1,
@@ -433,9 +433,9 @@ def test_finalize_opt_duration_stochastic_true(clock_07, grid_1):
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
         "infiltration_capacity": 0.0,
-        "mean_storm_duration": 2.,
-        "mean_interstorm_duration": 3.,
-        "mean_storm_depth": 1.,
+        "mean_storm_duration": 2.0,
+        "mean_interstorm_duration": 3.0,
+        "mean_storm_depth": 1.0,
         "random_seed": 1234,
     }
 
@@ -463,14 +463,14 @@ def test_runoff_equals_zero(clock_07, grid_1):
         "n_sp": 1.0,
         "water_erodibility": 0.01,
         "regolith_transport_parameter": 0.1,
-        "infiltration_capacity": 100000.,
+        "infiltration_capacity": 100000.0,
         "rainfall__mean_rate": 0.0,
         "rainfall_intermittency_factor": 0.1,
-        "rainfall__shape_factor": 1.,
+        "rainfall__shape_factor": 1.0,
         "number_of_sub_time_steps": 1,
         "random_seed": 1234,
     }
     model = BasicSt(**params)
-    model.run_one_step(1.)
+    model.run_one_step(1.0)
     runoff = model.calc_runoff_and_discharge()
     assert runoff == 0

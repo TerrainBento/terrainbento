@@ -21,7 +21,7 @@ def test_steady_Kss_no_precip_changer(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "m_sp": m_sp,
         "n_sp": n_sp,
         "water_erodibility": K,
@@ -39,9 +39,9 @@ def test_steady_Kss_no_precip_changer(
     actual_areas = model.grid.at_node["surface_water__discharge"]
     predicted_slopes_upper = (
         (U + threshold) / (K * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+    ) ** (1.0 / n_sp)
     predicted_slopes_lower = ((U + 0.0) / (K * (actual_areas ** m_sp))) ** (
-        1. / n_sp
+        1.0 / n_sp
     )
 
     # assert actual and predicted slopes are in the correct range for the

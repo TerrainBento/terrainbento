@@ -16,7 +16,7 @@ from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io.netcdf import write_raster_netcdf
-from terrainbento import Clock
+from terrainbento.clock import Clock
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -409,7 +409,7 @@ class ErosionModel(object):
         self.output_interval = output_interval
 
         # instantiate model time.
-        self._model_time = 0.
+        self._model_time = 0.0
 
         # instantiate container for computational timestep:
         self._compute_time = [tm.time()]
@@ -570,7 +570,7 @@ class ErosionModel(object):
         runtime : float
             Total duration for which to run model.
         """
-        elapsed_time = 0.
+        elapsed_time = 0.0
         keep_running = True
         while keep_running:
             if elapsed_time + step >= runtime:

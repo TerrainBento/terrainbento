@@ -74,7 +74,7 @@ def test_input_file(tmpdir, inputs_yaml):
     assert em.output_writers == {}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
-    assert em._model_time == 0.
+    assert em._model_time == 0.0
 
 
 def test_parameters(clock_simple):
@@ -108,7 +108,7 @@ def test_parameters(clock_simple):
     assert em.output_writers == {}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
-    assert em._model_time == 0.
+    assert em._model_time == 0.0
 
 
 def test_string(tmpdir, inputs_yaml):
@@ -130,7 +130,7 @@ def test_string(tmpdir, inputs_yaml):
     assert em.output_writers == {}
     assert em.save_first_timestep is True
     assert em._out_file_name == "terrainbento_output"
-    assert em._model_time == 0.
+    assert em._model_time == 0.0
 
 
 def test_string_D8(tmpdir, inputs_D8_yaml):

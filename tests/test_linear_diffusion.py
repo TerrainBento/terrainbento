@@ -53,7 +53,7 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
         model.run_one_step(1000)
     reference_node = 9
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-        U / (2. * params["regolith_transport_parameter"])
+        U / (2.0 * params["regolith_transport_parameter"])
     ) * (
         (
             model.grid.x_of_node
@@ -106,7 +106,7 @@ def test_diffusion_only(clock_simple, grid_1, U, Model):
         model.run_one_step(1000)
     reference_node = 9
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-        U / (2. * params["regolith_transport_parameter"])
+        U / (2.0 * params["regolith_transport_parameter"])
     ) * (
         (
             model.grid.x_of_node
@@ -148,7 +148,7 @@ def test_rock_till_linear_diffusion(clock_simple, grid_1, U, Model):
         model.run_one_step(1000)
     reference_node = 9
     predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-        U / (2. * params["regolith_transport_parameter"])
+        U / (2.0 * params["regolith_transport_parameter"])
     ) * (
         (
             model.grid.x_of_node

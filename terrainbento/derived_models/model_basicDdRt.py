@@ -84,7 +84,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         clock,
         grid,
         water_erosion_rule__threshold=0.01,
-        water_erosion_rule__thresh_depth_derivative=0.,
+        water_erosion_rule__thresh_depth_derivative=0.0,
         **kwargs
     ):
         """

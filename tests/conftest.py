@@ -30,7 +30,7 @@ def Kt():
 
 @pytest.fixture()
 def grid_1():
-    grid = RasterModelGrid((3, 21), xy_spacing=100.)
+    grid = RasterModelGrid((3, 21), xy_spacing=100.0)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
     grid.add_ones("node", "soil__depth")
@@ -40,37 +40,37 @@ def grid_1():
 
 @pytest.fixture()
 def grid_2():
-    grid = RasterModelGrid((8, 20), xy_spacing=100.)
+    grid = RasterModelGrid((8, 20), xy_spacing=100.0)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
     grid.add_ones("node", "soil__depth")
     lith = grid.add_zeros("node", "lithology_contact__elevation")
     lith[:80] = 10
-    lith[80:] = -10000.
+    lith[80:] = -10000.0
     return grid
 
 
 @pytest.fixture()
 def grid_3():
-    grid = RasterModelGrid((21, 3), xy_spacing=100.)
+    grid = RasterModelGrid((21, 3), xy_spacing=100.0)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
     grid.add_ones("node", "soil__depth")
     lith = grid.add_zeros("node", "lithology_contact__elevation")
-    lith[grid.core_nodes[:9]] = -100000.
-    lith[grid.core_nodes[9:]] = 100000.
+    lith[grid.core_nodes[:9]] = -100000.0
+    lith[grid.core_nodes[9:]] = 100000.0
     return grid
 
 
 @pytest.fixture()
 def grid_4():
-    grid = RasterModelGrid((3, 21), xy_spacing=10.)
+    grid = RasterModelGrid((3, 21), xy_spacing=10.0)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
     grid.add_ones("node", "soil__depth")
     lith = grid.add_zeros("node", "lithology_contact__elevation")
-    lith[grid.core_nodes[:9]] = -100000.
-    lith[grid.core_nodes[9:]] = 100000.
+    lith[grid.core_nodes[:9]] = -100000.0
+    lith[grid.core_nodes[9:]] = 100000.0
     return grid
 
 
@@ -81,14 +81,14 @@ def grid_5():
     grid.add_ones("node", "soil__depth")
     lith = grid.add_zeros("node", "lithology_contact__elevation")
     lith[:27] = -30
-    lith[27:] = 10.
-    lith[grid.boundary_nodes] = -9999.
+    lith[27:] = 10.0
+    lith[grid.boundary_nodes] = -9999.0
     return grid
 
 
 @pytest.fixture
 def almost_default_grid():
-    grid = RasterModelGrid((4, 5), xy_spacing=100.)
+    grid = RasterModelGrid((4, 5), xy_spacing=100.0)
     grid.add_zeros("node", "topographic__elevation")
     return grid
 
@@ -103,49 +103,49 @@ def simple_square_grid():
 
 @pytest.fixture()
 def clock_simple():
-    clock_simple = Clock(step=1000., stop=5.1e6)
+    clock_simple = Clock(step=1000.0, stop=5.1e6)
     return clock_simple
 
 
 @pytest.fixture()
 def clock_02():
-    clock_02 = Clock.from_dict({"step": 10., "stop": 1000.})
+    clock_02 = Clock.from_dict({"step": 10.0, "stop": 1000.0})
     return clock_02
 
 
 @pytest.fixture()
 def clock_04():
-    clock_04 = Clock.from_dict({"step": 10., "stop": 100000.})
+    clock_04 = Clock.from_dict({"step": 10.0, "stop": 100000.0})
     return clock_04
 
 
 @pytest.fixture()
 def clock_05():
-    clock_05 = Clock.from_dict({"step": 10., "stop": 200.})
+    clock_05 = Clock.from_dict({"step": 10.0, "stop": 200.0})
     return clock_05
 
 
 @pytest.fixture()
 def clock_06():
-    clock_06 = Clock.from_dict({"step": 1., "stop": 3.})
+    clock_06 = Clock.from_dict({"step": 1.0, "stop": 3.0})
     return clock_06
 
 
 @pytest.fixture()
 def clock_07():
-    clock_07 = Clock.from_dict({"step": 10., "stop": 10000.})
+    clock_07 = Clock.from_dict({"step": 10.0, "stop": 10000.0})
     return clock_07
 
 
 @pytest.fixture()
 def clock_08():
-    clock_08 = Clock(step=1., stop=20.)
+    clock_08 = Clock(step=1.0, stop=20.0)
     return clock_08
 
 
 @pytest.fixture()
 def clock_09():
-    clock_09 = Clock(step=2., stop=200.)
+    clock_09 = Clock(step=2.0, stop=200.0)
     return clock_09
 
 
@@ -190,7 +190,7 @@ def inputs_yaml():
             node:
               topographic__elevation:
                 constant:
-                  - value: 0
+                  - value: 0.0
     clock:
       step: 1
       stop: 10.
@@ -210,7 +210,7 @@ def bad_handler_yaml():
             node:
               topographic__elevation:
                 constant:
-                  - value: 0
+                  - value: 0.0
     clock:
       step: 100
       stop: 2000.
@@ -235,7 +235,7 @@ def basic_inputs_bad_precipitator_yaml():
             node:
               topographic__elevation:
                 constant:
-                  - value: 0
+                  - value: 0.0
     clock:
       step: 1
       stop: 200.
@@ -267,7 +267,7 @@ def basic_inputs_no_clock_yaml():
             node:
               topographic__elevation:
                 constant:
-                  - value: 0
+                  - value: 0.0
     output_interval: 50.
     water_erodibility: 0.001
     m_sp: 1
@@ -305,7 +305,7 @@ def basic_inputs_yaml():
             node:
               topographic__elevation:
                 constant:
-                  - value: 0
+                  - value: 0.0
     clock:
       step: 1
       stop: 200.
@@ -329,7 +329,7 @@ def inputs_D8_yaml():
             node:
               topographic__elevation:
                 constant:
-                  - value: 0
+                  - value: 0.0
     clock:
       step: 1
       stop: 10.
@@ -350,7 +350,7 @@ def basic_raster_inputs_yaml():
             node:
               topographic__elevation:
                 constant:
-                  - value: 0
+                  - value: 0.0
     clock:
       step: 1
       stop: 200.
@@ -373,7 +373,7 @@ def basic_raster_inputs_for_nc_yaml():
             node:
               topographic__elevation:
                 constant:
-                  - value: 0
+                  - value: 0.0
     clock:
       step: 100
       stop: 2000.

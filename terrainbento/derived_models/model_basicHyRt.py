@@ -160,8 +160,8 @@ class BasicHyRt(TwoLithologyErosionModel):
         self._verify_fields(self._required_fields)
 
         # Save the threshold values for rock and till
-        self.rock_thresh = 0.
-        self.till_thresh = 0.
+        self.rock_thresh = 0.0
+        self.till_thresh = 0.0
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()

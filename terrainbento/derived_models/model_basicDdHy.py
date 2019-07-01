@@ -79,7 +79,7 @@ class BasicDdHy(ErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
-        water_erosion_rule__thresh_depth_derivative=0.,
+        water_erosion_rule__thresh_depth_derivative=0.0,
         settling_velocity=0.001,
         sediment_porosity=0.3,
         fraction_fines=0.5,

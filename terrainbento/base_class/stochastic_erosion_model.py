@@ -581,11 +581,11 @@ class StochasticErosionModel(ErosionModel):
 
             # calculate the predictions for 10, 25, and 100 year event based on
             # the analytical form of the exceedance function.
-            event_intervals = np.array([10., 25, 100.])
+            event_intervals = np.array([10.0, 25, 100.0])
 
             # calculate the probability of each event based on the number of years
             # and the number of wet days per year.
-            daily_distribution_exceedance_probabilities = 1. / (
+            daily_distribution_exceedance_probabilities = 1.0 / (
                 nwet * event_intervals
             )
 
@@ -601,8 +601,8 @@ class StochasticErosionModel(ErosionModel):
             # po = P * (- ln (P(p>po))) ^ (1 / c)
 
             expected_rainfall = self.scale_factor * (
-                -1. * np.log(daily_distribution_exceedance_probabilities)
-            ) ** (1. / self.shape_factor)
+                -1.0 * np.log(daily_distribution_exceedance_probabilities)
+            ) ** (1.0 / self.shape_factor)
 
             exceedance_file.write("\n\nSection 2: Theoretical Predictions\n")
 
@@ -706,7 +706,7 @@ class StochasticErosionModel(ErosionModel):
                 )
                 * (
                     np.exp(
-                        -1.
+                        -1.0
                         * (expected_rainfall / self.scale_factor)
                         ** self.shape_factor
                     )
@@ -779,7 +779,7 @@ class StochasticErosionModel(ErosionModel):
                 ] = selected_wet_day_totals.max()
 
             # calculate the distribution percentiles associated with each interval
-            event_percentiles = (1. - (1. / event_intervals)) * 100.
+            event_percentiles = (1.0 - (1.0 / event_intervals)) * 100.0
 
             # calculated the event magnitudes associated with the percentiles.
             event_magnitudes = np.percentile(
