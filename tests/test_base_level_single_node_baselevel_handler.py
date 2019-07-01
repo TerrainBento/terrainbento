@@ -27,7 +27,7 @@ def test_hex():
 
 def test_passing_neither_lowering_method():
     """Test passing no lowering information."""
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
@@ -36,7 +36,7 @@ def test_passing_neither_lowering_method():
 
 def test_passing_both_lowering_methods():
     """Test passing both lowering methods."""
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 

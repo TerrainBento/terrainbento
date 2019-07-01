@@ -58,7 +58,7 @@ class GenericFuncBaselevelHandler(object):
         Start by creating a landlab model grid and set its boundary conditions.
 
         >>> from landlab import RasterModelGrid
-        >>> mg = RasterModelGrid(5, 5)
+        >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
         ...                                        left_is_closed=True,
@@ -99,7 +99,7 @@ class GenericFuncBaselevelHandler(object):
         an example with this option, that also includes a bedrock elevation
         field.
 
-        >>> mg = RasterModelGrid(5, 5)
+        >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> b = mg.add_zeros("node", "bedrock__elevation")
         >>> b -= 10.

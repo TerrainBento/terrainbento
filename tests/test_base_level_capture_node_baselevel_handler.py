@@ -25,7 +25,7 @@ def test_hex():
 def test_no_stop_time():
     """Test with no stop time."""
 
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     z = mg.add_zeros("node", "topographic__elevation")
 
     bh = CaptureNodeBaselevelHandler(

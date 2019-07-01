@@ -73,7 +73,7 @@ class SingleNodeBaselevelHandler(object):
         Start by creating a landlab model grid.
 
         >>> from landlab import RasterModelGrid
-        >>> mg = RasterModelGrid(5, 5)
+        >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> print(z.reshape(mg.shape))
         [[ 0.  0.  0.  0.  0.]
