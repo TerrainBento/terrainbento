@@ -2,4 +2,4 @@ scipy
 numpy
 xarray
 dask
-landlab>=1.7
+landlab>=1.9
