@@ -1,14 +1,17 @@
 environment:
 
+  global:
+    WITH_COMPILER: "cmd /E:ON /V:ON /C .\\.ci\\appveyor\\run_with_env.cmd"
+
   matrix:
 
     - TARGET_ARCH: x64
       CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      CONDA_PY: 36
+      CONDA_PY: 3.6
 
     - TARGET_ARCH: x64
       CONDA_INSTALL_LOCN: C:\\Miniconda37-x64
-      CONDA_PY: 37
+      CONDA_PY: 3.7
 
 platform:
   - x64
@@ -22,17 +25,26 @@ init:
 
 install:
   - cmd: call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
-  - cmd: conda config --set always_yes yes
-  - cmd: conda update conda
+  - cmd: conda update --yes --quiet conda
   - cmd: set PYTHONUNBUFFERED=1
+  - cmd: conda config --set always_yes yes
+  - cmd: pip install twine pytest pytest-cov pytest-datadir
   - cmd: conda info
-  - cmd: conda config --add channels conda-forge
-  - cmd: pip install pytest
-  - cmd: conda config --set always_yes yes --set changeps1 no
-  - cmd: conda info -a && conda list
+  - cmd: conda list
 
 build: false
 
 test_script:
-   - "%WITH_COMPILER% pip install -e ."
-   - pytest -vvv
+  - "%WITH_COMPILER% pip install numpy"
+  - "%WITH_COMPILER% pip install -e ."
+  - pytest -vvv
+
+after_test:
+  - cmd: python setup.py bdist_wheel
+
+artifacts:
+  # Archive the generated conda package in the ci.appveyor.com build report.
+  - path: 'dist\*'
+
+deploy_script:
+  - cmd: python .ci/appveyor/pypi_upload.py
