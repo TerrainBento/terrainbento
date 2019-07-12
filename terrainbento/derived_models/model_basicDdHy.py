@@ -35,7 +35,7 @@ class BasicDdHy(ErosionModel):
 
         Q_s = \int_0^A \left((1-F_f)[\omega
               - \omega_c (1 - e^{-\omega / \omega_c})]
-              - \frac{V Q_s}{Q(A)\left(1 - \phi \right)} \right) dA
+              - \frac{V Q_s}{Q(A)} \right) dA
 
         \omega = KQ(A)^{m}S^{n}
 

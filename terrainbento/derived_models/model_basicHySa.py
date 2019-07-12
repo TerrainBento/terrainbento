@@ -45,7 +45,7 @@ class BasicHySa(ErosionModel):
 
         Q_s = \int_0^A \left(K_s Q(A)^{m}S^{n} (1-e^{-H/H_*})
               + K_r (1-F_f) Q(A)^{m}S^{n} e^{-H/H_*}
-              - \frac{V_s Q_s}{Q(A)\left(1 - \phi \right)}\right) dA
+              - \frac{V_s Q_s}{Q(A)}\right) dA
 
     where :math:`\eta_b` is the bedrock elevation, :math:`H` is the soil depth,
     :math:`P_0` is the maximum soil production rate, :math:`H_s` is the soil
