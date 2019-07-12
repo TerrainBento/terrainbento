@@ -2,4 +2,7 @@ scipy
 numpy
 xarray
 dask
+jupyter
+holoviews
 landlab>=1.9
+
