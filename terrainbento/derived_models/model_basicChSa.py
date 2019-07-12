@@ -45,7 +45,7 @@ class BasicChSa(ErosionModel):
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
                                              - (1 - \delta (H) ) K Q^{m} S^{n}
 
-        q_h = -DSH \left[ 1 + \left( \frac{S}{S_c} \right)^2
+        q_h = -D S H^* \left[ 1 + \left( \frac{S}{S_c} \right)^2
               + \left( \frac{S}{S_c} \right)^4
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 

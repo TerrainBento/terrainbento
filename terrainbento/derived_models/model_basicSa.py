@@ -45,7 +45,7 @@ class BasicSa(ErosionModel):
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
                                              - (1 - \delta (H) ) K Q^{m} S^{N}
 
-        q_h = -D H \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
+        q_h = -D H^* \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the discharge and slope exponent parameters,

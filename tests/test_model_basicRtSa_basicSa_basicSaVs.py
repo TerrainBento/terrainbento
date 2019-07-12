@@ -75,7 +75,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     half_domain_z = (
         -half_domain ** 2
         * U
-        / (regolith_transport_parameter * 2.0 * one_minus_h_hstar)
+        / (regolith_transport_parameter * soil_transport_decay_depth * 2.0 * one_minus_h_hstar)
     )
 
     steady_z_profile = np.concatenate(

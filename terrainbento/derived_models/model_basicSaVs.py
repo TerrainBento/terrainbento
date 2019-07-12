@@ -42,7 +42,7 @@ class BasicSaVs(ErosionModel):
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
                                        - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
 
-        q_h = -D H \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
+        q_h = -D H^* \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
         A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 

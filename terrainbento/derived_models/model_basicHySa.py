@@ -61,7 +61,7 @@ class BasicHySa(ErosionModel):
 
     .. math::
 
-        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right]
+        q_h = -D H^* \left[1-\exp \left( -\frac{H}{H_0} \right) \right]
               \nabla \eta.
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
