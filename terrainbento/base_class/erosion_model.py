@@ -69,16 +69,17 @@ def _verify_boundary_handler(handler):
         for key in handler:
             name = handler[key].__class__.__name__
             if name not in _SUPPORTED_BOUNDARY_HANDLERS:
-                bad_name = True
+                bad_instance = True
 
     if bad_name:
         raise ValueError(
             (
                 "Only supported boundary condition handlers are "
-                "permitted. These include:"
-                "\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
+                "permitted. These include: {valid}".format(valid = "\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
+
             )
-        )
+        ))
+
     if bad_instance:
         raise ValueError(
             (
