@@ -28,9 +28,6 @@ def _notebook_run(path):
     """Execute a notebook via nbconvert and collect output.
        :returns (parsed nb object, execution errors)
     """
-    _, notebook = os.path.split(path)
-    base, _ = os.path.splitext(notebook)
-
     with tempfile.NamedTemporaryFile("w", suffix=".ipynb") as fp:
         args = [
             "jupyter",
