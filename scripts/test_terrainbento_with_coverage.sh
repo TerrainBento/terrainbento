@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-py.test terrainbento --doctest-modules --cov=terrainbento tests/ --cov-report term-missing
+pytest terrainbento --durations=0 --doctest-modules --cov=terrainbento tests/ --cov-report term-missing
