@@ -62,11 +62,11 @@ def test_channel_erosion(
     # assert actual and predicted slopes are the same for rock and till
     # portions.
     assert_array_almost_equal(
-        actual_slopes[22:37], rock_predicted_slopes[22:37]
+        actual_slopes[22:37], rock_predicted_slopes[22:37], decimal=3
     )
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
     assert_array_almost_equal(
-        actual_slopes[82:97], till_predicted_slopes[82:97]
+        actual_slopes[82:97], till_predicted_slopes[82:97], decimal=3
     )
