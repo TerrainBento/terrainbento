@@ -10,7 +10,7 @@ _EXCLUDE = []
 
 def all_notebooks(path="."):
     notebooks = []
-    for root, dirs, files in os.walk(path):
+    for root, _, files in os.walk(path):
         if ".ipynb_checkpoints" in root:
             continue
         for file in files:
@@ -29,7 +29,7 @@ def _notebook_run(path):
        :returns (parsed nb object, execution errors)
     """
     _, notebook = os.path.split(path)
-    base, ext = os.path.splitext(notebook)
+    base, _ = os.path.splitext(notebook)
 
     with tempfile.NamedTemporaryFile("w", suffix=".ipynb") as fp:
         args = [
@@ -64,5 +64,5 @@ def _notebook_run(path):
 
 def test_notebook(tmpdir, notebook):
     with tmpdir.as_cwd():
-        nb, errors = _notebook_run(notebook)
+        _, errors = _notebook_run(notebook)
         assert not errors
