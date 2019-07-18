@@ -47,7 +47,9 @@ def _notebook_run(path):
         ]
         subprocess.check_call(args)
 
-        nb = nbformat.read(fp.name, nbformat.current_nbformat, encoding="UTF-8")
+        nb = nbformat.read(
+            fp.name, nbformat.current_nbformat, encoding="UTF-8"
+        )
 
     errors = [
         output
