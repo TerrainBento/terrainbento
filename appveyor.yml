@@ -36,6 +36,7 @@ install:
   - cmd: conda config --set always_yes yes --set changeps1 no
   - cmd: conda info -a && conda list
   - cmd: conda install --file=requirements.txt
+  - cmd: conda install --file=requirements_notebooks.txt
   - cmd: python setup.py install
 
 build: false
