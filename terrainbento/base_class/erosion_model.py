@@ -685,6 +685,7 @@ class ErosionModel(object):
             concat_dim="nt",
             engine="netcdf4",
             data_vars=self.output_fields,
+            autoclose=True,
         )
 
         # add a time dimension
@@ -750,8 +751,14 @@ class ErosionModel(object):
 
     def remove_output_netcdfs(self):
         """Remove all netCDF files written by a model run."""
-        for f in self._output_files:
-            os.remove(f)
+        try:
+            for f in self._output_files:
+                os.remove(f)
+        except WindowsError:  # pragma: no cover
+            print(
+                "The Windows OS is picky about file-locks and did not permit "
+                "terrainbento to remove the netcdf files."
+            )  # pragma: no cover
 
 
 def main():  # pragma: no cover
