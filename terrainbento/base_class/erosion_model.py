@@ -75,10 +75,11 @@ def _verify_boundary_handler(handler):
         raise ValueError(
             (
                 "Only supported boundary condition handlers are "
-                "permitted. These include: {valid}".format(valid = "\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
-
+                "permitted. These include: {valid}".format(
+                    valid="\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
+                )
             )
-        ))
+        )
 
     if bad_instance:
         raise ValueError(
