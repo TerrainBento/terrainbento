@@ -11,11 +11,10 @@ _EXCLUDE = []
 def all_notebooks(path="."):
     notebooks = []
     for root, _, files in os.walk(path):
-        if ".ipynb_checkpoints" in root:
-            continue
-        for file in files:
-            if file.endswith(".ipynb") and (file not in _EXCLUDE):
-                notebooks.append(os.path.join(root, file))
+        if ".ipynb_checkpoints" not in root:
+            for file in files:
+                if file.endswith(".ipynb") and (file not in _EXCLUDE):
+                    notebooks.append(os.path.join(root, file))
     return notebooks
 
 
