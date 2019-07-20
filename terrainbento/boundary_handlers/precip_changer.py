@@ -343,7 +343,7 @@ class PrecipChanger(object):
         Start by creating a landlab model grid.
 
         >>> from landlab import RasterModelGrid
-        >>> mg = RasterModelGrid(5, 5)
+        >>> mg = RasterModelGrid((5, 5))
 
         Now import the **PrecipChanger** and instantiate.
 

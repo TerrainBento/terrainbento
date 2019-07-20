@@ -45,7 +45,7 @@ class BasicChSa(ErosionModel):
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
                                              - (1 - \delta (H) ) K Q^{m} S^{n}
 
-        q_h = -DS \left[ 1 + \left( \frac{S}{S_c} \right)^2
+        q_h = -D S H^* \left[ 1 + \left( \frac{S}{S_c} \right)^2
               + \left( \frac{S}{S_c} \right)^4
               + ... \left( \frac{S}{S_c} \right)^{2(N-1)} \right]
 
@@ -138,8 +138,8 @@ class BasicChSa(ErosionModel):
         >>> from terrainbento import Clock, BasicChSa
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
-        >>> _ = constant(grid, "topographic__elevation", constant=1)
-        >>> _ = constant(grid, "soil__depth", constant=1)
+        >>> _ = constant(grid, "topographic__elevation", value=1.0)
+        >>> _ = constant(grid, "soil__depth", value=1.0)
 
         Construct the model.
 

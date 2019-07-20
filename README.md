@@ -31,10 +31,26 @@ params = {
               "step": 10,
               "stop": 1e5},
 
-    # Create the Grid.
-    # THIS NEEDS TO CHANGE!!
-    "grid": {"grid": {"RasterModelGrid":[(200, 320), {"xy_spacing": 10}]},
-             "fields": {"at_node": {"topographic__elevation":{"random":[{"where":"CORE_NODE"}]}}}},
+    # Create the Grid
+    "grid": {
+        "RasterModelGrid": [
+            (200, 320),
+            {
+                "xy_spacing": 10
+            },
+            {
+                "fields": {
+                    "node": {
+                        "topographic__elevation": {
+                            "random": [{
+                                "where": "CORE_NODE"
+                            }]
+                        }
+                    }
+                }
+            },
+        ]
+    },
 
     # Set up Boundary Handlers
     "boundary_handlers":{"NotCoreNodeBaselevelHandler": {"modify_core_nodes": True,

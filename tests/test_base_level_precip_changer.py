@@ -129,7 +129,7 @@ def test_a_stop_time():
 
 def test_bad_intermittency():
     """Test intermittency factors that are too big or small."""
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
@@ -155,7 +155,7 @@ def test_bad_intermittency():
 
 def test_bad_intensity():
     """Test rainfall intensity that is too small."""
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     with pytest.raises(ValueError):
         with pytest.warns(IntegrationWarning):
             PrecipChanger(
@@ -171,7 +171,7 @@ def test_bad_intensity():
 
 def test_bad_infiltration():
     """Test infiltration_capacity that is too small."""
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     with pytest.raises(ValueError):
         with pytest.warns(IntegrationWarning):
             PrecipChanger(

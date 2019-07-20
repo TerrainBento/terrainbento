@@ -9,52 +9,53 @@ precipiation to runoff and Boundary condition handlers are helper classes that
 have been designed to modify model boundary conditions during a model run.
 """
 
+from ._version import get_versions
+from .base_class import (
+    ErosionModel,
+    StochasticErosionModel,
+    TwoLithologyErosionModel,
+)
+from .boundary_handlers import (
+    CaptureNodeBaselevelHandler,
+    GenericFuncBaselevelHandler,
+    NotCoreNodeBaselevelHandler,
+    PrecipChanger,
+    SingleNodeBaselevelHandler,
+)
 from .clock import Clock
-
-from .base_class import ErosionModel
-from .base_class import StochasticErosionModel
-from .base_class import TwoLithologyErosionModel
-
+from .derived_models import (
+    Basic,
+    BasicCh,
+    BasicChRt,
+    BasicChRtTh,
+    BasicChSa,
+    BasicCv,
+    BasicDd,
+    BasicDdHy,
+    BasicDdRt,
+    BasicDdSt,
+    BasicDdVs,
+    BasicHy,
+    BasicHyRt,
+    BasicHySa,
+    BasicHySt,
+    BasicHyVs,
+    BasicRt,
+    BasicRtSa,
+    BasicRtTh,
+    BasicRtVs,
+    BasicSa,
+    BasicSaVs,
+    BasicSt,
+    BasicStTh,
+    BasicStVs,
+    BasicTh,
+    BasicThVs,
+    BasicVs,
+)
 from .model_template import ModelTemplate
-
-from .boundary_handlers import PrecipChanger
-from .boundary_handlers import SingleNodeBaselevelHandler
-from .boundary_handlers import CaptureNodeBaselevelHandler
-from .boundary_handlers import NotCoreNodeBaselevelHandler
-from .boundary_handlers import GenericFuncBaselevelHandler
-
-from .precipitators import UniformPrecipitator, RandomPrecipitator
+from .precipitators import RandomPrecipitator, UniformPrecipitator
 from .runoff_generators import SimpleRunoff
-
-from .derived_models import Basic
-from .derived_models import BasicTh
-from .derived_models import BasicDd
-from .derived_models import BasicHy
-from .derived_models import BasicCh
-from .derived_models import BasicSt
-from .derived_models import BasicVs
-from .derived_models import BasicSa
-from .derived_models import BasicRt
-from .derived_models import BasicCv
-from .derived_models import BasicDdHy
-from .derived_models import BasicStTh
-from .derived_models import BasicDdSt
-from .derived_models import BasicHySt
-from .derived_models import BasicThVs
-from .derived_models import BasicDdVs
-from .derived_models import BasicHyVs
-from .derived_models import BasicStVs
-from .derived_models import BasicHySa
-from .derived_models import BasicChSa
-from .derived_models import BasicSaVs
-from .derived_models import BasicRtTh
-from .derived_models import BasicDdRt
-from .derived_models import BasicHyRt
-from .derived_models import BasicChRt
-from .derived_models import BasicRtVs
-from .derived_models import BasicRtSa
-from .derived_models import BasicChRtTh
-
 
 __all__ = [
     "Clock",
@@ -100,7 +101,6 @@ __all__ = [
     "TwoLithologyErosionModel",
 ]
 
-from ._version import get_versions
 
 __version__ = get_versions()["version"]
 del get_versions

@@ -53,6 +53,7 @@ def test_diffusion_only(clock_08, grid_4):
     for k in range(1, nterms + 1):
         p[2 * k - 2] = (
             regolith_transport_parameter
+            * soil_transport_decay_depth
             * (1 - np.exp(-predicted_depth / soil_transport_decay_depth))
             * (1 / (S_c ** (2 * (k - 1))))
         )

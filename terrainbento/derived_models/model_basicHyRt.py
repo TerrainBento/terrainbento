@@ -36,7 +36,7 @@ class BasicHyRt(TwoLithologyErosionModel):
                                            + D\nabla^2 \eta
 
         Q_s = \int_0^A \left((1-F_f)KQ(A)^{m}S^{n}
-                             - \frac{V Q_s}{Q(A)\left(1 - \phi \right)} \right) dA
+                             - \frac{V Q_s}{Q(A)} \right) dA
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -140,7 +140,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
-        >>> _ = constant(grid, "lithology_contact__elevation", constant=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
 
         Construct the model.
 
@@ -160,8 +160,8 @@ class BasicHyRt(TwoLithologyErosionModel):
         self._verify_fields(self._required_fields)
 
         # Save the threshold values for rock and till
-        self.rock_thresh = 0.
-        self.till_thresh = 0.
+        self.rock_thresh = 0.0
+        self.till_thresh = 0.0
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till_with_threshold()

@@ -81,8 +81,8 @@ class BasicRtTh(TwoLithologyErosionModel):
         self,
         clock,
         grid,
-        water_erosion_rule_upper__threshold=1.,
-        water_erosion_rule_lower__threshold=1.,
+        water_erosion_rule_upper__threshold=1.0,
+        water_erosion_rule_lower__threshold=1.0,
         **kwargs
     ):
         """
@@ -135,7 +135,7 @@ class BasicRtTh(TwoLithologyErosionModel):
         >>> clock = Clock(start=0, stop=100, step=1)
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
-        >>> _ = constant(grid, "lithology_contact__elevation", constant=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
 
         Construct the model.
 
