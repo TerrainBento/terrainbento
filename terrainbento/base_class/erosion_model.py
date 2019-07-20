@@ -16,7 +16,6 @@ from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
 from landlab.io.netcdf import write_raster_netcdf
-from terrainbento import Clock
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -24,6 +23,7 @@ from terrainbento.boundary_handlers import (
     PrecipChanger,
     SingleNodeBaselevelHandler,
 )
+from terrainbento.clock import Clock
 from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
 from terrainbento.runoff_generators import SimpleRunoff
 
@@ -66,20 +66,21 @@ def _verify_boundary_handler(handler):
         if handler not in _SUPPORTED_BOUNDARY_HANDLERS:
             bad_name = True
     else:  # if a dictionary {name, handler}
-        for name in handler:
+        for key in handler:
+            name = handler[key].__class__.__name__
             if name not in _SUPPORTED_BOUNDARY_HANDLERS:
-                bad_name = True
-            else:
-                if isinstance(handler[name], _HANDLER_METHODS[name]) is False:
-                    bad_instance = True
+                bad_instance = True
+
     if bad_name:
         raise ValueError(
             (
                 "Only supported boundary condition handlers are "
-                "permitted. These include:"
-                "\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
+                "permitted. These include: {valid}".format(
+                    valid="\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
+                )
             )
         )
+
     if bad_instance:
         raise ValueError(
             (
@@ -162,14 +163,13 @@ class ErosionModel(object):
         >>> from six import StringIO
         >>> filelike = StringIO('''
         ... grid:
-        ...   grid:
-        ...     RasterModelGrid:
-        ...       - [4, 5]
-        ...   fields:
-        ...     at_node:
-        ...       topographic__elevation:
-        ...         constant:
-        ...           - constant: 0
+        ...   RasterModelGrid:
+        ...     - [4, 5]
+        ...     - fields:
+        ...         node:
+        ...           topographic__elevation:
+        ...             constant:
+        ...               - value: 0
         ... clock:
         ...   step: 1
         ...   stop: 200
@@ -220,18 +220,23 @@ class ErosionModel(object):
 
         Examples
         --------
-        Examples
-        --------
         >>> params = {
-        ... "grid": {
-        ...   "grid": {"RasterModelGrid": [(4, 5)]},
-        ...   "fields": {
-        ...     "at_node":
-        ...       {"topographic__elevation": {"constant": [{"constant": 0}]}}
-        ...              },
-        ...          },
-        ... "clock": {"step": 1, "stop": 200}
-        ...           }
+        ...     "grid": {
+        ...         "RasterModelGrid": [
+        ...             (4, 5),
+        ...             {
+        ...                 "fields": {
+        ...                     "node": {
+        ...                         "topographic__elevation": {
+        ...                             "constant": [{"value": 0}]
+        ...                         }
+        ...                     }
+        ...                 }
+        ...             },
+        ...         ]
+        ...     },
+        ...     "clock": {"step": 1, "stop": 200},
+        ... }
         >>> model = ErosionModel.from_dict(params)
         >>> model.clock.step
         1.0
@@ -406,7 +411,7 @@ class ErosionModel(object):
         self.output_interval = output_interval
 
         # instantiate model time.
-        self._model_time = 0.
+        self._model_time = 0.0
 
         # instantiate container for computational timestep:
         self._compute_time = [tm.time()]
@@ -451,6 +456,7 @@ class ErosionModel(object):
         else:
             self.flow_accumulator = FlowAccumulator(
                 self.grid,
+                flow_director=flow_director,
                 depression_finder=depression_finder,
                 **flow_accumulator_kwargs
             )
@@ -566,7 +572,7 @@ class ErosionModel(object):
         runtime : float
             Total duration for which to run model.
         """
-        elapsed_time = 0.
+        elapsed_time = 0.0
         keep_running = True
         while keep_running:
             if elapsed_time + step >= runtime:
@@ -679,6 +685,7 @@ class ErosionModel(object):
             concat_dim="nt",
             engine="netcdf4",
             data_vars=self.output_fields,
+            autoclose=True,
         )
 
         # add a time dimension
@@ -744,8 +751,14 @@ class ErosionModel(object):
 
     def remove_output_netcdfs(self):
         """Remove all netCDF files written by a model run."""
-        for f in self._output_files:
-            os.remove(f)
+        try:
+            for f in self._output_files:
+                os.remove(f)
+        except WindowsError:  # pragma: no cover
+            print(
+                "The Windows OS is picky about file-locks and did not permit "
+                "terrainbento to remove the netcdf files."
+            )  # pragma: no cover
 
 
 def main():  # pragma: no cover

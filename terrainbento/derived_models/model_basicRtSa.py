@@ -48,7 +48,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
                                              - (1 - \delta (H) ) K Q^{m} S^{n}
 
-        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
+        q_h = -D H^* \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
         K(\eta, \eta_C ) = w K_1 + (1 - w) K_2
 
@@ -155,7 +155,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
         >>> _ = random(grid, "soil__depth")
-        >>> _ = constant(grid, "lithology_contact__elevation", constant=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
 
         Construct the model.
 

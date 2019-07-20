@@ -28,7 +28,7 @@ def test_hex():
     not_closed = mg.status_at_node == 0
 
     # closed should have been downdropped 10*0.1
-    assert_array_equal(z[closed], -1. * np.ones(np.sum(closed)))
+    assert_array_equal(z[closed], -1.0 * np.ones(np.sum(closed)))
 
     # not closed should have stayed the same
     assert_array_equal(z[not_closed], np.zeros(np.sum(not_closed)))
@@ -36,7 +36,7 @@ def test_hex():
 
 def test_passing_neither_lowering_method():
     """Test passing no lowering information."""
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
@@ -45,7 +45,7 @@ def test_passing_neither_lowering_method():
 
 def test_passing_both_lowering_methods():
     """Test passing both lowering methods."""
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
 
@@ -68,7 +68,7 @@ def test_outlet_lowering_object_bad_file():
 def test_outlet_lowering_rate_no_scaling_bedrock():
     """Test using an outlet lowering rate with no scaling and bedrock."""
 
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     z = mg.add_ones("node", "topographic__elevation")
     b = mg.add_zeros("node", "bedrock__elevation")
 
@@ -90,7 +90,7 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
     assert_array_equal(z[not_closed], 241.0 * np.ones(np.sum(not_closed)))
 
     # % doing the oposite should also work
-    mg = RasterModelGrid(5, 5)
+    mg = RasterModelGrid((5, 5))
     z = mg.add_ones("node", "topographic__elevation")
     b = mg.add_zeros("node", "bedrock__elevation")
 

@@ -72,7 +72,7 @@ class NotCoreNodeBaselevelHandler(object):
         Start by creating a landlab model grid and set its boundary conditions.
 
         >>> from landlab import RasterModelGrid
-        >>> mg = RasterModelGrid(5, 5)
+        >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
         ...                                        left_is_closed=True,
@@ -109,7 +109,7 @@ class NotCoreNodeBaselevelHandler(object):
         If we wanted instead for all of the non core nodes to change their
         elevation, we would set ``modify_core_nodes = True``.
 
-        >>> mg = RasterModelGrid(5, 5)
+        >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
         ...                                        left_is_closed=True,
