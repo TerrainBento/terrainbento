@@ -22,7 +22,7 @@ setup(
         "holoviews",
         "pandas",
         "xarray",
-        "dask",
+        "dask[complete]",
         "landlab>=1.9",
     ],
     package_data={"": ["tests/*txt", "data/*txt", "data/*asc", "data/*nc"]},

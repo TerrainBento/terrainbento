@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import glob
 import os
 import subprocess
 import sys
@@ -18,7 +17,7 @@ if repo_tag == 'true' and tag_name.startswith('v'):
     try:
         cmd = ' '.join(['twine', 'upload', '-u', 'katybarnhart', '-p', token,
                         'dist/*'])
-        resp = subprocess.check_output(cmd, shell=True)
+        resp = subprocess.check_output(cmd)
     except subprocess.CalledProcessError:
         traceback.print_exc()
     else:
