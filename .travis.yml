@@ -24,17 +24,39 @@ jobs:
     - pip install -e .
     script:
     - make -C docs clean html
-  - stage: deploy
+
+  - &deploy
+    stage: deploy
     if: tag =~ v.*$
-    script: skip
+    os: osx
+    env: CONDA_ENV=3.7
+    script:
+    - pip install twine wheel
+    - python setup.py bdist_wheel
+    - twine upload -u landlab -p$PYPI_PASS dist/*terrainbento*
+  - <<: *deploy
+    os: osx
+    env: CONDA_ENV=3.6
+  - <<: *deploy
+    os: osx
+    env: CONDA_ENV=2.7
+
+  - <<: *deploy
+    sudo: required
     os: linux
-    deploy:
-      on:
-        all_branches: true
-      provider: pypi
-      user: katybarnhart
-      password:
-        secure: cIpKmAd9nhoJsBF/PRxtEBZMYfbvHI0Fre6YUaM9mH+v+lp8fYSKLAg6trjnGK/f++8/TIVnWcsk/o0Z+jWSWJAXuWy8+9GUOp3fFEsrRYEih/OOB735teRh+SIyLM3DLHuWW8oYgfTELcjyhEQmF8sowrU+YDsIlGgP7Zng8wi9JbnJro4Dv5uIVB1iwwkFZ5HlPHUPyDX5kyy7WQuHFn/zXx/9awnxFpsaHpEsFYygWUN1TfTRLGhssBmb8fWopugV7c34usXduJnC4LCFv9jhqpaShsKZucnW5Vj46LkV1Gstl8g5Zd3U0rEZZRewd9dISZm5hVSx4Ukpjgskfj03w6QAqLWaRM6z8yDsPLtdh2fp0f72PmIEEoQGwN9KypO8J+M8KXYQLvCkbKGL5SpN+GNU00edKY4xUXr0Ebg747Yrgb5ZF++XouHjNI1dhUwtUAVVBshXQixxvvzje8SgiuHcTU0aLAI9G+my4gsGgJy3sXdf4BODWguNuQfE2XzbTs/2vX8AxvrT5xGdFpZrVNX41LeZyRmnZ2I1/43la5OUNBxHrsjt72Jt6k8LnWQZFTO0/XcFK8XRodP6/MSoNEma40VLJcvYrtLr1XWShMpxSwKNR2TIiq0zIlBqT/PQAiTwJAkK7Yko1tnVVMA3fhy6wvgXOuztozYpGfc=
+    services:
+    - docker
+    env: DOCKER_IMAGE=quay.io/pypa/manylinux1_x86_64
+         PLAT=manylinux1_x86_64
+         CONDA_ENV=3.7
+    install:
+    - docker pull $DOCKER_IMAGE
+    script:
+    - docker run --rm -e PLAT=$PLAT -v `pwd`:/io $DOCKER_IMAGE /io/.ci/travis/build_wheels.sh
+    - ls wheelhouse/
+    - pip install twine
+    - twine upload -u landlab -p$PYPI_PASS wheelhouse/*terrainbento*manylinux*
+
 before_install:
 - |
   if [[ $TRAVIS_OS_NAME == "osx" ]]; then
@@ -51,17 +73,17 @@ before_install:
   else
     curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh > $HOME/miniconda.sh
   fi
-- bash $HOME/miniconda.sh -b -p $HOME/anaconda
-- export PATH="$HOME/anaconda/bin:$PATH"
+- bash $HOME/miniconda.sh -b -p $(pwd)/anaconda
+- export PATH="$(pwd)/anaconda/bin:$PATH"
 - hash -r
 - conda config --set always_yes yes --set changeps1 no
 - conda create -n test_env python=$CONDA_ENV
 - source activate test_env
+- conda info -a && conda list
 install:
 - pip install numpy
 - pip install -e .
 script:
-- pip install pytest pytest-cov coveralls
-- pytest --cov --cov-report=xml:$(pwd)/coverage.xml
+- pip install pytest pytest-cov pytest-datadir coveralls
+- pytest --cov=terrainbento --cov-report=xml:$(pwd)/coverage.xml -vvv
 after_success: coveralls
-deploy:
