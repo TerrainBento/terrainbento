@@ -4,7 +4,7 @@ import tempfile
 
 import nbformat
 
-_TEST_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+_TEST_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "notebooks"))
 _EXCLUDE = []
 
 
