@@ -1,8 +1,5 @@
 environment:
 
-  global:
-    WITH_COMPILER: "cmd /E:ON /V:ON /C .\\.ci\\appveyor\\run_with_env.cmd"
-
   matrix:
 
     - TARGET_ARCH: x64
@@ -37,8 +34,8 @@ install:
 build: false
 
 test_script:
-  - "%WITH_COMPILER% pip install numpy"
-  - "%WITH_COMPILER% pip install -e ."
+  - pip install numpy"
+  - pip install -e ."
   - pytest -vvv
 
 after_test:
