@@ -16,7 +16,7 @@ class Clock(object):
 
         Examples
         --------
-        >>> from six import StringIO
+        >>> from io import StringIO
         >>> from terrainbento import Clock
         >>> filelike = StringIO('''
         ... start: 0

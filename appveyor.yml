@@ -3,12 +3,14 @@ environment:
   matrix:
 
     - TARGET_ARCH: x64
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      CONDA_PY: 36
+      CONDA_NPY: 111
+      CONDA_INSTALL_LOCN: C:\\Miniconda37-x64
+      CONDA_PY: 3.7
 
     - TARGET_ARCH: x64
-      CONDA_INSTALL_LOCN: C:\\Miniconda37-x64
-      CONDA_PY: 37
+      CONDA_NPY: 111
+      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
+      CONDA_PY: 3.6
 
 platform:
   - x64
@@ -22,19 +24,26 @@ init:
 
 install:
   - cmd: call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
-  - cmd: conda config --set always_yes yes
-  - cmd: conda update conda
+  - cmd: conda update --yes --quiet conda
   - cmd: set PYTHONUNBUFFERED=1
+  - cmd: conda config --set always_yes yes
+  - cmd: pip install twine pytest pytest-cov pytest-datadir
   - cmd: conda info
-  - cmd: conda config --add channels conda-forge
-  - cmd: pip install pytest
-  - cmd: conda config --set always_yes yes --set changeps1 no
-  - cmd: conda info -a && conda list
-  - cmd: conda install --file=requirements.txt
-  - cmd: conda install --file=requirements_notebooks.txt
-  - cmd: python setup.py install
+  - cmd: conda list
 
 build: false
 
 test_script:
-  - cmd: pytest
+  - pip install numpy"
+  - pip install -e ."
+  - pytest -vvv
+
+after_test:
+  - cmd: python setup.py bdist_wheel
+
+artifacts:
+  # Archive the generated conda package in the ci.appveyor.com build report.
+  - path: 'dist\*'
+
+deploy_script:
+  - cmd: python .ci/appveyor/pypi_upload.py

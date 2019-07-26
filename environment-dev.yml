@@ -1,0 +1,19 @@
+name: terrainbento_dev
+ channels:
+   - conda-forge
+ dependencies:
+ - python
+ - black
+ - flake8
+ - isort
+ - pytest
+ - pytest-cov
+ - scipy
+ - numpy
+ - xarray
+ - dask
+ - landlab>=1.7
+ - jupyter
+ - holoviews
+ - pandas
+ - dask[complete]
