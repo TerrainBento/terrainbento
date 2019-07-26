@@ -49,8 +49,8 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
 
     # construct and run model
     model = Model(**params)
-    for _ in range(120000):
-        model.run_one_step(10)
+    for _ in range(20000):
+        model.run_one_step(15)
 
     dx = grid_4.dx
 
@@ -59,7 +59,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     predicted_depth = -soil_production_decay_depth * np.log(
         U / max_soil_production_rate
     )
-    assert_array_almost_equal(actual_depth, predicted_depth, decimal=3)
+    assert_array_almost_equal(actual_depth, predicted_depth, decimal=2)
 
     # test steady state slope
     actual_profile = model.grid.at_node["topographic__elevation"][21:42]
@@ -89,4 +89,4 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
 
     predicted_profile = steady_z_profile - np.min(steady_z_profile)
 
-    assert_array_almost_equal(actual_profile, predicted_profile)
+    assert_array_almost_equal(actual_profile, predicted_profile, decimal=1)

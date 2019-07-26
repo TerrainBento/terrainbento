@@ -27,7 +27,7 @@ def test_diffusion_only(clock_09, grid_4, Model):
 
     # Construct and run model
     model = Model(**params)
-    for _ in range(30000):
+    for _ in range(20000):
         model.run_one_step(clock_09.step)
 
     # Construct actual and predicted slope at right edge of domain
@@ -47,4 +47,4 @@ def test_diffusion_only(clock_09, grid_4, Model):
     actual_slope = np.abs(
         model.grid.at_node["topographic__steepest_slope"][39]
     )
-    assert_array_almost_equal(actual_slope, predicted_slope, decimal=3)
+    assert_array_almost_equal(actual_slope, predicted_slope, decimal=2)
