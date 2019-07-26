@@ -8,7 +8,6 @@ import time as tm
 
 import dask
 import numpy as np
-import six
 import xarray as xr
 import yaml
 
@@ -62,7 +61,7 @@ _HANDLER_METHODS = {
 def _verify_boundary_handler(handler):
     bad_name = False
     bad_instance = False
-    if isinstance(handler, six.string_types):
+    if isinstance(handler, str):
         if handler not in _SUPPORTED_BOUNDARY_HANDLERS:
             bad_name = True
     else:  # if a dictionary {name, handler}
@@ -160,7 +159,7 @@ class ErosionModel(object):
 
         Examples
         --------
-        >>> from six import StringIO
+        >>> from io import StringIO
         >>> filelike = StringIO('''
         ... grid:
         ...   RasterModelGrid:
@@ -685,7 +684,6 @@ class ErosionModel(object):
             concat_dim="nt",
             engine="netcdf4",
             data_vars=self.output_fields,
-            autoclose=True,
         )
 
         # add a time dimension
