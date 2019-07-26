@@ -85,5 +85,5 @@ install:
 - pip install -e .
 script:
 - pip install pytest pytest-cov pytest-datadir coveralls
-- pytest --cov=terrainbento --cov-report=xml:$(pwd)/coverage.xml -vvv
+- pytest --cov-report=xml:$(pwd)/coverage.xml
 after_success: coveralls
