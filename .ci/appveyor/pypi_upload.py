@@ -9,7 +9,7 @@ print('Using python: {prefix}'.format(prefix=sys.prefix))
 
 repo_tag = os.environ.get('APPVEYOR_REPO_TAG', 'false')
 tag_name = os.environ.get('APPVEYOR_REPO_TAG_NAME', '')
-token = os.environ.get('PYPI_PASS', 'NOT_A_TOKEN')
+token = os.environ.get('TWINE_PASSWORD', 'NOT_A_TOKEN')
 
 if repo_tag == 'true' and tag_name.startswith('v'):
     print('Uploading to PyPI')
