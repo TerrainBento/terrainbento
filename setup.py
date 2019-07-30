@@ -13,6 +13,7 @@ setup(
     author_email="barnhark@colorado.edu",
     license="MIT",
     long_description=open("README.md").read(),
+    long_description_content_type= "text/markdown", 
     zip_safe=False,
     packages=find_packages(),
     install_requires=[
