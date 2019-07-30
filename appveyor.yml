@@ -1,5 +1,6 @@
 environment:
-
+  TWINE_PASSWORD:
+    secure: 7/AZVv0ovctfsb6fBFuC84eyDbvrPSwFlwtIR5RKvQ0=
   matrix:
 
     - TARGET_ARCH: x64
