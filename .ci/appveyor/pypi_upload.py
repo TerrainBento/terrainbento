@@ -16,7 +16,7 @@ if repo_tag == 'true' and tag_name.startswith('v'):
 
     try:
         cmd = ' '.join(['twine', 'upload', '-u', 'katybarnhart', '-p', token,
-                        'dist/*'])
+                        "--verbose", 'dist/*'])
         resp = subprocess.check_output(cmd)
     except subprocess.CalledProcessError:
         traceback.print_exc()
