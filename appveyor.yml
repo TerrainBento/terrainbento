@@ -1,5 +1,6 @@
 environment:
-
+  TWINE_PASSWORD:
+    secure: 7/AZVv0ovctfsb6fBFuC84eyDbvrPSwFlwtIR5RKvQ0=
   matrix:
 
     - TARGET_ARCH: x64
@@ -38,12 +39,6 @@ test_script:
   - pip install -e ."
   - pytest -vvv
 
-after_test:
-  - cmd: python setup.py bdist_wheel
-
 artifacts:
   # Archive the generated conda package in the ci.appveyor.com build report.
   - path: 'dist\*'
-
-deploy_script:
-  - cmd: python .ci/appveyor/pypi_upload.py

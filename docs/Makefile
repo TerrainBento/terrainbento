@@ -8,7 +8,7 @@ SPHINXAPIDOC  = sphinx-apidoc
 SPHINXPROJ    = terrainbento
 SOURCEDIR     = .
 BUILDDIR      = _build
-SPHINXEXCLUDE = $(shell find ../terrainbento/* -name tests -or -name examples)
+SPHINXEXCLUDE = $(shell find ../terrainbento/* -name tests)
 
 
 # Put it first so that "make" without argument is like "make help".
