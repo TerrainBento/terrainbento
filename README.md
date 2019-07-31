@@ -1,10 +1,18 @@
-| CI Status | Coverage | Docs | License | Health | Style | DOI |
-| --- | --- | --- | --- | --- | --- | --- |
-| [![Build Status](https://travis-ci.org/TerrainBento/terrainbento.svg?branch=master)](https://travis-ci.org/TerrainBento/terrainbento) [![Build status](https://ci.appveyor.com/api/projects/status/kwwpjifg8vrwe51x/branch/master?svg=true)](https://ci.appveyor.com/project/kbarnhart/terrainbento/branch/master) | [![Coverage Status](https://coveralls.io/repos/github/TerrainBento/terrainbento/badge.svg?branch=master)](https://coveralls.io/github/TerrainBento/terrainbento?branch=master) | [![Documentation Status](https://readthedocs.org/projects/terrainbento/badge/?version=latest)](http://terrainbento.readthedocs.io/en/latest/?badge=latest) | [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) |[![Code Health](https://landscape.io/github/TerrainBento/terrainbento/master/landscape.svg?style=flat)](https://landscape.io/github/TerrainBento/terrainbento/master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7fcb775a6c3044cda4429ed1c1dac2e8)](https://www.codacy.com/app/katy.barnhart/terrainbento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TerrainBento/terrainbento&amp;utm_campaign=Badge_Grade)| [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)| [![DOI](https://zenodo.org/badge/123941145.svg)](https://zenodo.org/badge/latestdoi/123941145)|
+| CI Status | [![Build Status](https://travis-ci.org/TerrainBento/terrainbento.svg?branch=master)](https://travis-ci.org/TerrainBento/terrainbento) [![Build status](https://ci.appveyor.com/api/projects/status/kwwpjifg8vrwe51x/branch/master?svg=true)](https://ci.appveyor.com/project/kbarnhart/terrainbento/branch/master) |
+| Coverage | [![Coverage Status](https://coveralls.io/repos/github/TerrainBento/terrainbento/badge.svg?branch=master)](https://coveralls.io/github/TerrainBento/terrainbento?branch=master) |
+| Docs | [![Documentation Status](https://readthedocs.org/projects/terrainbento/badge/?version=latest)](http://terrainbento.readthedocs.io/en/latest/?badge=latest) |
+| License | [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) |
+| Health | [![Code Health](https://landscape.io/github/TerrainBento/terrainbento/master/landscape.svg?style=flat)](https://landscape.io/github/TerrainBento/terrainbento/master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7fcb775a6c3044cda4429ed1c1dac2e8)](https://www.codacy.com/app/katy.barnhart/terrainbento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TerrainBento/terrainbento&amp;utm_campaign=Badge_Grade) |
+| Style | [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black) |
+| DOI | [![DOI](https://zenodo.org/badge/123941145.svg)](https://zenodo.org/badge/latestdoi/123941145) |
 
-| Name | Downloads | Version | Platforms |
-| --- | --- | --- | --- |
-| [![Conda Recipe](https://img.shields.io/badge/recipe-terrainbento-green.svg)](https://anaconda.org/conda-forge/terrainbento) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/terrainbento.svg)](https://anaconda.org/conda-forge/terrainbento) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/terrainbento.svg)](https://anaconda.org/conda-forge/terrainbento) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/terrainbento.svg)](https://anaconda.org/conda-forge/terrainbento) |
+
+
+| Name | [![Conda Recipe](https://img.shields.io/badge/recipe-terrainbento-green.svg)](https://anaconda.org/conda-forge/terrainbento) |
+| --- | --- |
+| Downloads | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/terrainbento.svg)](https://anaconda.org/conda-forge/terrainbento) |
+| Version | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/terrainbento.svg)](https://anaconda.org/conda-forge/terrainbento) |
+| Platforms | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/terrainbento.svg)](https://anaconda.org/conda-forge/terrainbento) |
 
 # terrainbento
 
