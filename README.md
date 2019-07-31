@@ -12,7 +12,7 @@ A modular landscape evolution modeling package built on top of the [Landlab Tool
 
 terrainbento"s User Manual is located at our [Read The Docs page](http://terrainbento.readthedocs.io/).
 
-We recommend that you start with [this set of Jupyter notebooks](https://github.com/TerrainBento/examples_tests_and_tutorials) that introduce terrainbento and the model description paper [Barnhart et al. (2019)](https://doi.org/10.5194/gmd-12-1267-2019).
+We recommend that you start with a set of Jupyter notebooks [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TerrainBento/terrainbento/master?filepath=notebooks%2FWelcome_to_TerrainBento.ipynb) that introduce terrainbento and the model description paper [Barnhart et al. (2019)](https://doi.org/10.5194/gmd-12-1267-2019). The link above goes to a Binder instance, if you want the notebooks themselves clone the repo and navigate to the directory `notebooks`.
 
 
 ## A quick example
