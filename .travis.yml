@@ -35,25 +35,6 @@ jobs:
     - pip install twine wheel
     - python setup.py bdist_wheel
     - twine upload -u katybarnhart -p$TWINE_PASSWORD --verbose dist/*terrainbento*
-  - <<: *deploy
-    os: osx
-    env: CONDA_ENV=3.6
-
-  - <<: *deploy
-    sudo: required
-    os: linux
-    services:
-    - docker
-    env: DOCKER_IMAGE=quay.io/pypa/manylinux1_x86_64
-         PLAT=manylinux1_x86_64
-         CONDA_ENV=3.7
-    install:
-    - docker pull $DOCKER_IMAGE
-    script:
-    - docker run --rm -e PLAT=$PLAT -v `pwd`:/io $DOCKER_IMAGE /io/.ci/travis/build_wheels.sh
-    - ls wheelhouse/
-    - pip install twine
-    - twine upload -u katybarnhart -p $TWINE_PASSWORD --verbose wheelhouse/*terrainbento*manylinux*
 
 before_install:
 - |

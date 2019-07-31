@@ -39,12 +39,6 @@ test_script:
   - pip install -e ."
   - pytest -vvv
 
-after_test:
-  - cmd: python setup.py bdist_wheel
-
 artifacts:
   # Archive the generated conda package in the ci.appveyor.com build report.
   - path: 'dist\*'
-
-deploy_script:
-  - cmd: python .ci/appveyor/pypi_upload.py
