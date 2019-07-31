@@ -1,4 +1,4 @@
-name: terrainbento_dev
+name: terrainbento-dev
  channels:
    - conda-forge
  dependencies:
@@ -12,7 +12,7 @@ name: terrainbento_dev
  - numpy
  - xarray
  - dask
- - landlab>=1.7
+ - landlab>=1.9
  - jupyter
  - holoviews
  - pandas
