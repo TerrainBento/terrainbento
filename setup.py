@@ -13,7 +13,18 @@ setup(
     author_email="barnhark@colorado.edu",
     license="MIT",
     long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
     zip_safe=False,
     packages=find_packages(),
+    install_requires=[
+        "scipy",
+        "numpy",
+        "jupyter",
+        "holoviews",
+        "pandas",
+        "xarray",
+        "dask[complete]",
+        "landlab>=1.9",
+    ],
     package_data={"": ["tests/*txt", "data/*txt", "data/*asc", "data/*nc"]},
 )

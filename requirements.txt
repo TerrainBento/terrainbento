@@ -1,5 +1,0 @@
-scipy
-numpy
-xarray
-dask
-landlab>=1.7

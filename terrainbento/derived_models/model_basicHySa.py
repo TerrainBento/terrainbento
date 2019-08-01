@@ -45,7 +45,7 @@ class BasicHySa(ErosionModel):
 
         Q_s = \int_0^A \left(K_s Q(A)^{m}S^{n} (1-e^{-H/H_*})
               + K_r (1-F_f) Q(A)^{m}S^{n} e^{-H/H_*}
-              - \frac{V_s Q_s}{Q(A)\left(1 - \phi \right)}\right) dA
+              - \frac{V_s Q_s}{Q(A)}\right) dA
 
     where :math:`\eta_b` is the bedrock elevation, :math:`H` is the soil depth,
     :math:`P_0` is the maximum soil production rate, :math:`H_s` is the soil
@@ -61,14 +61,14 @@ class BasicHySa(ErosionModel):
 
     .. math::
 
-        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right]
+        q_h = -D H^* \left[1-\exp \left( -\frac{H}{H_0} \right) \right]
               \nabla \eta.
 
     where :math:`D` is soil diffusivity and :math:`H_0` is the soil transport
     depth scale.
 
     Refer to
-    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     The following at-node fields must be specified in the grid:

@@ -8,7 +8,7 @@ from terrainbento import BasicDdHy, NotCoreNodeBaselevelHandler
 
 
 @pytest.mark.parametrize("threshold", [0.0, 0.00001])
-@pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
+@pytest.mark.parametrize("m_sp,n_sp", [(1.0 / 3, 2.0 / 3.0), (0.5, 1.0)])
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
@@ -35,7 +35,7 @@ def test_stream_DdHy(
     params = {
         "grid": grid_1,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "settling_velocity": v_sc,
         "sediment_porosity": phi,
@@ -60,7 +60,7 @@ def test_stream_DdHy(
     predicted_slopes = np.power(
         ((U * v_sc) / (K * np.power(actual_areas, m_sp)))
         + (U / (K * np.power(actual_areas, m_sp))),
-        1. / n_sp,
+        1.0 / n_sp,
     )
 
     # assert actual and predicted slopes are the same.

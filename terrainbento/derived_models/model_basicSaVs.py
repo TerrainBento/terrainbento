@@ -42,7 +42,7 @@ class BasicSaVs(ErosionModel):
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
                                        - (1 - \delta (H) ) K A_{eff}^{m} S^{N}
 
-        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
+        q_h = -D H^* \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
         A_{eff} = A \exp \left( -\frac{-\alpha S}{A}\right)
 
@@ -63,7 +63,7 @@ class BasicSaVs(ErosionModel):
     grid spacing :math:`dx`, and the recharge rate, :math:`R_m`.
 
     Refer to
-    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     The following at-node fields must be specified in the grid:

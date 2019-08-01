@@ -32,7 +32,7 @@ class BasicHy(ErosionModel):
                                            + D\nabla^2 \eta
 
         Q_s = \int_0^A \left((1-F_f)KQ(A)^{m}S^{n}
-                             - \frac{V Q_s}{Q(A)\left(1 - \phi \right)} \right) dA
+                             - \frac{V Q_s}{Q(A)} \right) dA
 
     where :math:`Q` is the local stream discharge, :math:`A` is the local
     upstream drainage area,:math:`S` is the local slope, :math:`m` and
@@ -43,7 +43,7 @@ class BasicHy(ErosionModel):
     efficiency.
 
     Refer to
-    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     The following at-node fields must be specified in the grid:

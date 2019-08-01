@@ -7,7 +7,7 @@ from numpy.testing import assert_array_almost_equal
 from terrainbento import BasicHyRt, NotCoreNodeBaselevelHandler
 
 
-@pytest.mark.parametrize("m_sp,n_sp", [(1. / 3, 2. / 3.), (0.5, 1.0)])
+@pytest.mark.parametrize("m_sp,n_sp", [(1.0 / 3, 2.0 / 3.0), (0.5, 1.0)])
 @pytest.mark.parametrize(
     "depression_finder", [None, "DepressionFinderAndRouter"]
 )
@@ -27,7 +27,7 @@ def test_channel_erosion(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility_upper": Kt,
         "water_erodibility_lower": Kr,
         "settling_velocity": v_sc,
@@ -42,7 +42,7 @@ def test_channel_erosion(
 
     # construct and run model
     model = BasicHyRt(**params)
-    for _ in range(3000):
+    for _ in range(4000):
         model.run_one_step(10)
 
     # construct actual and predicted slopes
@@ -51,22 +51,22 @@ def test_channel_erosion(
     rock_predicted_slopes = np.power(
         ((U * v_sc) / (Kr * np.power(actual_areas, m_sp)))
         + (U / (Kr * np.power(actual_areas, m_sp))),
-        1. / n_sp,
+        1.0 / n_sp,
     )
     till_predicted_slopes = np.power(
         ((U * v_sc) / (Kt * np.power(actual_areas, m_sp)))
         + (U / (Kt * np.power(actual_areas, m_sp))),
-        1. / n_sp,
+        1.0 / n_sp,
     )
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
     assert_array_almost_equal(
-        actual_slopes[22:37], rock_predicted_slopes[22:37]
+        actual_slopes[22:37], rock_predicted_slopes[22:37], decimal=3
     )
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.
     assert_array_almost_equal(
-        actual_slopes[82:97], till_predicted_slopes[82:97]
+        actual_slopes[82:97], till_predicted_slopes[82:97], decimal=3
     )

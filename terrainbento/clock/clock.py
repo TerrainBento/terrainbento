@@ -16,7 +16,7 @@ class Clock(object):
 
         Examples
         --------
-        >>> from six import StringIO
+        >>> from io import StringIO
         >>> from terrainbento import Clock
         >>> filelike = StringIO('''
         ... start: 0
@@ -60,7 +60,7 @@ class Clock(object):
         """
         return cls(**params)
 
-    def __init__(self, start=0., step=10., stop=100.):
+    def __init__(self, start=0.0, step=10.0, stop=100.0):
         """
         Parameters
         ----------

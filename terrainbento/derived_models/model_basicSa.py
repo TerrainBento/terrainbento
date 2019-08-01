@@ -45,7 +45,7 @@ class BasicSa(ErosionModel):
         \frac{\partial \eta_b}{\partial t} = -P_0 \exp (-H/H_s)
                                              - (1 - \delta (H) ) K Q^{m} S^{N}
 
-        q_h = -D \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
+        q_h = -D H^* \left[1-\exp \left( -\frac{H}{H_0} \right) \right] \nabla \eta
 
     where :math:`Q` is the local stream discharge, :math:`S` is the local slope,
     :math:`m` and :math:`n` are the discharge and slope exponent parameters,
@@ -62,7 +62,7 @@ class BasicSa(ErosionModel):
     the underlying parent material is exposed).
 
     Refer to
-    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     The following at-node fields must be specified in the grid:

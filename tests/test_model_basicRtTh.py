@@ -27,7 +27,7 @@ def test_steady_Ksp_no_precip_changer(
     params = {
         "grid": grid_2,
         "clock": clock_simple,
-        "regolith_transport_parameter": 0.,
+        "regolith_transport_parameter": 0.0,
         "water_erodibility_lower": Kr,
         "water_erodibility_upper": Kt,
         "water_erosion_rule_upper__threshold": Tt,
@@ -51,17 +51,17 @@ def test_steady_Ksp_no_precip_changer(
     # slopes to fall.
     rock_predicted_slopes_upper = (
         (U + Tr) / (Kr * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+    ) ** (1.0 / n_sp)
     till_predicted_slopes_upper = (
         (U + Tt) / (Kt * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+    ) ** (1.0 / n_sp)
 
     rock_predicted_slopes_lower = (
-        (U + 0.) / (Kr * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+        (U + 0.0) / (Kr * (actual_areas ** m_sp))
+    ) ** (1.0 / n_sp)
     till_predicted_slopes_lower = (
-        (U + 0.) / (Kt * (actual_areas ** m_sp))
-    ) ** (1. / n_sp)
+        (U + 0.0) / (Kt * (actual_areas ** m_sp))
+    ) ** (1.0 / n_sp)
 
     # assert actual and predicted slopes are the same for rock and till
     # portions.

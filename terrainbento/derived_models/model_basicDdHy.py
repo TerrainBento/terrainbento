@@ -35,7 +35,7 @@ class BasicDdHy(ErosionModel):
 
         Q_s = \int_0^A \left((1-F_f)[\omega
               - \omega_c (1 - e^{-\omega / \omega_c})]
-              - \frac{V Q_s}{Q(A)\left(1 - \phi \right)} \right) dA
+              - \frac{V Q_s}{Q(A)} \right) dA
 
         \omega = KQ(A)^{m}S^{n}
 
@@ -61,7 +61,7 @@ class BasicDdHy(ErosionModel):
     :math:`\left(x,y\right)` and time :math:`t`.
 
     Refer to
-    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     The following at-node fields must be specified in the grid:
@@ -79,7 +79,7 @@ class BasicDdHy(ErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
-        water_erosion_rule__thresh_depth_derivative=0.,
+        water_erosion_rule__thresh_depth_derivative=0.0,
         settling_velocity=0.001,
         sediment_porosity=0.3,
         fraction_fines=0.5,

@@ -63,7 +63,7 @@ class BasicRtVs(TwoLithologyErosionModel):
     very sharp transition, use a small value for the contact zone width.
 
     Refer to
-    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     The following at-node fields must be specified in the grid:
@@ -126,7 +126,7 @@ class BasicRtVs(TwoLithologyErosionModel):
         >>> grid = RasterModelGrid((5,5))
         >>> _ = random(grid, "topographic__elevation")
         >>> _ = random(grid, "soil__depth")
-        >>> _ = constant(grid, "lithology_contact__elevation", constant=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
 
         Construct the model.
 

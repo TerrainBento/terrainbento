@@ -37,7 +37,7 @@ class BasicHySt(StochasticErosionModel):
                                            + D\nabla^2 \eta
 
         Q_s = \int_0^A \left(K(1-F_f)\hat{Q(A)}^{m}S^{n}
-              - \frac{V Q_s}{\hat{Q}(A)\left(1 - \phi \right)}\right) dA
+              - \frac{V Q_s}{\hat{Q}(A)}\right) dA
 
     where :math:`\hat{Q}` is the local stream discharge (the hat symbol
     indicates that it is a random-in-time variable), :math:`S` is the local
@@ -49,7 +49,7 @@ class BasicHySt(StochasticErosionModel):
     transport efficiency.
 
     Refer to
-    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     The following at-node fields must be specified in the grid:

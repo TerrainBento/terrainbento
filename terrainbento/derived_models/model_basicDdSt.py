@@ -60,7 +60,7 @@ class BasicDdSt(StochasticErosionModel):
     :math:`\left(x,y\right)` and time :math:`t`.
 
     Refer to
-    `Barnhart et al. (2019) <https://www.geosci-model-dev-discuss.net/gmd-2018-204/>`_
+    `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
     Table 5 for full list of parameter symbols, names, and dimensions.
 
     The following at-node fields must be specified in the grid:
@@ -78,7 +78,7 @@ class BasicDdSt(StochasticErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         water_erosion_rule__threshold=0.01,
-        water_erosion_rule__thresh_depth_derivative=0.,
+        water_erosion_rule__thresh_depth_derivative=0.0,
         infiltration_capacity=1.0,
         **kwargs
     ):
