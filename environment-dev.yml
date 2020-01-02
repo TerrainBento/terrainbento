@@ -12,7 +12,7 @@ name: terrainbento-dev
  - numpy
  - xarray
  - dask
- - landlab>=1.9
+ - landlab>=1.9, <2.0
  - jupyter
  - holoviews
  - pandas
