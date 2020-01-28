@@ -14,8 +14,6 @@ Landlab components used:
     5. `PrecipitationDistribution <http://landlab.readthedocs.io/en/latest/landlab.components.html#landlab.components.PrecipitationDistribution>`_
 """
 
-import numpy as np
-
 from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import StochasticErosionModel
 

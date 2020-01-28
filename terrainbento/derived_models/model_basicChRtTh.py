@@ -13,8 +13,6 @@ Landlab components used:
     4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
 """
 
-import numpy as np
-
 from landlab.components import (
     StreamPowerSmoothThresholdEroder,
     TaylorNonLinearDiffuser,

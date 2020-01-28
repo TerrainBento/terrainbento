@@ -17,7 +17,6 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import FastscapeEroder, LinearDiffuser
-from landlab.components.depression_finder.lake_mapper import _FLOODED
 from terrainbento.base_class import StochasticErosionModel
 
 

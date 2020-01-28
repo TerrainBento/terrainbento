@@ -6,7 +6,6 @@ import os
 import sys
 import time as tm
 
-import dask
 import numpy as np
 import xarray as xr
 import yaml
