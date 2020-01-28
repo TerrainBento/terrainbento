@@ -4,6 +4,7 @@
 **CaptureNodeBaselevelHandler** implements "external" stream capture.
 """
 
+
 class CaptureNodeBaselevelHandler(object):
     """Turn a closed boundary node into an open, lowering, boundary node.
 
@@ -118,7 +119,7 @@ class CaptureNodeBaselevelHandler(object):
 
         """
         self.model_time = 0.0
-        self._grid = grid
+        self.grid = grid
         self.z = grid.at_node["topographic__elevation"]
         self.node = capture_node
         self.start = capture_start_time
@@ -135,7 +136,7 @@ class CaptureNodeBaselevelHandler(object):
         else:
             self.post_capture_incision_rate = post_capture_incision_rate
 
-        self._grid.status_at_node[self.node] = self._grid.BC_NODE_IS_FIXED_VALUE
+        self.grid.status_at_node[self.node] = self.grid.BC_NODE_IS_FIXED_VALUE
 
     def run_one_step(self, step):
         """Run **CaptureNodeBaselevelHandler** to update captured node

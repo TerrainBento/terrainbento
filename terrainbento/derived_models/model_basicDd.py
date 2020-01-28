@@ -156,7 +156,8 @@ class BasicDd(ErosionModel):
             n_sp=self.n,
             K_sp=self.K,
             threshold_sp=self.threshold,
-            use_Q="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
@@ -232,14 +233,6 @@ class BasicDd(ErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Calculate the new threshold values given cumulative erosion
         self.update_erosion_threshold_values()
 
@@ -252,7 +245,7 @@ class BasicDd(ErosionModel):
                     "PrecipChanger"
                 ].get_erodibility_adjustment_factor()
             )
-        self.eroder.run_one_step(step, flooded_nodes=flooded)
+        self.eroder.run_one_step(step)
 
         # Do some soil creep
         self.diffuser.run_one_step(step)

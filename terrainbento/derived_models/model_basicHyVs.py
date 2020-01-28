@@ -16,6 +16,7 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import ErosionDeposition, LinearDiffuser
+from landlab.components.depression_finder.lake_mapper import _FLOODED
 from terrainbento.base_class import ErosionModel
 
 
@@ -171,6 +172,7 @@ class BasicHyVs(ErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 
@@ -232,16 +234,14 @@ class BasicHyVs(ErosionModel):
         # Update effective runoff ratio
         self._calc_effective_drainage_area()
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Zero out effective area in flooded nodes
-        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
+        if self._erode_flooded_nodes:
+            flooded_nodes = []
+        else:
+            flood_status = self.grid.at_node["flood_status_code"]
+            flooded_nodes = np.nonzero(flood_status == _FLOODED)[0]
+
+        self.grid.at_node["surface_water__discharge"][flooded_nodes] = 0.0
 
         # Do some erosion
         # (if we're varying K through time, update that first)

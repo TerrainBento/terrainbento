@@ -310,7 +310,7 @@ class StochasticErosionModel(ErosionModel):
         """
         pass
 
-    def handle_water_erosion(self, step, flooded):
+    def handle_water_erosion(self, step):
         """Handle water erosion for stochastic models.
 
         If we are running stochastic duration, then self.rain_rate will
@@ -339,12 +339,13 @@ class StochasticErosionModel(ErosionModel):
         ----------
         step : float
             Model run timestep.
-        flooded_nodes : ndarray of int (optional)
-            IDs of nodes that are flooded and should have no erosion.
         """
         # (if we're varying precipitation parameters through time, update them)
         if "PrecipChanger" in self.boundary_handlers:
-            self.rainfall_intermittency_factor, self.rainfall__mean_rate = self.boundary_handlers[
+            (
+                self.rainfall_intermittency_factor,
+                self.rainfall__mean_rate,
+            ) = self.boundary_handlers[
                 "PrecipChanger"
             ].get_current_precip_params()
 
@@ -354,7 +355,7 @@ class StochasticErosionModel(ErosionModel):
 
             runoff = self.calc_runoff_and_discharge()
 
-            self.eroder.run_one_step(step, flooded_nodes=flooded)
+            self.eroder.run_one_step(step)
             if self.record_rain:
                 # save record into the rain record
                 self.record_rain_event(
@@ -379,7 +380,7 @@ class StochasticErosionModel(ErosionModel):
                 self._pre_water_erosion_steps()
 
                 runoff = self.calc_runoff_and_discharge()
-                self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
+                self.eroder.run_one_step(dt_water)
                 # save record into the rain record
                 if self.record_rain:
                     event_start_time = self.model_time + (i * dt_water)

@@ -184,7 +184,8 @@ class BasicChRtTh(TwoLithologyErosionModel):
             threshold_sp=self.threshold,
             m_sp=self.m,
             n_sp=self.n,
-            use_Q="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Instantiate a LinearDiffuser component
@@ -193,6 +194,9 @@ class BasicChRtTh(TwoLithologyErosionModel):
             linear_diffusivity=self.regolith_transport_parameter,
             slope_crit=critical_slope,
             nterms=number_of_taylor_terms,
+            dynamic_dt=True,
+            if_unstable="raise",
+            courant_factor=0.1,
         )
 
     def run_one_step(self, step):
@@ -229,24 +233,14 @@ class BasicChRtTh(TwoLithologyErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Update the erodibility and threshold field
         self._update_erodibility_and_threshold_fields()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(step, flooded_nodes=flooded)
+        self.eroder.run_one_step(step)
 
         # Do some soil creep
-        self.diffuser.run_one_step(
-            step, dynamic_dt=True, if_unstable="raise", courant_factor=0.1
-        )
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
         self.finalize__run_one_step(step)

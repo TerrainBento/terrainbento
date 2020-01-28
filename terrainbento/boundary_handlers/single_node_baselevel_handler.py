@@ -103,12 +103,12 @@ class SingleNodeBaselevelHandler(object):
 
         """
         # ensure that the outlet has a node status of FIXED_VALUE_BOUNDARY.
-        grid.status_at_node[outlet_id] = self._grid.BC_NODE_IS_FIXED_VALUE
+        grid.status_at_node[outlet_id] = grid.BC_NODE_IS_FIXED_VALUE
 
         self.model_time = 0.0
-        self._grid = grid
+        self.grid = grid
         self.outlet_id = outlet_id
-        self.z = self._grid.at_node["topographic__elevation"]
+        self.z = self.grid.at_node["topographic__elevation"]
 
         # determine which nodes to lower
         # based on which are lowering, set the prefactor correctly.
@@ -125,8 +125,8 @@ class SingleNodeBaselevelHandler(object):
                 "topographic__elevation": self.z[self.outlet_id]
             }
             for of in _OTHER_FIELDS:
-                if of in self._grid.at_node:
-                    self._outlet_start_values[of] = self._grid.at_node[of][
+                if of in self.grid.at_node:
+                    self._outlet_start_values[of] = self.grid.at_node[of][
                         self.outlet_id
                     ]
 
@@ -222,14 +222,14 @@ class SingleNodeBaselevelHandler(object):
             # if bedrock__elevation exists as a field, lower it also
 
             for of in _OTHER_FIELDS:
-                if of in self._grid.at_node:
-                    self._grid.at_node[of][self.nodes_to_lower] += (
+                if of in self.grid.at_node:
+                    self.grid.at_node[of][self.nodes_to_lower] += (
                         self.prefactor * self.lowering_rate * step
                     )
 
             if self.modify_outlet_id is False:
                 for key in self._outlet_start_values.keys():
-                    self._grid.at_node[key][
+                    self.grid.at_node[key][
                         self.outlet_id
                     ] = self._outlet_start_values[key]
 
@@ -250,8 +250,8 @@ class SingleNodeBaselevelHandler(object):
                 "lithology_contact__elevation",
             ]
             for of in other_fields:
-                if of in self._grid.at_node:
-                    self._grid.at_node[of][self.outlet_id] -= topo_change
+                if of in self.grid.at_node:
+                    self.grid.at_node[of][self.outlet_id] -= topo_change
 
             # lower topography
             self.z[self.outlet_id] -= topo_change

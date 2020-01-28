@@ -199,20 +199,21 @@ class BasicHySa(ErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 
         # Instantiate diffusion and weathering components
-        self.diffuser = DepthDependentDiffuser(
-            self.grid,
-            linear_diffusivity=regolith_transport_parameter,
-            soil_transport_decay_depth=soil_transport_decay_depth,
-        )
-
         self.weatherer = ExponentialWeatherer(
             self.grid,
             soil_production__maximum_rate=soil_production__maximum_rate,
             soil_production__decay_depth=soil_production__decay_depth,
+        )
+
+        self.diffuser = DepthDependentDiffuser(
+            self.grid,
+            linear_diffusivity=regolith_transport_parameter,
+            soil_transport_decay_depth=soil_transport_decay_depth,
         )
 
         self.grid.at_node["soil__depth"][:] = (
@@ -250,14 +251,6 @@ class BasicHySa(ErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handlers:
@@ -267,7 +260,7 @@ class BasicHySa(ErosionModel):
             self.eroder.K_sed = self.K_sed * erode_factor
             self.eroder.K_br = self.K_br * erode_factor
 
-        self.eroder.run_one_step(step, flooded_nodes=flooded)
+        self.eroder.run_one_step(step)
 
         # We must also now erode the bedrock where relevant. If water erosion
         # into bedrock has occurred, the bedrock elevation will be higher than

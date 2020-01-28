@@ -184,7 +184,8 @@ class BasicRtSa(TwoLithologyErosionModel):
             K_sp=self.erody,
             m_sp=self.m,
             n_sp=self.n,
-            discharge_name="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         soil_thickness = self.grid.at_node["soil__depth"]
@@ -192,16 +193,16 @@ class BasicRtSa(TwoLithologyErosionModel):
         bedrock_elev[:] = self.z - soil_thickness
 
         # Instantiate diffusion and weathering components
-        self.diffuser = DepthDependentDiffuser(
-            self.grid,
-            linear_diffusivity=self.regolith_transport_parameter,
-            soil_transport_decay_depth=soil_transport_decay_depth,
-        )
-
         self.weatherer = ExponentialWeatherer(
             self.grid,
             soil_production__maximum_rate=soil_production__maximum_rate,
             soil_production__decay_depth=soil_production__decay_depth,
+        )
+
+        self.diffuser = DepthDependentDiffuser(
+            self.grid,
+            linear_diffusivity=self.regolith_transport_parameter,
+            soil_transport_decay_depth=soil_transport_decay_depth,
         )
 
     def run_one_step(self, step):
@@ -238,21 +239,11 @@ class BasicRtSa(TwoLithologyErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Update the erodibility field
         self._update_erodibility_field()
 
-        # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(
-            step, flooded_nodes=flooded, K_if_used=self.erody
-        )
+        # Do some erosion
+        self.eroder.run_one_step(step)
 
         # We must also now erode the bedrock where relevant. If water erosion
         # into bedrock has occurred, the bedrock elevation will be higher than

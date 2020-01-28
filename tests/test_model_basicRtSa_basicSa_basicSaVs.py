@@ -73,7 +73,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     )
 
     half_domain_z = (
-        -half_domain ** 2
+        -(half_domain ** 2)
         * U
         / (
             regolith_transport_parameter

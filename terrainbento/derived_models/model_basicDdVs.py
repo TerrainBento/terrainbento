@@ -16,6 +16,7 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
+from landlab.components.depression_finder.lake_mapper import _FLOODED
 from terrainbento.base_class import ErosionModel
 
 
@@ -170,7 +171,8 @@ class BasicDdVs(ErosionModel):
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
-            use_Q="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -240,16 +242,14 @@ class BasicDdVs(ErosionModel):
         # Update effective runoff ratio
         self._calc_effective_drainage_area()
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Zero out effective area in flooded nodes
-        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
+        if self._erode_flooded_nodes:
+            flooded_nodes = []
+        else:
+            flood_status = self.grid.at_node["flood_status_code"]
+            flooded_nodes = np.nonzero(flood_status == _FLOODED)[0]
+
+        self.grid.at_node["surface_water__discharge"][flooded_nodes] = 0.0
 
         # Set the erosion threshold.
         #

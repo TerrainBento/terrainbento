@@ -168,7 +168,7 @@ class ErosionModel(object):
         ...         node:
         ...           topographic__elevation:
         ...             constant:
-        ...               - value: 0
+        ...               - value: 0.0
         ... clock:
         ...   step: 1
         ...   stop: 200
@@ -227,7 +227,7 @@ class ErosionModel(object):
         ...                 "fields": {
         ...                     "node": {
         ...                         "topographic__elevation": {
-        ...                             "constant": [{"value": 0}]
+        ...                             "constant": [{"value": 0.0}]
         ...                         }
         ...                     }
         ...                 }
@@ -459,6 +459,11 @@ class ErosionModel(object):
                 depression_finder=depression_finder,
                 **flow_accumulator_kwargs
             )
+
+        if self.flow_accumulator.depression_finder is None:
+            self._erode_flooded_nodes = True
+        else:
+            self._erode_flooded_nodes = False
 
         ###################################################################
         # Boundary Conditions and Output Writers

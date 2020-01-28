@@ -172,7 +172,8 @@ class BasicRtTh(TwoLithologyErosionModel):
             threshold_sp=self.threshold,
             m_sp=self.m,
             n_sp=self.n,
-            use_Q="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Instantiate a LinearDiffuser component
@@ -214,19 +215,11 @@ class BasicRtTh(TwoLithologyErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Update the erodibility and threshold field
         self._update_erodibility_and_threshold_fields()
 
         # Do some erosion (but not on the flooded nodes)
-        self.eroder.run_one_step(step, flooded_nodes=flooded)
+        self.eroder.run_one_step(step)
 
         # Do some soil creep
         self.diffuser.run_one_step(step)

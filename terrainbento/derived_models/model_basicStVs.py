@@ -17,6 +17,7 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import FastscapeEroder, LinearDiffuser
+from landlab.components.depression_finder.lake_mapper import _FLOODED
 from terrainbento.base_class import StochasticErosionModel
 
 
@@ -153,7 +154,7 @@ class BasicStVs(StochasticErosionModel):
         if np.any(self.trans) <= 0.0:
             raise ValueError("BasicStVs: Transmissivity must be > 0")
 
-        self.tlam = self.trans * self.grid._dx  # assumes raster
+        self.tlam = self.trans * self.grid._spacing[0]  # assumes raster
 
         # Run flow routing and lake filler
         self.flow_accumulator.run_one_step()
@@ -164,7 +165,8 @@ class BasicStVs(StochasticErosionModel):
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.m,
-            discharge_name="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Instantiate a LinearDiffuser component
@@ -235,16 +237,8 @@ class BasicStVs(StochasticErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Handle water erosion
-        self.handle_water_erosion(step, flooded)
+        self.handle_water_erosion(step)
 
         # Do some soil creep
         self.diffuser.run_one_step(step)
