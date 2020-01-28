@@ -8,7 +8,7 @@ from terrainbento.boundary_handlers import GenericFuncBaselevelHandler
 
 
 def test_function_of_four_variables():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
@@ -18,7 +18,7 @@ def test_function_of_four_variables():
 
 
 def test_function_that_returns_wrong_size():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
@@ -31,7 +31,7 @@ def test_function_that_returns_wrong_size():
 
 
 def test_function_that_returns_float():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
