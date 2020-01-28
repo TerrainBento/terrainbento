@@ -24,7 +24,7 @@ setup(
         "pandas",
         "xarray",
         "dask[complete]",
-        "landlab>2.0",
+        "landlab>=2",
     ],
     package_data={"": ["tests/*txt", "data/*txt", "data/*asc", "data/*nc"]},
 )
