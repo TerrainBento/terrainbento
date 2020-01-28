@@ -51,7 +51,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 terrainbento --exclude=examples
+	flake8 terrainbento
 	flake8 tests
 
 pretty: ## reformat files to make them look pretty
