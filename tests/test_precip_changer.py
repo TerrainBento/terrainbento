@@ -66,7 +66,9 @@ def test_simple_precip_changer(
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K, 5) == round(K * precip_testing_factor, 5)
+    assert_array_almost_equal(
+        model.eroder.K, K * precip_testing_factor, decimal=5
+    )
 
 
 @pytest.mark.parametrize(
