@@ -4,9 +4,6 @@
 **CaptureNodeBaselevelHandler** implements "external" stream capture.
 """
 
-from landlab import FIXED_VALUE_BOUNDARY
-
-
 class CaptureNodeBaselevelHandler(object):
     """Turn a closed boundary node into an open, lowering, boundary node.
 
@@ -138,7 +135,7 @@ class CaptureNodeBaselevelHandler(object):
         else:
             self.post_capture_incision_rate = post_capture_incision_rate
 
-        self._grid.status_at_node[self.node] = FIXED_VALUE_BOUNDARY
+        self._grid.status_at_node[self.node] = self._grid.BC_NODE_IS_FIXED_VALUE
 
     def run_one_step(self, step):
         """Run **CaptureNodeBaselevelHandler** to update captured node

@@ -6,8 +6,6 @@ import os
 import numpy as np
 from scipy.interpolate import interp1d
 
-from landlab import FIXED_VALUE_BOUNDARY
-
 _OTHER_FIELDS = ["bedrock__elevation", "lithology_contact__elevation"]
 
 
@@ -105,7 +103,7 @@ class SingleNodeBaselevelHandler(object):
 
         """
         # ensure that the outlet has a node status of FIXED_VALUE_BOUNDARY.
-        grid.status_at_node[outlet_id] = FIXED_VALUE_BOUNDARY
+        grid.status_at_node[outlet_id] = self._grid.BC_NODE_IS_FIXED_VALUE
 
         self.model_time = 0.0
         self._grid = grid
