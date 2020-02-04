@@ -42,7 +42,7 @@ def test_channel_erosion(
 
     # construct and run model
     model = BasicHyRt(**params)
-    for _ in range(4000):
+    for _ in range(200):
         model.run_one_step(10)
 
     # construct actual and predicted slopes

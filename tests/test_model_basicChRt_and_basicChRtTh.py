@@ -25,11 +25,6 @@ def test_diffusion_only(clock_09, grid_4, Model):
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
-    # Construct and run model
-    model = Model(**params)
-    for _ in range(20000):
-        model.run_one_step(clock_09.step)
-
     # Construct actual and predicted slope at right edge of domain
     x = 8.5 * grid_4.dx
 
@@ -42,7 +37,11 @@ def test_diffusion_only(clock_09, grid_4, Model):
     p = np.append(p, qs)
     p_roots = np.roots(p)
     predicted_slope = np.abs(np.real(p_roots[-1]))
-    # print(predicted_slope)
+
+    # Construct and run model
+    model = Model(**params)
+    for _ in range(2000):
+        model.run_one_step(clock_09.step)
 
     actual_slope = np.abs(
         model.grid.at_node["topographic__steepest_slope"][39]

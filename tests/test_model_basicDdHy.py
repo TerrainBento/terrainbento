@@ -51,7 +51,7 @@ def test_stream_DdHy(
 
     # construct and run model
     model = BasicDdHy(**params)
-    for _ in range(2500):
+    for _ in range(500):
         model.run_one_step(10)
 
     # construct actual and predicted slopes
