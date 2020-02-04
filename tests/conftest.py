@@ -29,6 +29,16 @@ def Kt():
 
 
 @pytest.fixture()
+def grid_0():
+    grid = RasterModelGrid((3, 3), xy_spacing=100.0)
+    grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
+    grid.add_zeros("node", "topographic__elevation")
+    grid.add_ones("node", "soil__depth")
+    grid.add_zeros("node", "lithology_contact__elevation")
+    return grid
+
+
+@pytest.fixture()
 def grid_1():
     grid = RasterModelGrid((3, 21), xy_spacing=100.0)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
@@ -65,6 +75,18 @@ def grid_3():
 @pytest.fixture()
 def grid_4():
     grid = RasterModelGrid((3, 21), xy_spacing=10.0)
+    grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
+    grid.add_zeros("node", "topographic__elevation")
+    grid.add_ones("node", "soil__depth")
+    lith = grid.add_zeros("node", "lithology_contact__elevation")
+    lith[grid.core_nodes[:9]] = -100000.0
+    lith[grid.core_nodes[9:]] = 100000.0
+    return grid
+
+
+@pytest.fixture()
+def grid_4_smaller():
+    grid = RasterModelGrid((3, 11), xy_spacing=10.0)
     grid.set_closed_boundaries_at_grid_edges(False, True, False, True)
     grid.add_zeros("node", "topographic__elevation")
     grid.add_ones("node", "soil__depth")
