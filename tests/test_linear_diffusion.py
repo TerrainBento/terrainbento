@@ -30,6 +30,7 @@ from terrainbento import (
 
 test_i = 100
 
+
 @pytest.mark.parametrize(
     "Model", [BasicSt, BasicHySt, BasicDdSt, BasicStTh, BasicStVs]
 )
@@ -56,12 +57,14 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
         if i % test_i == 0:
             try:
                 reference_node = 9
-                predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-                    U / (2.0 * params["regolith_transport_parameter"])
-                ) * (
+                predicted_z = model.z[
+                    model.grid.core_nodes[reference_node]
+                ] - (U / (2.0 * params["regolith_transport_parameter"])) * (
                     (
                         model.grid.x_of_node
-                        - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
+                        - model.grid.x_of_node[
+                            model.grid.core_nodes[reference_node]
+                        ]
                     )
                     ** 2
                 )
@@ -75,7 +78,6 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
                 break
             except AssertionError:
                 pass
-
 
 
 @pytest.mark.parametrize(
@@ -115,12 +117,14 @@ def test_diffusion_only(clock_simple, grid_1, U, Model):
         if i % test_i == 0:
             try:
                 reference_node = 9
-                predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-                    U / (2.0 * params["regolith_transport_parameter"])
-                ) * (
+                predicted_z = model.z[
+                    model.grid.core_nodes[reference_node]
+                ] - (U / (2.0 * params["regolith_transport_parameter"])) * (
                     (
                         model.grid.x_of_node
-                        - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
+                        - model.grid.x_of_node[
+                            model.grid.core_nodes[reference_node]
+                        ]
                     )
                     ** 2
                 )
@@ -135,6 +139,7 @@ def test_diffusion_only(clock_simple, grid_1, U, Model):
 
             except AssertionError:
                 pass
+
 
 @pytest.mark.parametrize(
     "Model", [BasicRt, BasicRtVs, BasicDdRt, BasicHyRt, BasicRtVs, BasicRtTh]
@@ -162,12 +167,14 @@ def test_rock_till_linear_diffusion(clock_simple, grid_1, U, Model):
         if i % test_i == 0:
             try:
                 reference_node = 9
-                predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
-                    U / (2.0 * params["regolith_transport_parameter"])
-                ) * (
+                predicted_z = model.z[
+                    model.grid.core_nodes[reference_node]
+                ] - (U / (2.0 * params["regolith_transport_parameter"])) * (
                     (
                         model.grid.x_of_node
-                        - model.grid.x_of_node[model.grid.core_nodes[reference_node]]
+                        - model.grid.x_of_node[
+                            model.grid.core_nodes[reference_node]
+                        ]
                     )
                     ** 2
                 )

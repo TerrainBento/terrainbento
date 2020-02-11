@@ -17,6 +17,7 @@ from terrainbento import (
 
 test_i = 20
 
+
 @pytest.mark.parametrize("Model", [BasicRt, BasicChRt, BasicRtSa])
 @pytest.mark.parametrize("m_sp", [1.0 / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2.0 / 3.0, 1.0])
@@ -59,22 +60,32 @@ def test_rock_till_steady_no_precip_changer(
     for i in range(200):
         model.run_one_step(1000)
 
-        if i%test_i == 0:
+        if i % test_i == 0:
             try:
                 # construct actual and predicted slopes
-                actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+                actual_slopes = model.grid.at_node[
+                    "topographic__steepest_slope"
+                ]
                 actual_areas = model.grid.at_node["surface_water__discharge"]
-                rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1.0 / n_sp)
-                till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1.0 / n_sp)
+                rock_predicted_slopes = (
+                    U / (Kr * (actual_areas ** m_sp))
+                ) ** (1.0 / n_sp)
+                till_predicted_slopes = (
+                    U / (Kt * (actual_areas ** m_sp))
+                ) ** (1.0 / n_sp)
 
                 # assert actual and predicted slopes are the same for rock and till
                 # portions.
                 assert_array_almost_equal(
-                    actual_slopes[22:37], rock_predicted_slopes[22:37], decimal=4
+                    actual_slopes[22:37],
+                    rock_predicted_slopes[22:37],
+                    decimal=4,
                 )
 
                 assert_array_almost_equal(
-                    actual_slopes[82:97], till_predicted_slopes[82:97], decimal=4
+                    actual_slopes[82:97],
+                    till_predicted_slopes[82:97],
+                    decimal=4,
                 )
                 break
             except AssertionError:
@@ -124,22 +135,32 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
     model = Model(**params)
     for i in range(200):
         model.run_one_step(1000)
-        if i%test_i == 0:
+        if i % test_i == 0:
             try:
                 # construct actual and predicted slopes
-                actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+                actual_slopes = model.grid.at_node[
+                    "topographic__steepest_slope"
+                ]
                 actual_areas = model.grid.at_node["surface_water__discharge"]
-                rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1.0 / n_sp)
-                till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1.0 / n_sp)
+                rock_predicted_slopes = (
+                    U / (Kr * (actual_areas ** m_sp))
+                ) ** (1.0 / n_sp)
+                till_predicted_slopes = (
+                    U / (Kt * (actual_areas ** m_sp))
+                ) ** (1.0 / n_sp)
 
                 # assert actual and predicted slopes are the same for rock and till
                 # portions.
                 assert_array_almost_equal(
-                    actual_slopes[22:37], rock_predicted_slopes[22:37], decimal=4
+                    actual_slopes[22:37],
+                    rock_predicted_slopes[22:37],
+                    decimal=4,
                 )
 
                 assert_array_almost_equal(
-                    actual_slopes[82:97], till_predicted_slopes[82:97], decimal=4
+                    actual_slopes[82:97],
+                    till_predicted_slopes[82:97],
+                    decimal=4,
                 )
                 break
             except AssertionError:
@@ -186,13 +207,19 @@ def test_detachment_steady_no_precip_changer(
     model = Model(**params)
     for i in range(300):
         model.run_one_step(1000)
-        if i%test_i == 0:
+        if i % test_i == 0:
             try:
                 # construct actual and predicted slopes
-                actual_slopes = model.grid.at_node["topographic__steepest_slope"]
+                actual_slopes = model.grid.at_node[
+                    "topographic__steepest_slope"
+                ]
                 actual_areas = model.grid.at_node["surface_water__discharge"]
                 predicted_slopes = (
-                    U / (params["water_erodibility"] * (actual_areas ** params["m_sp"]))
+                    U
+                    / (
+                        params["water_erodibility"]
+                        * (actual_areas ** params["m_sp"])
+                    )
                 ) ** (1.0 / params["n_sp"])
 
                 # assert actual and predicted slopes are the same.
