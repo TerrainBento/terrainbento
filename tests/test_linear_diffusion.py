@@ -28,14 +28,14 @@ from terrainbento import (
     NotCoreNodeBaselevelHandler,
 )
 
-test_dt = 100
+test_i = 100
 
 @pytest.mark.parametrize(
     "Model", [BasicSt, BasicHySt, BasicDdSt, BasicStTh, BasicStVs]
 )
 def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
     total_time = 5.0e6
-    step = 1000
+    step = 50000
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_1, modify_core_nodes=True, lowering_rate=-U
     )
@@ -53,7 +53,7 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
     for i in range(nts):
         model.run_one_step(1000)
 
-        if i % test_dt == 0:
+        if i % test_i == 0:
             try:
                 reference_node = 9
                 predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
@@ -95,7 +95,7 @@ def test_stochastic_linear_diffusion(clock_simple, grid_1, U, Model):
 )
 def test_diffusion_only(clock_simple, grid_1, U, Model):
     total_time = 5.0e6
-    step = 1000
+    step = 50000
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_1, modify_core_nodes=True, lowering_rate=-U
     )
@@ -112,7 +112,7 @@ def test_diffusion_only(clock_simple, grid_1, U, Model):
     nts = int(total_time / step)
     for i in range(nts):
         model.run_one_step(step)
-        if i % test_dt == 0:
+        if i % test_i == 0:
             try:
                 reference_node = 9
                 predicted_z = model.z[model.grid.core_nodes[reference_node]] - (
@@ -141,7 +141,7 @@ def test_diffusion_only(clock_simple, grid_1, U, Model):
 )
 def test_rock_till_linear_diffusion(clock_simple, grid_1, U, Model):
     total_time = 5.0e6
-    step = 1000
+    step = 50000
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_1, modify_core_nodes=True, lowering_rate=-U
     )
@@ -159,7 +159,7 @@ def test_rock_till_linear_diffusion(clock_simple, grid_1, U, Model):
     nts = int(total_time / step)
     for i in range(nts):
         model.run_one_step(step)
-        if i % test_dt == 0:
+        if i % test_i == 0:
             try:
                 reference_node = 9
                 predicted_z = model.z[model.grid.core_nodes[reference_node]] - (

@@ -60,12 +60,15 @@ def test_diffusion_only(clock_08, grid_4_smaller):
 
     # Construct and run model
     model = BasicChSa(**params)
-    for _ in range(14000):
-        model.run_one_step(clock_08.step)
+    factor=4
+    nts = int(13000/factor)
+    for _ in range(nts):
+        model.run_one_step(factor*clock_08.step)
 
     # test steady state soil depth
     actual_depth = model.grid.at_node["soil__depth"][15]
     assert_array_almost_equal(actual_depth, predicted_depth, decimal=2)
+
 
     actual_slope = np.abs(
         model.grid.at_node["topographic__steepest_slope"][20]
