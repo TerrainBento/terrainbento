@@ -251,8 +251,8 @@ class StochasticErosionModel(ErosionModel):
         runtime : float
             Total duration for which to run model.
         """
-        self.rain_generator.delta_t = step
-        self.rain_generator.run_time = runtime
+        self.rain_generator._delta_t = step
+        self.rain_generator._run_time = runtime
         for (
             tr,
             p,
