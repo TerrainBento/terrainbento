@@ -6,11 +6,11 @@ Erosion model program using depth-dependent cubic diffusion with a soil layer,
 basic stream power, and discharge proportional to drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
-    4. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
-    5. `DepthDependentTaylorDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_taylor_soil_creep/hillslope_depth_dependent_taylor_flux.html#DepthDependentTaylorDiffuser>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `FastscapeEroder <https://landlab.readthedocs.io/en/master/reference/components/stream_power.html>`_
+    4. `ExponentialWeatherer <https://landlab.readthedocs.io/en/master/reference/components/weathering.html>`_
+    5. `DepthDependentTaylorDiffuser <https://landlab.readthedocs.io/en/master/reference/components/depth_dependent_taylor_soil_creep.html>`_
 """
 
 import numpy as np
@@ -175,7 +175,8 @@ class BasicChSa(ErosionModel):
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
-            discharge_name="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Instantiate a weathering component
@@ -192,6 +193,9 @@ class BasicChSa(ErosionModel):
             slope_crit=critical_slope,
             soil_transport_decay_depth=soil_transport_decay_depth,
             nterms=number_of_taylor_terms,
+            dynamic_dt=True,
+            if_unstable="raise",
+            courant_factor=0.1,
         )
 
     def run_one_step(self, step):
@@ -227,14 +231,6 @@ class BasicChSa(ErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handlers:
@@ -245,7 +241,7 @@ class BasicChSa(ErosionModel):
                 ].get_erodibility_adjustment_factor()
             )
 
-        self.eroder.run_one_step(step, flooded_nodes=flooded)
+        self.eroder.run_one_step(step)
 
         # We must also now erode the bedrock where relevant. If water erosion
         # into bedrock has occurred, the bedrock elevation will be higher than
@@ -258,9 +254,7 @@ class BasicChSa(ErosionModel):
         self.weatherer.calc_soil_prod_rate()
 
         # Do some soil creep
-        self.diffuser.run_one_step(
-            step, dynamic_dt=True, if_unstable="raise", courant_factor=0.1
-        )
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
         self.finalize__run_one_step(step)

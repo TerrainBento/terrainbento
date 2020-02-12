@@ -27,7 +27,7 @@ class StochasticErosionModel(ErosionModel):
 
     Two primary options are avaliable for the stochastic erosion models. When
     ``opt_stochastic_duration=True`` the model will use the
-    `PrecipitationDistribution <https://landlab.readthedocs.io/en/latest/landlab.components.uniform_precip.html>`_
+    `PrecipitationDistribution <https://landlab.readthedocs.io/en/master/reference/components/uniform_precip.html>`_
     Landlab component to generate a random storm duration, interstorm duration,
     and precipitation intensity or storm depth from an exponential
     distribution. When this option is selected, the following parameters are
@@ -251,8 +251,8 @@ class StochasticErosionModel(ErosionModel):
         runtime : float
             Total duration for which to run model.
         """
-        self.rain_generator.delta_t = step
-        self.rain_generator.run_time = runtime
+        self.rain_generator._delta_t = step
+        self.rain_generator._run_time = runtime
         for (
             tr,
             p,
@@ -310,7 +310,7 @@ class StochasticErosionModel(ErosionModel):
         """
         pass
 
-    def handle_water_erosion(self, step, flooded):
+    def handle_water_erosion(self, step):
         """Handle water erosion for stochastic models.
 
         If we are running stochastic duration, then self.rain_rate will
@@ -339,12 +339,13 @@ class StochasticErosionModel(ErosionModel):
         ----------
         step : float
             Model run timestep.
-        flooded_nodes : ndarray of int (optional)
-            IDs of nodes that are flooded and should have no erosion.
         """
         # (if we're varying precipitation parameters through time, update them)
         if "PrecipChanger" in self.boundary_handlers:
-            self.rainfall_intermittency_factor, self.rainfall__mean_rate = self.boundary_handlers[
+            (
+                self.rainfall_intermittency_factor,
+                self.rainfall__mean_rate,
+            ) = self.boundary_handlers[
                 "PrecipChanger"
             ].get_current_precip_params()
 
@@ -354,7 +355,7 @@ class StochasticErosionModel(ErosionModel):
 
             runoff = self.calc_runoff_and_discharge()
 
-            self.eroder.run_one_step(step, flooded_nodes=flooded)
+            self.eroder.run_one_step(step)
             if self.record_rain:
                 # save record into the rain record
                 self.record_rain_event(
@@ -379,7 +380,7 @@ class StochasticErosionModel(ErosionModel):
                 self._pre_water_erosion_steps()
 
                 runoff = self.calc_runoff_and_discharge()
-                self.eroder.run_one_step(dt_water, flooded_nodes=flooded)
+                self.eroder.run_one_step(dt_water)
                 # save record into the rain record
                 if self.record_rain:
                     event_start_time = self.model_time + (i * dt_water)

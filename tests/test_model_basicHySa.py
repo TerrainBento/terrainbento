@@ -100,9 +100,11 @@ def test_with_precip_changer(
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert round(model.eroder.K_sed, 5) == round(
-        params["water_erodibility_sediment"] * precip_testing_factor, 5
+    assert_array_almost_equal(
+        model.eroder.K_sed,
+        params["water_erodibility_sediment"] * precip_testing_factor,
     )
-    assert round(model.eroder.K_br, 5) == round(
-        params["water_erodibility_rock"] * precip_testing_factor, 5
+    assert_array_almost_equal(
+        model.eroder.K_br,
+        params["water_erodibility_rock"] * precip_testing_factor,
     )

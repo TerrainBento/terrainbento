@@ -6,7 +6,6 @@ import os
 import sys
 import time as tm
 
-import dask
 import numpy as np
 import xarray as xr
 import yaml
@@ -168,7 +167,7 @@ class ErosionModel(object):
         ...         node:
         ...           topographic__elevation:
         ...             constant:
-        ...               - value: 0
+        ...               - value: 0.0
         ... clock:
         ...   step: 1
         ...   stop: 200
@@ -203,7 +202,7 @@ class ErosionModel(object):
 
         The input parameter dictionary portion associated with the "grid"
         keword will be passed directly to the Landlab
-        `create_grid <https://landlab.readthedocs.io/en/latest/landlab.grid.create.html>`_.
+        `create_grid <https://landlab.readthedocs.io/en/master/reference/grid/create.html#landlab.grid.create.create_grid>`_.
         function.
 
         Parameters
@@ -227,7 +226,7 @@ class ErosionModel(object):
         ...                 "fields": {
         ...                     "node": {
         ...                         "topographic__elevation": {
-        ...                             "constant": [{"value": 0}]
+        ...                             "constant": [{"value": 0.0}]
         ...                         }
         ...                     }
         ...                 }
@@ -333,13 +332,13 @@ class ErosionModel(object):
 
         flow_director : str, optional
             String name of a
-            `Landlab FlowDirector <https://landlab.readthedocs.io/en/latest/landlab.components.flow_director.html>`_.
+            `Landlab FlowDirector <https://landlab.readthedocs.io/en/master/reference/components/flow_director.html>`_.
             Default is "FlowDirectorSteepest".
         depression_finder : str, optional
             String name of a Landlab depression finder. Default is None.
         flow_accumulator_kwargs : dictionary, optional
             Dictionary of any additional keyword arguments to pass to the
-            `Landlab FlowAccumulator <https://landlab.readthedocs.io/en/latest/landlab.components.flow_accum.html>`_.
+            `Landlab FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_.
             Default is an empty dictionary.
         boundary_handlers : dictionary, optional
             Dictionary with ``name: instance`` key-value pairs. Each entry
@@ -459,6 +458,11 @@ class ErosionModel(object):
                 depression_finder=depression_finder,
                 **flow_accumulator_kwargs
             )
+
+        if self.flow_accumulator.depression_finder is None:
+            self._erode_flooded_nodes = True
+        else:
+            self._erode_flooded_nodes = False
 
         ###################################################################
         # Boundary Conditions and Output Writers

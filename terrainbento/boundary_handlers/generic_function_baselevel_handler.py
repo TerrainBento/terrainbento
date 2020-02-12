@@ -140,7 +140,7 @@ class GenericFuncBaselevelHandler(object):
 
         """
         self.model_time = 0.0
-        self._grid = grid
+        self.grid = grid
 
         # test the function behaves well
         if function.__code__.co_argcount != 2:
@@ -150,10 +150,10 @@ class GenericFuncBaselevelHandler(object):
             )
             raise ValueError(msg)
 
-        test_dzdt = function(self._grid, self.model_time)
+        test_dzdt = function(self.grid, self.model_time)
 
         if hasattr(test_dzdt, "shape"):
-            if test_dzdt.shape != self._grid.x_of_node.shape:
+            if test_dzdt.shape != self.grid.x_of_node.shape:
                 msg = (
                     "GenericFuncBaselevelHandler: function must return an "
                     "array of shape (n_nodes,)"
@@ -168,15 +168,15 @@ class GenericFuncBaselevelHandler(object):
 
         self.function = function
         self.modify_core_nodes = modify_core_nodes
-        self.z = self._grid.at_node["topographic__elevation"]
+        self.z = self.grid.at_node["topographic__elevation"]
 
         # determine which nodes to lower
         # based on which are lowering, set the prefactor correctly.
         if self.modify_core_nodes:
-            self.nodes_to_lower = self._grid.status_at_node == 0
+            self.nodes_to_lower = self.grid.status_at_node == 0
             self.prefactor = -1.0
         else:
-            self.nodes_to_lower = self._grid.status_at_node != 0
+            self.nodes_to_lower = self.grid.status_at_node != 0
             self.prefactor = 1.0
 
     def run_one_step(self, step):
@@ -197,7 +197,7 @@ class GenericFuncBaselevelHandler(object):
         step : float
             Duration of model time to advance forward.
         """
-        self.dzdt = self.function(self._grid, self.model_time)
+        self.dzdt = self.function(self.grid, self.model_time)
 
         # calculate lowering amount and subtract
         self.z[self.nodes_to_lower] += (
@@ -207,8 +207,8 @@ class GenericFuncBaselevelHandler(object):
         # if bedrock__elevation exists as a field, lower it also
         other_fields = ["bedrock__elevation", "lithology_contact__elevation"]
         for of in other_fields:
-            if of in self._grid.at_node:
-                self._grid.at_node[of][self.nodes_to_lower] += (
+            if of in self.grid.at_node:
+                self.grid.at_node[of][self.nodes_to_lower] += (
                     self.prefactor * self.dzdt[self.nodes_to_lower] * step
                 )
 

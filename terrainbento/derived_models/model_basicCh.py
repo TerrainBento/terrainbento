@@ -7,13 +7,11 @@ proportional to drainage area.
 
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
-    4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `FastscapeEroder <https://landlab.readthedocs.io/en/master/reference/components/stream_power.html>`_
+    4. `TaylorNonLinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/taylor_nonlinear_hillslope_flux.html>`_
 """
-
-import numpy as np
 
 from landlab.components import FastscapeEroder, TaylorNonLinearDiffuser
 from terrainbento.base_class import ErosionModel
@@ -137,7 +135,8 @@ class BasicCh(ErosionModel):
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
-            discharge_name="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Instantiate a NonLinearDiffuser component
@@ -146,6 +145,9 @@ class BasicCh(ErosionModel):
             linear_diffusivity=regolith_transport_parameter,
             slope_crit=critical_slope,
             nterms=number_of_taylor_terms,
+            dynamic_dt=True,
+            if_unstable="raise",
+            courant_factor=0.1,
         )
 
     def run_one_step(self, step):
@@ -178,14 +180,6 @@ class BasicCh(ErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handlers:
@@ -195,12 +189,10 @@ class BasicCh(ErosionModel):
                     "PrecipChanger"
                 ].get_erodibility_adjustment_factor()
             )
-        self.eroder.run_one_step(step, flooded_nodes=flooded)
+        self.eroder.run_one_step(step)
 
         # Do some soil creep
-        self.diffuser.run_one_step(
-            step, dynamic_dt=True, if_unstable="raise", courant_factor=0.1
-        )
+        self.diffuser.run_one_step(step)
 
         # Finalize the run_one_step_method
         self.finalize__run_one_step(step)

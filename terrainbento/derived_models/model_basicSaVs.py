@@ -6,11 +6,11 @@ Erosion model using depth-dependent linear diffusion with a soil layer, basic
 stream power, and discharge proportional to effective drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
-    4. `DepthDependentDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_diffusion/hillslope_depth_dependent_linear_flux.html#DepthDependentDiffuser>`_
-    5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `FastscapeEroder <https://landlab.readthedocs.io/en/master/reference/components/stream_power.html>`_
+    4. `DepthDependentDiffuser <https://landlab.readthedocs.io/en/master/reference/components/depth_dependent_diffusion.html>`_
+    5. `ExponentialWeatherer <https://landlab.readthedocs.io/en/master/reference/components/weathering.html>`_
 """
 
 import numpy as np
@@ -20,6 +20,7 @@ from landlab.components import (
     ExponentialWeatherer,
     FastscapeEroder,
 )
+from landlab.components.depression_finder.lake_mapper import _FLOODED
 from terrainbento.base_class import ErosionModel
 
 
@@ -170,23 +171,23 @@ class BasicSaVs(ErosionModel):
         # Instantiate a FastscapeEroder component
         self.eroder = FastscapeEroder(
             self.grid,
-            discharge_name="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
         )
 
-        # Instantiate a DepthDependentDiffuser component
-        self.diffuser = DepthDependentDiffuser(
-            self.grid,
-            linear_diffusivity=regolith_transport_parameter,
-            soil_transport_decay_depth=soil_transport_decay_depth,
-        )
-
+        # Instantiate a ExponentialWeatherer and DepthDependentDiffuser component
         self.weatherer = ExponentialWeatherer(
             self.grid,
             soil_production__maximum_rate=soil_production__maximum_rate,
             soil_production__decay_depth=soil_production__decay_depth,
+        )
+        self.diffuser = DepthDependentDiffuser(
+            self.grid,
+            linear_diffusivity=regolith_transport_parameter,
+            soil_transport_decay_depth=soil_transport_decay_depth,
         )
 
     def _calc_effective_drainage_area(self):
@@ -241,16 +242,14 @@ class BasicSaVs(ErosionModel):
         # Update effective runoff ratio
         self._calc_effective_drainage_area()
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Zero out effective area in flooded nodes
-        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
+        if self._erode_flooded_nodes:
+            flooded_nodes = []
+        else:
+            flood_status = self.grid.at_node["flood_status_code"]
+            flooded_nodes = np.nonzero(flood_status == _FLOODED)[0]
+
+        self.grid.at_node["surface_water__discharge"][flooded_nodes] = 0.0
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)

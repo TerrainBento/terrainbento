@@ -8,7 +8,8 @@ from terrainbento import BasicChSa, NotCoreNodeBaselevelHandler
 
 
 # test diffusion without stream power
-def test_diffusion_only(clock_08, grid_4):
+def test_diffusion_only(clock_08, grid_4_smaller):
+    grid_4 = grid_4_smaller
     U = 0.001
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2
@@ -33,20 +34,15 @@ def test_diffusion_only(clock_08, grid_4):
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
 
-    # Construct and run model
-    model = BasicChSa(**params)
-    for _ in range(30000):
-        model.run_one_step(clock_08.step)
-
-    # test steady state soil depth
-    actual_depth = model.grid.at_node["soil__depth"][30]
+    # predicted depth
     predicted_depth = -soil_production_decay_depth * np.log(
         U / max_soil_production_rate
     )
-    assert_array_almost_equal(actual_depth, predicted_depth, decimal=2)
 
+    # predicted slope
     # Construct actual and predicted slope at right edge of domain
-    x = 8.5 * grid_4.dx
+
+    x = 4.5 * grid_4.dx
     qs = U * x
     nterms = 11
     p = np.zeros(2 * nterms - 1)
@@ -61,7 +57,19 @@ def test_diffusion_only(clock_08, grid_4):
     p = np.append(p, qs)
     p_roots = np.roots(p)
     predicted_slope = np.abs(np.real(p_roots[-1]))
+
+    # Construct and run model
+    model = BasicChSa(**params)
+    factor = 4
+    nts = int(13000 / factor)
+    for _ in range(nts):
+        model.run_one_step(factor * clock_08.step)
+
+    # test steady state soil depth
+    actual_depth = model.grid.at_node["soil__depth"][15]
+    assert_array_almost_equal(actual_depth, predicted_depth, decimal=2)
+
     actual_slope = np.abs(
-        model.grid.at_node["topographic__steepest_slope"][39]
+        model.grid.at_node["topographic__steepest_slope"][20]
     )
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=1)

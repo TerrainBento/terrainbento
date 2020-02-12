@@ -7,11 +7,11 @@ stream power, and discharge proportional to drainage area.
 
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
-    4. `DepthDependentDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_diffusion/hillslope_depth_dependent_linear_flux.html#DepthDependentDiffuser>`_
-    5. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `FastscapeEroder <https://landlab.readthedocs.io/en/master/reference/components/stream_power.html>`_
+    4. `DepthDependentDiffuser <https://landlab.readthedocs.io/en/master/reference/components/depth_dependent_diffusion.html>`_
+    5. `ExponentialWeatherer <https://landlab.readthedocs.io/en/master/reference/components/weathering.html>`_
 """
 
 import numpy as np
@@ -160,7 +160,8 @@ class BasicSa(ErosionModel):
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
-            discharge_name="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         soil_thickness = self.grid.at_node["soil__depth"]
@@ -168,16 +169,16 @@ class BasicSa(ErosionModel):
         bedrock_elev[:] = self.z - soil_thickness
 
         # Instantiate diffusion and weathering components
-        self.diffuser = DepthDependentDiffuser(
-            self.grid,
-            linear_diffusivity=regolith_transport_parameter,
-            soil_transport_decay_depth=soil_transport_decay_depth,
-        )
-
         self.weatherer = ExponentialWeatherer(
             self.grid,
             soil_production__maximum_rate=soil_production__maximum_rate,
             soil_production__decay_depth=soil_production__decay_depth,
+        )
+
+        self.diffuser = DepthDependentDiffuser(
+            self.grid,
+            linear_diffusivity=regolith_transport_parameter,
+            soil_transport_decay_depth=soil_transport_decay_depth,
         )
 
     def run_one_step(self, step):
@@ -212,14 +213,6 @@ class BasicSa(ErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)
         if "PrecipChanger" in self.boundary_handlers:
@@ -229,7 +222,7 @@ class BasicSa(ErosionModel):
                     "PrecipChanger"
                 ].get_erodibility_adjustment_factor()
             )
-        self.eroder.run_one_step(step, flooded_nodes=flooded)
+        self.eroder.run_one_step(step)
 
         # We must also now erode the bedrock where relevant. If water erosion
         # into bedrock has occurred, the bedrock elevation will be higher than

@@ -8,7 +8,7 @@ from terrainbento.boundary_handlers import CaptureNodeBaselevelHandler
 def test_hex():
     """Test using a hex grid."""
 
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
 
     bh = CaptureNodeBaselevelHandler(
