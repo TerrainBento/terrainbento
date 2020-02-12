@@ -7,10 +7,10 @@ powe with a smoothed threshold and spatially varying erodibility based on two
 bedrock units, and discharge proportional to drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
-    4. `TaylorNonLinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.taylor_nonlinear_hillslope_flux.html>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <https://landlab.readthedocs.io/en/master/reference/components/stream_power.html>`_
+    4. `TaylorNonLinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/taylor_nonlinear_hillslope_flux.html>`_
 """
 
 from landlab.components import (

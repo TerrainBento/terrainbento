@@ -7,11 +7,11 @@ diffusion, stream-power-driven sediment erosion, mass conservation, and bedrock
 erosion, and discharge proportional to drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `Space <http://landlab.readthedocs.io/en/release/landlab.components.space.html>`_
-    4. `DepthDependentDiffuser <http://http://landlab.readthedocs.io/en/release/landlab.components.depth_dependent_diffusion.html>`_
-    5. `ExponentialWeatherer <http://http://landlab.readthedocs.io/en/release/landlab.components.weathering.html>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `Space <https://landlab.readthedocs.io/en/master/reference/components/space.html>`_
+    4. `DepthDependentDiffuser <https://landlab.readthedocs.io/en/master/reference/components/depth_dependent_diffusion.html>`_
+    5. `ExponentialWeatherer <https://landlab.readthedocs.io/en/master/reference/components/weathering.html>`_
 """
 
 import numpy as np
@@ -125,7 +125,7 @@ class BasicHySa(ErosionModel):
             Bedrock roughness length scale. Default is 0.5.
         solver : str, optional
             Solver option to pass to the Landlab
-            `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.space.html>`_
+            `Space <https://landlab.readthedocs.io/en/master/reference/components/space.html>`_
             component. Default is "basic".
         soil_production__maximum_rate : float, optional
             Maximum rate of soil production (:math:`P_{0}`). Default is 0.001.

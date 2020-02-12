@@ -27,7 +27,7 @@ class StochasticErosionModel(ErosionModel):
 
     Two primary options are avaliable for the stochastic erosion models. When
     ``opt_stochastic_duration=True`` the model will use the
-    `PrecipitationDistribution <https://landlab.readthedocs.io/en/latest/landlab.components.uniform_precip.html>`_
+    `PrecipitationDistribution <https://landlab.readthedocs.io/en/master/reference/components/uniform_precip.html>`_
     Landlab component to generate a random storm duration, interstorm duration,
     and precipitation intensity or storm depth from an exponential
     distribution. When this option is selected, the following parameters are

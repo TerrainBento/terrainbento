@@ -29,4 +29,4 @@ Domain Boundary Elevation Modifiers
 Valid Landlab Components
 ------------------------
 
-- `NormalFault <https://landlab.readthedocs.io/en/latest/landlab.components.normal_fault.html>`_.
+- `NormalFault <https://landlab.readthedocs.io/en/master/reference/components/normal_fault.html>`_.

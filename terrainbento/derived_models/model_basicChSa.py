@@ -6,11 +6,11 @@ Erosion model program using depth-dependent cubic diffusion with a soil layer,
 basic stream power, and discharge proportional to drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `FastscapeEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
-    4. `ExponentialWeatherer <http://landlab.readthedocs.io/en/release/_modules/landlab/components/weathering/exponential_weathering.html#ExponentialWeatherer>`_
-    5. `DepthDependentTaylorDiffuser <http://landlab.readthedocs.io/en/release/_modules/landlab/components/depth_dependent_taylor_soil_creep/hillslope_depth_dependent_taylor_flux.html#DepthDependentTaylorDiffuser>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `FastscapeEroder <https://landlab.readthedocs.io/en/master/reference/components/stream_power.html>`_
+    4. `ExponentialWeatherer <https://landlab.readthedocs.io/en/master/reference/components/weathering.html>`_
+    5. `DepthDependentTaylorDiffuser <https://landlab.readthedocs.io/en/master/reference/components/depth_dependent_taylor_soil_creep.html>`_
 """
 
 import numpy as np

@@ -7,10 +7,10 @@ erosion and mass conservation, and discharge proportional to effective drainage
 area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.erosion_deposition.html>`_
-    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `ErosionDeposition <https://landlab.readthedocs.io/en/master/reference/components/erosion_deposition.html>`_
+    4. `LinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/diffusion.html>`_
 """
 
 import numpy as np
@@ -104,7 +104,7 @@ class BasicHyVs(ErosionModel):
             (:math:`F_f`). Default is 0.5.
         solver : str, optional
             Solver option to pass to the Landlab
-            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`__
+            `ErosionDeposition <https://landlab.readthedocs.io/en/master/reference/components/erosion_deposition.html>`__
             component. Default is "basic".
         hydraulic_conductivity : float, optional
             Hydraulic conductivity (:math:`K_{sat}`). Default is 0.1.

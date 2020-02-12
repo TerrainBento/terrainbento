@@ -6,10 +6,10 @@ Erosion model program using linear diffusion, stream power with a smoothed
 threshold, and discharge proportional to effective drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
-    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <https://landlab.readthedocs.io/en/master/reference/components/stream_power.html>`_
+    4. `LinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/diffusion.html>`_
 """
 
 import numpy as np

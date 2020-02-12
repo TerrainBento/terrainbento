@@ -7,10 +7,10 @@ erosion and mass conservation with a smoothed threshold that varies with
 incision depth, and discharge proportional to drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.erosion_deposition.html>`_
-    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `ErosionDeposition <https://landlab.readthedocs.io/en/master/reference/components/erosion_deposition.html>`_
+    4. `LinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/diffusion.html>`_
 """
 
 from landlab.components import ErosionDeposition, LinearDiffuser
@@ -114,7 +114,7 @@ class BasicDdHy(ErosionModel):
             (:math:`F_f`). Default is 0.5.
         solver : str, optional
             Solver option to pass to the Landlab
-            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`__
+            `ErosionDeposition <https://landlab.readthedocs.io/en/master/reference/components/erosion_deposition.html>`__
             component. Default is "basic".
         **kwargs :
             Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
