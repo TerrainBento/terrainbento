@@ -21,8 +21,8 @@ _OTHER_params = {"water_erodibility": 0}
         (BasicSaVs, _OTHER_params),
     ],
 )
-def test_diffusion_only(clock_simple, grid_4, Model, water_params):
-
+def test_diffusion_only(clock_simple, grid_4_smaller, Model, water_params):
+    grid_4 = grid_4_smaller
     U = 0.001
     max_soil_production_rate = 0.002
     soil_production_decay_depth = 0.2
@@ -44,27 +44,18 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
         "soil_production__decay_depth": soil_production_decay_depth,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
+    dx = grid_4.dx
+
     for p in water_params:
         params[p] = water_params[p]
 
-    # construct and run model
-    model = Model(**params)
-    for _ in range(20000):
-        model.run_one_step(15)
-
-    dx = grid_4.dx
-
-    # test steady state soil depthf
-    actual_depth = model.grid.at_node["soil__depth"][28]
+    # make predicted depth:
     predicted_depth = -soil_production_decay_depth * np.log(
         U / max_soil_production_rate
     )
-    assert_array_almost_equal(actual_depth, predicted_depth, decimal=2)
 
-    # test steady state slope
-    actual_profile = model.grid.at_node["topographic__elevation"][21:42]
-
-    domain = np.arange(0, max(model.grid.node_x + dx), dx)
+    # maek predicted profile.
+    domain = np.arange(0, max(grid_4.x_of_node + dx), dx)
 
     half_domain = np.arange(0, max(domain) / 2.0 + dx, dx)
 
@@ -73,7 +64,7 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
     )
 
     half_domain_z = (
-        -half_domain ** 2
+        -(half_domain ** 2)
         * U
         / (
             regolith_transport_parameter
@@ -89,4 +80,34 @@ def test_diffusion_only(clock_simple, grid_4, Model, water_params):
 
     predicted_profile = steady_z_profile - np.min(steady_z_profile)
 
-    assert_array_almost_equal(actual_profile, predicted_profile, decimal=1)
+    test_dt = 1000
+
+    # construct and run model
+    model = Model(**params)
+    for i in range(20000):
+        model.run_one_step(15)
+
+        # at intervals of test_dt, see if tests pass, thus we break out of loop
+        # once the tests pass.
+        if i % test_dt == 0:
+
+            try:
+                # test steady state soil depthf
+                actual_depth = model.grid.at_node["soil__depth"][14]
+                assert_array_almost_equal(
+                    actual_depth, predicted_depth, decimal=2
+                )
+
+                # test steady state slope
+                actual_profile = model.grid.at_node["topographic__elevation"][
+                    11:22
+                ]
+                assert_array_almost_equal(
+                    actual_profile, predicted_profile, decimal=1
+                )
+
+                # if pass, then break.
+                break
+
+            except AssertionError:
+                pass

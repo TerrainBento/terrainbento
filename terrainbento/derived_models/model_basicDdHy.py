@@ -7,13 +7,11 @@ erosion and mass conservation with a smoothed threshold that varies with
 incision depth, and discharge proportional to drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `ErosionDeposition <http://landlab.readthedocs.io/en/release/landlab.components.erosion_deposition.html>`_
-    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `ErosionDeposition <https://landlab.readthedocs.io/en/master/reference/components/erosion_deposition.html>`_
+    4. `LinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/diffusion.html>`_
 """
-
-import numpy as np
 
 from landlab.components import ErosionDeposition, LinearDiffuser
 from terrainbento.base_class import ErosionModel
@@ -116,7 +114,7 @@ class BasicDdHy(ErosionModel):
             (:math:`F_f`). Default is 0.5.
         solver : str, optional
             Solver option to pass to the Landlab
-            `ErosionDeposition <https://landlab.readthedocs.io/en/latest/landlab.components.erosion_deposition.html>`__
+            `ErosionDeposition <https://landlab.readthedocs.io/en/master/reference/components/erosion_deposition.html>`__
             component. Default is "basic".
         **kwargs :
             Keyword arguments to pass to :py:class:`ErosionModel`. Importantly
@@ -183,6 +181,7 @@ class BasicDdHy(ErosionModel):
             sp_crit="water_erosion_rule__threshold",
             discharge_field="surface_water__discharge",
             solver=solver,
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
@@ -225,14 +224,6 @@ class BasicDdHy(ErosionModel):
         # create and move water
         self.create_and_move_water(step)
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Calculate cumulative erosion and update threshold
         cum_ero = self.grid.at_node["cumulative_elevation_change"]
         cum_ero[:] = (
@@ -252,7 +243,7 @@ class BasicDdHy(ErosionModel):
                     "PrecipChanger"
                 ].get_erodibility_adjustment_factor()
             )
-        self.eroder.run_one_step(step, flooded_nodes=flooded)
+        self.eroder.run_one_step(step)
 
         # Do some soil creep
         self.diffuser.run_one_step(step)

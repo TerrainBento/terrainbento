@@ -9,7 +9,7 @@ from terrainbento.boundary_handlers import PrecipChanger
 
 
 def test_not_passing_daily_rainfall__intermittency_factor():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
@@ -22,7 +22,7 @@ def test_not_passing_daily_rainfall__intermittency_factor():
 
 
 def test_not_passing_daily_rainfall__intermittency_factor_troc():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
@@ -35,7 +35,7 @@ def test_not_passing_daily_rainfall__intermittency_factor_troc():
 
 
 def test_not_passing_rainfall__mean_rate():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
@@ -48,7 +48,7 @@ def test_not_passing_rainfall__mean_rate():
 
 
 def test_not_passing_rainfall__mean_rate_time_rate_of_change():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
@@ -61,7 +61,7 @@ def test_not_passing_rainfall__mean_rate_time_rate_of_change():
 
 
 def test_not_passing_rainfall__shape_factor():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
@@ -74,7 +74,7 @@ def test_not_passing_rainfall__shape_factor():
 
 
 def test_not_passing_infiltration_capacity():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     with pytest.raises(ValueError):
         PrecipChanger(
             mg,
@@ -88,7 +88,7 @@ def test_not_passing_infiltration_capacity():
 
 def test_a_stop_time():
     """Test that it is possible to provide a stop time."""
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
 
     pc = PrecipChanger(
         mg,

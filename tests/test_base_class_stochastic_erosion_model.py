@@ -41,9 +41,9 @@ def test_init_record_opt_false(clock_simple, grid_1):
     assert model.rain_record is None
 
 
-def test_run_stochastic_opt_true(clock_04, grid_1):
+def test_run_stochastic_opt_true(clock_04, grid_0):
     params = {
-        "grid": grid_1,
+        "grid": grid_0,
         "opt_stochastic_duration": True,
         "clock": clock_04,
         "record_rain": True,
@@ -60,7 +60,7 @@ def test_run_stochastic_opt_true(clock_04, grid_1):
 
     model = BasicSt(**params)
     assert model.opt_stochastic_duration is True
-    model.run_for(model.clock.step, model.clock.stop)
+    model.run_for(model.clock.step, 400 * model.clock.step)
 
     rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(
         decimals=5

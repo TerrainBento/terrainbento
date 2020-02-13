@@ -135,17 +135,17 @@ class NotCoreNodeBaselevelHandler(object):
 
         """
         self.model_time = 0.0
-        self._grid = grid
+        self.grid = grid
         self.modify_core_nodes = modify_core_nodes
-        self.z = self._grid.at_node["topographic__elevation"]
+        self.z = self.grid.at_node["topographic__elevation"]
 
         # determine which nodes to lower
         # based on which are lowering, set the prefactor correctly.
         if self.modify_core_nodes:
-            self.nodes_to_lower = self._grid.status_at_node == 0
+            self.nodes_to_lower = self.grid.status_at_node == 0
             self.prefactor = -1.0
         else:
-            self.nodes_to_lower = self._grid.status_at_node != 0
+            self.nodes_to_lower = self.grid.status_at_node != 0
             self.prefactor = 1.0
 
         if (lowering_file_path is None) and (lowering_rate is None):
@@ -241,8 +241,8 @@ class NotCoreNodeBaselevelHandler(object):
                 "lithology_contact__elevation",
             ]
             for of in other_fields:
-                if of in self._grid.at_node:
-                    self._grid.at_node[of][self.nodes_to_lower] += (
+                if of in self.grid.at_node:
+                    self.grid.at_node[of][self.nodes_to_lower] += (
                         self.prefactor * self.lowering_rate * step
                     )
 
@@ -263,8 +263,8 @@ class NotCoreNodeBaselevelHandler(object):
                 "lithology_contact__elevation",
             ]
             for of in other_fields:
-                if of in self._grid.at_node:
-                    self._grid.at_node[of][
+                if of in self.grid.at_node:
+                    self.grid.at_node[of][
                         self.nodes_to_lower
                     ] -= self.topo_change
 

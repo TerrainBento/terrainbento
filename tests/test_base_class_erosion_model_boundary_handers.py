@@ -5,7 +5,6 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_equal  # , assert_array_almost_equal
 
-from landlab import CLOSED_BOUNDARY, FIXED_VALUE_BOUNDARY
 from terrainbento import Basic, BasicSt, ErosionModel
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
@@ -53,7 +52,7 @@ def test_single_node_blh_with_closed_boundaries(
         "boundary_handlers": {"SingleNodeBaselevelHandler": snblh},
     }
     model = Basic(**params)
-    assert model.grid.status_at_node[3] == FIXED_VALUE_BOUNDARY
+    assert model.grid.status_at_node[3] == model.grid.BC_NODE_IS_FIXED_VALUE
 
 
 def test_pass_two_boundary_handlers(clock_simple, simple_square_grid, U):
@@ -77,8 +76,8 @@ def test_pass_two_boundary_handlers(clock_simple, simple_square_grid, U):
     assert_array_equal(model.z, truth)
 
     status_at_node = np.zeros(model.z.size)
-    status_at_node[model.grid.boundary_nodes] = CLOSED_BOUNDARY
-    status_at_node[0] = FIXED_VALUE_BOUNDARY
+    status_at_node[model.grid.boundary_nodes] = model.grid.BC_NODE_IS_CLOSED
+    status_at_node[0] = model.grid.BC_NODE_IS_FIXED_VALUE
     assert_array_equal(model.grid.status_at_node, status_at_node)
 
 

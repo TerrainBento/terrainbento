@@ -7,15 +7,16 @@ threshold that varies with incision depth, and discharge proportional to
 effective drainage area.
 
 Landlab components used:
-    1. `FlowAccumulator <http://landlab.readthedocs.io/en/release/landlab.components.flow_accum.html>`_
-    2. `DepressionFinderAndRouter <http://landlab.readthedocs.io/en/release/landlab.components.flow_routing.html#module-landlab.components.flow_routing.lake_mapper>`_ (optional)
-    3. `StreamPowerSmoothThresholdEroder <http://landlab.readthedocs.io/en/release/landlab.components.stream_power.html>`_
-    4. `LinearDiffuser <http://landlab.readthedocs.io/en/release/landlab.components.diffusion.html>`_
+    1. `FlowAccumulator <https://landlab.readthedocs.io/en/master/reference/components/flow_accum.html>`_
+    2. `DepressionFinderAndRouter <https://landlab.readthedocs.io/en/master/reference/components/flow_routing.html>`_ (optional)
+    3. `StreamPowerSmoothThresholdEroder <https://landlab.readthedocs.io/en/master/reference/components/stream_power.html>`_
+    4. `LinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/diffusion.html>`_
 """
 
 import numpy as np
 
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
+from landlab.components.depression_finder.lake_mapper import _FLOODED
 from terrainbento.base_class import ErosionModel
 
 
@@ -170,7 +171,8 @@ class BasicDdVs(ErosionModel):
         # Instantiate a FastscapeEroder component
         self.eroder = StreamPowerSmoothThresholdEroder(
             self.grid,
-            use_Q="surface_water__discharge",
+            discharge_field="surface_water__discharge",
+            erode_flooded_nodes=self._erode_flooded_nodes,
             K_sp=self.K,
             m_sp=self.m,
             n_sp=self.n,
@@ -240,16 +242,14 @@ class BasicDdVs(ErosionModel):
         # Update effective runoff ratio
         self._calc_effective_drainage_area()
 
-        # Get IDs of flooded nodes, if any
-        if self.flow_accumulator.depression_finder is None:
-            flooded = []
-        else:
-            flooded = np.where(
-                self.flow_accumulator.depression_finder.flood_status == 3
-            )[0]
-
         # Zero out effective area in flooded nodes
-        self.grid.at_node["surface_water__discharge"][flooded] = 0.0
+        if self._erode_flooded_nodes:
+            flooded_nodes = []
+        else:
+            flood_status = self.grid.at_node["flood_status_code"]
+            flooded_nodes = np.nonzero(flood_status == _FLOODED)[0]
+
+        self.grid.at_node["surface_water__discharge"][flooded_nodes] = 0.0
 
         # Set the erosion threshold.
         #

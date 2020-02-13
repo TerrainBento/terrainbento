@@ -15,7 +15,7 @@ _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 def test_hex():
     """Test using a hex grid."""
 
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     z = mg.add_zeros("node", "topographic__elevation")
 
     bh = SingleNodeBaselevelHandler(mg, outlet_id=0, lowering_rate=-0.1)
@@ -49,7 +49,7 @@ def test_passing_both_lowering_methods():
 def test_outlet_lowering_object_bad_file():
     """Test using an outlet lowering object with a bad file."""
 
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
@@ -61,7 +61,7 @@ def test_outlet_lowering_object_bad_file():
 def test_outlet_lowering_rate_no_scaling_bedrock():
     """Test using an rate lowering object with no scaling and bedrock."""
 
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     z = mg.add_ones("node", "topographic__elevation")
     b = mg.add_zeros("node", "bedrock__elevation")
 
@@ -80,7 +80,7 @@ def test_outlet_lowering_rate_no_scaling_bedrock():
 def test_outlet_lowering_rate_on_not_outlet():
     """Test using an rate lowering object with no scaling and bedrock."""
 
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     z = mg.add_ones("node", "topographic__elevation")
     b = mg.add_zeros("node", "bedrock__elevation")
 
@@ -102,7 +102,7 @@ def test_outlet_lowering_rate_on_not_outlet():
 def test_outlet_lowering_object_no_scaling_bedrock():
     """Test using an outlet lowering object with no scaling and bedrock."""
 
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     z = mg.add_ones("node", "topographic__elevation")
     b = mg.add_zeros("node", "bedrock__elevation")
 
@@ -124,7 +124,7 @@ def test_outlet_lowering_object_no_scaling_bedrock():
 def test_outlet_lowering_object_no_scaling():
     """Test using an outlet lowering object with no scaling."""
 
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     z = mg.add_zeros("node", "topographic__elevation")
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
@@ -141,7 +141,7 @@ def test_outlet_lowering_object_no_scaling():
 def test_outlet_lowering_object_with_scaling():
     """Test using an outlet lowering object with scaling."""
 
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     z = mg.add_zeros("node", "topographic__elevation")
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
@@ -160,7 +160,7 @@ def test_outlet_lowering_object_with_scaling():
 
 
 def test_outlet_lowering_modify_other_nodes():
-    mg = HexModelGrid(5, 5)
+    mg = HexModelGrid((5, 5))
     mg.add_zeros("node", "topographic__elevation")
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
