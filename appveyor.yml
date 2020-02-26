@@ -27,8 +27,6 @@ install:
   - cmd: pip install statsmodels
   - cmd: pip install landlab --pre
   - cmd: pip install twine pytest pytest-cov pytest-datadir
-  - cmd: conda info
-  - cmd: conda list
 
 build: false
 
