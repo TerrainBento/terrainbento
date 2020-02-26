@@ -20,7 +20,11 @@ init:
   - "ECHO %APPVEYOR_REPO_BRANCH%"
 
 install:
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - "python -VV"
+  - cmd: python -m pip install --upgrade pip
   - cmd: pip install numpy
+  - cmd: pip install statsmodels
   - cmd: pip install landlab --pre
   - cmd: pip install twine pytest pytest-cov pytest-datadir
   - cmd: conda info
