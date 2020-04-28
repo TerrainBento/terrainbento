@@ -31,7 +31,7 @@ class BasicHyVs(ErosionModel):
 
         \frac{\partial \eta}{\partial t} = -\left(KQ(A)^{m}S^{n}
               - \omega_c\left(1-e^{-KQ(A)^{m}S^{n}/\omega_c}\right)\right)
-              + \frac{V\frac{Q_s}{Q(A)}}{\left(1-\phi\right)}
+              + V\frac{Q_s}{Q(A)}
               + D\nabla^2 \eta
 
         Q_s = \int_0^A \left(KQ(A)^{m}S^{n} - \frac{V Q_s}{Q(A)} \right) dA
@@ -45,7 +45,7 @@ class BasicHyVs(ErosionModel):
     parameters, :math:`K` is the erodibility by water, :math:`\omega_c` is the
     critical stream power needed for erosion to occur, :math:`V` is effective
     sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
-    :math:`\phi` is sediment porosity, and :math:`D` is the regolith transport
+    and :math:`D` is the regolith transport
     efficiency.
 
     :math:`\alpha` is the saturation area scale used for transforming area into
@@ -74,7 +74,6 @@ class BasicHyVs(ErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
-        sediment_porosity=0.3,
         fraction_fines=0.5,
         hydraulic_conductivity=0.1,
         solver="basic",
@@ -97,8 +96,6 @@ class BasicHyVs(ErosionModel):
         settling_velocity : float, optional
             Settling velocity of entrained sediment (:math:`V`). Default
             is 0.001.
-        sediment_porosity : float, optional
-            Sediment porosity (:math:`\phi`). Default is 0.3.
         fraction_fines : float, optional
             Fraction of fine sediment that is permanently detached
             (:math:`F_f`). Default is 0.5.
@@ -155,6 +152,11 @@ class BasicHyVs(ErosionModel):
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
 
+        # If needed, issue warning on porosity
+        if "sediment_porosity" in kwargs:
+            import warnings
+            warnings.warn("sediment_porosity is no longer used.")
+
         self.m = m_sp
         self.n = n_sp
         self.K = water_erodibility
@@ -167,12 +169,10 @@ class BasicHyVs(ErosionModel):
             self.grid,
             K=self.K,
             F_f=fraction_fines,
-            phi=sediment_porosity,
             v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
-            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 

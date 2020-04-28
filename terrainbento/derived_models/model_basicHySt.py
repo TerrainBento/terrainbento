@@ -43,7 +43,7 @@ class BasicHySt(StochasticErosionModel):
     :math:`n` are the discharge and slope exponent parameters, :math:`K` is
     the erodibility by water, :math:`V` is effective sediment settling
     velocity, :math:`Q_s` is volumetric sediment flux, :math:`r` is a runoff
-    rate, :math:`\phi` is sediment porosity, and :math:`D` is the regolith
+    rate, and :math:`D` is the regolith
     transport efficiency.
 
     Refer to
@@ -66,7 +66,6 @@ class BasicHySt(StochasticErosionModel):
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
         infiltration_capacity=1.0,
-        sediment_porosity=0.3,
         fraction_fines=0.5,
         solver="basic",
         **kwargs
@@ -90,8 +89,6 @@ class BasicHySt(StochasticErosionModel):
         settling_velocity : float, optional
             Settling velocity of entrained sediment (:math:`V`). Default
             is 0.001.
-        sediment_porosity : float, optional
-            Sediment porosity (:math:`\phi`). Default is 0.3.
         fraction_fines : float, optional
             Fraction of fine sediment that is permanently detached
             (:math:`F_f`). Default is 0.5.
@@ -140,6 +137,11 @@ class BasicHySt(StochasticErosionModel):
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
 
+        # If needed, issue warning on porosity
+        if "sediment_porosity" in kwargs:
+            import warnings
+            warnings.warn("sediment_porosity is no longer used.")
+
         # Get Parameters:
         self.m = m_sp
         self.n = n_sp
@@ -157,12 +159,10 @@ class BasicHySt(StochasticErosionModel):
             self.grid,
             K=self.K,
             F_f=fraction_fines,
-            phi=sediment_porosity,
             v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
-            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 

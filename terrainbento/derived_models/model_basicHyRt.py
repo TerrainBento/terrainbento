@@ -79,7 +79,6 @@ class BasicHyRt(TwoLithologyErosionModel):
         grid,
         solver="basic",
         settling_velocity=0.001,
-        sediment_porosity=0.3,
         fraction_fines=0.5,
         **kwargs
     ):
@@ -106,8 +105,6 @@ class BasicHyRt(TwoLithologyErosionModel):
         settling_velocity : float, optional
             Settling velocity of entrained sediment (:math:`V`). Default
             is 0.001.
-        sediment_porosity : float, optional
-            Sediment porosity (:math:`\phi`). Default is 0.3.
         fraction_fines : float, optional
             Fraction of fine sediment that is permanently detached
             (:math:`F_f`). Default is 0.5.
@@ -158,6 +155,11 @@ class BasicHyRt(TwoLithologyErosionModel):
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
 
+        # If needed, issue warning on porosity
+        if "sediment_porosity" in kwargs:
+            import warnings
+            warnings.warn("sediment_porosity is no longer used.")
+
         # Save the threshold values for rock and till
         self.rock_thresh = 0.0
         self.till_thresh = 0.0
@@ -170,12 +172,10 @@ class BasicHyRt(TwoLithologyErosionModel):
             self.grid,
             K="substrate__erodibility",
             F_f=fraction_fines,
-            phi=sediment_porosity,
             v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
-            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 

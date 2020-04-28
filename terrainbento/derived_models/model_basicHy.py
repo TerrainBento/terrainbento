@@ -26,7 +26,7 @@ class BasicHy(ErosionModel):
     .. math::
 
         \frac{\partial \eta}{\partial t} = \frac{V Q_s}
-                                                {Q\left(1 - \phi \right)}
+                                                {Q}
                                            - KQ^{m}S^{n}
                                            + D\nabla^2 \eta
 
@@ -38,8 +38,7 @@ class BasicHy(ErosionModel):
     :math:`n` are the discharge and slope exponent parameters, :math:`K` is the
     erodibility by water, :math:`V` is effective sediment settling velocity,
     :math:`Q_s` is volumetric sediment flux, :math:`r` is a runoff rate,
-    :math:`\phi` is sediment porosity, and :math:`D` is the regolith transport
-    efficiency.
+    and :math:`D` is the regolith transport efficiency.
 
     Refer to
     `Barnhart et al. (2019) <https://doi.org/10.5194/gmd-12-1267-2019>`_
@@ -60,7 +59,6 @@ class BasicHy(ErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
-        sediment_porosity=0.3,
         fraction_fines=0.5,
         solver="basic",
         **kwargs
@@ -82,8 +80,6 @@ class BasicHy(ErosionModel):
         settling_velocity : float, optional
             Settling velocity of entrained sediment (:math:`V`). Default
             is 0.001.
-        sediment_porosity : float, optional
-            Sediment porosity (:math:`\phi`). Default is 0.3.
         fraction_fines : float, optional
             Fraction of fine sediment that is permanently detached
             (:math:`F_f`). Default is 0.5.
@@ -143,13 +139,11 @@ class BasicHy(ErosionModel):
         self.eroder = ErosionDeposition(
             self.grid,
             K=self.K,
-            phi=sediment_porosity,
             F_f=fraction_fines,
             v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
-            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 
