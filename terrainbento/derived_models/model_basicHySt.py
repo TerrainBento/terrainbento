@@ -16,6 +16,7 @@ Landlab components used:
 """
 
 from landlab.components import ErosionDeposition, LinearDiffuser
+
 from terrainbento.base_class import StochasticErosionModel
 
 
@@ -140,6 +141,7 @@ class BasicHySt(StochasticErosionModel):
         # If needed, issue warning on porosity
         if "sediment_porosity" in kwargs:
             import warnings
+
             warnings.warn("sediment_porosity is no longer used.")
 
         # Get Parameters:

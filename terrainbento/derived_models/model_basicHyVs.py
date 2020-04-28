@@ -14,9 +14,9 @@ Landlab components used:
 """
 
 import numpy as np
-
 from landlab.components import ErosionDeposition, LinearDiffuser
 from landlab.components.depression_finder.lake_mapper import _FLOODED
+
 from terrainbento.base_class import ErosionModel
 
 
@@ -155,6 +155,7 @@ class BasicHyVs(ErosionModel):
         # If needed, issue warning on porosity
         if "sediment_porosity" in kwargs:
             import warnings
+
             warnings.warn("sediment_porosity is no longer used.")
 
         self.m = m_sp
