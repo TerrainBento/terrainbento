@@ -18,7 +18,6 @@ def test_channel_erosion(
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_2, modify_core_nodes=True, lowering_rate=-U
     )
-    phi = 0.1
     F_f = 0.0
     v_sc = 0.001
     Kr = 0.001
@@ -31,7 +30,6 @@ def test_channel_erosion(
         "water_erodibility_upper": Kt,
         "water_erodibility_lower": Kr,
         "settling_velocity": v_sc,
-        "sediment_porosity": phi,
         "fraction_fines": F_f,
         "solver": solver,
         "m_sp": m_sp,
