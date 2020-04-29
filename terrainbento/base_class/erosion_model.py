@@ -10,10 +10,10 @@ import numpy as np
 import xarray as xr
 import yaml
 
-from landlab import ModelGrid, create_grid
+from landlab import ModelGrid, RasterModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
 from landlab.graph import Graph
-from landlab.io.netcdf import write_raster_netcdf
+from landlab.io.netcdf import write_raster_netcdf, to_netcdf
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -519,26 +519,12 @@ class ErosionModel(object):
         self.calculate_cumulative_change()
         filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
         self._output_files.append(filename)
-        try:
+        if isinstance(self.grid, RasterModelGrid):
             write_raster_netcdf(
                 filename, self.grid, names=self.output_fields, format="NETCDF4"
             )
-        except NotImplementedError:
-            graph = Graph.from_dict(
-                {
-                    "y_of_node": self.grid.y_of_node,
-                    "x_of_node": self.grid.x_of_node,
-                    "nodes_at_link": self.grid.nodes_at_link,
-                }
-            )
-
-            for field_name in self.output_fields:
-
-                graph._ds.__setitem__(
-                    field_name, ("node", self.grid.at_node[field_name])
-                )
-
-            graph.to_netcdf(path=filename, mode="w", format="NETCDF4")
+        else:
+            to_netcdf(self.grid, filename, format="NETCDF4")
 
         self.run_output_writers()
 
