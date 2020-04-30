@@ -14,7 +14,6 @@ Landlab components used:
 """
 
 from landlab.components import ErosionDeposition, LinearDiffuser
-
 from terrainbento.base_class import ErosionModel
 
 

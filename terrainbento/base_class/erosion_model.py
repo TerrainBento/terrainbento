@@ -12,8 +12,7 @@ import yaml
 
 from landlab import ModelGrid, RasterModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
-from landlab.graph import Graph
-from landlab.io.netcdf import write_raster_netcdf, to_netcdf
+from landlab.io.netcdf import to_netcdf, write_raster_netcdf
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
