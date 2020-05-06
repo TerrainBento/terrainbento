@@ -594,6 +594,7 @@ class ErosionModel(object):
             self._itters.append(self.iteration)
             self.iteration += 1
             self.write_output()
+            self.iteration += 1
 
         # now that the model is finished running, execute finalize.
         self.finalize()
@@ -666,7 +667,6 @@ class ErosionModel(object):
         space_unit: str, optional
             Name of space unit. Default is "space unit".
         """
-
         # open all files as a xarray dataset
         ds = xr.open_mfdataset(
             self._output_files,
