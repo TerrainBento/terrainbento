@@ -591,8 +591,8 @@ class ErosionModel(object):
             )
             self.run_for(self.clock.step, next_run_pause - time_now)
             time_now = self._model_time
-            self.iteration += 1
             self._itters.append(self.iteration)
+            self.iteration += 1
             self.write_output()
 
         # now that the model is finished running, execute finalize.
