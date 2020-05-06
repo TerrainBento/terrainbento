@@ -84,7 +84,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
 
         """
         # Replace  `ModelTemplate` with your model name.
-        super(ModelTemplate, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
         # Do not change any additional parts of this line.
 
         # verify correct fields are present.

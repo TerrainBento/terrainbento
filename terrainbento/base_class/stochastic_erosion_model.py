@@ -165,7 +165,7 @@ class StochasticErosionModel(ErosionModel):
         usage.
         """
         # Call StochasticErosionModel init
-        super(StochasticErosionModel, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # ensure Precipitator and RunoffGenerator are vanilla
         self._ensure_precip_runoff_are_vanilla()

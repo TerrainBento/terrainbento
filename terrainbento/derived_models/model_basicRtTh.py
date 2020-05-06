@@ -149,7 +149,7 @@ class BasicRtTh(TwoLithologyErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicRtTh, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         if float(self.n) != 1.0:
             raise ValueError("Model only supports n equals 1.")

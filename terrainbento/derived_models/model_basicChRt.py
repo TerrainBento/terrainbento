@@ -142,7 +142,7 @@ class BasicChRt(TwoLithologyErosionModel):
         1.0
         """
         # Call ErosionModel"s init
-        super(BasicChRt, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # Set up rock-till boundary and associated grid fields.
         self._setup_rock_and_till()

@@ -121,7 +121,7 @@ class BasicVs(ErosionModel):
         """
 
         # Call ErosionModel"s init
-        super(BasicVs, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # ensure Precipitator and RunoffGenerator are vanilla
         self._ensure_precip_runoff_are_vanilla(vsa_precip=True)

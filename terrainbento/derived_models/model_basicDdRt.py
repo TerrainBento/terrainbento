@@ -149,7 +149,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         1.0
         """
         # Call ErosionModel"s init
-        super(BasicDdRt, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
         self._verify_fields(self._required_fields)

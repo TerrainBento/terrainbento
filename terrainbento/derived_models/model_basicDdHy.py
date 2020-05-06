@@ -154,7 +154,7 @@ class BasicDdHy(ErosionModel):
             raise ValueError(msg)
 
         # Call ErosionModel"s init
-        super(BasicDdHy, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
         self._verify_fields(self._required_fields)

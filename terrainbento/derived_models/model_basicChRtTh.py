@@ -160,7 +160,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         1.0
         """
         # Call ErosionModel"s init
-        super(BasicChRtTh, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         if float(self.n) != 1.0:
             raise ValueError("Model only supports n equals 1.")
