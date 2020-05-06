@@ -10,10 +10,9 @@ import numpy as np
 import xarray as xr
 import yaml
 
-from landlab import ModelGrid, create_grid
+from landlab import ModelGrid, RasterModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
-from landlab.graph import Graph
-from landlab.io.netcdf import write_raster_netcdf
+from landlab.io.netcdf import to_netcdf, write_raster_netcdf
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -519,26 +518,12 @@ class ErosionModel(object):
         self.calculate_cumulative_change()
         filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
         self._output_files.append(filename)
-        try:
+        if isinstance(self.grid, RasterModelGrid):
             write_raster_netcdf(
                 filename, self.grid, names=self.output_fields, format="NETCDF4"
             )
-        except NotImplementedError:
-            graph = Graph.from_dict(
-                {
-                    "y_of_node": self.grid.y_of_node,
-                    "x_of_node": self.grid.x_of_node,
-                    "nodes_at_link": self.grid.nodes_at_link,
-                }
-            )
-
-            for field_name in self.output_fields:
-
-                graph._ds.__setitem__(
-                    field_name, ("node", self.grid.at_node[field_name])
-                )
-
-            graph.to_netcdf(path=filename, mode="w", format="NETCDF4")
+        else:
+            to_netcdf(self.grid, filename, format="NETCDF4")
 
         self.run_output_writers()
 
@@ -606,9 +591,9 @@ class ErosionModel(object):
             )
             self.run_for(self.clock.step, next_run_pause - time_now)
             time_now = self._model_time
-            self.iteration += 1
             self._itters.append(self.iteration)
             self.write_output()
+            self.iteration += 1
 
         # now that the model is finished running, execute finalize.
         self.finalize()
@@ -681,12 +666,12 @@ class ErosionModel(object):
         space_unit: str, optional
             Name of space unit. Default is "space unit".
         """
-
         # open all files as a xarray dataset
         ds = xr.open_mfdataset(
             self._output_files,
             concat_dim="nt",
             engine="netcdf4",
+            combine="nested",
             data_vars=self.output_fields,
         )
 

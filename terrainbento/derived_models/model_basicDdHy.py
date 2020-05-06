@@ -28,7 +28,7 @@ class BasicDdHy(ErosionModel):
 
         \frac{\partial \eta}{\partial t} = -\left(KQ(A)^{m}S^{n}
             - \omega_{ct}\left(1-e^{-KQ^{m}S^{n}/\omega_{ct}}\right)\right)
-            + \frac{V\frac{Q_s}{Q(A)}}{\left(1-\phi\right)}
+            + V\frac{Q_s}{Q(A)}
             + D\nabla^2 \eta
 
         Q_s = \int_0^A \left((1-F_f)[\omega
@@ -42,8 +42,8 @@ class BasicDdHy(ErosionModel):
     :math:`n` are the discharge and slope exponent parameters, :math:`K` is the
     erodibility by water, :math:`\omega_{ct}` is the critical stream power
     needed for erosion to occur, :math:`V` is effective sediment settling
-    velocity, :math:`Q_s` is volumetric sediment flux, :math:`\phi` is sediment
-    porosity, and :math:`D` is the regolith transport efficiency.
+    velocity, :math:`Q_s` is volumetric sediment flux, and :math:`D` is the
+    regolith transport efficiency.
 
     :math:`\omega_{ct}` may change through time as it increases with cumulative
     incision depth:
@@ -79,7 +79,6 @@ class BasicDdHy(ErosionModel):
         water_erosion_rule__threshold=0.01,
         water_erosion_rule__thresh_depth_derivative=0.0,
         settling_velocity=0.001,
-        sediment_porosity=0.3,
         fraction_fines=0.5,
         solver="basic",
         **kwargs
@@ -107,8 +106,6 @@ class BasicDdHy(ErosionModel):
         settling_velocity : float, optional
             Settling velocity of entrained sediment (:math:`V`). Default
             is 0.001.
-        sediment_porosity : float, optional
-            Sediment porosity (:math:`\phi`). Default is 0.3.
         fraction_fines : float, optional
             Fraction of fine sediment that is permanently detached
             (:math:`F_f`). Default is 0.5.
@@ -151,8 +148,13 @@ class BasicDdHy(ErosionModel):
         >>> model.model_time
         1.0
         """
+        # If needed, issue warning on porosity
+        if "sediment_porosity" in kwargs:
+            msg = "sediment_porosity is no longer used by BasicDdHy."
+            raise ValueError(msg)
+
         # Call ErosionModel"s init
-        super(BasicDdHy, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
@@ -174,14 +176,12 @@ class BasicDdHy(ErosionModel):
             self.grid,
             K=self.K,
             F_f=fraction_fines,
-            phi=sediment_porosity,
             v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             sp_crit="water_erosion_rule__threshold",
             discharge_field="surface_water__discharge",
             solver=solver,
-            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Get the parameter for rate of threshold increase with erosion depth

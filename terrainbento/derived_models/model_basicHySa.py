@@ -171,7 +171,7 @@ class BasicHySa(ErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicHySa, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
@@ -199,7 +199,6 @@ class BasicHySa(ErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
-            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 

@@ -170,7 +170,7 @@ class BasicRtSa(TwoLithologyErosionModel):
 
         """
         # Call ErosionModel"s init
-        super(BasicRtSa, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
