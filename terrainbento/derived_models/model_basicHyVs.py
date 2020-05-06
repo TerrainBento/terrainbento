@@ -142,6 +142,10 @@ class BasicHyVs(ErosionModel):
         1.0
 
         """
+        # If needed, issue warning on porosity
+        if "sediment_porosity" in kwargs:
+            msg = "sediment_porosity is no longer used by BasicHyVs."
+            raise ValueError(msg)
 
         # Call ErosionModel"s init
         super(BasicHyVs, self).__init__(clock, grid, **kwargs)
@@ -151,12 +155,6 @@ class BasicHyVs(ErosionModel):
 
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
-
-        # If needed, issue warning on porosity
-        if "sediment_porosity" in kwargs:
-            import warnings
-
-            warnings.warn("sediment_porosity is no longer used.")
 
         self.m = m_sp
         self.n = n_sp

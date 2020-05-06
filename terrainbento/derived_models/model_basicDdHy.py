@@ -148,17 +148,16 @@ class BasicDdHy(ErosionModel):
         >>> model.model_time
         1.0
         """
+        # If needed, issue warning on porosity
+        if "sediment_porosity" in kwargs:
+            msg = "sediment_porosity is no longer used by BasicDdHy."
+            raise ValueError(msg)
+
         # Call ErosionModel"s init
         super(BasicDdHy, self).__init__(clock, grid, **kwargs)
 
         # verify correct fields are present.
         self._verify_fields(self._required_fields)
-
-        # If needed, issue warning on porosity
-        if "sediment_porosity" in kwargs:
-            import warnings
-
-            warnings.warn("sediment_porosity is no longer used.")
 
         # Get Parameters and convert units if necessary:
         self.m = m_sp
