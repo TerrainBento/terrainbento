@@ -671,6 +671,7 @@ class ErosionModel(object):
             self._output_files,
             concat_dim="nt",
             engine="netcdf4",
+            combine='nested',
             data_vars=self.output_fields,
         )
 
