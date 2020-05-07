@@ -148,7 +148,6 @@ class BasicHy(ErosionModel):
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
-            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 
