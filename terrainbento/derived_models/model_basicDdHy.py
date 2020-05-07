@@ -182,6 +182,7 @@ class BasicDdHy(ErosionModel):
             sp_crit="water_erosion_rule__threshold",
             discharge_field="surface_water__discharge",
             solver=solver,
+            erode_flooded_nodes=self._erode_flooded_nodes,
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
