@@ -27,7 +27,6 @@ def test_stream_DdHy(
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_1, modify_core_nodes=True, lowering_rate=-U
     )
-    phi = 0.1
     F_f = 0.0
     v_sc = 0.001
     thresh_change_per_depth = 0
@@ -38,7 +37,6 @@ def test_stream_DdHy(
         "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "settling_velocity": v_sc,
-        "sediment_porosity": phi,
         "fraction_fines": F_f,
         "water_erosion_rule__threshold": threshold,
         "water_erosion_rule__thresh_depth_derivative": thresh_change_per_depth,

@@ -19,7 +19,6 @@ def test_channel_erosion(
     ncnblh = NotCoreNodeBaselevelHandler(
         grid_1, modify_core_nodes=True, lowering_rate=-U
     )
-    phi = 0.0
     F_f = 0.0
     v_sc = 0.001
     # construct dictionary. note that D is turned off here
@@ -29,7 +28,6 @@ def test_channel_erosion(
         "regolith_transport_parameter": 0.0,
         "water_erodibility": K,
         "settling_velocity": v_sc,
-        "sediment_porosity": phi,
         "fraction_fines": F_f,
         "hydraulic_conductivity": 0.0,
         "solver": solver,

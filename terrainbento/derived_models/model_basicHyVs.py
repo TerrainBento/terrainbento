@@ -16,7 +16,6 @@ Landlab components used:
 import numpy as np
 
 from landlab.components import ErosionDeposition, LinearDiffuser
-from landlab.components.depression_finder.lake_mapper import _FLOODED
 from terrainbento.base_class import ErosionModel
 
 
@@ -31,7 +30,7 @@ class BasicHyVs(ErosionModel):
 
         \frac{\partial \eta}{\partial t} = -\left(KQ(A)^{m}S^{n}
               - \omega_c\left(1-e^{-KQ(A)^{m}S^{n}/\omega_c}\right)\right)
-              + \frac{V\frac{Q_s}{Q(A)}}{\left(1-\phi\right)}
+              + V\frac{Q_s}{Q(A)}
               + D\nabla^2 \eta
 
         Q_s = \int_0^A \left(KQ(A)^{m}S^{n} - \frac{V Q_s}{Q(A)} \right) dA
@@ -45,7 +44,7 @@ class BasicHyVs(ErosionModel):
     parameters, :math:`K` is the erodibility by water, :math:`\omega_c` is the
     critical stream power needed for erosion to occur, :math:`V` is effective
     sediment settling velocity, :math:`Q_s` is volumetric sediment flux,
-    :math:`\phi` is sediment porosity, and :math:`D` is the regolith transport
+    and :math:`D` is the regolith transport
     efficiency.
 
     :math:`\alpha` is the saturation area scale used for transforming area into
@@ -74,7 +73,6 @@ class BasicHyVs(ErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         settling_velocity=0.001,
-        sediment_porosity=0.3,
         fraction_fines=0.5,
         hydraulic_conductivity=0.1,
         solver="basic",
@@ -97,8 +95,6 @@ class BasicHyVs(ErosionModel):
         settling_velocity : float, optional
             Settling velocity of entrained sediment (:math:`V`). Default
             is 0.001.
-        sediment_porosity : float, optional
-            Sediment porosity (:math:`\phi`). Default is 0.3.
         fraction_fines : float, optional
             Fraction of fine sediment that is permanently detached
             (:math:`F_f`). Default is 0.5.
@@ -145,9 +141,13 @@ class BasicHyVs(ErosionModel):
         1.0
 
         """
+        # If needed, issue warning on porosity
+        if "sediment_porosity" in kwargs:
+            msg = "sediment_porosity is no longer used by BasicHyVs."
+            raise ValueError(msg)
 
         # Call ErosionModel"s init
-        super(BasicHyVs, self).__init__(clock, grid, **kwargs)
+        super().__init__(clock, grid, **kwargs)
 
         # ensure Precipitator and RunoffGenerator are vanilla
         self._ensure_precip_runoff_are_vanilla(vsa_precip=True)
@@ -167,12 +167,10 @@ class BasicHyVs(ErosionModel):
             self.grid,
             K=self.K,
             F_f=fraction_fines,
-            phi=sediment_porosity,
             v_s=settling_velocity,
             m_sp=self.m,
             n_sp=self.n,
             discharge_field="surface_water__discharge",
-            erode_flooded_nodes=self._erode_flooded_nodes,
             solver=solver,
         )
 
@@ -233,15 +231,6 @@ class BasicHyVs(ErosionModel):
 
         # Update effective runoff ratio
         self._calc_effective_drainage_area()
-
-        # Zero out effective area in flooded nodes
-        if self._erode_flooded_nodes:
-            flooded_nodes = []
-        else:
-            flood_status = self.grid.at_node["flood_status_code"]
-            flooded_nodes = np.nonzero(flood_status == _FLOODED)[0]
-
-        self.grid.at_node["surface_water__discharge"][flooded_nodes] = 0.0
 
         # Do some erosion
         # (if we're varying K through time, update that first)
