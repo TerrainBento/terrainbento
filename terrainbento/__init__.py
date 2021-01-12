@@ -56,6 +56,10 @@ from .derived_models import (
 from .model_template import ModelTemplate
 from .precipitators import RandomPrecipitator, UniformPrecipitator
 from .runoff_generators import SimpleRunoff
+from .output_writers import (
+    GenericOutputWriter,
+    StaticIntervalOutputWriter,
+)
 
 __all__ = [
     "Clock",
@@ -99,6 +103,8 @@ __all__ = [
     "ErosionModel",
     "StochasticErosionModel",
     "TwoLithologyErosionModel",
+    "GenericOutputWriter",
+    "StaticIntervalOutputWriter",
 ]
 
 

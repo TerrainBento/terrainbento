@@ -5,6 +5,7 @@
 import os
 import sys
 import time as tm
+import warnings
 
 import numpy as np
 import xarray as xr
@@ -210,10 +211,26 @@ class ErosionModel(object):
             Dictionary of input parameters.
         output_writers : dictionary of output writers.
             Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot). These should be passed in a dictionary with two
-            keys: "class" and "function". The value associated with each of
-            these should be a list containing the uninstantiated output
-            writers. See the Jupyter notebook examples for more details.
+            diagnostic plot). There are two formats for the dictionary entries: 
+                1) Items can have a key of "class" or "function" and a value of 
+                   a list of simple output classes (uninstantiated) or 
+                   functions, respectively. All output writers defined this way 
+                   will use the `output_interval` provided to the ErosionModel 
+                   constructor. 
+
+                2) Items can have a key with any unique string representing the 
+                   output writer's name and a value containing a dict with the 
+                   uninstantiated class and arguments. The value follows the 
+                   format: {
+                        'class' : MyWriter,
+                        'args' : [], # optional
+                        'kwargs' : {}, # optional
+                        }
+                   where `args` and `kwargs` are passed to the constructor for 
+                   `MyWriter`. `MyWriter` must be a child class of 
+                   GenericOutputWriter.
+            The two formats can be present simultaneously. See the Jupyter 
+            notebook examples for more details.
 
         Examples
         --------
@@ -346,10 +363,26 @@ class ErosionModel(object):
             module for valid options.
         output_writers : dictionary of output writers.
             Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot). These should be passed in a dictionary with two
-            keys: "class" and "function". The value associated with each of
-            these should be a list containing the uninstantiated output
-            writers. See the Jupyter notebook examples for more details.
+            diagnostic plot). There are two formats for the dictionary entries: 
+                1) Items can have a key of "class" or "function" and a value of 
+                   a list of simple output classes (uninstantiated) or 
+                   functions, respectively. All output writers defined this way 
+                   will use the `output_interval` provided to the ErosionModel 
+                   constructor. 
+
+                2) Items can have a key with any unique string representing the 
+                   output writer's name and a value containing a dict with the 
+                   uninstantiated class and arguments. The value follows the 
+                   format: {
+                        'class' : MyWriter,
+                        'args' : [], # optional
+                        'kwargs' : {}, # optional
+                        }
+                   where `args` and `kwargs` are passed to the constructor for 
+                   `MyWriter`. `MyWriter` must be a child class of 
+                   GenericOutputWriter.
+            The two formats can be present simultaneously. See the Jupyter 
+            notebook examples for more details.
         output_interval : float, optional
             Default is the Clock's stop time.
         save_first_timestep : bool, optional
@@ -469,13 +502,15 @@ class ErosionModel(object):
         _verify_boundary_handler(boundary_handlers)
         self.boundary_handlers = boundary_handlers
 
-        if "class" in output_writers:
-            instantiated_classes = []
-            for ow_class in output_writers["class"]:
-                instantiated_classes.append(ow_class(self))
-            output_writers["class"] = instantiated_classes
+        # Instantiate all the output writers
+        self.all_output_writers = self._setup_output_writers(output_writers)
 
-        self.output_writers = output_writers
+        # Keep track of when each writer needs to write next
+        self.active_output_times = {} # {next time : [writers]}
+        self.sorted_output_times = [] # sorted list of the next output times
+        for ow_writer in self.all_output_writers:
+            first_time = ow_writer.advance_iter()
+            self._update_output_times(ow_writer, first_time)
 
     def _verify_fields(self, required_fields):
         """Verify all required fields are present."""
@@ -485,10 +520,144 @@ class ErosionModel(object):
                     "Required field {field} not present.".format(field=field)
                 )
 
+    def _setup_output_writers(self, output_writers):
+        """ Convert all output writers to the new framework and instantiate 
+        output writer classes.
+
+        Parameters
+        ----------
+        output_writers : dictionary of output writers.
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot). There are two formats for the dictionary entries: 
+                1) Items can have a key of "class" or "function" and a value of 
+                   a list of simple output classes (uninstantiated) or 
+                   functions, respectively. All output writers defined this way 
+                   will use the `output_interval` provided to the ErosionModel 
+                   constructor. 
+
+                2) Items can have a key with any unique string representing the 
+                   output writer's name and a value containing a dict with the 
+                   uninstantiated class and arguments. The value follows the 
+                   format: {
+                        'class' : MyWriter,
+                        'args' : [], # optional
+                        'kwargs' : {}, # optional
+                        }
+                   where `args` and `kwargs` are passed to the constructor for 
+                   `MyWriter`. `MyWriter` must be a child class of 
+                   GenericOutputWriter.
+            The two formats can be present simultaneously. See the Jupyter 
+            notebook examples for more details.
+
+        Returns
+        -------
+        instantiated_output_writers : list
+            A list of instantiated output writers. Keys are the writer's 
+            name. Values are an instance of the writer.
+
+        [section?]
+        ----------
+        All classes and functions provided in the 'class' and 'function' 
+        entries will be given to an adapter class for 
+        StaticIntervalOutputWriter so that they can be used with the new 
+        framework. All of theses writers will use `output_interval`.
+
+        """
+        
+        # Note: I can't guarantee that the names will stay unique. I need to 
+        # convert the 'class' and 'function' writers to the new style and there 
+        # is a non-zero chance the user happens to use the same name that I 
+        # give the converted writers. These names are used for output 
+        # filenames, so I don't want to use anything ugly. Hence why I return a 
+        # list.
+
+        instantiated_writers = []
+        output_interval = self.output_interval
+        for name in output_writers:
+            if name == 'class':
+                # Old style class output writers. Give information to an 
+                # adapter for instantiating as a static interval writer.
+                for ow_class in output_writers['class']:
+                    new_writer = StaticIntervalOutputClassAdaptor(
+                            model=self,
+                            output_interval=self.output_interval
+                            ow_class=ow_class,
+                            save_first_timestep=self.save_first_timestep,
+                            )
+                    #new_name = new_writer.name 
+                    #assert new_name not in instantiated_writers, \
+                    #        f"Output writer '{name}' already exists"
+                    instantiated_writers.append(new_writer)
+            elif name == 'function':
+                # Old style function output writers. Give information to an 
+                # adapter for instantiating as a static interval writer.
+                for ow_function in output_writers['function']:
+                    new_writer = StaticIntervalOutputFunctionAdaptor(
+                            model=self,
+                            output_interval=self.output_interval
+                            ow_function=ow_function,
+                            save_first_timestep=self.save_first_timestep,
+                            )
+                    instantiated_writers.append(new_writer)
+
+            else:
+                # New style output writer class
+                writer_dict = output_writers[name]
+                ow_class = writer_dict['class']
+                ow_args = writer_dict.get('args', [])
+                ow_kwargs = writer_dict.get('kwargs', {})
+
+                # Add some kwargs if they were not already provided
+                # Not necessary, but allows for some extra control
+                ow_kwargs['model'] = self
+                ow_kwargs['name'] = ow_kwargs.get('name', name)
+                ow_kwargs['save_first_timestep'] = ow_kwargs.get(
+                        'save_first_timestep', self.save_first_timestep)
+
+                new_writer = ow_class(*ow_args, **ow_kwargs)
+                instantiated_writers.append(new_writer)
+
+        return instantiated_writers
+
+    def _update_output_times(self, ow_writer, new_time):
+        if new_time is None:
+            # The output writer has exhausted all of it's output times.
+            # Do not add it back to the dict/list.
+            return
+
+        model_step = self.clock.step
+
+        # See if the new output time aligns with the model step.
+        if (new_time % model_step) != 0.0:
+            warnings.warn(''.join(
+                f"Output writer {ow_writer.name} is requesting a ",
+                f"time that is not divisible by the model step. ",
+                f"Delaying output to the following step.\n",
+                f"Output time = {new_time}\n",
+                f"Model step = {model_step}\n",
+                f"Remainder = {new_time % model_step}\n\n",
+                ))
+            new_time = np.ceil(new_time / model_step) * model_step
+
+        # Add the writer to the active_output_times dict
+        if new_time in self.active_output_times:
+            # New time is already in the active_output_times dictionary
+            self.active_output_times[new_time].append(ow_writer)
+        else:
+            # New time is not in the active_output_times dictionary
+            # Add it to the dict and resort the output times list
+            self.active_output_times[new_time] = [ow_writer]
+            self.sorted_output_times = sorted(self.active_output_times)
+
     @property
     def model_time(self):
         """Return current time of model integration in model time units."""
         return self._model_time
+
+    @property
+    def next_output_time(self):
+        """ Return the next output time in model time units. """
+        return self.sorted_output_times[0]
 
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
@@ -508,24 +677,43 @@ class ErosionModel(object):
         self.flow_accumulator.run_one_step()
 
     def write_output(self):
-        """Write output to file as a netCDF.
-
-        Filenames will have the value of ``"output_filename"`` from the
-        input file or parameter dictionary as the first part of the file
-        name and the model run iteration as the second part of the
-        filename.
+        """Run output writers if it is the correct model time.
         """
-        self.calculate_cumulative_change()
-        filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
-        self._output_files.append(filename)
-        if isinstance(self.grid, RasterModelGrid):
-            write_raster_netcdf(
-                filename, self.grid, names=self.output_fields, format="NETCDF4"
-            )
-        else:
-            to_netcdf(self.grid, filename, format="NETCDF4")
+        
+        # assert that the model has not passed the desired output time.
+        assert self._model_time <= self.sorted_output_times[0], ''.join(
+                f"Model time (t={self._model_time}) has passed the next ",
+                f"output time (t={self.next_output_time})",
+                )
 
-        self.run_output_writers()
+        if self._model_time == self.next_output_time:
+            # The current model time matches the next output time
+            curr_output_time = self.sorted_output_times.pop(0)
+            currect_writers = self.active_output_times.pop(curr_output_time)
+            for ow_writer in current_writers:
+                # Run all the output writers associated with this time.
+                ow_writer.run_one_step()
+                next_time = ow_writer.advance_iter()
+                self._update_output_times(ow_writer, next_time)
+
+        #"""Write output to file as a netCDF.
+
+        #Filenames will have the value of ``"output_filename"`` from the
+        #input file or parameter dictionary as the first part of the file
+        #name and the model run iteration as the second part of the
+        #filename.
+        #"""
+        #self.calculate_cumulative_change()
+        #filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
+        #self._output_files.append(filename)
+        #if isinstance(self.grid, RasterModelGrid):
+        #    write_raster_netcdf(
+        #        filename, self.grid, names=self.output_fields, format="NETCDF4"
+        #    )
+        #else:
+        #    to_netcdf(self.grid, filename, format="NETCDF4")
+
+        #self.run_output_writers()
 
     def finalize__run_one_step(self, step):
         """Finalize run_one_step method.
@@ -587,8 +775,10 @@ class ErosionModel(object):
         time_now = self._model_time
         while time_now < self.clock.stop:
             next_run_pause = min(
-                time_now + self.output_interval, self.clock.stop
+                #time_now + self.output_interval, self.clock.stop,
+                self.sorted_output_times[0], self.clock.stop,
             )
+            assert next_run_pause > time_now
             self.run_for(self.clock.step, next_run_pause - time_now)
             time_now = self._model_time
             self._itters.append(self.iteration)
@@ -623,12 +813,14 @@ class ErosionModel(object):
 
     def run_output_writers(self):
         """Run all output writers."""
-        if "class" in self.output_writers:
-            for ow_class in self.output_writers["class"]:
-                ow_class.run_one_step()
-        if "function" in self.output_writers:
-            for ow_function in self.output_writers["function"]:
-                ow_function(self)
+        #if "class" in self.output_writers:
+        #    for ow_class in self.output_writers["class"]:
+        #        ow_class.run_one_step()
+        #if "function" in self.output_writers:
+        #    for ow_function in self.output_writers["function"]:
+        #        ow_function(self)
+
+        raise NotImplementedError
 
     def update_boundary_conditions(self, step):
         """Run all boundary handlers forward by step.
