@@ -24,6 +24,10 @@ from terrainbento.boundary_handlers import (
 from terrainbento.clock import Clock
 from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
 from terrainbento.runoff_generators import SimpleRunoff
+from terrainbento.output_writers import (
+    StaticIntervalOutputClassAdapter,
+    StaticIntervalOutputFunctionAdapter,
+)
 
 _SUPPORTED_PRECIPITATORS = {
     "UniformPrecipitator": UniformPrecipitator,
@@ -578,9 +582,9 @@ class ErosionModel(object):
                 # Old style class output writers. Give information to an 
                 # adapter for instantiating as a static interval writer.
                 for ow_class in output_writers['class']:
-                    new_writer = StaticIntervalOutputClassAdaptor(
+                    new_writer = StaticIntervalOutputClassAdapter(
                             model=self,
-                            output_interval=self.output_interval
+                            output_interval=self.output_interval,
                             ow_class=ow_class,
                             save_first_timestep=self.save_first_timestep,
                             )
@@ -592,9 +596,9 @@ class ErosionModel(object):
                 # Old style function output writers. Give information to an 
                 # adapter for instantiating as a static interval writer.
                 for ow_function in output_writers['function']:
-                    new_writer = StaticIntervalOutputFunctionAdaptor(
+                    new_writer = StaticIntervalOutputFunctionAdapter(
                             model=self,
-                            output_interval=self.output_interval
+                            output_interval=self.output_interval,
                             ow_function=ow_function,
                             save_first_timestep=self.save_first_timestep,
                             )

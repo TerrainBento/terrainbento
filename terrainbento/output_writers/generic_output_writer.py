@@ -3,11 +3,20 @@
 import itertools
 import warnings
 
+class OutputIteratorSkipWarning(UserWarning):
+    def get_message(next_time, prev_time):
+        return ''.join([
+                f"Next output time {next_time} is <= ",
+                f"previous output time {prev_time}. Skipping..."
+                ])
+
+#warnings.simplefilter('always', OutputIteratorSkipWarning)
+
 class GenericOutputWriter:
     # Generate unique output writer ID numbers
     _id_iter = itertools.count()
     
-    def __init__(self, model, name, add_id=True, save_first_timestep=False):
+    def __init__(self, model, name=None, add_id=True, save_first_timestep=False):
         r"""
 
         Parameters
@@ -42,15 +51,16 @@ class GenericOutputWriter:
         self._id = next(GenericOutputWriter._id_iter)
 
         # Generate a default name if necessary
-        self._name = "output-writer" if name is None else name
+        self._name = name or "output-writer"
         self._name += f"-id{self._id}" if add_id else ""
 
         # Generate an iterator of output times
         # Needs to be set by register_times_iter
         self._times_iter = None
-        self.next_output_time = None
-        self.prev_output_time = None
-
+        self._next_output_time = None
+        self._prev_output_time = None
+    
+    # Attributes
     @property
     def id(self):
         return self._id
@@ -59,7 +69,24 @@ class GenericOutputWriter:
     def name(self):
         return self._name
 
+    @property
+    def next_output_time(self):
+        r"""
+        Return when this object is next supposed to write output.
+        Does NOT advance the iterator.
+        """
+        return self._next_output_time
 
+    @property
+    def prev_output_time(self):
+        r"""
+        Returns the previous valid output time. Does not change after the time 
+        iterator is exhausted.
+        """
+        return self._prev_output_time
+
+
+    # Time iterator methods
     def register_times_iter(self, times_iter):
         """ Function for registering an iterator of output times.
 
@@ -123,7 +150,7 @@ class GenericOutputWriter:
             writing output for the rest of the model run.
         """
 
-        prev_time = self.next_output_time
+        prev_time = self._next_output_time
         if self._save_first_timestep:
             # First time advancing the iterator
             # The first output time needs to be at time zero.
@@ -143,9 +170,6 @@ class GenericOutputWriter:
 
             # Advance the time iterator
             next_time = next(self._times_iter, None)
-            # Check that the iterator returned a proper value
-            assert isinstance(next_time, float), \
-                    "The output time iterator needs to generate float values."
 
             # Check that the next time is larger than the previous time
             # If it isn't, try advancing the iterator again recursively.
@@ -159,52 +183,33 @@ class GenericOutputWriter:
                         # warn the user that there are issues with the time 
                         # iterator. Ignore the case where time is zero because 
                         # that may be common.
-                        warnings.warn(''.join(
-                            f"Next output time {next_time} is <= ",
-                            f"previous output time {prev_time}. Skipping..."
-                            ))
-                    next_time = self._advance_iter(recursion_counter - 1)
+                        warn_msg = OutputIteratorSkipWarning.get_message(
+                                next_time, prev_time
+                                )
+                        warnings.warn(warn_msg, OutputIteratorSkipWarning)
+                    next_time =self._advance_iter_recursive(recursion_counter-1)
                 else:
                     raise RecursionError("Too many output times skipped.")
+            elif has_next:
+                # Check that the iterator returned a proper value
+                assert isinstance(next_time, float), ''.join([
+                        "The output time iterator needs to generate float ",
+                        "values."
+                        ])
 
         # Save the next and previous times internally
-        self.next_output_time = next_time
+        self._next_output_time = next_time
         if prev_time is not None:
-            # self.prev_output_time eventually becomes the final valid 
-            # output time once the iterator is exhausted
-            self.prev_output_time = prev_time
+            # Stop updating prev_output_time once iterator is exhausted.
+            # (becomes the final valid output time)
+            self._prev_output_time = prev_time
 
         # Return the next output time
-        return self.next_output_time
+        return self._next_output_time
 
-    def write_output(self):
-        """
-        Run the output generating functions and advance the iterator.
-        """
-        #
-        # Delete this function?
-        #
-        ## Write the output
-        #self.run_one_step()
-
-        ## Advance the iterator and return the next output time
-        #return self.advance_iter()
-        raise NotImplementedError
-
-
-    def get_next_output_time(self):
-        r"""
-        Return when this object is next supposed to write output.
-
-        Does NOT advance the iterator.
-
-        """
-        return self.next_output_time
-
-
+    # Base class method (must be overridden)
     def run_one_step(self):
-        r""" The function which actually writes data to files (or screen).
-        """
+        r""" The function which actually writes data to files or screen. """
         raise NotImplementedError(
                 "The inheriting class needs to implement this function"
                 )

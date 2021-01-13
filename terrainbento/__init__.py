@@ -58,7 +58,10 @@ from .precipitators import RandomPrecipitator, UniformPrecipitator
 from .runoff_generators import SimpleRunoff
 from .output_writers import (
     GenericOutputWriter,
+    OutputIteratorSkipWarning,
     StaticIntervalOutputWriter,
+    StaticIntervalOutputClassAdapter,
+    StaticIntervalOutputFunctionAdapter,
 )
 
 __all__ = [
@@ -104,7 +107,10 @@ __all__ = [
     "StochasticErosionModel",
     "TwoLithologyErosionModel",
     "GenericOutputWriter",
+    "OutputIteratorSkipWarning",
     "StaticIntervalOutputWriter",
+    "StaticIntervalOutputClassAdapter",
+    "StaticIntervalOutputFunctionAdapter",
 ]
 
 

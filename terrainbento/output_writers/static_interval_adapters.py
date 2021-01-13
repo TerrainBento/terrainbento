@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+from terrainbento.output_writers import StaticIntervalOutputWriter
+
+
 class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
     def __init__(self,
             model,
