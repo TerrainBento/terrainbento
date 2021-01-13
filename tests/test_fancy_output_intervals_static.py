@@ -6,100 +6,41 @@
 
 import pytest
 
-import glob
-import os
-
 import numpy as np
 
-from terrainbento import Basic, NotCoreNodeBaselevelHandler
-from terrainbento.utilities import filecmp
 from terrainbento.output_writers import StaticIntervalOutputWriter
 
-_TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+# Helper classes and functions
+class ClockModel:
+    def __init__(self, clock):
+        self.clock = clock
+def to_floats(int_list):
+    return [None if i is None else float(i) for i in int_list]
+
+# Fixtures
+@pytest.fixture()
+def clock08_model(clock_08):
+    return ClockModel(clock_08)
 
 
-@pytest.fixture
-def empty_model(clock_08):
-    class EmptyModel:
-        def __init__(self):
-            self.clock = clock_08
-
-    return EmptyModel()
-
-'''
-def output_writer_function_a(model):
-    average_elevation = np.mean(model.z[model.grid.core_nodes])
-    with open("ow_func_a." + str(model.model_time) + ".txt", "w") as f:
-        f.write(str(average_elevation))
-
-
-def output_writer_function_b(model):
-    minimum_elevation = np.min(model.z[model.grid.core_nodes])
-    with open("ow_func_b." + str(model.model_time) + ".txt", "w") as f:
-        f.write(str(minimum_elevation))
-
-class output_writer_class_a(object):
-    def __init__(self, model):
-        self.model = model
-        self.change = model.grid.at_node["cumulative_elevation_change"]
-
-    def run_one_step(self):
-        average_change = np.mean(self.change[self.model.grid.core_nodes])
-        with open(
-            "ow_class_a." + str(self.model.model_time) + ".txt", "w"
-        ) as f:
-            f.write(str(average_change))
-
-
-class output_writer_class_b(object):
-    def __init__(self, model):
-        self.model = model
-        self.change = model.grid.at_node["cumulative_elevation_change"]
-
-    def run_one_step(self):
-        min_change = np.min(self.change[self.model.grid.core_nodes])
-        with open(
-            "ow_class_b." + str(self.model.model_time) + ".txt", "w"
-        ) as f:
-            f.write(str(min_change))
-
-class output_writer_class_static(StaticIntervalOutputWriter):
-    def __init__(self, model):
-        self.model = model
-        self.change = model.grid.at_node["cumulative_elevation_change"]
-
-    def run_one_step(self):
-        min_change = np.min(self.change[self.model.grid.core_nodes])
-        with open(
-            "ow_class_b." + str(self.model.model_time) + ".txt", "w"
-        ) as f:
-            f.write(str(min_change))
-            
-def cleanup_files(searchpath):
-    files = glob.glob(searchpath)
-    for f in files:
-        os.remove(f)
-
-'''
-
-
+''' #test_names (delete?)
 @pytest.mark.parametrize("in_name, add_id, out_name", [
     (None, True, "static-interval-output-writer"),
     (None, False, "static-interval-output-writer"),
     ('given_nameT', True, "given_nameT"),
     ('given_nameF', False, "given_nameF"),
     ])
-def test_names(empty_model, in_name, add_id, out_name):
+def test_names(clock08_model, in_name, add_id, out_name):
     # Make a few writer to check if the id value is handled correctly
     for i in range(3):
         if in_name is None:
             writer = StaticIntervalOutputWriter(
-                    empty_model,
+                    clock08_model,
                     add_id=add_id,
                     )
         else:
             writer = StaticIntervalOutputWriter(
-                    empty_model,
+                    clock08_model,
                     name=in_name,
                     add_id=add_id,
                     )
@@ -108,215 +49,133 @@ def test_names(empty_model, in_name, add_id, out_name):
         else:
             assert writer.name == out_name
             
-    
+'''
+def test_not_implemented_functions(clock08_model):
+    writer = StaticIntervalOutputWriter(clock08_model)
+    base_functions = [
+            writer.run_one_step,
+            ]
+    for fu in base_functions:
+        with pytest.raises(NotImplementedError):
+            fu()
+
 
 @pytest.mark.parametrize("intervals, times, error_type", [
     ([1,2,3], [1,2,3], AssertionError), # Both args defined
     ('a', None, NotImplementedError), # Bad arg type
     (None, 'a', NotImplementedError), # Bad arg type
-    (['a'], None, AssertionError), # Bad arg type in list
-    (None, ['a'], AssertionError), # Bad arg type in list
+    (['a'], None, NotImplementedError), # Bad arg type in list
+    (None, ['a'], NotImplementedError), # Bad arg type in list
     ])
-def test_interval_times_bad_input(empty_model, intervals, times, error_type):
+def test_interval_times_bad_input(clock08_model, intervals, times, error_type):
+    """
+    Test that the correct errors are thrown for bad input.
+    """
     with pytest.raises(error_type):
         writer = StaticIntervalOutputWriter(
-                empty_model,
+                clock08_model,
                 intervals=intervals, 
                 times=times, 
                 )
 
 @pytest.mark.parametrize("intervals, times, output_times", [
-    (None, None, [20.0]), # stop time for clock_08
-    (5,   None, [5.0, 10.0, 15.0, 20.0]), # Test single interval duration (int)
-    (5.0, None, [5.0, 10.0, 15.0, 20.0]), # Test single interval duration (float)
-    (None, 5,   [5.0]), # Test single output time (int)
-    (None, 5.0, [5.0]), # Test single output time (float)
-    ([1,2,3], None, [1.0, 3.0, 6.0]), # Test list of integer intervals
-    ([1.0,2.0,3.0], None, [1.0, 3.0, 6.0]), # Test list of float intervals
-    (None, [1,2,3], [1.0, 2.0, 3.0]), # Test list of integer times
-    (None, [1.0,2.0,3.0], [1.0, 2.0, 3.0]), # Test list of float times
+    # None at the end of the output list enforces that the iterator exhausts
+
+    # Test default and scalar behavior 
+    (None, None, [20, None]), # stop time for clock_08
+    (5  , None, [5, 10, 15, 20, None]), # Test single interval duration (int)
+    (5.0, None, [5, 10, 15, 20, None]), # Test single interval duration (float)
+    (None, 5  , [5, None]), # Test single output time (int)
+    (None, 5.0, [5, None]), # Test single output time (float)
+
+    # Test lists of floats and ints
+    ([1  ,2  ,3  ], None, [1, 3, 6, None]), # Test list of integer intervals
+    ([1.0,2.0,3.0], None, [1, 3, 6, None]), # Test list of float intervals
+    (None, [1  ,2  ,3  ], [1, 2, 3, None]), # Test list of integer times
+    (None, [1.0,2.0,3.0], [1, 2, 3, None]), # Test list of float times
     ])
-def test_intervals_times_correct_input(empty_model, intervals, times, output_times):
+def test_intervals_times_correct_input(clock08_model, intervals, times, output_times):
+    """
+    Test all the different variations of correct input formats.
+    """
     writer = StaticIntervalOutputWriter(
-            empty_model,
+            clock08_model,
             intervals=intervals, 
             times=times, 
             )
-    # assert that output_times is an iterator
-    # Check for the __next__ function?
-    # I want to make sure I can iterate through output_times, not that 
-    # output_times is iterable (e.g. see if iter(obj) fails)
-    assert hasattr(writer.times_iter, '__next__')
 
-    for correct_out in output_times:
-        writer_out = next(writer.times_iter)
-        assert writer_out == correct_out and \
-               type(writer_out) == type(correct_out)
+    for correct_out in iter(to_floats(output_times)):
+        writer_out = writer.advance_iter()
+        print(writer_out, correct_out)
 
-def test_intervals_repeat(empty_model):
+        if correct_out is None:
+            assert writer_out is None
+        else:
+            assert type(writer_out) is float 
+            assert writer_out == correct_out
+
+def test_intervals_repeat(clock08_model):
+    """
+    Test if a repeating list of intervals will produce the right output times.
+    """
     intervals = [1, 2, 3]
-    output_times = [1.0, 3.0, 6.0, 7.0, 9.0, 12.0, 13.0, 15.0, 18.0, 19.0]
+    output_times = [1.0, 3.0, 6.0, 7.0, 9.0, 12.0, 13.0, 15.0, 18.0, 19.0, None]
     # Note that clock_08 stop time is 20.0
+    # None at the end of the output list enforces that the iterator exhausts
 
     writer = StaticIntervalOutputWriter(
-            empty_model,
+            clock08_model,
             intervals=intervals, 
             intervals_repeat=True,
             times=None, 
             )
 
-    assert hasattr(writer.times_iter, '__next__')
-
     for correct_out in output_times:
-        writer_out = next(writer.times_iter)
-        assert writer_out == correct_out and \
-               type(writer_out) == type(correct_out)
+        writer_out = writer.advance_iter()
+        if correct_out is None:
+            assert writer_out is None
+        else:
+            assert type(writer_out) is float 
+            assert writer_out == correct_out
     
     # Note that the writer.times_iter will be an infinite iterator.
 
+@pytest.mark.parametrize("intervals, times, output_times", [
+    # None at the end of the output list enforces that the iterator exhausts
 
-''' old tests for reference
+    # Test default and scalar behavior 
+    (None, None, [0, 20, None]), # stop time for clock_08
+    (5  , None, [0, 5, 10, 15, 20, None]), # Test single interval duration (int)
+    (5.0, None, [0, 5, 10, 15, 20, None]), # Test single interval duration (float)
+    (None, 5  , [0, 5, None]), # Test single output time (int)
+    (None, 5.0, [0, 5, None]), # Test single output time (float)
 
-def test_one_function_writer(clock_08, almost_default_grid):
-    ncnblh = NotCoreNodeBaselevelHandler(
-        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
-    )
-    # construct and run model
-    model = Basic(
-        clock_08,
-        almost_default_grid,
-        save_first_timestep=False,
-        water_erodibility=0.0,
-        regolith_transport_parameter=0.0,
-        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
-        output_writers={"function": [output_writer_function_a]},
-    )
-    model.run()
+    # Test lists of floats and ints that don't include a time zero
+    ([1  ,2  ,3  ], None, [0, 1, 3, 6, None]), # Test list of integer intervals
+    ([1.0,2.0,3.0], None, [0, 1, 3, 6, None]), # Test list of float intervals
+    (None, [1  ,2  ,3  ], [0, 1, 2, 3, None]), # Test list of integer times
+    (None, [1.0,2.0,3.0], [0, 1, 2, 3, None]), # Test list of float times
 
-    # assert things were done correctly
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_a.20.0.txt")
-    assert filecmp("ow_func_a.20.0.txt", truth_file) is True
-
-    model.remove_output_netcdfs()
-    cleanup_files("ow_func_a.*.txt")
-
-
-def test_one_class_writer(clock_08, almost_default_grid):
-    ncnblh = NotCoreNodeBaselevelHandler(
-        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
-    )
-    # construct and run model
-    model = Basic(
-        clock_08,
-        almost_default_grid,
-        save_first_timestep=False,
-        water_erodibility=0.0,
-        regolith_transport_parameter=0.0,
-        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
-        output_writers={"class": [output_writer_class_a]},
-    )
-    model.run()
-
-    # assert things were done correctly
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_a.20.0.txt")
-    assert filecmp("ow_class_a.20.0.txt", truth_file) is True
-
-    model.remove_output_netcdfs()
-    cleanup_files("ow_class_a.*.txt")
-
-
-def test_two_function_writers(clock_08, almost_default_grid):
-    ncnblh = NotCoreNodeBaselevelHandler(
-        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
-    )
-    # construct and run model
-    model = Basic(
-        clock_08,
-        almost_default_grid,
-        save_first_timestep=False,
-        water_erodibility=0.0,
-        regolith_transport_parameter=0.0,
-        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
-        output_writers={
-            "function": [output_writer_function_a, output_writer_function_b]
-        },
-    )
-    model.run()
-
-    # assert things were done correctly
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_a.20.0.txt")
-    assert filecmp("ow_func_a.20.0.txt", truth_file) is True
-
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_b.20.0.txt")
-    assert filecmp("ow_func_b.20.0.txt", truth_file) is True
-
-    model.remove_output_netcdfs()
-    cleanup_files("ow_func_*.txt")
-
-
-def test_two_class_writers(clock_08, almost_default_grid):
-    ncnblh = NotCoreNodeBaselevelHandler(
-        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
-    )
-    # construct and run model
-    model = Basic(
-        clock_08,
-        almost_default_grid,
-        save_first_timestep=False,
-        water_erodibility=0.0,
-        regolith_transport_parameter=0.0,
-        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
-        output_writers={
-            "class": [output_writer_class_a, output_writer_class_b]
-        },
-    )
-    model.run()
-
-    # assert things were done correctly
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_a.20.0.txt")
-    assert filecmp("ow_class_a.20.0.txt", truth_file) is True
-
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_b.20.0.txt")
-    assert filecmp("ow_class_b.20.0.txt", truth_file) is True
-
-    model.remove_output_netcdfs()
-    cleanup_files("ow_class_*.txt")
-
-
-def test_all_four_writers(clock_08, almost_default_grid):
-    ncnblh = NotCoreNodeBaselevelHandler(
-        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
-    )
-
-    # construct and run model
-    model = Basic(
-        clock_08,
-        almost_default_grid,
-        save_first_timestep=False,
-        water_erodibility=0.0,
-        regolith_transport_parameter=0.0,
-        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
-        output_writers={
-            "function": [output_writer_function_a, output_writer_function_b],
-            "class": [output_writer_class_a, output_writer_class_b],
-        },
-    )
-    model.run()
-
-    # assert things were done correctly
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_a.20.0.txt")
-    assert filecmp("ow_func_a.20.0.txt", truth_file) is True
-
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_func_b.20.0.txt")
-    assert filecmp("ow_func_b.20.0.txt", truth_file) is True
-
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_a.20.0.txt")
-    assert filecmp("ow_class_a.20.0.txt", truth_file) is True
-
-    truth_file = os.path.join(_TEST_DATA_DIR, "truth_ow_class_b.20.0.txt")
-    assert filecmp("ow_class_b.20.0.txt", truth_file) is True
-
-    model.remove_output_netcdfs()
-    cleanup_files("ow_func_*.txt")
-    cleanup_files("ow_class_*.txt")
-'''
+    # Test lists of floats and ints that already include a time zero
+    ([0, 1  ,2  ,3  ], None, [0, 1, 3, 6, None]), # Test list of integer intervals
+    ([0, 1.0,2.0,3.0], None, [0, 1, 3, 6, None]), # Test list of float intervals
+    (None, [0, 1  ,2  ,3  ], [0, 1, 2, 3, None]), # Test list of integer times
+    (None, [0, 1.0,2.0,3.0], [0, 1, 2, 3, None]), # Test list of float times
+    ])
+def test_correct_input_with_firststep(clock08_model, intervals, times, output_times):
+    """
+    Test that needing output on the first step still works.
+    """
+    writer = StaticIntervalOutputWriter(
+            clock08_model,
+            intervals=intervals, 
+            times=times, 
+            save_first_timestep=True,
+            )
+    for correct_out in to_floats(output_times):
+        writer_out = writer.advance_iter()
+        if correct_out is None:
+            assert writer_out is None 
+        else:
+            assert type(writer_out) is float 
+            assert writer_out == correct_out

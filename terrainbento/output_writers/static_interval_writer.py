@@ -63,10 +63,10 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
         # Assert that intervals and times are not both provided. Not clear 
         # which one should be used so crash the program.
         # Checks if at least one of the args is None
-        assert intervals is None or times is None, ''.join(
+        assert intervals is None or times is None, ''.join([
                 "StaticIntervalOutputWriter does not accept both output ",
                 "interval and output times simultaneously.",
-                )
+                ])
         
         # Check if both args are None
         if intervals is None and times is None:
@@ -115,11 +115,12 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             #times_iter = itertools.count(intervals, intervals)
 
         elif isinstance(intervals, list):
-            # Assert that it is a list of floats
-            assert all(isinstance(i, (int, float)) for i in intervals), ''.join(
+            if not all(isinstance(i, (int, float)) for i in intervals):
+                # The list must contain only floats
+                raise NotImplementedError(''.join([
                     f"Only floats or integers are currently supported for ",
                     f"the output interval list.",
-                    )
+                    ]))
 
             if self._intervals_repeat:
                 # The intervals list should repeat until the end of the model 
@@ -168,10 +169,12 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
 
         elif isinstance(times, list):
             # Assert that it is a list of floats
-            assert all(isinstance(t, (int, float)) for t in times), ''.join(
-                    f"Only integers or floats are currently supported ",
-                    f"for the output times list.",
-                    )
+            if not all(isinstance(i, (int, float)) for i in times):
+                # The list must contain only floats
+                raise NotImplementedError(''.join([
+                    f"Only floats or integers are currently supported for ",
+                    f"the output times list.",
+                    ]))
             # Create an iterator that steps through the provided list of output 
             # times. Make sure they are floats
             #times_iter = iter(times)

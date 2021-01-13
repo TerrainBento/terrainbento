@@ -4,6 +4,10 @@ import itertools
 import warnings
 
 class OutputIteratorSkipWarning(UserWarning):
+    """
+    A UserWarning child class raised when the advancing iterator skips a 
+    non-zero time.
+    """
     def get_message(next_time, prev_time):
         return ''.join([
                 f"Next output time {next_time} is <= ",
@@ -46,6 +50,11 @@ class GenericOutputWriter:
 
         self.model = model
         self._save_first_timestep = save_first_timestep
+
+        # Make sure the model has a clock. All models should have clock, but 
+        # just in case...
+        assert hasattr(self.model, 'clock') and self.model.clock is not None, \
+                f"Output writers require that the model has a clock."
 
         # Generate the id number for this instance
         self._id = next(GenericOutputWriter._id_iter)
@@ -118,7 +127,22 @@ class GenericOutputWriter:
             to write output. None indicates that this writer has finished 
             writing output for the rest of the model run.
         """
-        return self._advance_iter_recursive()
+        
+        # Assert that the iterator exists and has the next function
+        assert self._times_iter is not None, \
+                f"An output time iterator has not been registered!."
+        assert hasattr(self._times_iter, '__next__'), \
+                f"The output time iterator needs a __next__ function"
+
+        # Update the previous value before advancing the iterator
+        if self._next_output_time is not None:
+            # Only updates the previous time while the iterator is running.
+            # (eventually becomes the final valid output time)
+            self._prev_output_time = self._next_output_time 
+
+        # Save and return the next time
+        self._next_output_time = self._advance_iter_recursive()
+        return self._next_output_time
 
     def _advance_iter_recursive(self, recursion_counter=5):
         r""" Advances the output times iterator.
@@ -150,62 +174,50 @@ class GenericOutputWriter:
             writing output for the rest of the model run.
         """
 
-        prev_time = self._next_output_time
         if self._save_first_timestep:
-            # First time advancing the iterator
-            # The first output time needs to be at time zero.
-            next_time = 0.0
-            
-            # Set the flag to false so this code section is not called again
+            # First time advancing the iterator, but the first output time 
+            # needs to be at time zero. Return zero instead of calling next on 
+            # the times iterator.
             self._save_first_timestep = False
+            return 0.0
+        
+        # Advance the time iterator to get the next time value
+        next_time = next(self._times_iter, None)
+        prev_time = self._prev_output_time # Already updated by advance_iter()
 
+        if next_time is None:
+            # The iterator returned None and is therefore exhausted.
+            # No need for further checks.
+            return None
+        
+        # Check that the iterator returned a proper value
+        assert isinstance(next_time, float), \
+                "The output time iterator needs to generate float values."
+
+        if next_time > self.model.clock.stop:
+            # The next time is greater than the model end time and 
+            # should be exhausted.  The iterator is likely infinite, so 
+            # ignore any future calls.
+            return None
+
+        elif (prev_time is not None) and (prev_time >= next_time):
+            # Next time is too small. Ignore this value and try advancing again 
+            # until a better value is found or the recursion_counter runs out.
+            if recursion_counter > 0:
+                if not (prev_time == 0 and next_time == 0):
+                    # Warn the user that there are issues with the iterator.  
+                    # Ignore when time == zero because that may be common when 
+                    # trying to save the first time step.
+                    warning_cls = OutputIteratorSkipWarning
+                    warning_msg = warning_cls.get_message(next_time, prev_time)
+                    warnings.warn(warning_msg, warning_cls)
+
+                return self._advance_iter_recursive(recursion_counter - 1)
+            else:
+                raise RecursionError("Too many output times skipped.")
         else:
-            # Advance the iterator to get the next value
-            
-            # Check that the iterator is proper
-            assert self._times_iter is not None, \
-                    f"An output time iterator has not been registered!."
-            assert hasattr(self._times_iter, '__next__'), \
-                    f"The output time iterator needs a __next__ function"
-
-            # Advance the time iterator
-            next_time = next(self._times_iter, None)
-
-            # Check that the next time is larger than the previous time
-            # If it isn't, try advancing the iterator again recursively.
-            has_prev = prev_time is not None
-            has_next = next_time is not None
-            if has_prev and has_next and next_time <= prev_time:
-                # Next time is too small
-                # Try advancing again until the recursion counter runs out
-                if recursion_counter > 0:
-                    if not (prev_time == 0 and next_time == 0):
-                        # warn the user that there are issues with the time 
-                        # iterator. Ignore the case where time is zero because 
-                        # that may be common.
-                        warn_msg = OutputIteratorSkipWarning.get_message(
-                                next_time, prev_time
-                                )
-                        warnings.warn(warn_msg, OutputIteratorSkipWarning)
-                    next_time =self._advance_iter_recursive(recursion_counter-1)
-                else:
-                    raise RecursionError("Too many output times skipped.")
-            elif has_next:
-                # Check that the iterator returned a proper value
-                assert isinstance(next_time, float), ''.join([
-                        "The output time iterator needs to generate float ",
-                        "values."
-                        ])
-
-        # Save the next and previous times internally
-        self._next_output_time = next_time
-        if prev_time is not None:
-            # Stop updating prev_output_time once iterator is exhausted.
-            # (becomes the final valid output time)
-            self._prev_output_time = prev_time
-
-        # Return the next output time
-        return self._next_output_time
+            # Normal value. Return as is.
+            return next_time
 
     # Base class method (must be overridden)
     def run_one_step(self):
