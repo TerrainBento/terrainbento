@@ -1,9 +1,6 @@
 # coding: utf8
 # !/usr/env/python
 
-# Much of the set up to these tests borrowed from 
-# test_base_class_erosion_model_output_writers.py
-
 import pytest
 
 import numpy as np
