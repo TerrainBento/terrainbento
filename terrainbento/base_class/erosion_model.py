@@ -570,10 +570,10 @@ class ErosionModel(object):
         
         # Note: I can't guarantee that the names will stay unique. I need to 
         # convert the 'class' and 'function' writers to the new style and there 
-        # is a non-zero chance the user happens to use the same name that I 
-        # give the converted writers. These names are used for output 
-        # filenames, so I don't want to use anything ugly. Hence why I return a 
-        # list.
+        # is a non-zero chance the user happens to use a name for the new style 
+        # that has the same name that I give the converted writers. These names 
+        # are used for output filenames, so I don't want to use anything ugly.  
+        # Hence why I return a list.
 
         instantiated_writers = []
         output_interval = self.output_interval
@@ -592,6 +592,7 @@ class ErosionModel(object):
                     #assert new_name not in instantiated_writers, \
                     #        f"Output writer '{name}' already exists"
                     instantiated_writers.append(new_writer)
+
             elif name == 'function':
                 # Old style function output writers. Give information to an 
                 # adapter for instantiating as a static interval writer.
@@ -607,6 +608,10 @@ class ErosionModel(object):
             else:
                 # New style output writer class
                 writer_dict = output_writers[name]
+                assert isinstance(writer_dict, dict), \
+                        "The new style output writer entry must be a dictionary"
+                assert 'class' in writer_dict, \
+                        "The new style output writer entry must be a dictionary"
                 ow_class = writer_dict['class']
                 ow_args = writer_dict.get('args', [])
                 ow_kwargs = writer_dict.get('kwargs', {})
@@ -683,9 +688,11 @@ class ErosionModel(object):
     def write_output(self):
         """Run output writers if it is the correct model time.
         """
+
+        self.calculate_cumulative_change()
         
         # assert that the model has not passed the desired output time.
-        assert self._model_time <= self.sorted_output_times[0], ''.join(
+        assert self._model_time <= self.next_output_time, ''.join(
                 f"Model time (t={self._model_time}) has passed the next ",
                 f"output time (t={self.next_output_time})",
                 )
@@ -693,31 +700,33 @@ class ErosionModel(object):
         if self._model_time == self.next_output_time:
             # The current model time matches the next output time
             curr_output_time = self.sorted_output_times.pop(0)
-            currect_writers = self.active_output_times.pop(curr_output_time)
+            current_writers = self.active_output_times.pop(curr_output_time)
             for ow_writer in current_writers:
                 # Run all the output writers associated with this time.
                 ow_writer.run_one_step()
                 next_time = ow_writer.advance_iter()
                 self._update_output_times(ow_writer, next_time)
 
-        #"""Write output to file as a netCDF.
+        ''' Old code
+        """Write output to file as a netCDF.
 
-        #Filenames will have the value of ``"output_filename"`` from the
-        #input file or parameter dictionary as the first part of the file
-        #name and the model run iteration as the second part of the
-        #filename.
-        #"""
-        #self.calculate_cumulative_change()
-        #filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
-        #self._output_files.append(filename)
-        #if isinstance(self.grid, RasterModelGrid):
-        #    write_raster_netcdf(
-        #        filename, self.grid, names=self.output_fields, format="NETCDF4"
-        #    )
-        #else:
-        #    to_netcdf(self.grid, filename, format="NETCDF4")
+        Filenames will have the value of ``"output_filename"`` from the
+        input file or parameter dictionary as the first part of the file
+        name and the model run iteration as the second part of the
+        filename.
+        """
+        self.calculate_cumulative_change()
+        filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
+        self._output_files.append(filename)
+        if isinstance(self.grid, RasterModelGrid):
+            write_raster_netcdf(
+                filename, self.grid, names=self.output_fields, format="NETCDF4"
+            )
+        else:
+            to_netcdf(self.grid, filename, format="NETCDF4")
 
-        #self.run_output_writers()
+        self.run_output_writers()
+        '''
 
     def finalize__run_one_step(self, step):
         """Finalize run_one_step method.

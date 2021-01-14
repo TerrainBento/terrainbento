@@ -1,6 +1,24 @@
 # coding: utf8
 # !/usr/env/python
 
+# This file has tests for the old and new style outputs
+
+# Missing tests:
+# - test save_first_timestep is True for both old and new styles
+# - test longer sequence of outputs
+# - New style
+# - Provide bad input new-style formats?
+#
+# - UserWarning for model step and output writer divisibility (in 
+#   ErosionModel._update_output_times
+# - Try to break model time passing next output time? (assertion in 
+#   ErosionModel.write_output()
+#
+#
+# - add and test NetCDF files?? (Might be in the other erosion model output 
+#   test file)
+#
+
 import glob
 import os
 
@@ -55,6 +73,9 @@ def cleanup_files(searchpath):
     for f in files:
         os.remove(f)
 
+
+## Tests for old style output writers
+# These tests should stay the same to ensure backwards compatibility
 
 def test_one_function_writer(clock_08, almost_default_grid):
     ncnblh = NotCoreNodeBaselevelHandler(
@@ -198,3 +219,6 @@ def test_all_four_writers(clock_08, almost_default_grid):
     model.remove_output_netcdfs()
     cleanup_files("ow_func_*.txt")
     cleanup_files("ow_class_*.txt")
+
+
+## Tests for new style output writers
