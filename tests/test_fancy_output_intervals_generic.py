@@ -57,7 +57,10 @@ def test_id(clock08_model):
         def __init__(self, model):
             super().__init__(model, name="class-C")
 
-    correct_id = itertools.count()
+    # Other output writer tests may occur before this one. So the ID generator 
+    # might not start at zero
+    start_id = next(GenericOutputWriter._id_iter)
+    correct_id = itertools.count(start=start_id+1)
     for i in range(25):
         for cls_type in OutputA, OutputB, OutputC, GenericOutputWriter:
             # should make 100 output classes in total (4 types x 25)
@@ -110,8 +113,8 @@ def test_clock_required(clock08_model):
     ([1,2,3], AssertionError),       # _times_iter doesn't have next
     (iter([1,2,3]), AssertionError), # _times_iter doesn't returns floats
     ])
-def test_times_iter_bad_input(clock08_model, times_iter, error_type):
-    """ Test that errors while advancing the iterator are called correctly. """
+def test_times_iter_bad_iterator(clock08_model, times_iter, error_type):
+    """ Test that the correct errors are thrown for bad iterators. """
     writer = GenericOutputWriter(clock08_model)
     writer.register_times_iter(times_iter)
 
@@ -135,20 +138,82 @@ def test_times_iter_max_recursion(clock08_model):
         writer.advance_iter()
 
 
-@pytest.mark.parametrize("times_ints, save_first, output_ints", [
-    ([1,2,3],   False, [1,2,3, None]), # Normal
-    ([1,2,3],   True,  [0,1,2,3, None]), # save first step; no skips needed
-    ([0,1,2,3], False, [0,1,2,3, None]), # Normal
-    ([1,2,3],   False, [1,2,3, None, None, None]), # exhausted iterator
-    ([1,2,3],   True,  [0,1,2,3, None, None, None]), # exhausted iterator
+@pytest.mark.parametrize("times_ints, save_first, save_last, output_ints", [
+    ## 4 binary input differences (has 0, has 20, save_first, save_last) means 
+    # 16 test. There is a lot of overlap.
+    #
+    # Normal input
+    # - -  F F
+    # 0 -  F F
+    # - 20 F F
+    # 0 20 F F
+    ([1,2,3],      False, False, [1,2,3, None]), # Normal
+    ([0,1,2,3],    False, False, [0,1,2,3, None]), # Normal
+    ([1,2,3,20],   False, False, [1,2,3,20, None]), # Normal
+    ([0,1,2,3,20], False, False, [0,1,2,3,20, None]), # Normal
+    #
+    # No skips needed for enforcing initial or final times
+    # - -  F T
+    # - -  T F
+    # - -  T T
+    ([1,2,3],      False, True, [1,2,3,20, None]), # Save last step
+    ([1,2,3],      True, False, [0,1,2,3, None]), # Save first step
+    ([1,2,3],      True,  True, [0,1,2,3,20, None]), # Save first and last steps
+    # 0 -  F T
+    # - 20 T F
+    ([0,1,2,3],    False, True, [0,1,2,3,20, None]), # Save last step
+    ([1,2,3,20],   True, False, [0,1,2,3,20, None]), # Save first step
+    #
+    # Skips needed for enforcing initial and/or final times, but there should 
+    # be no warning
+    # 0 -  T F
+    # 0 -  T T
+    ([0,1,2,3],    True, False, [0,1,2,3, None]), # Save first step
+    ([0,1,2,3],    True,  True, [0,1,2,3,20, None]), # Save first and last steps
+    # - 20 F T
+    # - 20 T T
+    ([1,2,3,20],   False, True, [1,2,3,20, None]), # Save last step
+    ([1,2,3,20],   True,  True, [0,1,2,3,20, None]), # Save first and last steps
+    # 0 20 F T
+    # 0 20 T F
+    # 0 20 T T
+    ([0,1,2,3,20], False, True, [0,1,2,3,20, None]), # Save last step
+    ([0,1,2,3,20], True, False, [0,1,2,3,20, None]), # Save first step
+    ([0,1,2,3,20], True,  True, [0,1,2,3,20, None]), # Save first and last steps
+
+    # Explicitly test iterator exhaustion
+    # Don't bother with all the permutations bc that is above.
+    ([1,2,3],      False, False, [1,2,3, None, None, None]), # Normal
+    ([0,1,2,3,20], True,   True, [0,1,2,3,20, None, None, None]), # Save first and last steps
+    
+    # Tests iterators that jump past stop time
+    ([1,2,3,40], False, False, [1,2,3, None, None, None]), # Normal
+    ([1,2,3,40], True,   True, [0,1,2,3,20, None, None, None]), # Enforce saving last step
+
+    # Test that iterators exhaust if any value goes over stop time
+    ([1,2,3,40,15], False, False, [1,2,3, None, None, None]),
+    ([1,2,3,40,15], True,   True, [0,1,2,3,20, None, None, None]),
+    
+    # Test multiple zero or stop time skips
+    ([0,0,0,0,0,1,2,3],   True, False, [0,1,2,3, None]), # Save first step
+    ([1,2,3,20,20,20,20], False, True, [1,2,3,20, None]), # Save last step
     ])
-def test_times_iter_correct_no_skips(clock08_model, times_ints, save_first, output_ints):
+def test_times_iter_correct_no_skip_warnings(
+        clock08_model, 
+        times_ints, 
+        save_first, 
+        save_last,
+        output_ints):
     """ Test that the times iterator can be added and advanced correctly. """
     times_iter = iter(to_floats(times_ints))
     output_times = to_floats(output_ints)
     previous_times = generate_previous_list(output_times)
 
-    writer = GenericOutputWriter(clock08_model, save_first_timestep=save_first)
+    writer = GenericOutputWriter(
+            clock08_model, 
+            save_first_timestep=save_first,
+            save_last_timestep=save_last,
+            )
     writer.register_times_iter(times_iter)
 
     for correct_out, correct_previous in zip(output_times, previous_times):
@@ -172,11 +237,8 @@ def test_times_iter_correct_no_skips(clock08_model, times_ints, save_first, outp
     ([0,1,2,0,1,2,3], False, [0,0,0,3,0], [0,1,2,3,None]),
     # Multiple skipping areas (that each need less the 5 skips):
     ([1,1,1,2,2,2,3,3,3], False, [0,2,2,2], [1,2,3,None]),
-    # save first step; skip extra zeros with NO warning (only for zeros)
-    ([0,1,2,3], True, [0,0,0,0,0], [0,1,2,3,None]),
-    ([0,0,0,1,2,3], True, [0,0,0,0,0], [0,1,2,3,None]),
     ])
-def test_times_iter_correct_with_skips(
+def test_times_iter_correct_with_skip_warnings(
         clock08_model,
         times_ints, 
         save_first, 
@@ -199,7 +261,11 @@ def test_times_iter_correct_with_skips(
     previous_times = generate_previous_list(output_times)
 
     # Set up the output writer
-    writer = GenericOutputWriter(clock08_model, save_first_timestep=save_first)
+    writer = GenericOutputWriter(
+            clock08_model, 
+            save_first_timestep=save_first,
+            save_last_timestep=False,
+            )
     writer.register_times_iter(times_iter)
 
     # Loop through all the correct outputs to see if the writer generates them.

@@ -20,7 +20,13 @@ class GenericOutputWriter:
     # Generate unique output writer ID numbers
     _id_iter = itertools.count()
     
-    def __init__(self, model, name=None, add_id=True, save_first_timestep=False):
+    def __init__(self, 
+            model, 
+            name=None, 
+            add_id=True, 
+            save_first_timestep=False,
+            save_last_timestep=True,
+            ):
         r"""
 
         Parameters
@@ -41,6 +47,11 @@ class GenericOutputWriter:
             Indicates that the first output time is at time zero. Defaults to 
             False.
 
+        save_last_timestep : bool, optional
+            Indicates that the last output time is at the clock stop time even 
+            if the iterator is infinite or exhausted. 
+            Defaults to True.
+
         [section name?]
         ---------------
         Important! The inheriting class needs to register an iterator of output 
@@ -50,6 +61,7 @@ class GenericOutputWriter:
 
         self.model = model
         self._save_first_timestep = save_first_timestep
+        self._save_last_timestep = save_last_timestep
 
         # Make sure the model has a clock. All models should have clock, but 
         # just in case...
@@ -66,8 +78,11 @@ class GenericOutputWriter:
         # Generate an iterator of output times
         # Needs to be set by register_times_iter
         self._times_iter = None
+
+        # Some variables to track the state of the iterator
         self._next_output_time = None
         self._prev_output_time = None
+        self._is_exhausted = False
     
     # Attributes
     @property
@@ -134,15 +149,43 @@ class GenericOutputWriter:
         assert hasattr(self._times_iter, '__next__'), \
                 f"The output time iterator needs a __next__ function"
 
+        # Check if the writer is already in an exhausted state
+        if self._is_exhausted:
+            # Already exhausted. Always return None
+            assert self._next_output_time == None
+            return None
+        
+        # Writer is not exhausted yet
+        had_next = self._next_output_time is not None
+        model_stop_time = self.model.clock.stop
+
         # Update the previous value before advancing the iterator
-        if self._next_output_time is not None:
+        if had_next:
             # Only updates the previous time while the iterator is running.
             # (eventually becomes the final valid output time)
+            assert self._next_output_time <= model_stop_time
             self._prev_output_time = self._next_output_time 
 
+        # Check if the last output time was the stop time.
+        if had_next and self._next_output_time == model_stop_time:
+            # Previous time was the final step and output was forced by 
+            # save_last_timestep. The times iterator was still advanced during 
+            # the last step and might be returning garbage if used again.
+            # e.g. [1,2,3,40,15] with stop time of 20 and save_last_step = True 
+            # might attempt to write output at t=15.
+            next_time = None
+        else:
+            # Advance the iterator
+            next_time = self._advance_iter_recursive()
+
+        # Check if the writer has become exhausted
+        if next_time is None:
+            self._is_exhausted = True
+
         # Save and return the next time
-        self._next_output_time = self._advance_iter_recursive()
-        return self._next_output_time
+        self._next_output_time = next_time
+        return next_time
+
 
     def _advance_iter_recursive(self, recursion_counter=5):
         r""" Advances the output times iterator.
@@ -184,25 +227,56 @@ class GenericOutputWriter:
         # Advance the time iterator to get the next time value
         next_time = next(self._times_iter, None)
         prev_time = self._prev_output_time # Already updated by advance_iter()
+        model_stop_time = self.model.clock.stop
 
         if next_time is None:
             # The iterator returned None and is therefore exhausted.
-            # No need for further checks.
+
+            if self._save_last_timestep:
+                # Make sure the last output time will be at the end of the 
+                # model run.
+                if prev_time is None or prev_time < model_stop_time:
+                    # The iterator either had no entries or the previous output 
+                    # time is before model stop time. Either way, make sure the 
+                    # next output time is the model stop time.
+                    return model_stop_time
+                # else prev_time >= stop_time -> already output at stop time
+
+            # Output at the model stop time was not required or already 
+            # occurred. No further times necessary.
             return None
+        
+        # For the following code, we know next_time is not None
         
         # Check that the iterator returned a proper value
         assert isinstance(next_time, float), \
                 "The output time iterator needs to generate float values."
 
-        if next_time > self.model.clock.stop:
-            # The next time is greater than the model end time and 
-            # should be exhausted.  The iterator is likely infinite, so 
-            # ignore any future calls.
+        if next_time > model_stop_time:
+            # The next time is greater than the model end time and should be 
+            # exhausted. The iterator is too long (most likely infinite) and 
+            # the interval either jumped over the model stop time or this is 
+            # the final time step.
+            
+            if self._save_last_timestep:
+                # Make sure the last output time will be at the end of the 
+                # model run.
+                if prev_time is None or prev_time < model_stop_time:
+                    # The iterator jumped past the end time from either the 
+                    # first advance (i.e. output interval > model duration) or 
+                    # from a normal advance.  Either way, make sure the next 
+                    # output time is the model stop time.
+                    return model_stop_time
+                # else prev_time >= stop_time -> already output at stop time 
+
+            # Output at the model stop time was not required or already 
+            # occurred. No further times necessary.
             return None
 
         elif (prev_time is not None) and (prev_time >= next_time):
-            # Next time is too small. Ignore this value and try advancing again 
-            # until a better value is found or the recursion_counter runs out.
+            # Next time is smaller than previous time. Ignore this value and 
+            # try advancing again until a larger value is found or the 
+            # recursion_counter runs out.
             if recursion_counter > 0:
                 if not (prev_time == 0 and next_time == 0):
                     # Warn the user that there are issues with the iterator.  

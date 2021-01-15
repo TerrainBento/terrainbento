@@ -9,6 +9,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             name="static-interval-output-writer",
             add_id=True,
             save_first_timestep=False,
+            save_last_timestep=True,
             intervals=None,
             intervals_repeat=False,
             times=None
@@ -57,6 +58,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
 
         super().__init__(model, name=name, add_id=add_id, 
                 save_first_timestep=save_first_timestep,
+                save_last_timestep=save_last_timestep,
                 )
         self._intervals_repeat = intervals_repeat
 
@@ -106,7 +108,8 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
         times_iter = None
         if isinstance(intervals, (int, float)):
             # 'intervals' is a single integer or float number.
-            #
+            assert intervals > 0, "Intervals must be positive number(s)"
+
             # Create a counting iterator that starts at 'intervals' and steps 
             # by 'intervals'. Make sure the iterator produces floats
             start = float(intervals)
@@ -121,6 +124,8 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
                     f"Only floats or integers are currently supported for ",
                     f"the output interval list.",
                     ]))
+            assert all(i > 0 for i in intervals), \
+                    "Intervals must be positive number(s)"
 
             if self._intervals_repeat:
                 # The intervals list should repeat until the end of the model 

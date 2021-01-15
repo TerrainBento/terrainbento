@@ -789,7 +789,7 @@ class ErosionModel(object):
         while time_now < self.clock.stop:
             next_run_pause = min(
                 #time_now + self.output_interval, self.clock.stop,
-                self.sorted_output_times[0], self.clock.stop,
+                self.next_output_time, self.clock.stop,
             )
             assert next_run_pause > time_now
             self.run_for(self.clock.step, next_run_pause - time_now)

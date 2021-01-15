@@ -50,13 +50,15 @@ def test_class_adapter(clock_08):
     basic_model = BasicModel(clock_08, step)
 
     output_interval = 6
-    correct_outputs = to_floats([0,6,12,18]) # Note: clock_08 stops at 20
+    correct_outputs = to_floats([0,6,12,18,20])
+    # Note: clock_08 stops at 20 and save_last_timestep = True
 
     writer = StaticIntervalOutputClassAdapter(
             basic_model,
             output_interval,
             SimpleOutputClass,
             save_first_timestep=True,
+            save_last_timestep=True,
             )
 
     # Run "model"
@@ -88,13 +90,15 @@ def test_function_adapter(clock_08):
     basic_model = BasicModel(clock_08, step)
 
     output_interval = 3
-    correct_outputs = to_floats([0,3,6,9,12,15,18]) # Note: clock_08 stops at 20
+    correct_outputs = to_floats([0,3,6,9,12,15,18,20])
+    # Note: clock_08 stops at 20 and save_last_timestep = True
 
     writer = StaticIntervalOutputFunctionAdapter(
             basic_model,
             output_interval,
             simple_output_function,
             save_first_timestep=True,
+            save_last_timestep=True,
             )
 
     # Run "model"
