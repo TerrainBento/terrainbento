@@ -219,6 +219,7 @@ def inputs_yaml():
       stop: 10.
 
     output_interval: 2.
+    output_default_netcdf: False
     """
     return out
 
@@ -362,6 +363,7 @@ def inputs_D8_yaml():
 
     output_interval: 2.
     flow_director: "FlowDirectorD8"
+    output_default_netcdf: False
     """
     return out
 

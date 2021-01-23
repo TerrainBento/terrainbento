@@ -7,12 +7,10 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
     def __init__(self, 
             model, 
             name="static-interval-output-writer",
-            add_id=True,
-            save_first_timestep=False,
-            save_last_timestep=True,
             intervals=None,
             intervals_repeat=False,
-            times=None
+            times=None,
+            **generic_writer_kwargs,
             ):
         """A class for generating output at predetermined intervals or times.
 
@@ -24,15 +22,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             The name of the output writer used when generating output 
             filenames. Defaults to "static-interval-output-writer".
 
-        add_id : bool, optional
-            Indicates whether to append "-{id}" to the end of the name. False 
-            does nothing. Default is True.
-
-        save_first_timestep : bool, optional
-            Indicates that the first output time is at time zero. Defaults to 
-            False.
-
-        intervals : float, list of floats, optional
+        intervals : float, int, list of floats, list of ints, optional
             A single float value indicates uniform intervals between output 
             calls. A list of floats indicates predetermined intervals between 
             output times. Defaults to None which indicates that `times` will be 
@@ -45,20 +35,29 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             a list. Has no effect for scalar intervals (which always 
             repeat) or if times is provided instead of intervals.
 
-        times : list of floats, optional
+        times : list of floats, list of ints, optional
             A list of model times to generate output. Either `intervals` or 
             `times` should be defined. Defaults to None which indicates that 
             `intervals` will be used. If both `intervals` and `times` are None, 
             will default to the one output at the end of the model run.
+
+        generic_writer_kwargs : keyword args, optional
+            Keyword arguments that will be passed directly to 
+            GenericOutputWriter. These include:
+                add_id : bool, defaults to True
+                save_first_timestep : bool, defaults to False
+                save_last_timestep : bool, defaults to True
+                output_dir : string, defaults to './output'
+            Please see GenericOutputWriter for more detail.
+
 
         Returns
         -------
 
         """
 
-        super().__init__(model, name=name, add_id=add_id, 
-                save_first_timestep=save_first_timestep,
-                save_last_timestep=save_last_timestep,
+        super().__init__(model, name=name, 
+                **generic_writer_kwargs,
                 )
         self._intervals_repeat = intervals_repeat
 

@@ -2,6 +2,7 @@
 # !/usr/env/python
 
 import pytest
+import os.path
 
 import itertools
 from terrainbento.output_writers import (
@@ -93,7 +94,7 @@ def test_not_implemented_functions(clock08_model):
     for fu in base_functions:
         with pytest.raises(NotImplementedError):
             fu()
-def test_clock_required(clock08_model):
+def test_clock_required():
     """
     Test that errors are thrown if the model is missing a clock.
     """
@@ -105,7 +106,6 @@ def test_clock_required(clock08_model):
     no_clock_model = ClockModel(None)
     with pytest.raises(AssertionError):
         writer = GenericOutputWriter(no_clock_model)
-
 
 # Test the iterator behaviour
 @pytest.mark.parametrize("times_iter, error_type", [
@@ -328,3 +328,75 @@ def test_times_iter_infinite_iter(clock08_model):
             assert writer_previous is None
         else:
             assert correct_previous == writer_previous
+
+# Test Files
+def test_output_files(clock08_model):
+    """ Test that the file tracking functions are working correctly. """
+
+    class OutputA (GenericOutputWriter):
+        def __init__(self, model):
+            super().__init__(model, name="class-A", add_id=False)
+
+    class OutputB (GenericOutputWriter):
+        def __init__(self, model):
+            super().__init__(model, name="class-B", add_id=False)
+
+    class OutputC (GenericOutputWriter):
+        def __init__(self, model):
+            super().__init__(model, name="class-C", add_id=False)
+
+    output_a = OutputA(clock08_model)
+    output_b = OutputB(clock08_model)
+    output_c = OutputC(clock08_model)
+    output_g = GenericOutputWriter(clock08_model, add_id=False)
+
+    output_dir = output_a.output_dir
+
+    correct_files_dict = {
+            output_a : [
+                os.path.join(output_dir, "class-A_file-0.txt"),
+                os.path.join(output_dir, "class-A_file-1.txt"),
+                os.path.join(output_dir, "class-A_file-2.md"),
+                ],
+            output_b : [
+                os.path.join(output_dir, "class-B_file-0.txt"),
+                os.path.join(output_dir, "class-B_file-1.txt"),
+                os.path.join(output_dir, "class-B_file-2.md"),
+                ],
+            output_c : [
+                os.path.join(output_dir, "class-C_file-0.txt"),
+                os.path.join(output_dir, "class-C_file-1.txt"),
+                os.path.join(output_dir, "class-C_file-2.md"),
+                ],
+            output_g : [
+                os.path.join(output_dir, "generic_file-0.txt"),
+                os.path.join(output_dir, "generic_file-1.txt"),
+                os.path.join(output_dir, "generic_file-2.md"),
+                ],
+            }
+    
+
+    for writer, filepaths in correct_files_dict.items():
+        for filepath in filepaths:
+            open(filepath, 'w').close()
+            writer.register_output_filepath(filepath)
+
+            assert os.path.isfile(filepath)
+            assert writer.is_file_registered(filepath)
+
+    for writer in correct_files_dict:
+        assert writer.output_filepaths == correct_files_dict[writer]
+
+    owa_md_filepath = os.path.join(output_dir, "class-A_file-2.md")
+    output_a.delete_output_files(only_extension='md')
+    assert not output_a.is_file_registered(owa_md_filepath)
+    assert not os.path.isfile(owa_md_filepath)
+    assert output_a.output_filepaths == [
+            os.path.join(output_dir, "class-A_file-0.txt"),
+            os.path.join(output_dir, "class-A_file-1.txt"),
+            ]
+
+    for writer in correct_files_dict:
+        writer.delete_output_files()
+        assert writer.output_filepaths == []
+

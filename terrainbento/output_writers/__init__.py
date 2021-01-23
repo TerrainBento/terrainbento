@@ -12,6 +12,8 @@ from .static_interval_adapters import (
     StaticIntervalOutputClassAdapter,
     StaticIntervalOutputFunctionAdapter,
 )
+from .ow_simple_netcdf import OWSimpleNetCDF
+
 
 __all__ = [
     "GenericOutputWriter",
@@ -19,4 +21,5 @@ __all__ = [
     "StaticIntervalOutputClassAdapter",
     "StaticIntervalOutputFunctionAdapter",
     "OutputIteratorSkipWarning",
+    "OWSimpleNetCDF",
 ]

@@ -62,6 +62,7 @@ from .output_writers import (
     StaticIntervalOutputWriter,
     StaticIntervalOutputClassAdapter,
     StaticIntervalOutputFunctionAdapter,
+    OWSimpleNetCDF,
 )
 
 __all__ = [
@@ -111,6 +112,7 @@ __all__ = [
     "StaticIntervalOutputWriter",
     "StaticIntervalOutputClassAdapter",
     "StaticIntervalOutputFunctionAdapter",
+    "OWSimpleNetCDF",
 ]
 
 
