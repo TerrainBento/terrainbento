@@ -97,9 +97,11 @@ class GenericOutputWriter:
         if output_dir is None:
             # Make a subdir with a some kind of model run identifier?
             # e.g. time stamp for model start time
-            output_dir = os.path.join(os.path.dirname(__file__), "output")
-            if not os.path.isdir(output_dir): # pragma: no cover
-                os.mkdir(output_dir)
+            output_dir = os.path.join(os.curdir, "output")
+        if not os.path.isdir(output_dir): # pragma: no cover
+            print(f"Making output directory at {output_dir}")
+            os.mkdir(output_dir)
+
         self._output_dir = output_dir
         self._output_filepaths = []
     
@@ -116,9 +118,12 @@ class GenericOutputWriter:
     def filename_prefix(self):
         """ Generate the filename prefix based on the model prefix, writer's 
         name, and model iteration. """
+        #print(vars(self.model).keys())
+        #print(self.model.iteration)
         model_prefix = self.model.output_prefix
         iteration_str = f"iter-{self.model.iteration:05d}"
         prefix = '_'.join([model_prefix, self._name, iteration_str])
+        #assert False
         return prefix
 
     @property
@@ -193,6 +198,8 @@ class GenericOutputWriter:
         
         # Writer is not exhausted yet
         had_next = self._next_output_time is not None
+        had_prev = self._prev_output_time is not None
+        save_first = self._save_first_timestep
         model_stop_time = self.model.clock.stop
 
         # Update the previous value before advancing the iterator
@@ -205,11 +212,16 @@ class GenericOutputWriter:
         # Check if the last output time was the stop time.
         if had_next and self._next_output_time == model_stop_time:
             # Previous time was the final step and output was forced by 
-            # save_last_timestep. The times iterator was still advanced during 
+            # _save_last_timestep. The times iterator was still advanced during 
             # the last step and might be returning garbage if used again.
             # e.g. [1,2,3,40,15] with stop time of 20 and save_last_step = True 
             # might attempt to write output at t=15.
             next_time = None
+        elif save_first and not had_prev and not had_next:
+            # First time advancing the iterator (both prev and next are None), 
+            # but the first output time needs to be at time zero. Set the next 
+            # time to zero.
+            next_time = 0.0
         else:
             # Advance the iterator
             next_time = self._advance_iter_recursive()
@@ -221,7 +233,6 @@ class GenericOutputWriter:
         # Save and return the next time
         self._next_output_time = next_time
         return next_time
-
 
     def _advance_iter_recursive(self, recursion_counter=5):
         r""" Advances the output times iterator.
@@ -252,13 +263,6 @@ class GenericOutputWriter:
             to write output. None indicates that this writer has finished 
             writing output for the rest of the model run.
         """
-
-        if self._save_first_timestep:
-            # First time advancing the iterator, but the first output time 
-            # needs to be at time zero. Return zero instead of calling next on 
-            # the times iterator.
-            self._save_first_timestep = False
-            return 0.0
         
         # Advance the time iterator to get the next time value
         next_time = next(self._times_iter, None)
@@ -404,6 +408,7 @@ class GenericOutputWriter:
                 keep_filepaths.append(filepath)
 
         self._output_filepaths = keep_filepaths
+
     def get_output_filepaths(self, only_extension=None):
         """ Get a list of all output files created by this writer.
 

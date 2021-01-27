@@ -47,6 +47,7 @@ class OWSimpleNetCDF(StaticIntervalOutputWriter):
         -------
 
         """
+
         super().__init__(
                 model, 
                 name=name, 
