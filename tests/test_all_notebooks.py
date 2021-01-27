@@ -46,7 +46,17 @@ def _notebook_run(path):
         subprocess.check_call(args)
 
         nb = nbformat.read(
-            fp.name, nbformat.current_nbformat, encoding="UTF-8"
+            fp.name, nbformat.current_nbformat, encoding="UTF-8" # See below
+            # If you are getting a TypeError because __init__ got an unexpected 
+            # keyword argument "encoding", it's probably because you are using 
+            # a version of python that is too advanced. This function call 
+            # works in 3.7, but not 3.9. HOWEVER, looking at the nbformat and 
+            # json source code, the "encoding" kwarg is never actually used 
+            # along the way to the failure point and nbformat.read hardcodes 
+            # "utf-8". Could probably delete?
+            # 
+            # Use the following if it breaks:
+            #fp.name, nbformat.current_nbformat
         )
 
     errors = [
