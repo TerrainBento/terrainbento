@@ -1132,5 +1132,5 @@ def main():  # pragma: no cover
     erosion_model.run()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

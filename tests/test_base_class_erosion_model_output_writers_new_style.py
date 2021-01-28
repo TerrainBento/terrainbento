@@ -473,32 +473,32 @@ def test_deleting_output(clock_08, almost_default_grid):
         regolith_transport_parameter=0.0,
         boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
         output_writers={
-            'fibonnaci-1': {
-                'class' : OWGenericWrapper, 
-                'kwargs':{ 'add_id':False, 'times_iter':fibonnaci(), },
+            'fibonnaci-1':{
+                'class' :OWGenericWrapper, 
+                'kwargs':{'add_id':False, 'times_iter':fibonnaci(), 'verbose':True},
             },
-            'fibonnaci-2': {
-                'class' : OWGenericWrapper, 
-                'kwargs':{ 'add_id':False, 'times_iter':fibonnaci(), },
+            'fibonnaci-2':{
+                'class' :OWGenericWrapper, 
+                'kwargs':{'add_id':False, 'times_iter':fibonnaci(), 'verbose':True},
             },
-            'fibonnaci-3': {
-                'class' : OWGenericWrapper, 
-                'kwargs':{ 'add_id':False, 'times_iter':fibonnaci(), },
+            'fibonnaci-3':{
+                'class' :OWGenericWrapper, 
+                'kwargs':{'add_id':False, 'times_iter':fibonnaci(), 'verbose':True},
             },
-            'netcdf-1' : {
-                'class' : OWSimpleNetCDF,
-                'args' : ["topographic__elevation"],
-                'kwargs' : { 'intervals' : 5.0, 'add_id' : False, },
+            'netcdf-1':{
+                'class' :OWSimpleNetCDF,
+                'args'  :["topographic__elevation"],
+                'kwargs':{'intervals':5.0, 'add_id':False, 'verbose':True},
             },
-            'netcdf-2' : {
-                'class' : OWSimpleNetCDF,
-                'args' : ["topographic__elevation"],
-                'kwargs' : { 'intervals' : 5.0, 'add_id' : False, },
+            'netcdf-2':{
+                'class' :OWSimpleNetCDF,
+                'args'  :["topographic__elevation"],
+                'kwargs':{'intervals':5.0, 'add_id':False, 'verbose':True},
             },
-            'netcdf-3' : {
-                'class' : OWSimpleNetCDF,
-                'args' : ["topographic__elevation"],
-                'kwargs' : { 'intervals' : 5.0, 'add_id' : False, },
+            'netcdf-3':{
+                'class' :OWSimpleNetCDF,
+                'args'  :["topographic__elevation"],
+                'kwargs':{'intervals':5.0, 'add_id':False, 'verbose':True},
             },
         },
         #output_interval=6.0,
