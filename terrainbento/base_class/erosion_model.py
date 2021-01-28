@@ -537,7 +537,7 @@ class ErosionModel(object):
         self.sorted_output_times = [] # sorted list of the next output times
         for ow_writer in self.all_output_writers:
             first_time = ow_writer.advance_iter()
-            self._update_output_times(ow_writer, first_time)
+            self._update_output_times(ow_writer, first_time, None)
 
     def _verify_fields(self, required_fields):
         """Verify all required fields are present."""
@@ -664,7 +664,7 @@ class ErosionModel(object):
                 # Prepend a reference to the model to the args (if not there)
                 if ow_args and ow_args[0] is not self:
                     ow_args = [self] + ow_args
-                elif not ow_args:
+                elif ow_args is None: # pragma: no cover
                     ow_args = [self]
 
                 # Add some kwargs if they were not already provided
@@ -862,21 +862,46 @@ class ErosionModel(object):
 
         if self._model_time == self.next_output_time:
             # The current model time matches the next output time
-            curr_output_time = self.sorted_output_times.pop(0)
-            current_writers = self.active_output_times.pop(curr_output_time)
+            current_time = self.sorted_output_times.pop(0)
+            current_writers = self.active_output_times.pop(current_time)
             for ow_writer in current_writers:
                 # Run all the output writers associated with this time.
                 ow_writer.run_one_step()
                 next_time = ow_writer.advance_iter()
-                self._update_output_times(ow_writer, next_time)
+                self._update_output_times(ow_writer, next_time, current_time)
 
-    def _update_output_times(self, ow_writer, new_time):
+    def _update_output_times(self, ow_writer, new_time, current_time):
         if new_time is None:
             # The output writer has exhausted all of it's output times.
-            # Do not add it back to the dict/list.
+            # Do not add it back to the active dict/list
             return
 
         model_step = self.clock.step
+        if current_time is not None:
+            try:
+                assert new_time > current_time
+            except AssertionError:
+                warnings.warn(''.join([
+                    f"The output writer {ow_writer.name} is providing a ",
+                    f"next time that is less than or equal to the current ",
+                    f"time. Possibly because the previous time was in ",
+                    f"between steps, delaying the output until now. ",
+                    f"Skipping ahead.",
+                    ]))
+                for n_skips in range(10):
+                    # Allow 10 attempts to skip
+                    new_time = ow_writer.advance_iter()
+                    if new_time is None:
+                        # iterator exhausted. No more processing needed
+                        return
+                    elif new_time > current_time:
+                        break
+                else:
+                    # Could not find a suitable next_time
+                    raise AssertionError(''.join([
+                        f"Output writer failed to return a next time greater ",
+                        f"than the current time after several attempts.",
+                        ]))
 
         # See if the new output time aligns with the model step.
         if (new_time % model_step) != 0.0:
@@ -993,6 +1018,30 @@ class ErosionModel(object):
         ds.to_netcdf(filename, engine="netcdf4", format="NETCDF4")
         ds.close()
 
+    def _format_extension_and_writer_args(self, extension, writer):
+        extension_list = None
+        writer_list = None
+
+        if isinstance(writer, GenericOutputWriter):
+            writer_list = [writer]
+        elif isinstance(writer, list):
+            writer_list = writer
+        elif writer is None:
+            writer_list = self.all_output_writers
+        else:
+            raise TypeError(f"Unrecognized writer argument. {writer}")
+
+        if isinstance(extension, str):
+            extension_list = [extension]
+        elif isinstance(extension, list):
+            extension_list = extension
+        elif extension is None:
+            extension_list = [None]
+        else:
+            raise TypeError(f"Unrecognized extension argument. {extension}")
+
+        return extension_list, writer_list
+
     def remove_output_netcdfs(self):
         """ Remove netcdf output files written during a model run. Only works 
         for new style writers. """
@@ -1002,12 +1051,14 @@ class ErosionModel(object):
         """ Remove files all files written by new style writers during a model 
         run. Does not work for old style writers which have no way to report 
         what they have written. Can specify type of file or writer.
+
+        To do: allow 'writer' to be a string for the name of the writer?
         
         Parameters
         ----------
         extension : string or list of strings, optional
             Specify what type(s) of files should be returned. Defaults to 
-            deleting all file types.
+            deleting all file types. Don't include a leading period.
         writer : GenericOutputWriter instance, optional
             Specify if the files should come from certain output writers. 
             Defaults to deleting files from all writers.
@@ -1017,24 +1068,16 @@ class ErosionModel(object):
         filepaths : list of strings
             A list of filepath strings
         """
-        if isinstance(writer, GenericOutputWriter):
-            writer_list = [writer]
-        elif isinstance(writer, list):
-            writer_list = writer
-        else:
-            writer_list = self.all_output_writers
 
-        if isinstance(extension, str):
-            extension_list = [extension]
-        elif isinstance(extension, list):
-            extension_list = extension
-        else:
-            extension_list = [None]
+        lists = self._format_extension_and_writer_args(extension, writer)
+        extension_list, writer_list = lists
 
         for ow in writer_list:
             assert ow is not None
             for ext in extension_list:
                 assert ext is None or isinstance(ext, str)
+                if ext and ext[0] == '.':
+                    ext = ext[1:] # ignore leading period if present
                 ow.delete_output_files(ext)
 
     def get_output(self, extension=None, writer=None):
@@ -1056,19 +1099,9 @@ class ErosionModel(object):
         filepaths : list of strings
             A list of filepath strings
         """
-        if isinstance(writer, GenericOutputWriter):
-            writer_list = [writer]
-        elif isinstance(writer, list):
-            writer_list = writer
-        else:
-            writer_list = self.all_output_writers
 
-        if isinstance(extension, str):
-            extension_list = [extension]
-        elif isinstance(extension, list):
-            extension_list = extension
-        else:
-            extension_list = [None]
+        lists = self._format_extension_and_writer_args(extension, writer)
+        extension_list, writer_list = lists
 
         output_list = []
         for ow in writer_list:
@@ -1078,6 +1111,13 @@ class ErosionModel(object):
                 output_list += ow.get_output_filepaths(ext)
 
         return output_list
+
+    def get_output_writer(self, name):
+        matches = []
+        for ow in self.all_output_writers:
+            if name in ow.name:
+                matches.append(ow)
+        return matches
 
 
 def main():  # pragma: no cover

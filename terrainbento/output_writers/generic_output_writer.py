@@ -31,6 +31,8 @@ class GenericOutputWriter:
             save_first_timestep=False,
             save_last_timestep=True,
             output_dir=None,
+            times_iter=None,
+            verbose=False,
             ):
         r""" Base class for all new style output writers.
 
@@ -57,20 +59,26 @@ class GenericOutputWriter:
             if the iterator is infinite or exhausted. 
             Defaults to True.
 
-        output_dir : string, None
+        output_dir : string, optional
             Directory where output files will be saved. Default is None, which 
             creates an 'output' directory in the current directory.
+
+        times_iter : iterator of floats, optional
+            The user can provide an iterator of time floats here instead of 
+            registering one later using register_times_iter. 
 
         [section name?]
         ---------------
         Important! The inheriting class needs to register an iterator of output 
-        times by calling `register_times_iter`.
+        times by calling `register_times_iter` or provide 'times_iter' in 
+        constructor.
 
         """
 
         self.model = model
         self._save_first_timestep = save_first_timestep
         self._save_last_timestep = save_last_timestep
+        self.verbose = verbose
 
         # Make sure the model has a clock. All models should have clock, but 
         # just in case...
@@ -99,11 +107,15 @@ class GenericOutputWriter:
             # e.g. time stamp for model start time
             output_dir = os.path.join(os.curdir, "output")
         if not os.path.isdir(output_dir): # pragma: no cover
-            print(f"Making output directory at {output_dir}")
+            self.vprint(f"Making output directory at {output_dir}")
             os.mkdir(output_dir)
 
         self._output_dir = output_dir
         self._output_filepaths = []
+
+        # Register the times_iter if one was provided.
+        if times_iter is not None:
+            self.register_times_iter(times_iter)
     
     # Attributes
     @property
@@ -117,13 +129,20 @@ class GenericOutputWriter:
     @property
     def filename_prefix(self):
         """ Generate the filename prefix based on the model prefix, writer's 
-        name, and model iteration. """
-        #print(vars(self.model).keys())
-        #print(self.model.iteration)
+        name, and model time. e.g. model-prefix_ow-name_time-0000000001.0 """
+
+        # Note, model iteration is NOT the number of steps... It is the number 
+        # of times the run_for loop is executed.
+        #
         model_prefix = self.model.output_prefix
-        iteration_str = f"iter-{self.model.iteration:05d}"
-        prefix = '_'.join([model_prefix, self._name, iteration_str])
-        #assert False
+        #iteration_str = f"iter-{self.model.iteration:05d}"
+        time_str = f"time-{self.model.model_time:012.1f}"#.replace('.', 'x')
+        if model_prefix:
+            #prefix = '_'.join([model_prefix, self._name, iteration_str])
+            prefix = '_'.join([model_prefix, self._name, time_str])
+        else:
+            #prefix = '_'.join([self._name, iteration_str])
+            prefix = '_'.join([self._name, time_str])
         return prefix
 
     @property
@@ -232,6 +251,7 @@ class GenericOutputWriter:
 
         # Save and return the next time
         self._next_output_time = next_time
+
         return next_time
 
     def _advance_iter_recursive(self, recursion_counter=5):
@@ -374,6 +394,7 @@ class GenericOutputWriter:
         """
 
         if not self.is_file_registered(filepath):
+            self.vprint(f"Registering a new filepath {filepath}")
             self._output_filepaths.append(filepath)
 
     def delete_output_files(self, only_extension=None):
@@ -390,11 +411,14 @@ class GenericOutputWriter:
         output_filepaths = self._output_filepaths
         keep_filepaths = []
 
+        self.vprint(f"Deleting files...")
+        self.vprint(f"{self.name} wrote: {output_filepaths}")
         for filepath in output_filepaths:
             # Note: ''[1:] will return '' (i.e. does not crash if no extension)
             file_ext = os.path.splitext(filepath)[1][1:]
-            if only_extension is None or file_ext == only_extension:
+            if only_extension is None or file_ext in only_extension:
                 # Deleting all files or just the target extension type
+                self.vprint(f"Deleting {filepath}")
                 try:
                     os.remove(filepath)
                 except WindowsError:  # pragma: no cover
@@ -404,6 +428,7 @@ class GenericOutputWriter:
                     )
                     keep_filepaths.append(filepath) # could not delete
             else:
+                self.vprint(f"Keeping {filepath}")
                 # Not deleting this file
                 keep_filepaths.append(filepath)
 
@@ -434,3 +459,7 @@ class GenericOutputWriter:
                 return_filepaths.append(filepath)
 
         return return_filepaths
+
+    def vprint(self, msg):
+        if self.verbose:
+            print(msg)

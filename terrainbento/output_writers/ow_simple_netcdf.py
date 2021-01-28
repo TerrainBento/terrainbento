@@ -79,4 +79,3 @@ class OWSimpleNetCDF(StaticIntervalOutputWriter):
             to_netcdf(grid, filepath, format="NETCDF4")
 
         self.register_output_filepath(filepath)
-        print(f"Created {filepath}")
