@@ -7,23 +7,34 @@ import os
 class OutputIteratorSkipWarning(UserWarning):
     """
     A UserWarning child class raised when the advancing iterator skips a 
-    non-zero time.
+    time between zero and the stop time.
     """
     def get_message(next_time, prev_time):
         return ''.join([
-                f"Next output time {next_time} is <= ",
+                f"Next output time {next_time} is less than or equal to the ",
                 f"previous output time {prev_time}. Skipping..."
                 ])
 
-#warnings.simplefilter('always', OutputIteratorSkipWarning)
-
 class GenericOutputWriter:
+    r""" Base class for all new style output writers or converted old style 
+    output writers.
+
+    The derived class defines when output occurs via an iterator and what is 
+    actually produced. This base class handles the interfacing with the model 
+    loop.
+
+    At minimum, derived classes must define **run_one_step** for generating the 
+    actual output and must provide an iterator of output times via either the 
+    constructor or **register_times_iter**.  Calling 
+    **register_output_filepath** from the derived class allows for some 
+    optional file management features.
+
+    See constructor for more details. 
+    """
+
     # Generate unique output writer ID numbers
     _id_iter = itertools.count()
     
-    ## Track what files were created by any output writer
-    #_output_files_dict = {} # {writer : list of filepaths}
-
     def __init__(self, 
             model, 
             name=None, 
@@ -41,38 +52,43 @@ class GenericOutputWriter:
         model : terrainbento ErosionModel instance
 
         name : string, optional
-            The name of the output writer used for generating file names. 
-            Defaults to "output-writer"
+            The name of the output writer used for identifying the writer and 
+            generating file names. Defaults to "output-writer" or 
+            "output-writer-id{id}" depending on **add_id** argument.
 
         add_id : bool, optional
             Indicates whether the output writer ID number should be appended to 
-            the name following the format f"-id{id}". Useful if there are 
+            the name using the format "-id{id}". Useful if there are 
             multiple output writers of the same type with non-unique names.  
             Defaults to True.
 
         save_first_timestep : bool, optional
-            Indicates that the first output time is at time zero. Defaults to 
-            False.
+            Indicates that the first output time must be at time zero 
+            regardless of whether or not the output time iterator generates 
+            zero. Defaults to False.
 
         save_last_timestep : bool, optional
-            Indicates that the last output time is at the clock stop time even 
-            if the iterator is infinite or exhausted. 
-            Defaults to True.
+            Indicates that the last output time must be at the clock stop time 
+            regardless of whether or not the output time iterator would 
+            normally generate the stop time. Defaults to True.
 
         output_dir : string, optional
-            Directory where output files will be saved. Default is None, which 
-            creates an 'output' directory in the current directory.
+            Directory where output files will be saved. Default value is None, 
+            which creates an 'output' directory in the current directory.
 
         times_iter : iterator of floats, optional
-            The user can provide an iterator of time floats here instead of 
-            registering one later using register_times_iter. 
+            The user can provide an iterator of floats representing output 
+            times here instead of registering one later using 
+            **register_times_iter**. 
 
-        [section name?]
-        ---------------
-        Important! The inheriting class needs to register an iterator of output 
-        times by calling `register_times_iter` or provide 'times_iter' in 
-        constructor.
+        Returns
+        -------
+        GenericOutputWriter: object
 
+        Examples
+        --------
+        GenericOutputWriter is a base class that should not be run by itself. 
+        Please see the terrainbento tutorial for output examples.
         """
 
         self.model = model
@@ -109,7 +125,6 @@ class GenericOutputWriter:
         if not os.path.isdir(output_dir): # pragma: no cover
             self.vprint(f"Making output directory at {output_dir}")
             os.mkdir(output_dir)
-
         self._output_dir = output_dir
         self._output_filepaths = []
 
@@ -120,20 +135,22 @@ class GenericOutputWriter:
     # Attributes
     @property
     def id(self):
+        """ The output writer's unique id number. """
         return self._id
 
     @property
     def name(self):
+        """ The output writer's name. """
         return self._name
 
     @property
     def filename_prefix(self):
-        """ Generate the filename prefix based on the model prefix, writer's 
+        """ Generate a filename prefix based on the model prefix, writer's 
         name, and model time. e.g. model-prefix_ow-name_time-0000000001.0 """
 
         # Note, model iteration is NOT the number of steps... It is the number 
-        # of times the run_for loop is executed.
-        #
+        # of times the run_for loop is executed. Can't use it here even though 
+        # an integer would be cleaner.
         model_prefix = self.model.output_prefix
         #iteration_str = f"iter-{self.model.iteration:05d}"
         time_str = f"time-{self.model.model_time:012.1f}"#.replace('.', 'x')
@@ -152,48 +169,52 @@ class GenericOutputWriter:
 
     @property
     def next_output_time(self):
-        r"""
-        Return when this object is next supposed to write output.
-        Does NOT advance the iterator.
-        """
+        r""" Return when this object is next supposed to write output. Does NOT 
+        advance the iterator. """
         return self._next_output_time
 
     @property
     def prev_output_time(self):
-        r"""
-        Returns the previous valid output time. Does not change after the time 
-        iterator is exhausted.
-        """
+        r""" Returns the previous valid output time. Does not change after the 
+        time iterator is exhausted. """
         return self._prev_output_time
 
     @property
     def output_filepaths(self):
+        """ Return a list of all output filepaths that have been written by 
+        this writer and registered with **register_output_filepath**. """
         return self._output_filepaths
 
     # Time iterator methods
     def register_times_iter(self, times_iter):
         """ Function for registering an iterator of output times.
 
-        The inheriting class must call this function. This function does not 
-        check the values in the iterator, but the `write_output` function will.
+        The inheriting class must call this function or provide the iterator to 
+        the constructor (which then calls this function). This function does 
+        not check the values in the iterator, but **advance_iter** will.
         
 
         Parameters
         ----------
         times_iter : iterator of floats
             An iterator of floats representing model times when the output 
-            writer should create output.
+            writer should create output. The iterator values should be 
+            monotonically increasing and non-negative, but there is some 
+            flexibility in **advance_iter** to skip bad values.
         """
 
         self._times_iter = times_iter
 
     def advance_iter(self):
-        r""" Advances the output times iterator.
+        r""" Public-facing function for advancing the output times iterator.
+        
+        The advancing iterator accounts for forced saving on the first/last 
+        steps and accounts for short sequences where the generated times are 
+        smaller than the previous value.
 
-        Times that are too small compared to the previous output time are 
-        skipped. Warnings are thrown when a non-zero time is skipped and a 
-        RecursionError is thrown if too many values are skipped (default is 5 
-        skips). 
+        Warnings are thrown when a time between zero and the stop time is 
+        skipped and a RecursionError is thrown if too many values are skipped 
+        (default is 5 skips max).
 
         Returns
         -------
@@ -255,26 +276,21 @@ class GenericOutputWriter:
         return next_time
 
     def _advance_iter_recursive(self, recursion_counter=5):
-        r""" Advances the output times iterator.
+        r""" Private function for advancing the output times iterator.
         
+        This function accounts for iterator exhaustion, saving the last time 
+        step, and values that are smaller than the previous value. 
+
         Recursion is used to skip times that are too small compared to the 
-        previous output time. Warnings are thrown whenever a non-zero time is 
-        skipped and a RecursionError is thrown if too many values are skipped 
-        (default is 5 skips in a row). 
+        previous output time. Warnings are thrown whenever a time between zero 
+        and the stop time is skipped and a RecursionError is thrown if too many 
+        values are skipped (default is 5 skips in a row). 
 
-         Skipping allows some ability to handle a poorly constructed times_iter 
-         and the special case of outputting the initial conditions.
-
-        Checks if the current model time is actually the correct time?
-
-        After writing the output, advance the times_iter iterator and return 
-        when this object is next supposed to write output.
-        
         Parameters
         ----------
-        recursion_counter : int
+        recursion_counter : int, optional
             A counter to track the depth of recursion when skipping values less 
-            than or equal to the previous value.
+            than or equal to the previous value. Defaults to a max depth of 5.
 
         Returns
         -------
@@ -282,6 +298,7 @@ class GenericOutputWriter:
             A float value for the next model time when this output writer needs 
             to write output. None indicates that this writer has finished 
             writing output for the rest of the model run.
+
         """
         
         # Advance the time iterator to get the next time value
@@ -353,9 +370,9 @@ class GenericOutputWriter:
             # Normal value. Return as is.
             return next_time
 
-    # Base class method (must be overridden)
+    # Methods to override
     def run_one_step(self):
-        r""" The function which actually writes data to files or screen. """
+        r""" The function which actually writes data to files or the screen. """
         raise NotImplementedError(
                 "The inheriting class needs to implement this function."
                 )
@@ -379,13 +396,14 @@ class GenericOutputWriter:
         return filepath in self._output_filepaths
     
     def register_output_filepath(self, filepath):
-        """ Save the filepath to a newly created file.
+        """ Register the filepath to a newly created file.
 
         Does not throw any errors or warnings if the file is already registered 
-        or exists. Should it? User could be intentionally overwriting a file.
+        or exists. (Should it? User could be intentionally overwriting a file.)
 
         NOTE: Old style output writers do not have the ability to register 
-        files. Therefore file registering can't be a critical feature.
+        files. Therefore file registering/management can't be a required 
+        feature.
 
         Parameters
         ----------
@@ -398,14 +416,15 @@ class GenericOutputWriter:
             self._output_filepaths.append(filepath)
 
     def delete_output_files(self, only_extension=None):
-        """ Delete all output files generated by this writer. Primarily for 
-        testing cleanup.
+        """ Delete output files generated by this writer that have been 
+        registered. Primarily for testing cleanup.
 
         Parameters
         ----------
         only_extension : string, optional
             Specify what type of files to delete. Defaults to None, which will 
-            delete all file types generated by this writer.
+            delete all file types generated by this writer that have been 
+            registered.
         """
 
         output_filepaths = self._output_filepaths
@@ -435,18 +454,21 @@ class GenericOutputWriter:
         self._output_filepaths = keep_filepaths
 
     def get_output_filepaths(self, only_extension=None):
-        """ Get a list of all output files created by this writer.
+        """ Get a list of all output files created by this writer that have 
+        been registered.
 
         Parameters
         ----------
         only_extension : string, optional
-            Specify what type of files to delete. Defaults to None, which will 
-            delete all file types generated by this writer.
+            Specify what type of files to return. Defaults to None, which will 
+            return all file types generated by this writer that have been 
+            registered.
 
         Returns
         -------
         filepaths : list of strings
-            List of filepath strings.
+            List of filepath strings that match extension requirements and were 
+            registered.
         """
 
         output_filepaths = self._output_filepaths
@@ -461,5 +483,6 @@ class GenericOutputWriter:
         return return_filepaths
 
     def vprint(self, msg):
+        """ Print output to the standard output stream if in verbose mode. """
         if self.verbose:
             print(msg)

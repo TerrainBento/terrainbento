@@ -4,6 +4,19 @@ import itertools
 from terrainbento.output_writers import GenericOutputWriter
 
 class StaticIntervalOutputWriter(GenericOutputWriter):
+    r""" Base class for new style output writers or converted old style 
+    output writers that want to use predetermined output intervals or times.
+
+    The derived class defines what is actually produced. This base class 
+    handles when output occurs (and interfacing with the model loop via 
+    GenericOutputWriter).
+
+    At minimum, derived classes must define **run_one_step** for generating the 
+    actual output. Calling **register_output_filepath** from the derived class 
+    allows for some optional file management features.
+
+    See constructor and **GenericOutputWriter** for more info.
+    """
     def __init__(self, 
             model, 
             name="static-interval-output-writer",
@@ -23,23 +36,25 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             filenames. Defaults to "static-interval-output-writer".
 
         intervals : float, int, list of floats, list of ints, optional
-            A single float value indicates uniform intervals between output 
-            calls. A list of floats indicates predetermined intervals between 
-            output times. Defaults to None which indicates that `times` will be 
-            used.  If both `intervals` and `times` are None, will default to 
-            the producing one output at the end of the model run.
+            A single float or int value indicates uniform intervals between 
+            output calls. A list of floats or ints indicates variable  
+            intervals between output times. Defaults to None which indicates 
+            that `times` will be used. If both `intervals` and `times` are 
+            None, will default to the producing one output at the end of the 
+            model run.
 
         intervals_repeat : bool, optional
             Indicates whether a list of intervals should repeat until the end 
-            of the model run. Default is False. Only has effect if intervals is 
-            a list. Has no effect for scalar intervals (which always 
-            repeat) or if times is provided instead of intervals.
+            of the model run. Only has effect if intervals is a list. Has no 
+            effect for scalar intervals (which always repeat) or if times is 
+            provided instead of intervals. Default is False. 
 
-        times : list of floats, list of ints, optional
-            A list of model times to generate output. Either `intervals` or 
-            `times` should be defined. Defaults to None which indicates that 
-            `intervals` will be used. If both `intervals` and `times` are None, 
-            will default to the one output at the end of the model run.
+        times : float, int, list of floats, list of ints, optional
+            A single float or int value indicates only one output time.  A list 
+            of floats or ints indicates multiple predetermined output times. 
+            Defaults to None which indicates that `intervals` will be used. If 
+            both `intervals` and `times` are None, will default to the one 
+            output at the end of the model run.
 
         generic_writer_kwargs : keyword args, optional
             Keyword arguments that will be passed directly to 
@@ -48,11 +63,19 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
                 save_first_timestep : bool, defaults to False
                 save_last_timestep : bool, defaults to True
                 output_dir : string, defaults to './output'
+                verbose : bool, defaults to False
             Please see GenericOutputWriter for more detail.
-
 
         Returns
         -------
+        StaticIntervalOutputWriter: object
+
+        Examples
+        --------
+        StaticIntervalOutputWriter is a base class that should not be run by 
+        itself. It contains the machinery for easily creating the output times 
+        iterator, but does not define **run_one_step**. Please see the 
+        terrainbento tutorial for output examples.
 
         """
 
@@ -89,19 +112,21 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
         #   section is for.
 
     def _process_intervals_arg(self, intervals):
-        """ Process the 'intervals' value provided to the constructor.
+        """ Private method for processing the 'intervals' value provided to the 
+        constructor.
 
         Parameters
         ----------
-        intervals : float, int , list of floats, list of ints
-            A single float/integer value indicates uniform intervals between 
-            output calls. A list of floats/ints indicates predetermined 
-            intervals between output times.
+        intervals : float, int, list of floats, list of ints
+            A single float or int value indicates uniform intervals between 
+            output calls. A list of floats or ints indicates variable  
+            intervals between output times. A list of intervals may be repeated 
+            if self._intervals_repeat is True.
 
         Returns
         -------
         times_iter : 
-            An iterator of float output times.
+            An iterator of floats representing output times.
 
         """
         times_iter = None
@@ -146,17 +171,16 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
 
         assert times_iter is not None
         return times_iter
+
     def _process_times_arg(self, times):
-        """ Process the 'times' value provided to the constructor.
+        """ Private method for processing the 'times' value provided to the 
+        constructor.
 
         Parameters
         ----------
         times : float, int, list of floats, list of ints
-            A list of model times to generate output.
-            A single float/integer value indicates that the model produces 
-            output once at the specified model time. A list of floats/ints 
-            indicates multiple predetermined model times to produce 
-            output.
+            A single float or int value indicates only one output time.  A list 
+            of floats or ints indicates multiple predetermined output times. 
 
         Returns
         -------
@@ -192,10 +216,13 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
         assert times_iter is not None
         return times_iter
 
-
+    # Methods to override
     def run_one_step(self):
         r""" The function which actually writes data to files (or screen).
         """
+        # This code is not needed here because it's in GenericOutputWriter...  
+        # But it's nice for explicitly showing that this function needs to be 
+        # defined by inheriting classes.
         raise NotImplementedError(
                 "The inheriting class needs to implement this function"
                 )

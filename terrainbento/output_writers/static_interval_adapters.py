@@ -11,7 +11,7 @@ class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
             name='class-output-writer',
             **static_interval_kwargs,
             ):
-        """ A simple output writer which converts old style class output 
+        """ A simple output writer which converts old style 'class' output 
         writers to a new style static interval writer.
 
         Parameters
@@ -22,10 +22,11 @@ class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
             The model defined output interval.
 
         ow_class : uninstantiated output class
-            An uninstantiated class that can write output.
+            An uninstantiated class that writes output in a **run_one_step** 
+            function.
 
         name : string, optional
-            The name of the output writer used when generating output 
+            The name of the output writer to use when generating output 
             filenames. Defaults to 'class-output-writer'
 
         static_interval_kwargs : keyword args, optional
@@ -35,23 +36,25 @@ class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
                 save_last_timestep : bool, defaults to True
                 output_dir : string, defaults to './output'
             Please see StaticIntervalOutputWriter and GenericOutputWriter for 
-            more detail.
+            more detail. Note: add_id is automatically included as True.
 
         Returns
         -------
+        StaticIntervalOutputClassAdapter: object
 
         """
+        static_interval_kwargs['add_id'] = True # Force add_id to be True
         super().__init__(model,
                 name=name,
                 intervals=output_interval,
                 intervals_repeat=False,
                 times=None,
-                add_id=True,
                 **static_interval_kwargs
                 )
         self.ow_class = ow_class(model)
 
     def run_one_step(self):
+        """ Call the old-style class's output function. """
         self.ow_class.run_one_step()
 
 class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
@@ -62,7 +65,7 @@ class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
             name="function-output-writer",
             **static_interval_kwargs,
             ):
-        """ A simple output writer which converts old style function output 
+        """ A simple output writer which converts old style 'function' output 
         writers to a new style static interval writer.
 
         Parameters
@@ -77,8 +80,8 @@ class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
             model as its only argument.
 
         name : string, optional
-            The name of the output writer used when generating output 
-            filenames. Defaults to 'class-output-writer'
+            The name of the output writer to use when generating output 
+            filenames. Defaults to 'function-output-writer'
 
         static_interval_kwargs : keyword args, optional
             Keyword arguments that will be passed directly to 
@@ -87,21 +90,23 @@ class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
                 save_last_timestep : bool, defaults to True
                 output_dir : string, defaults to './output'
             Please see StaticIntervalOutputWriter and GenericOutputWriter for 
-            more detail.
+            more detail. Note: add_id is automatically included as True.
 
         Returns
         -------
+        StaticIntervalOutputFunctionAdapter: object
 
         """
+        static_interval_kwargs['add_id'] = True # Force add_id to be True
         super().__init__(model,
                 name=name,
                 intervals=output_interval,
                 intervals_repeat=False,
                 times=None,
-                add_id=True,
                 **static_interval_kwargs
                 )
         self.ow_function = ow_function
 
     def run_one_step(self):
+        """ Call the old-style output function. """
         self.ow_function(self.model)
