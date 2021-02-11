@@ -26,6 +26,7 @@ from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
 from terrainbento.runoff_generators import SimpleRunoff
 from terrainbento.output_writers import (
     GenericOutputWriter,
+    StaticIntervalOutputWriter,
     StaticIntervalOutputClassAdapter,
     StaticIntervalOutputFunctionAdapter,
     OWSimpleNetCDF,
@@ -622,7 +623,6 @@ class ErosionModel(object):
             }
 
         instantiated_writers = []
-        output_interval = self.output_interval
         for name in output_writers:
             if name == 'class':
                 # Old style class output writers. Give information to an 
@@ -681,6 +681,8 @@ class ErosionModel(object):
                         'save_last_timestep' : self.save_last_timestep,
                         'output_dir' : self.output_dir,
                 }
+                if ow_class == StaticIntervalOutputWriter:
+                        defaults['intervals']=self.output_interval,
                 defaults.update(ow_kwargs)
                 ow_kwargs = defaults
 
@@ -1075,19 +1077,36 @@ class ErosionModel(object):
         writer_list = None
 
         if isinstance(writer, GenericOutputWriter):
+            # Writer argument is an object, convert to a list
             writer_list = [writer]
+        elif isinstance(writer, str):
+            # Writer argument is the name of the writer, get object
+            writer_list = self.get_output_writer(writer)
         elif isinstance(writer, list):
+            # Writer argument is a list
             writer_list = writer
+            # Check what is in the list
+            for i, w in enumerate(writer_list):
+                if isinstance(w, str):
+                    # Item is a name, replace with the object
+                    writer_list[i] = self.get_output_writer(w)[0]
+                elif not isinstance(w, GenericOutputWriter):
+                    raise TypeError(f"Unrecognized writer argument. {w}")
         elif writer is None:
+            # Default to all writers
             writer_list = self.all_output_writers
         else:
             raise TypeError(f"Unrecognized writer argument. {writer}")
 
         if isinstance(extension, str):
+            # Extension argument is a string
             extension_list = [extension]
         elif isinstance(extension, list):
+            # Extension argument is a list of strings
             extension_list = extension
+            assert all([isinstance(e, str) for e in extension_list])
         elif extension is None:
+            # Default to all extensions
             extension_list = [None]
         else:
             raise TypeError(f"Unrecognized extension argument. {extension}")
@@ -1098,7 +1117,6 @@ class ErosionModel(object):
         """ Remove netcdf output files written during a model run. Only works 
         for new style writers including the default netcdf writer. """
         self.remove_output(extension='nc')
-
 
     def remove_output(self, extension=None, writer=None):
         """ Remove files written by new style writers during a model 
@@ -1164,7 +1182,7 @@ class ErosionModel(object):
         return output_list
 
     def get_output_writer(self, name):
-        """ Get the reference(s) for object writer(s) from the writer's name.
+        """ Get the references for object writer(s) from the writer's name.
         
         Parameters
         ----------

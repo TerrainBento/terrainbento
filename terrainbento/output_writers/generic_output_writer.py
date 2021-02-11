@@ -91,10 +91,10 @@ class GenericOutputWriter:
         Please see the terrainbento tutorial for output examples.
         """
 
-        self.model = model
+        self._model = model
         self._save_first_timestep = save_first_timestep
         self._save_last_timestep = save_last_timestep
-        self.verbose = verbose
+        self._verbose = verbose
 
         # Make sure the model has a clock. All models should have clock, but 
         # just in case...
@@ -133,6 +133,11 @@ class GenericOutputWriter:
             self.register_times_iter(times_iter)
     
     # Attributes
+    @property
+    def model(self):
+        """ The model reference. """
+        return self._model
+
     @property
     def id(self):
         """ The output writer's unique id number. """
@@ -228,7 +233,7 @@ class GenericOutputWriter:
         assert self._times_iter is not None, \
                 f"An output time iterator has not been registered!."
         assert hasattr(self._times_iter, '__next__'), \
-                f"The output time iterator needs a __next__ function"
+                f"The output time iterator needs a __next__ function."
 
         # Check if the writer is already in an exhausted state
         if self._is_exhausted:
@@ -378,6 +383,10 @@ class GenericOutputWriter:
                 )
 
     # File management
+    def make_filepath(self, filename):
+        """ Join the output directory to a filename. """
+        return os.path.join(self.output_dir, filename)
+
     def is_file_registered(self, filepath):
         """ Check if an output filepath has already been registered with 
         this writer.
@@ -484,5 +493,5 @@ class GenericOutputWriter:
 
     def vprint(self, msg):
         """ Print output to the standard output stream if in verbose mode. """
-        if self.verbose:
+        if self._verbose:
             print(msg)

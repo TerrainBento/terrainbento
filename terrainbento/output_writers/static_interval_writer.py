@@ -21,7 +21,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             model, 
             name="static-interval-output-writer",
             intervals=None,
-            intervals_repeat=False,
+            intervals_repeat=True,
             times=None,
             **generic_writer_kwargs,
             ):
@@ -47,7 +47,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             Indicates whether a list of intervals should repeat until the end 
             of the model run. Only has effect if intervals is a list. Has no 
             effect for scalar intervals (which always repeat) or if times is 
-            provided instead of intervals. Default is False. 
+            provided instead of intervals. Default is True. 
 
         times : float, int, list of floats, list of ints, optional
             A single float or int value indicates only one output time.  A list 
