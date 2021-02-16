@@ -100,6 +100,7 @@ def test_correct_input_plain(clock08_model, intervals, times, output_times):
     writer = StaticIntervalOutputWriter(
             clock08_model,
             intervals=intervals, 
+            intervals_repeat=False,
             times=times, 
             save_first_timestep=False,
             save_last_timestep=False,
@@ -147,6 +148,7 @@ def test_correct_input_with_firststep(
     writer = StaticIntervalOutputWriter(
             clock08_model,
             intervals=intervals, 
+            intervals_repeat=False,
             times=times, 
             save_first_timestep=True,
             save_last_timestep=False,
@@ -195,6 +197,7 @@ def test_correct_input_with_laststep(
     writer = StaticIntervalOutputWriter(
             clock08_model,
             intervals=intervals, 
+            intervals_repeat=False,
             times=times, 
             save_first_timestep=False,
             save_last_timestep=True,

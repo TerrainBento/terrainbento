@@ -681,8 +681,11 @@ class ErosionModel(object):
                         'save_last_timestep' : self.save_last_timestep,
                         'output_dir' : self.output_dir,
                 }
-                if ow_class == StaticIntervalOutputWriter:
-                        defaults['intervals']=self.output_interval,
+                if issubclass(ow_class, StaticIntervalOutputWriter):
+                    if 'times' not in ow_kwargs:
+                        # Using a static interval writer and no times provided,
+                        # use the output_interval as a default interval.
+                        defaults['intervals'] = self.output_interval
                 defaults.update(ow_kwargs)
                 ow_kwargs = defaults
 
@@ -1060,8 +1063,9 @@ class ErosionModel(object):
         ----------
         extension : string or list of strings or None
             Specify the type(s) of files to look for.
-        writer : GenericOutputWriter instance or list of instances or None
-            Specify which output writers to look at. 
+        writer : GenericOutputWriter instance or list of instances or string or list of strings or None
+            Specify which output writers to look at either by the writer's 
+            handle or by the writer's name.
 
         Returns
         -------
@@ -1084,18 +1088,21 @@ class ErosionModel(object):
             writer_list = self.get_output_writer(writer)
         elif isinstance(writer, list):
             # Writer argument is a list
-            writer_list = writer
+            writer_list = []
             # Check what is in the list
-            for i, w in enumerate(writer_list):
-                if isinstance(w, str):
+            for i, w in enumerate(writer):
+                if isinstance(w, GenericOutputWriter):
+                    writer_list.append(w)
+                elif isinstance(w, str):
                     # Item is a name, replace with the object
-                    writer_list[i] = self.get_output_writer(w)[0]
-                elif not isinstance(w, GenericOutputWriter):
+                    found_writers = self.get_output_writer(w)
+                    writer_list += found_writers
+                else:  # pragma: no cover
                     raise TypeError(f"Unrecognized writer argument. {w}")
         elif writer is None:
             # Default to all writers
             writer_list = self.all_output_writers
-        else:
+        else:  # pragma: no cover
             raise TypeError(f"Unrecognized writer argument. {writer}")
 
         if isinstance(extension, str):
@@ -1108,7 +1115,7 @@ class ErosionModel(object):
         elif extension is None:
             # Default to all extensions
             extension_list = [None]
-        else:
+        else:  # pragma: no cover
             raise TypeError(f"Unrecognized extension argument. {extension}")
 
         return extension_list, writer_list
@@ -1130,9 +1137,10 @@ class ErosionModel(object):
         extension : string or list of strings, optional
             Specify what type(s) of files should be deleted. Defaults to None 
             which deletes all file types. Don't include a leading period.
-        writer : GenericOutputWriter instance or list of instances, optional
-            Specify if the files should come from certain output writers. 
-            Defaults to deleting files from all writers.
+        writer : GenericOutputWriter instance or list of instances or string or list of strings or None
+            Specify if the files should come from certain output writers either 
+            by the writer's handle or by the writer's name. Defaults to 
+            deleting files from all writers.
 
         """
 
@@ -1158,9 +1166,10 @@ class ErosionModel(object):
         extension : string or list of strings, optional
             Specify what type(s) of files should be returned. Defaults to None 
             which returns all file types. Don't include a leading period.
-        writer : GenericOutputWriter instance or list of instances, optional
-            Specify if the files should come from certain output writers. 
-            Defaults to returning files from all writers.
+        writer : GenericOutputWriter instance or list of instances or string or list of strings or None
+            Specify if the files should come from certain output writers either 
+            by the writer's handle or by the writer's name. Defaults to 
+            returning files from all writers.
 
         Returns
         -------

@@ -212,7 +212,6 @@ def test_out_of_phase_interval_warns(clock_08, almost_default_grid):
     def run_one_iteration():
         time_now = model._model_time
         next_run_pause = min(
-            #time_now + model.output_interval, model.clock.stop,
             model.next_output_time, model.clock.stop,
         )
         assert next_run_pause > time_now
@@ -537,13 +536,15 @@ def test_deleting_output(clock_08, almost_default_grid):
     assert ow_nc_3 and ow_nc_3.name == 'netcdf-3'
 
     out_fib_1 = model.get_output(writer=ow_fib_1)
-    out_fib_2 = model.get_output(writer=ow_fib_2)
-    out_fib_3 = model.get_output(writer=ow_fib_3)
+    out_fib_2 = model.get_output(writer='fibonnaci-2')
+    out_fib_3 = model.get_output(writer=['fibonnaci-3'])
     out_nc_1 = model.get_output(writer=ow_nc_1)
     out_nc_2 = model.get_output(writer=ow_nc_2)
     out_nc_3 = model.get_output(writer=ow_nc_3)
+    out_nc_2_and_3 = model.get_output(writer=['netcdf-2', 'netcdf-3'])
     out_nc_all = model.get_output(writer=ow_nc_all)
     assert (out_nc_1 + out_nc_2 + out_nc_3) == out_nc_all
+    assert (out_nc_1 + out_nc_2_and_3) == out_nc_all
     assert model.get_output(extension='txt', writer=ow_nc_all) == []
     all_exist(out_fib_1 + out_fib_2 + out_fib_3)
     all_exist(out_nc_1 + out_nc_2 + out_nc_3)
@@ -576,3 +577,57 @@ def test_deleting_output(clock_08, almost_default_grid):
     all_deleted(out_nc_1 + out_nc_2)
     model.remove_output(extension=None, writer=ow_nc_3)
     all_deleted(out_nc_1 + out_nc_2 + out_nc_3)
+
+@pytest.mark.parametrize("times, intervals, correct_times", [
+    (None   , None, [0, 6, 12, 18, 20, None]),
+    ([0,1,5], None, [0, 1,  5,     20, None]),
+    (None   , 7.0 , [0, 7, 14,     20, None]),
+    ])
+def test_static_default(
+        clock_08, almost_default_grid,
+        times, intervals, correct_times,
+        ):
+    static_kwargs = {
+        'add_id':False,
+        'save_first_timestep':True,
+        'save_last_timestep':True,
+    }
+    if times is not None:
+        static_kwargs['times'] = times
+
+    if intervals is not None:
+        static_kwargs['intervals'] = intervals
+
+    ncnblh = NotCoreNodeBaselevelHandler(
+        almost_default_grid, modify_core_nodes=True, lowering_rate=-1
+    )
+    model = Basic(
+        clock_08,
+        almost_default_grid,
+        water_erodibility=0.0,
+        regolith_transport_parameter=0.0,
+        boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
+        output_writers={
+            'out-of-phase-ow': {
+                'class' : OWStaticWrapper, 
+                'kwargs': static_kwargs,
+            },
+        },
+        output_interval=6.0,
+        output_dir=_TEST_OUTPUT_DIR,
+        output_prefix="",
+        save_first_timestep=True,
+        save_last_timestep=True,
+    )
+
+    static_ow = model.get_output_writer('out-of-phase-ow')[0]
+    for t_int in correct_times:
+        if t_int is None:
+            print(f"checking: {t_int} is {static_ow.next_output_time}")
+            assert static_ow.next_output_time is None
+        else:
+            print(f"checking: {float(t_int)} == {static_ow.next_output_time}")
+            assert static_ow.next_output_time == float(t_int)
+        static_ow.advance_iter()
+
+    model.remove_output()
