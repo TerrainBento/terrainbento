@@ -11,7 +11,7 @@ class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
             name='class-output-writer',
             **static_interval_kwargs,
             ):
-        """ A simple output writer which converts old style 'class' output 
+        """A simple output writer which converts old style 'class' output
         writers to a new style static interval writer.
 
         Parameters
@@ -22,20 +22,22 @@ class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
             The model defined output interval.
 
         ow_class : uninstantiated output class
-            An uninstantiated class that writes output in a **run_one_step** 
+            An uninstantiated class that writes output in a **run_one_step**
             function.
 
         name : string, optional
-            The name of the output writer to use when generating output 
+            The name of the output writer to use when generating output
             filenames. Defaults to 'class-output-writer'
 
         static_interval_kwargs : keyword args, optional
-            Keyword arguments that will be passed directly to 
+            Keyword arguments that will be passed directly to
             StaticIntervalOutputWriter. These include:
-                save_first_timestep : bool, defaults to False
-                save_last_timestep : bool, defaults to True
-                output_dir : string, defaults to './output'
-            Please see StaticIntervalOutputWriter and GenericOutputWriter for 
+
+                * save_first_timestep : bool, defaults to False
+                * save_last_timestep : bool, defaults to True
+                * output_dir : string, defaults to './output'
+
+            Please see StaticIntervalOutputWriter and GenericOutputWriter for
             more detail. Note: add_id is automatically included as True.
 
         Returns
@@ -65,7 +67,7 @@ class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
             name="function-output-writer",
             **static_interval_kwargs,
             ):
-        """ A simple output writer which converts old style 'function' output 
+        """ A simple output writer which converts old style 'function' output
         writers to a new style static interval writer.
 
         Parameters
@@ -76,20 +78,22 @@ class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
             The model defined output interval.
 
         ow_function : output function
-            A function that can write output. This function must accept the 
+            A function that can write output. This function must accept the
             model as its only argument.
 
         name : string, optional
-            The name of the output writer to use when generating output 
+            The name of the output writer to use when generating output
             filenames. Defaults to 'function-output-writer'
 
         static_interval_kwargs : keyword args, optional
-            Keyword arguments that will be passed directly to 
+            Keyword arguments that will be passed directly to
             StaticIntervalOutputWriter. These include:
-                save_first_timestep : bool, defaults to False
-                save_last_timestep : bool, defaults to True
-                output_dir : string, defaults to './output'
-            Please see StaticIntervalOutputWriter and GenericOutputWriter for 
+
+                * save_first_timestep : bool, defaults to False
+                * save_last_timestep : bool, defaults to True
+                * output_dir : string, defaults to './output'
+
+            Please see StaticIntervalOutputWriter and GenericOutputWriter for
             more detail. Note: add_id is automatically included as True.
 
         Returns

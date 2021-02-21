@@ -220,26 +220,32 @@ class ErosionModel(object):
             Dictionary of input parameters.
         output_writers : dictionary of output writers.
             Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot). There are two formats for the dictionary entries: 
-                1) Items can have a key of "class" or "function" and a value of 
-                   a list of simple output classes (uninstantiated) or 
-                   functions, respectively. All output writers defined this way 
-                   will use the `output_interval` provided to the ErosionModel 
-                   constructor. 
+            diagnostic plot). There are two formats for the dictionary entries:
 
-                2) Items can have a key with any unique string representing the 
-                   output writer's name and a value containing a dict with the 
-                   uninstantiated class and arguments. The value follows the 
-                   format: {
-                        'class' : MyWriter,
-                        'args' : [], # optional
-                        'kwargs' : {}, # optional
-                        }
-                   where `args` and `kwargs` are passed to the constructor for 
-                   `MyWriter`. `MyWriter` must be a child class of 
-                   GenericOutputWriter.
-            The two formats can be present simultaneously. See the Jupyter 
-            notebook examples for more details.
+            1) Items can have a key of "class" or "function" and a value of
+               a list of simple output classes (uninstantiated) or
+               functions, respectively. All output writers defined this way
+               will use the `output_interval` provided to the ErosionModel
+               constructor.
+            2) Items can have a key with any unique string representing the
+               output writer's name and a value containing a dict with the
+               uninstantiated class and arguments. The value follows the
+               format:
+
+               .. code-block:: python
+
+                   {
+                    'class' : MyWriter,
+                    'args' : [], # optional
+                    'kwargs' : {}, # optional
+                    }
+
+               where `args` and `kwargs` are passed to the constructor for
+               `MyWriter`. `MyWriter` must be a child class of
+               GenericOutputWriter.
+
+               The two formats can be present simultaneously. See the Jupyter
+               notebook examples for more details.
 
         Examples
         --------
@@ -375,47 +381,53 @@ class ErosionModel(object):
             module for valid options.
         output_writers : dictionary of output writers.
             Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot). There are two formats for the dictionary entries: 
-                1) ("Old style") Items can have a key of "class" or "function" 
-                   and a value that is a list of uninstantiated output classes 
-                   or a list of output functions, respectively. All output 
-                   writers defined this way will use the **output_interval** 
-                   argument provided to the ErosionModel constructor. 
+            diagnostic plot). There are two formats for the dictionary entries:
 
-                2) ("New style") Items can have a key of any unique string 
-                   representing the output writer's name and a value that is a 
-                   dictionary containing the uninstantiated class and any 
-                   arguments. The dictionary follows the format: {
-                        'class' : MyWriter,
-                        'args' : [], # optional
-                        'kwargs' : {}, # optional
-                        }
-                   where `args` and `kwargs` are passed to the constructor for 
-                   `MyWriter`. All new style output writers must be a child 
-                   class of GenericOutputWriter. The ErosionModel reference is 
-                   automatically prepended to args.
-            The two formats can be present simultaneously. See the Jupyter 
+            1. ("Old style") Items can have a key of "class" or "function"
+               and a value that is a list of uninstantiated output classes
+               or a list of output functions, respectively. All output
+               writers defined this way will use the **output_interval**
+               argument provided to the ErosionModel constructor.
+            2. ("New style") Items can have a key of any unique string
+               representing the output writer's name and a value that is a
+               dictionary containing the uninstantiated class and any
+               arguments. The dictionary follows the format:
+
+               .. code-block:: python
+
+                  {
+                    'class' : MyWriter,
+                    'args' : [], # optional
+                    'kwargs' : {}, # optional
+                    }
+
+               where `args` and `kwargs` are passed to the constructor for
+               `MyWriter`. All new style output writers must be a child
+               class of GenericOutputWriter. The ErosionModel reference is
+               automatically prepended to args.
+
+            The two formats can be present simultaneously. See the Jupyter
             notebook examples for more details.
         output_default_netcdf : bool, optional
-            Indicates whether the erosion model should automatically create a 
-            simple netcdf output writer which behaves identical to the built-in 
-            netcdf writer from older terrainbento versions. Uses the 
+            Indicates whether the erosion model should automatically create a
+            simple netcdf output writer which behaves identical to the built-in
+            netcdf writer from older terrainbento versions. Uses the
             'output_interval' argument as the output interval. Defaults to True.
         output_interval : float, optional
-            The time between output calls for old-style output writers and the 
+            The time between output calls for old-style output writers and the
             default netcdf writer. Default is the Clock's stop time.
         save_first_timestep : bool, optional
-            Indicates whether model output should be saved at time zero (the 
-            initial conditions). This affects old and new style output writers. 
+            Indicates whether model output should be saved at time zero (the
+            initial conditions). This affects old and new style output writers.
             Default is True.
         save_last_timestep : bool, optional
-            Indicates that the last output time must be at the clock stop time. 
+            Indicates that the last output time must be at the clock stop time.
             This affects old and new style output writers. Defaults to True.
         output_prefix : str, optional
             String prefix for names of all output files. Default is
             ``"terrainbento-output"``.
         output_dir : string, optional
-            Directory that output should be saved to. Defaults to an "output" 
+            Directory that output should be saved to. Defaults to an "output"
             directory in the current directory.
         fields : list, optional
             List of field names to write as netCDF output. Default is to only
@@ -552,61 +564,62 @@ class ErosionModel(object):
                 )
 
     def _setup_output_writers(self, output_writers, output_default_netcdf):
-        """ Convert all output writers to the new style and instantiate output 
+        """ Convert all output writers to the new style and instantiate output
         writer classes.
 
         Parameters
         ----------
         output_writers : dictionary of output writers.
             Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot). There are two formats for the dictionary entries: 
-                1) ("Old style") Items can have a key of "class" or "function" 
-                   and a value that is a list of uninstantiated output classes 
-                   or a list of output functions, respectively. All output 
-                   writers defined this way will use the **output_interval** 
-                   argument provided to the ErosionModel constructor.
+            diagnostic plot). There are two formats for the dictionary entries:
 
-                2) ("New style") Items can have a key of any unique string 
-                   representing the output writer's name and a value that is a 
-                   dictionary containing the uninstantiated class and any 
-                   arguments. The dictionary follows the format: {
-                        'class' : MyWriter,
-                        'args' : [], # optional
-                        'kwargs' : {}, # optional
-                        }
-                   where `args` and `kwargs` are passed to the constructor for 
-                   `MyWriter`. All new style output writers must be a child 
-                   class of GenericOutputWriter. The ErosionModel reference is 
-                   automatically prepended to args.
-            The two formats can be present simultaneously. See the Jupyter 
+            1) ("Old style") Items can have a key of "class" or "function"
+               and a value that is a list of uninstantiated output classes
+               or a list of output functions, respectively. All output
+               writers defined this way will use the **output_interval**
+               argument provided to the ErosionModel constructor.
+            2) ("New style") Items can have a key of any unique string
+               representing the output writer's name and a value that is a
+               dictionary containing the uninstantiated class and any
+               arguments. The dictionary follows the format: {
+                    'class' : MyWriter,
+                    'args' : [], # optional
+                    'kwargs' : {}, # optional
+                    }
+               where `args` and `kwargs` are passed to the constructor for
+               `MyWriter`. All new style output writers must be a child
+               class of GenericOutputWriter. The ErosionModel reference is
+               automatically prepended to args.
+
+            The two formats can be present simultaneously. See the Jupyter
             notebook examples for more details.
 
         output_default_netcdf : bool, optional
-            Indicates whether the erosion model should automatically create a 
-            simple netcdf output writer which behaves identical to the built-in 
-            netcdf writer from older terrainbento versions. Uses the 
+            Indicates whether the erosion model should automatically create a
+            simple netcdf output writer which behaves identical to the built-in
+            netcdf writer from older terrainbento versions. Uses the
             'output_interval' argument as the output interval. Defaults to True.
 
         Returns
         -------
         instantiated_output_writers : list of GenericOutputWriter objects
-            A list of instantiated output writers all based on the 
+            A list of instantiated output writers all based on the
             GenericOutputWriter.
 
         Notes
         -----
-        All classes and functions provided in the 'class' and 'function' 
-        entries in the output_writer dictionary will be given to an adapter 
-        class for StaticIntervalOutputWriter so that they can be used with the 
+        All classes and functions provided in the 'class' and 'function'
+        entries in the output_writer dictionary will be given to an adapter
+        class for StaticIntervalOutputWriter so that they can be used with the
         new framework. All of theses writers will use `output_interval`.
 
         """
-        
-        # Note: I can't guarantee that the names will stay unique. I need to 
-        # convert the 'class' and 'function' writers to the new style and there 
-        # is a non-zero chance the user happens to use a name for the new style 
-        # that has the same name that I give the converted writers. These names 
-        # are used for output filenames, so I don't want to use anything ugly.  
+
+        # Note: I can't guarantee that the names will stay unique. I need to
+        # convert the 'class' and 'function' writers to the new style and there
+        # is a non-zero chance the user happens to use a name for the new style
+        # that has the same name that I give the converted writers. These names
+        # are used for output filenames, so I don't want to use anything ugly.
         # Hence why I return a list instead of another dictionary.
 
         # Add a default netcdf writer if desired.
@@ -625,7 +638,7 @@ class ErosionModel(object):
         instantiated_writers = []
         for name in output_writers:
             if name == 'class':
-                # Old style class output writers. Give information to an 
+                # Old style class output writers. Give information to an
                 # adapter for instantiating as a static interval writer.
                 for ow_class in output_writers['class']:
                     new_writer = StaticIntervalOutputClassAdapter(
@@ -636,13 +649,13 @@ class ErosionModel(object):
                             save_last_timestep=self.save_last_timestep,
                             output_dir=self.output_dir,
                     )
-                    #new_name = new_writer.name 
+                    #new_name = new_writer.name
                     #assert new_name not in instantiated_writers, \
                     #        f"Output writer '{name}' already exists"
                     instantiated_writers.append(new_writer)
 
             elif name == 'function':
-                # Old style function output writers. Give information to an 
+                # Old style function output writers. Give information to an
                 # adapter for instantiating as a static interval writer.
                 for ow_function in output_writers['function']:
                     new_writer = StaticIntervalOutputFunctionAdapter(
@@ -667,7 +680,7 @@ class ErosionModel(object):
                 ow_class = writer_dict['class']
                 ow_args = writer_dict.get('args', [self])
                 ow_kwargs = writer_dict.get('kwargs', {})
-                
+
                 # Prepend a reference to the model to the args (if not there)
                 if ow_args and ow_args[0] is not self:
                     ow_args = [self] + ow_args
@@ -702,7 +715,7 @@ class ErosionModel(object):
 
     @property
     def next_output_time(self):
-        """ Return the next output time in model time units. If there are no 
+        """ Return the next output time in model time units. If there are no
         more active output writers, return np.inf instead. """
         if self.sorted_output_times:
 
@@ -717,7 +730,7 @@ class ErosionModel(object):
 
     @property
     def _out_file_name(self):
-        """(Deprecated) Get the filename model prefix. Used to get the netcdf 
+        """(Deprecated) Get the filename model prefix. Used to get the netcdf
         filename base. """
         warnings.warn(' '.join([
             "ErosionModel's _out_file_name is no longer available.",
@@ -727,7 +740,7 @@ class ErosionModel(object):
         return self._output_prefix
     @_out_file_name.setter
     def _out_file_name(self, prefix):
-        """(Deprecated) Set the filename model prefix. Used to set the netcdf 
+        """(Deprecated) Set the filename model prefix. Used to set the netcdf
         filename base. """
         warnings.warn(' '.join([
             "ErosionModel's _out_file_name is no longer available.",
@@ -801,7 +814,7 @@ class ErosionModel(object):
 
         The model will run for the duration indicated by the input file
         or dictionary parameter ``"stop"``, at a time step specified by
-        the parameter ``"step"``, and create ouput at intervals specified by 
+        the parameter ``"step"``, and create ouput at intervals specified by
         the individual output writers.
         """
         self._itters = []
@@ -867,7 +880,7 @@ class ErosionModel(object):
     # Output methods
     def write_output(self):
         """Run output writers if it is the correct model time.  """
-        
+
         # assert that the model has not passed the next output time.
         assert self._model_time <= self.next_output_time, ''.join([
                 f"Model time (t={self._model_time}) has passed the next ",
@@ -885,13 +898,13 @@ class ErosionModel(object):
                 self._update_output_times(ow_writer, next_time, current_time)
 
     def _update_output_times(self, ow_writer, new_time, current_time):
-        """ Private method to update the dictionary of active output writers 
+        """ Private method to update the dictionary of active output writers
         and the sorted list of next output times.
 
         Parameters
         ----------
         ow_writer : GenericOutputWriter object
-            The output writer that has just finished writing output and advanced 
+            The output writer that has just finished writing output and advanced
             it's time iterator.
         new_time : float
             The next time that the output writer will need to write output.
@@ -900,10 +913,10 @@ class ErosionModel(object):
 
         Notes
         -----
-        This function enforces that output times align with model steps. If an 
-        output writer returns a next_time that is in between model steps, then 
-        the output time is delayed to the following step and a warning is 
-        generated. This function may generate skip warnings if the subsequent 
+        This function enforces that output times align with model steps. If an
+        output writer returns a next_time that is in between model steps, then
+        the output time is delayed to the following step and a warning is
+        generated. This function may generate skip warnings if the subsequent
         next times are less than the delayed step time.
 
         """
@@ -1056,7 +1069,7 @@ class ErosionModel(object):
         ds.close()
 
     def _format_extension_and_writer_args(self, extension, writer):
-        """ Private method to parse the extension and writer arguments for the 
+        """ Private method to parse the extension and writer arguments for the
         **remove_output** and **get_output** functions.
 
         Parameters
@@ -1064,16 +1077,16 @@ class ErosionModel(object):
         extension : string or list of strings or None
             Specify the type(s) of files to look for.
         writer : GenericOutputWriter instance or list of instances or string or list of strings or None
-            Specify which output writers to look at either by the writer's 
+            Specify which output writers to look at either by the writer's
             handle or by the writer's name.
 
         Returns
         -------
         extension_list : list of strings
-            List of strings representing the types of files to look for. Can 
+            List of strings representing the types of files to look for. Can
             return [None] indicating all files.
         writer_list : list of GenericOutputWriters
-            List of GenericOutputWriter instances to look at. Can 
+            List of GenericOutputWriter instances to look at. Can
             return [None] indicating all output writers should be looked at.
         """
 
@@ -1121,25 +1134,25 @@ class ErosionModel(object):
         return extension_list, writer_list
 
     def remove_output_netcdfs(self):
-        """ Remove netcdf output files written during a model run. Only works 
+        """ Remove netcdf output files written during a model run. Only works
         for new style writers including the default netcdf writer. """
         self.remove_output(extension='nc')
 
     def remove_output(self, extension=None, writer=None):
-        """ Remove files written by new style writers during a model 
-        run. Does not work for old style writers which have no way to report 
+        """ Remove files written by new style writers during a model
+        run. Does not work for old style writers which have no way to report
         what they have written. Can specify types of files and/or writers.
 
         To do: allow 'writer' to be a string for the name of the writer?
-        
+
         Parameters
         ----------
         extension : string or list of strings, optional
-            Specify what type(s) of files should be deleted. Defaults to None 
+            Specify what type(s) of files should be deleted. Defaults to None
             which deletes all file types. Don't include a leading period.
         writer : GenericOutputWriter instance or list of instances or string or list of strings or None
-            Specify if the files should come from certain output writers either 
-            by the writer's handle or by the writer's name. Defaults to 
+            Specify if the files should come from certain output writers either
+            by the writer's handle or by the writer's name. Defaults to
             deleting files from all writers.
 
         """
@@ -1156,25 +1169,25 @@ class ErosionModel(object):
                 ow.delete_output_files(ext)
 
     def get_output(self, extension=None, writer=None):
-        """ Get a list of filepaths for files written by new style writers 
-        during a model run. Does not work for old style writers which have no 
-        way to report what they have written.  Can specify types of files 
+        """ Get a list of filepaths for files written by new style writers
+        during a model run. Does not work for old style writers which have no
+        way to report what they have written.  Can specify types of files
         and/or writers.
-        
+
         Parameters
         ----------
         extension : string or list of strings, optional
-            Specify what type(s) of files should be returned. Defaults to None 
+            Specify what type(s) of files should be returned. Defaults to None
             which returns all file types. Don't include a leading period.
         writer : GenericOutputWriter instance or list of instances or string or list of strings or None
-            Specify if the files should come from certain output writers either 
-            by the writer's handle or by the writer's name. Defaults to 
+            Specify if the files should come from certain output writers either
+            by the writer's handle or by the writer's name. Defaults to
             returning files from all writers.
 
         Returns
         -------
         filepaths : list of strings
-            A list of filepath strings that match the desired extensions and 
+            A list of filepath strings that match the desired extensions and
             writers.
         """
 
@@ -1192,18 +1205,18 @@ class ErosionModel(object):
 
     def get_output_writer(self, name):
         """ Get the references for object writer(s) from the writer's name.
-        
+
         Parameters
         ----------
         name : string
-            The name of the output writer to look for. Can match multiple 
+            The name of the output writer to look for. Can match multiple
             writers.
 
         Returns
         -------
         matches : list of GenericOutputWriter objects
-            The list of any GenericOutputWriter whose name contains the 
-            argument name string. Will return an empty list if there are no 
+            The list of any GenericOutputWriter whose name contains the
+            argument name string. Will return an empty list if there are no
             matches.
 
         """
