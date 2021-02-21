@@ -2,7 +2,7 @@
 
 import itertools
 
-from terrainbento.output_writers import GenericOutputWriter
+from terrainbento.output_writers.generic_output_writer import GenericOutputWriter
 
 
 class StaticIntervalOutputWriter(GenericOutputWriter):

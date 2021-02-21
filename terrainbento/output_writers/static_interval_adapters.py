@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from terrainbento.output_writers import StaticIntervalOutputWriter
+from terrainbento.output_writers.static_interval_writer import StaticIntervalOutputWriter
 
 
 class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
