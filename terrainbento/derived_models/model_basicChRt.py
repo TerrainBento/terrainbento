@@ -14,6 +14,7 @@ Landlab components used:
 """
 
 from landlab.components import FastscapeEroder, TaylorNonLinearDiffuser
+
 from terrainbento.base_class import TwoLithologyErosionModel
 
 

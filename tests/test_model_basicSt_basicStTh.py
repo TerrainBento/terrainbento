@@ -3,9 +3,9 @@ import os
 
 import numpy as np
 import pytest
+from landlab import RasterModelGrid
 from numpy.testing import assert_array_almost_equal, assert_equal
 
-from landlab import RasterModelGrid
 from terrainbento import BasicSt, BasicStTh, Clock, NotCoreNodeBaselevelHandler
 
 _th_params = {

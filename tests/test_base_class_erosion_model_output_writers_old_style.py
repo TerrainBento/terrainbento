@@ -1,8 +1,8 @@
 # coding: utf8
 # !/usr/env/python
 
-# This file has tests for the old style output writers to ensure backwards 
-# compatibility. All of the existing tests for output writers are kept as is.  
+# This file has tests for the old style output writers to ensure backwards
+# compatibility. All of the existing tests for output writers are kept as is.
 # There are a few new ones too.
 
 import glob
@@ -16,13 +16,16 @@ from terrainbento.utilities import filecmp
 _TEST_OUTPUT_DIR = os.path.join(os.curdir, "output")
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
+
 def get_output_filepath(filename):
     return os.path.join(_TEST_OUTPUT_DIR, filename)
+
 
 def cleanup_files(searchpath):
     files = glob.glob(searchpath)
     for f in files:
         os.remove(f)
+
 
 # Some output writers
 def output_writer_function_a(model):
@@ -32,11 +35,14 @@ def output_writer_function_a(model):
     with open(filepath, "w") as f:
         f.write(str(average_elevation))
 
+
 def output_writer_function_b(model):
     minimum_elevation = np.min(model.z[model.grid.core_nodes])
     filepath = get_output_filepath(f"ow_func_b.{str(model.model_time)}.txt")
     with open(filepath, "w") as f:
         f.write(str(minimum_elevation))
+
+
 class output_writer_class_a(object):
     def __init__(self, model):
         self.model = model
@@ -62,10 +68,12 @@ class output_writer_class_b(object):
         with open(filepath, "w") as f:
             f.write(str(min_change))
 
-## Unchanged tests
+
+# Unchanged tests
 # These tests should have minimal changes to ensure backwards compatibility
-# I only changed where output files are saved (because failed tests don't clean 
+# I only changed where output files are saved (because failed tests don't clean
 # up so they fill my test directory with junk files)
+
 
 def test_one_function_writer(clock_08, almost_default_grid):
     ncnblh = NotCoreNodeBaselevelHandler(
@@ -220,11 +228,13 @@ def test_all_four_writers(clock_08, almost_default_grid):
     cleanup_files("ow_func_*.txt")
     cleanup_files("ow_class_*.txt")
 
-## New tests for old style output writers
+
+# New tests for old style output writers
+
 
 def test_save_first_last_and_multiple_times(clock_08, almost_default_grid):
-    """ Test save_first_timestep, save_last_timestep, and saving at multiple 
-    timesteps. """
+    """Test save_first_timestep, save_last_timestep, and saving at multiple
+    timesteps."""
     ncnblh = NotCoreNodeBaselevelHandler(
         almost_default_grid, modify_core_nodes=True, lowering_rate=-1
     )
@@ -247,14 +257,14 @@ def test_save_first_last_and_multiple_times(clock_08, almost_default_grid):
     )
     model.run()
 
-    for t in ['0.0', '6.0', '12.0', '18.0', '20.0']:
+    for t in ["0.0", "6.0", "12.0", "18.0", "20.0"]:
         # assert things were done correctly
         filename_bases = [
-                f"ow_func_a.{t}.txt",
-                f"ow_func_b.{t}.txt",
-                f"ow_class_a.{t}.txt",
-                f"ow_class_b.{t}.txt",
-                ]
+            f"ow_func_a.{t}.txt",
+            f"ow_func_b.{t}.txt",
+            f"ow_class_a.{t}.txt",
+            f"ow_class_b.{t}.txt",
+        ]
         for filename_base in filename_bases:
             truth_file = os.path.join(_TEST_DATA_DIR, f"truth_{filename_base}")
             test_file = os.path.join(os.curdir, "output", filename_base)

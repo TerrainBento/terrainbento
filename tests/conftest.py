@@ -1,6 +1,6 @@
 import pytest
-
 from landlab import RasterModelGrid
+
 from terrainbento import Clock
 
 

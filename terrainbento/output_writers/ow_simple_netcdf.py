@@ -9,14 +9,15 @@ from terrainbento.output_writers import StaticIntervalOutputWriter
 
 
 class OWSimpleNetCDF(StaticIntervalOutputWriter):
-    def __init__(self,
-            model,
-            output_fields,
-            name='simple-netCDF',
-            **static_interval_kwargs,
-            ):
+    def __init__(
+        self,
+        model,
+        output_fields,
+        name="simple-netCDF",
+        **static_interval_kwargs,
+    ):
 
-        """ A simple output writer which generates netCDF files at uniform
+        """A simple output writer which generates netCDF files at uniform
         intervals. Mimics the built-in netCDF writing code in older versions of
         terrainbento.
 
@@ -52,11 +53,7 @@ class OWSimpleNetCDF(StaticIntervalOutputWriter):
 
         """
 
-        super().__init__(
-                model,
-                name=name,
-                **static_interval_kwargs
-                )
+        super().__init__(model, name=name, **static_interval_kwargs)
 
         self.output_fields = output_fields
 
@@ -68,10 +65,8 @@ class OWSimpleNetCDF(StaticIntervalOutputWriter):
 
         grid = self.model.grid
         if isinstance(grid, RasterModelGrid):
-            write_raster_netcdf(filepath,
-                    grid,
-                    names=self.output_fields,
-                    format="NETCDF4"
+            write_raster_netcdf(
+                filepath, grid, names=self.output_fields, format="NETCDF4"
             )
         else:
             to_netcdf(grid, filepath, format="NETCDF4")

@@ -15,6 +15,7 @@ Landlab components used:
 
 
 from landlab.components import LinearDiffuser, StreamPowerSmoothThresholdEroder
+
 from terrainbento.base_class import TwoLithologyErosionModel
 
 

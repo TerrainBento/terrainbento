@@ -2,9 +2,9 @@
 # !/usr/env/python
 
 import pytest
-
 from landlab import HexModelGrid, RasterModelGrid
 from landlab.components import FlowAccumulator
+
 from terrainbento import ErosionModel
 
 at_node_fields = [

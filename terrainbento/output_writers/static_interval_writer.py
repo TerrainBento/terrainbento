@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 import itertools
+
 from terrainbento.output_writers import GenericOutputWriter
 
+
 class StaticIntervalOutputWriter(GenericOutputWriter):
-    r""" Base class for new style output writers or converted old style
+    r"""Base class for new style output writers or converted old style
     output writers that want to use predetermined output intervals or times.
 
     The derived class defines what is actually produced. This base class
@@ -17,14 +19,16 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
 
     See constructor and **GenericOutputWriter** for more info.
     """
-    def __init__(self,
-            model,
-            name="static-interval-output-writer",
-            intervals=None,
-            intervals_repeat=True,
-            times=None,
-            **generic_writer_kwargs,
-            ):
+
+    def __init__(
+        self,
+        model,
+        name="static-interval-output-writer",
+        intervals=None,
+        intervals_repeat=True,
+        times=None,
+        **generic_writer_kwargs,
+    ):
         """A class for generating output at predetermined intervals or times.
 
         Parameters
@@ -81,18 +85,22 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
 
         """
 
-        super().__init__(model, name=name,
-                **generic_writer_kwargs,
-                )
+        super().__init__(
+            model,
+            name=name,
+            **generic_writer_kwargs,
+        )
         self._intervals_repeat = intervals_repeat
 
         # Assert that intervals and times are not both provided. Not clear
         # which one should be used so crash the program.
         # Checks if at least one of the args is None
-        assert intervals is None or times is None, ''.join([
+        assert intervals is None or times is None, "".join(
+            [
                 "StaticIntervalOutputWriter does not accept both output ",
                 "interval and output times simultaneously.",
-                ])
+            ]
+        )
 
         # Check if both args are None
         if intervals is None and times is None:
@@ -109,12 +117,12 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
         elif times is not None:
             times_iter = self._process_times_arg(times)
             self.register_times_iter(times_iter)
-        #else:
+        # else:
         #   Not a possible scenario. I use elif to be explicit with what that
         #   section is for.
 
     def _process_intervals_arg(self, intervals):
-        """ Private method for processing the 'intervals' value provided to the
+        """Private method for processing the 'intervals' value provided to the
         constructor.
 
         Parameters
@@ -141,17 +149,22 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             start = float(intervals)
             step = float(intervals)
             times_iter = (start + step * i for i in itertools.count())
-            #times_iter = itertools.count(intervals, intervals)
+            # times_iter = itertools.count(intervals, intervals)
 
         elif isinstance(intervals, list):
             if not all(isinstance(i, (int, float)) for i in intervals):
                 # The list must contain only floats
-                raise NotImplementedError(''.join([
-                    f"Only floats or integers are currently supported for ",
-                    f"the output interval list.",
-                    ]))
-            assert all(i > 0 for i in intervals), \
-                    "Intervals must be positive number(s)"
+                raise NotImplementedError(
+                    "".join(
+                        [
+                            "Only floats or integers are currently supported for ",
+                            "the output interval list.",
+                        ]
+                    )
+                )
+            assert all(
+                i > 0 for i in intervals
+            ), "Intervals must be positive number(s)"
 
             if self._intervals_repeat:
                 # The intervals list should repeat until the end of the model
@@ -163,19 +176,20 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
                 # Create an iterator that steps through a list of output times
                 # calculated by accumulating the list of output intervals. Make
                 # sure they are floats.
-                times_iter = (float(i) for i in itertools.accumulate(intervals))
-
+                times_iter = (
+                    float(i) for i in itertools.accumulate(intervals)
+                )
 
         else:
             raise NotImplementedError(
-                    f"Interval type {type(intervals)} not supported yet."
-                    )
+                f"Interval type {type(intervals)} not supported yet."
+            )
 
         assert times_iter is not None
         return times_iter
 
     def _process_times_arg(self, times):
-        """ Private method for processing the 'times' value provided to the
+        """Private method for processing the 'times' value provided to the
         constructor.
 
         Parameters
@@ -201,30 +215,33 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             # Assert that it is a list of floats
             if not all(isinstance(i, (int, float)) for i in times):
                 # The list must contain only floats
-                raise NotImplementedError(''.join([
-                    f"Only floats or integers are currently supported for ",
-                    f"the output times list.",
-                    ]))
+                raise NotImplementedError(
+                    "".join(
+                        [
+                            "Only floats or integers are currently supported for ",
+                            "the output times list.",
+                        ]
+                    )
+                )
             # Create an iterator that steps through the provided list of output
             # times. Make sure they are floats
-            #times_iter = iter(times)
+            # times_iter = iter(times)
             times_iter = (float(i) for i in times)
 
         else:
             raise NotImplementedError(
-                    f"Output times type {type(times)} not supported yet."
-                    )
+                f"Output times type {type(times)} not supported yet."
+            )
 
         assert times_iter is not None
         return times_iter
 
     # Methods to override
     def run_one_step(self):
-        r""" The function which actually writes data to files (or screen).
-        """
+        """The function which actually writes data to files (or screen)."""
         # This code is not needed here because it's in GenericOutputWriter...
         # But it's nice for explicitly showing that this function needs to be
         # defined by inheriting classes.
         raise NotImplementedError(
-                "The inheriting class needs to implement this function"
-                )
+            "The inheriting class needs to implement this function"
+        )

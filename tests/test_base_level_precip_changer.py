@@ -2,9 +2,9 @@
 # !/usr/env/python
 
 import pytest
+from landlab import HexModelGrid, RasterModelGrid
 from scipy.integrate import IntegrationWarning
 
-from landlab import HexModelGrid, RasterModelGrid
 from terrainbento.boundary_handlers import PrecipChanger
 
 

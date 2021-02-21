@@ -4,13 +4,14 @@ from terrainbento.output_writers import StaticIntervalOutputWriter
 
 
 class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
-    def __init__(self,
-            model,
-            output_interval,
-            ow_class,
-            name='class-output-writer',
-            **static_interval_kwargs,
-            ):
+    def __init__(
+        self,
+        model,
+        output_interval,
+        ow_class,
+        name="class-output-writer",
+        **static_interval_kwargs,
+    ):
         """A simple output writer which converts old style 'class' output
         writers to a new style static interval writer.
 
@@ -45,29 +46,32 @@ class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
         StaticIntervalOutputClassAdapter: object
 
         """
-        static_interval_kwargs['add_id'] = True # Force add_id to be True
-        super().__init__(model,
-                name=name,
-                intervals=output_interval,
-                intervals_repeat=False,
-                times=None,
-                **static_interval_kwargs
-                )
+        static_interval_kwargs["add_id"] = True  # Force add_id to be True
+        super().__init__(
+            model,
+            name=name,
+            intervals=output_interval,
+            intervals_repeat=False,
+            times=None,
+            **static_interval_kwargs,
+        )
         self.ow_class = ow_class(model)
 
     def run_one_step(self):
         """ Call the old-style class's output function. """
         self.ow_class.run_one_step()
 
+
 class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
-    def __init__(self,
-            model,
-            output_interval,
-            ow_function,
-            name="function-output-writer",
-            **static_interval_kwargs,
-            ):
-        """ A simple output writer which converts old style 'function' output
+    def __init__(
+        self,
+        model,
+        output_interval,
+        ow_function,
+        name="function-output-writer",
+        **static_interval_kwargs,
+    ):
+        """A simple output writer which converts old style 'function' output
         writers to a new style static interval writer.
 
         Parameters
@@ -101,14 +105,15 @@ class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
         StaticIntervalOutputFunctionAdapter: object
 
         """
-        static_interval_kwargs['add_id'] = True # Force add_id to be True
-        super().__init__(model,
-                name=name,
-                intervals=output_interval,
-                intervals_repeat=False,
-                times=None,
-                **static_interval_kwargs
-                )
+        static_interval_kwargs["add_id"] = True  # Force add_id to be True
+        super().__init__(
+            model,
+            name=name,
+            intervals=output_interval,
+            intervals_repeat=False,
+            times=None,
+            **static_interval_kwargs,
+        )
         self.ow_function = ow_function
 
     def run_one_step(self):

@@ -10,10 +10,9 @@ import warnings
 import numpy as np
 import xarray as xr
 import yaml
-
-from landlab import ModelGrid, RasterModelGrid, create_grid
+from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
-from landlab.io.netcdf import to_netcdf, write_raster_netcdf
+
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -22,15 +21,15 @@ from terrainbento.boundary_handlers import (
     SingleNodeBaselevelHandler,
 )
 from terrainbento.clock import Clock
-from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
-from terrainbento.runoff_generators import SimpleRunoff
 from terrainbento.output_writers import (
     GenericOutputWriter,
-    StaticIntervalOutputWriter,
+    OWSimpleNetCDF,
     StaticIntervalOutputClassAdapter,
     StaticIntervalOutputFunctionAdapter,
-    OWSimpleNetCDF,
+    StaticIntervalOutputWriter,
 )
+from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
+from terrainbento.runoff_generators import SimpleRunoff
 
 _SUPPORTED_PRECIPITATORS = {
     "UniformPrecipitator": UniformPrecipitator,
@@ -62,7 +61,7 @@ _HANDLER_METHODS = {
     "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
 
-_DEFAULT_OUTPUT_DIR = os.path.join(os.curdir, 'output')
+_DEFAULT_OUTPUT_DIR = os.path.join(os.curdir, "output")
 
 
 def _verify_boundary_handler(handler):
@@ -309,7 +308,7 @@ class ErosionModel(object):
             runoff_generator=runoff_generator,
             boundary_handlers=bh_dict,
             output_writers=output_writers,
-            **params
+            **params,
         )
 
     @classmethod
@@ -521,14 +520,14 @@ class ErosionModel(object):
                 self.grid,
                 routing="D4",
                 depression_finder=depression_finder,
-                **flow_accumulator_kwargs
+                **flow_accumulator_kwargs,
             )
         else:
             self.flow_accumulator = FlowAccumulator(
                 self.grid,
                 flow_director=flow_director,
                 depression_finder=depression_finder,
-                **flow_accumulator_kwargs
+                **flow_accumulator_kwargs,
             )
 
         if self.flow_accumulator.depression_finder is None:
@@ -549,8 +548,8 @@ class ErosionModel(object):
         )
 
         # Keep track of when each writer needs to write next
-        self.active_output_times = {} # {next time : [writers]}
-        self.sorted_output_times = [] # sorted list of the next output times
+        self.active_output_times = {}  # {next time : [writers]}
+        self.sorted_output_times = []  # sorted list of the next output times
         for ow_writer in self.all_output_writers:
             first_time = ow_writer.advance_iter()
             self._update_output_times(ow_writer, first_time, None)
@@ -564,7 +563,7 @@ class ErosionModel(object):
                 )
 
     def _setup_output_writers(self, output_writers, output_default_netcdf):
-        """ Convert all output writers to the new style and instantiate output
+        """Convert all output writers to the new style and instantiate output
         writer classes.
 
         Parameters
@@ -625,80 +624,83 @@ class ErosionModel(object):
         # Add a default netcdf writer if desired.
         assert isinstance(output_default_netcdf, bool)
         if output_default_netcdf:
-            output_writers['simple-netcdf'] = {
-                'class' : OWSimpleNetCDF,
-                'args' : [self.output_fields],
-                'kwargs' : {
-                    'intervals' : self.output_interval,
-                    'add_id' : True,
-                    'output_dir' : self.output_dir,
-                }
+            output_writers["simple-netcdf"] = {
+                "class": OWSimpleNetCDF,
+                "args": [self.output_fields],
+                "kwargs": {
+                    "intervals": self.output_interval,
+                    "add_id": True,
+                    "output_dir": self.output_dir,
+                },
             }
 
         instantiated_writers = []
         for name in output_writers:
-            if name == 'class':
+            if name == "class":
                 # Old style class output writers. Give information to an
                 # adapter for instantiating as a static interval writer.
-                for ow_class in output_writers['class']:
+                for ow_class in output_writers["class"]:
                     new_writer = StaticIntervalOutputClassAdapter(
-                            model=self,
-                            output_interval=self.output_interval,
-                            ow_class=ow_class,
-                            save_first_timestep=self.save_first_timestep,
-                            save_last_timestep=self.save_last_timestep,
-                            output_dir=self.output_dir,
+                        model=self,
+                        output_interval=self.output_interval,
+                        ow_class=ow_class,
+                        save_first_timestep=self.save_first_timestep,
+                        save_last_timestep=self.save_last_timestep,
+                        output_dir=self.output_dir,
                     )
-                    #new_name = new_writer.name
-                    #assert new_name not in instantiated_writers, \
+                    # new_name = new_writer.name
+                    # assert new_name not in instantiated_writers, \
                     #        f"Output writer '{name}' already exists"
                     instantiated_writers.append(new_writer)
 
-            elif name == 'function':
+            elif name == "function":
                 # Old style function output writers. Give information to an
                 # adapter for instantiating as a static interval writer.
-                for ow_function in output_writers['function']:
+                for ow_function in output_writers["function"]:
                     new_writer = StaticIntervalOutputFunctionAdapter(
-                            model=self,
-                            output_interval=self.output_interval,
-                            ow_function=ow_function,
-                            save_first_timestep=self.save_first_timestep,
-                            save_last_timestep=self.save_last_timestep,
-                            output_dir=self.output_dir,
+                        model=self,
+                        output_interval=self.output_interval,
+                        ow_function=ow_function,
+                        save_first_timestep=self.save_first_timestep,
+                        save_last_timestep=self.save_last_timestep,
+                        output_dir=self.output_dir,
                     )
                     instantiated_writers.append(new_writer)
 
             else:
                 # New style output writer class
                 writer_dict = output_writers[name]
-                assert isinstance(writer_dict, dict), \
-                        "The new style output writer entry must be a dictionary"
-                assert 'class' in writer_dict, ''.join([
+                assert isinstance(
+                    writer_dict, dict
+                ), "The new style output writer entry must be a dictionary"
+                assert "class" in writer_dict, "".join(
+                    [
                         f"New style output writer {name} must have a 'class'",
-                        "entry"
-                        ])
-                ow_class = writer_dict['class']
-                ow_args = writer_dict.get('args', [self])
-                ow_kwargs = writer_dict.get('kwargs', {})
+                        "entry",
+                    ]
+                )
+                ow_class = writer_dict["class"]
+                ow_args = writer_dict.get("args", [self])
+                ow_kwargs = writer_dict.get("kwargs", {})
 
                 # Prepend a reference to the model to the args (if not there)
                 if ow_args and ow_args[0] is not self:
                     ow_args = [self] + ow_args
-                elif ow_args is None: # pragma: no cover
+                elif ow_args is None:  # pragma: no cover
                     ow_args = [self]
 
                 # Add some kwargs if they were not already provided
                 defaults = {
-                        'name' : name,
-                        'save_first_timestep' : self.save_first_timestep,
-                        'save_last_timestep' : self.save_last_timestep,
-                        'output_dir' : self.output_dir,
+                    "name": name,
+                    "save_first_timestep": self.save_first_timestep,
+                    "save_last_timestep": self.save_last_timestep,
+                    "output_dir": self.output_dir,
                 }
                 if issubclass(ow_class, StaticIntervalOutputWriter):
-                    if 'times' not in ow_kwargs:
+                    if "times" not in ow_kwargs:
                         # Using a static interval writer and no times provided,
                         # use the output_interval as a default interval.
-                        defaults['intervals'] = self.output_interval
+                        defaults["intervals"] = self.output_interval
                 defaults.update(ow_kwargs)
                 ow_kwargs = defaults
 
@@ -715,8 +717,8 @@ class ErosionModel(object):
 
     @property
     def next_output_time(self):
-        """ Return the next output time in model time units. If there are no
-        more active output writers, return np.inf instead. """
+        """Return the next output time in model time units. If there are no
+        more active output writers, return np.inf instead."""
         if self.sorted_output_times:
 
             return self.sorted_output_times[0]
@@ -731,22 +733,33 @@ class ErosionModel(object):
     @property
     def _out_file_name(self):
         """(Deprecated) Get the filename model prefix. Used to get the netcdf
-        filename base. """
-        warnings.warn(' '.join([
-            "ErosionModel's _out_file_name is no longer available.",
-            "Getting _output_prefix instead, but may not behave as expected.",
-            "Please use the 'output_prefix' argument in the constructor."
-            ]), DeprecationWarning)
+        filename base."""
+        warnings.warn(
+            " ".join(
+                [
+                    "ErosionModel's _out_file_name is no longer available.",
+                    "Getting _output_prefix instead, but may not behave as expected.",
+                    "Please use the 'output_prefix' argument in the constructor.",
+                ]
+            ),
+            DeprecationWarning,
+        )
         return self._output_prefix
+
     @_out_file_name.setter
     def _out_file_name(self, prefix):
         """(Deprecated) Set the filename model prefix. Used to set the netcdf
-        filename base. """
-        warnings.warn(' '.join([
-            "ErosionModel's _out_file_name is no longer available.",
-            "Setting _output_prefix instead, but may not behave as expected.",
-            "Please use the 'output_prefix' argument in the constructor.",
-            ]), DeprecationWarning)
+        filename base."""
+        warnings.warn(
+            " ".join(
+                [
+                    "ErosionModel's _out_file_name is no longer available.",
+                    "Setting _output_prefix instead, but may not behave as expected.",
+                    "Please use the 'output_prefix' argument in the constructor.",
+                ]
+            ),
+            DeprecationWarning,
+        )
         self._output_prefix = prefix
 
     # Model run methods
@@ -828,8 +841,9 @@ class ErosionModel(object):
         time_now = self._model_time
         while time_now < self.clock.stop:
             next_run_pause = min(
-                #time_now + self.output_interval, self.clock.stop,
-                self.next_output_time, self.clock.stop,
+                # time_now + self.output_interval, self.clock.stop,
+                self.next_output_time,
+                self.clock.stop,
             )
             assert next_run_pause > time_now
             self.run_for(self.clock.step, next_run_pause - time_now)
@@ -882,10 +896,12 @@ class ErosionModel(object):
         """Run output writers if it is the correct model time.  """
 
         # assert that the model has not passed the next output time.
-        assert self._model_time <= self.next_output_time, ''.join([
+        assert self._model_time <= self.next_output_time, "".join(
+            [
                 f"Model time (t={self._model_time}) has passed the next ",
                 f"output time (t={self.next_output_time})",
-                ])
+            ]
+        )
 
         if self._model_time == self.next_output_time:
             # The current model time matches the next output time
@@ -898,7 +914,7 @@ class ErosionModel(object):
                 self._update_output_times(ow_writer, next_time, current_time)
 
     def _update_output_times(self, ow_writer, new_time, current_time):
-        """ Private method to update the dictionary of active output writers
+        """Private method to update the dictionary of active output writers
         and the sorted list of next output times.
 
         Parameters
@@ -930,13 +946,17 @@ class ErosionModel(object):
             try:
                 assert new_time > current_time
             except AssertionError:
-                warnings.warn(''.join([
-                    f"The output writer {ow_writer.name} is providing a ",
-                    f"next time that is less than or equal to the current ",
-                    f"time. Possibly because the previous time was in ",
-                    f"between steps, delaying the output until now. ",
-                    f"Skipping ahead.",
-                    ]))
+                warnings.warn(
+                    "".join(
+                        [
+                            f"The output writer {ow_writer.name} is providing a ",
+                            "next time that is less than or equal to the current ",
+                            "time. Possibly because the previous time was in ",
+                            "between steps, delaying the output until now. ",
+                            "Skipping ahead.",
+                        ]
+                    )
+                )
                 for n_skips in range(10):
                     # Allow 10 attempts to skip
                     new_time = ow_writer.advance_iter()
@@ -947,21 +967,29 @@ class ErosionModel(object):
                         break
                 else:
                     # Could not find a suitable next_time
-                    raise AssertionError(''.join([
-                        f"Output writer failed to return a next time greater ",
-                        f"than the current time after several attempts.",
-                        ]))
+                    raise AssertionError(
+                        "".join(
+                            [
+                                "Output writer failed to return a next time greater ",
+                                "than the current time after several attempts.",
+                            ]
+                        )
+                    )
 
         # See if the new output time aligns with the model step.
         if (new_time % model_step) != 0.0:
-            warnings.warn(''.join([
-                f"Output writer {ow_writer.name} is requesting a ",
-                f"time that is not divisible by the model step. ",
-                f"Delaying output to the following step.\n",
-                f"Output time = {new_time}\n",
-                f"Model step = {model_step}\n",
-                f"Remainder = {new_time % model_step}\n\n",
-                ]))
+            warnings.warn(
+                "".join(
+                    [
+                        f"Output writer {ow_writer.name} is requesting a ",
+                        "time that is not divisible by the model step. ",
+                        "Delaying output to the following step.\n",
+                        f"Output time = {new_time}\n",
+                        f"Model step = {model_step}\n",
+                        f"Remainder = {new_time % model_step}\n\n",
+                    ]
+                )
+            )
             new_time = np.ceil(new_time / model_step) * model_step
 
         # Add the writer to the active_output_times dict
@@ -1000,7 +1028,7 @@ class ErosionModel(object):
         """
         # open all files as a xarray dataset
         ds = xr.open_mfdataset(
-            self.get_output(extension='nc'),
+            self.get_output(extension="nc"),
             concat_dim="nt",
             engine="netcdf4",
             combine="nested",
@@ -1069,7 +1097,7 @@ class ErosionModel(object):
         ds.close()
 
     def _format_extension_and_writer_args(self, extension, writer):
-        """ Private method to parse the extension and writer arguments for the
+        """Private method to parse the extension and writer arguments for the
         **remove_output** and **get_output** functions.
 
         Parameters
@@ -1134,12 +1162,12 @@ class ErosionModel(object):
         return extension_list, writer_list
 
     def remove_output_netcdfs(self):
-        """ Remove netcdf output files written during a model run. Only works
-        for new style writers including the default netcdf writer. """
-        self.remove_output(extension='nc')
+        """Remove netcdf output files written during a model run. Only works
+        for new style writers including the default netcdf writer."""
+        self.remove_output(extension="nc")
 
     def remove_output(self, extension=None, writer=None):
-        """ Remove files written by new style writers during a model
+        """Remove files written by new style writers during a model
         run. Does not work for old style writers which have no way to report
         what they have written. Can specify types of files and/or writers.
 
@@ -1164,12 +1192,12 @@ class ErosionModel(object):
             assert ow is not None
             for ext in extension_list:
                 assert ext is None or isinstance(ext, str)
-                if ext and ext[0] == '.':
-                    ext = ext[1:] # ignore leading period if present
+                if ext and ext[0] == ".":
+                    ext = ext[1:]  # ignore leading period if present
                 ow.delete_output_files(ext)
 
     def get_output(self, extension=None, writer=None):
-        """ Get a list of filepaths for files written by new style writers
+        """Get a list of filepaths for files written by new style writers
         during a model run. Does not work for old style writers which have no
         way to report what they have written.  Can specify types of files
         and/or writers.
@@ -1204,7 +1232,7 @@ class ErosionModel(object):
         return output_list
 
     def get_output_writer(self, name):
-        """ Get the references for object writer(s) from the writer's name.
+        """Get the references for object writer(s) from the writer's name.
 
         Parameters
         ----------

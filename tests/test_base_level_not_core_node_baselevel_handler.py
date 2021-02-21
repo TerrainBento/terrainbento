@@ -5,9 +5,9 @@ import os
 
 import numpy as np
 import pytest
+from landlab import HexModelGrid, RasterModelGrid
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from landlab import HexModelGrid, RasterModelGrid
 from terrainbento.boundary_handlers import NotCoreNodeBaselevelHandler
 
 _TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
