@@ -38,8 +38,9 @@ class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
                 * save_last_timestep : bool, defaults to True
                 * output_dir : string, defaults to './output'
 
-            Please see StaticIntervalOutputWriter and GenericOutputWriter for
-            more detail. Note: add_id is automatically included as True.
+            Please see :py:class:`StaticIntervalOutputWriter` and
+            :py:class:`GenericOutputWriter` for more detail. Note: `add_id` is
+            automatically included as True.
 
         Returns
         -------
@@ -97,8 +98,8 @@ class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
                 * save_last_timestep : bool, defaults to True
                 * output_dir : string, defaults to './output'
 
-            Please see StaticIntervalOutputWriter and GenericOutputWriter for
-            more detail. Note: add_id is automatically included as True.
+            Please see :py:class:`StaticIntervalOutputWriter` and
+            :py:class:`GenericOutputWriter` for more detail. Note: `add_id` is automatically included as True.
 
         Returns
         -------

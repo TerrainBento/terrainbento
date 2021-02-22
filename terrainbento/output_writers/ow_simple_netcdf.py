@@ -44,7 +44,9 @@ class OWSimpleNetCDF(StaticIntervalOutputWriter):
                 * save_last_timestep : bool, defaults to True
                 * output_dir : string, defaults to './output'
 
-            Please see StaticIntervalOutputWriter and GenericOutputWriter for
+            Please see
+            :py:class:`StaticIntervalOutputWriter` and
+            :py:class:`GenericOutputWriter` for
             more detail.
 
         Returns

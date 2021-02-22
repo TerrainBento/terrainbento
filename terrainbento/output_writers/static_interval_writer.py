@@ -17,7 +17,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
     actual output. Calling **register_output_filepath** from the derived class
     allows for some optional file management features.
 
-    See constructor and **GenericOutputWriter** for more info.
+    See constructor and :py:class:`GenericOutputWriter` for more info.
     """
 
     def __init__(
@@ -70,7 +70,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
                 * output_dir : string, defaults to './output'
                 * verbose : bool, defaults to False
 
-            Please see GenericOutputWriter for more detail.
+            Please see :py:class:`GenericOutputWriter` for more detail.
 
         Returns
         -------

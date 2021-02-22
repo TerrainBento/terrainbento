@@ -1,4 +1,4 @@
-.. py:module:: OWSimpleNetCDF
+.. py:class:: OWSimpleNetCDF
 
 OWSimpleNetCDF
 --------------

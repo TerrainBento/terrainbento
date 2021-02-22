@@ -1,4 +1,4 @@
-.. py:module:: GenericOutputWriter
+.. py:class:: GenericOutputWriter
 
 GenericOutputWriter
 -------------------
