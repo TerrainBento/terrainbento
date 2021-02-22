@@ -2,7 +2,9 @@
 
 import itertools
 
-from terrainbento.output_writers.generic_output_writer import GenericOutputWriter
+from terrainbento.output_writers.generic_output_writer import (
+    GenericOutputWriter,
+)
 
 
 class StaticIntervalOutputWriter(GenericOutputWriter):
@@ -58,7 +60,10 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
             of floats or ints indicates multiple predetermined output times.
             Defaults to None which indicates that `intervals` will be used. If
             both `intervals` and `times` are None, will default to the one
-            output at the end of the model run.
+            output at the end of the model run. The user must ensure that the
+            times implied by `times_iter` align with the model timesteps used
+            by the Clock. If a timestep is skipped a warning is raised and if
+            more than five timesteps are skipped an error is raised.
 
         generic_writer_kwargs : keyword args, optional
             Keyword arguments that will be passed directly to

@@ -85,7 +85,10 @@ class GenericOutputWriter:
         times_iter : iterator of floats, optional
             The user can provide an iterator of floats representing output
             times here instead of registering one later using
-            **register_times_iter**.
+            **register_times_iter**. The user must ensure that the times
+            implied by `times_iter` align with the model timesteps used by the
+            Clock. If a timestep is skipped a warning is raised and if more
+            than five timesteps are skipped an error is raised.
 
         Returns
         -------

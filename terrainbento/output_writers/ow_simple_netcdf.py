@@ -5,7 +5,9 @@ import os.path
 from landlab import RasterModelGrid
 from landlab.io.netcdf import to_netcdf, write_raster_netcdf
 
-from terrainbento.output_writers.static_interval_writer import StaticIntervalOutputWriter
+from terrainbento.output_writers.static_interval_writer import (
+    StaticIntervalOutputWriter,
+)
 
 
 class OWSimpleNetCDF(StaticIntervalOutputWriter):
