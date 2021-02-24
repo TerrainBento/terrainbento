@@ -15,8 +15,8 @@ Landlab components used:
 """
 
 import numpy as np
-
 from landlab.components import FastscapeEroder, LinearDiffuser
+
 from terrainbento.base_class import StochasticErosionModel
 
 

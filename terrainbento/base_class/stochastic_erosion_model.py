@@ -8,8 +8,8 @@ import textwrap
 
 import numpy as np
 import scipy.stats as stats
-
 from landlab.components import PrecipitationDistribution
+
 from terrainbento.base_class import ErosionModel
 
 _STRING_LENGTH = 80
@@ -373,8 +373,10 @@ class StochasticErosionModel(ErosionModel):
                 self.n_sub_steps
             )
             for i in range(self.n_sub_steps):
-                self.rain_rate = self.rain_generator.generate_from_stretched_exponential(
-                    self.scale_factor, self.shape_factor
+                self.rain_rate = (
+                    self.rain_generator.generate_from_stretched_exponential(
+                        self.scale_factor, self.shape_factor
+                    )
                 )
 
                 self._pre_water_erosion_steps()

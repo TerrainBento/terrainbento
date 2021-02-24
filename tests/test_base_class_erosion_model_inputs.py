@@ -2,9 +2,9 @@
 # !/usr/env/python
 
 import pytest
-
 from landlab import HexModelGrid, RasterModelGrid
 from landlab.components import FlowAccumulator
+
 from terrainbento import ErosionModel
 
 at_node_fields = [
@@ -58,6 +58,7 @@ def test_no_grid_in_file(tmpdir, basic_inputs_no_grid_yaml):
 
 
 def test_input_file(tmpdir, inputs_yaml):
+    print(inputs_yaml)
     with tmpdir.as_cwd():
         with open("params.yaml", "w") as fp:
             fp.write(inputs_yaml)
@@ -71,9 +72,9 @@ def test_input_file(tmpdir, inputs_yaml):
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
     assert em.boundary_handlers == {}
-    assert em.output_writers == {}
+    assert em.all_output_writers == []
     assert em.save_first_timestep is True
-    assert em._out_file_name == "terrainbento_output"
+    assert em.output_prefix == "terrainbento-output"
     assert em._model_time == 0.0
 
 
@@ -95,6 +96,7 @@ def test_parameters(clock_simple):
         },
         "clock": {"step": 1, "stop": 10},
         "output_interval": 2,
+        "output_default_netcdf": False,
     }
 
     em = ErosionModel.from_dict(params)
@@ -105,9 +107,9 @@ def test_parameters(clock_simple):
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
     assert em.boundary_handlers == {}
-    assert em.output_writers == {}
+    assert em.all_output_writers == []
     assert em.save_first_timestep is True
-    assert em._out_file_name == "terrainbento_output"
+    assert em.output_prefix == "terrainbento-output"
     assert em._model_time == 0.0
 
 
@@ -127,9 +129,9 @@ def test_string(tmpdir, inputs_yaml):
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorSteepest"
     assert em.boundary_handlers == {}
-    assert em.output_writers == {}
+    assert em.all_output_writers == []
     assert em.save_first_timestep is True
-    assert em._out_file_name == "terrainbento_output"
+    assert em.output_prefix == "terrainbento-output"
     assert em._model_time == 0.0
 
 
@@ -149,7 +151,7 @@ def test_string_D8(tmpdir, inputs_D8_yaml):
     assert isinstance(em.flow_accumulator, FlowAccumulator) is True
     assert em.flow_accumulator.flow_director._name == "FlowDirectorD8"
     assert em.boundary_handlers == {}
-    assert em.output_writers == {}
+    assert em.all_output_writers == []
     assert em.save_first_timestep is True
-    assert em._out_file_name == "terrainbento_output"
+    assert em.output_prefix == "terrainbento-output"
     assert em._model_time == 0.0

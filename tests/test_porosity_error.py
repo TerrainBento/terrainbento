@@ -7,7 +7,9 @@ from terrainbento import BasicDdHy, BasicHy, BasicHyRt, BasicHySt, BasicHyVs
     "Model", [BasicHy, BasicHySt, BasicDdHy, BasicHyVs, BasicHyRt]
 )
 def test_porosity_error(
-    clock_simple, grid_1, Model,
+    clock_simple,
+    grid_1,
+    Model,
 ):
     params = {
         "grid": grid_1,

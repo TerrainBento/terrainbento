@@ -12,7 +12,7 @@ in the `GitHub repository`_.
 .. _GitHub repository: https://github.com/TerrainBento/terrainbento
 
 The goal of terrainbento is to make it easier to create alternative Earth
-surface dynamics models. The package has six main parts that support this
+surface dynamics models. The package has seven main parts that support this
 goal. First, a model base class called
 :py:class:`ErosionModel` contains the
 functionality required across models (e.g. reading in input files, writing
@@ -36,6 +36,12 @@ allows for alternative approaches for converting rainfall into runoff.
 Fifth, we provide an initial set of landscape evolution models derived from the
 base class. These models increase in complexity from a base model to models
 with one, two, or three differences from the base mode.
+
+Sixth, a suite of :py:mod:`Output Writers <terrainbento.output_writers>`
+supports writing a variety of user specified outputs at regular or irregular
+time intervals (thanks `@alexmitchell`_!)
+
+.. _@alexmitchell: https://github.com/alexmitchell
 
 Finally, a
 :py:class:`~terrainbento.model_template.model_template.ModelTemplate` provides an skeleton of
@@ -63,6 +69,14 @@ Clock
    :maxdepth: 2
 
    source/terrainbento.clock
+
+Output Writers
+--------------
+
+.. toctree::
+   :maxdepth: 2
+
+   source/terrainbento.output_writers
 
 Boundary Condition Handlers
 ---------------------------

@@ -12,9 +12,9 @@ Landlab components used:
     4. `LinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/diffusion.html>`_
 """
 
+from landlab.components import FastscapeEroder, LinearDiffuser
 from scipy.interpolate import interp1d
 
-from landlab.components import FastscapeEroder, LinearDiffuser
 from terrainbento.base_class import ErosionModel
 
 

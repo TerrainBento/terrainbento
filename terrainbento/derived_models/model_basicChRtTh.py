@@ -17,6 +17,7 @@ from landlab.components import (
     StreamPowerSmoothThresholdEroder,
     TaylorNonLinearDiffuser,
 )
+
 from terrainbento.base_class import TwoLithologyErosionModel
 
 

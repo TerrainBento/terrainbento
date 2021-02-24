@@ -5,14 +5,14 @@
 import os
 import sys
 import time as tm
+import warnings
 
 import numpy as np
 import xarray as xr
 import yaml
-
-from landlab import ModelGrid, RasterModelGrid, create_grid
+from landlab import ModelGrid, create_grid
 from landlab.components import FlowAccumulator, NormalFault
-from landlab.io.netcdf import to_netcdf, write_raster_netcdf
+
 from terrainbento.boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -21,6 +21,13 @@ from terrainbento.boundary_handlers import (
     SingleNodeBaselevelHandler,
 )
 from terrainbento.clock import Clock
+from terrainbento.output_writers import (
+    GenericOutputWriter,
+    OWSimpleNetCDF,
+    StaticIntervalOutputClassAdapter,
+    StaticIntervalOutputFunctionAdapter,
+    StaticIntervalOutputWriter,
+)
 from terrainbento.precipitators import RandomPrecipitator, UniformPrecipitator
 from terrainbento.runoff_generators import SimpleRunoff
 
@@ -35,7 +42,6 @@ _VALID_RUNOFF_GENERATORS = SimpleRunoff
 
 _DEFAULT_PRECIPITATOR = {"UniformPrecipitator": {}}
 _DEFAULT_RUNOFF_GENERATOR = {"SimpleRunoff": {}}
-
 
 _SUPPORTED_BOUNDARY_HANDLERS = [
     "NormalFault",
@@ -54,6 +60,8 @@ _HANDLER_METHODS = {
     "SingleNodeBaselevelHandler": SingleNodeBaselevelHandler,
     "GenericFuncBaselevelHandler": GenericFuncBaselevelHandler,
 }
+
+_DEFAULT_OUTPUT_DIR = os.path.join(os.curdir, "output")
 
 
 def _verify_boundary_handler(handler):
@@ -145,6 +153,7 @@ class ErosionModel(object):
 
     _required_fields = ["topographic__elevation"]
 
+    # Setup
     @classmethod
     def from_file(cls, file_like):
         """Construct a terrainbento model from a file.
@@ -210,10 +219,32 @@ class ErosionModel(object):
             Dictionary of input parameters.
         output_writers : dictionary of output writers.
             Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot). These should be passed in a dictionary with two
-            keys: "class" and "function". The value associated with each of
-            these should be a list containing the uninstantiated output
-            writers. See the Jupyter notebook examples for more details.
+            diagnostic plot). There are two formats for the dictionary entries:
+
+            1) Items can have a key of "class" or "function" and a value of
+               a list of simple output classes (uninstantiated) or
+               functions, respectively. All output writers defined this way
+               will use the `output_interval` provided to the ErosionModel
+               constructor.
+            2) Items can have a key with any unique string representing the
+               output writer's name and a value containing a dict with the
+               uninstantiated class and arguments. The value follows the
+               format:
+
+               .. code-block:: python
+
+                   {
+                    'class' : MyWriter,
+                    'args' : [], # optional
+                    'kwargs' : {}, # optional
+                    }
+
+               where `args` and `kwargs` are passed to the constructor for
+               `MyWriter`. `MyWriter` must be a child class of
+               GenericOutputWriter.
+
+               The two formats can be present simultaneously. See the Jupyter
+               notebook examples for more details.
 
         Examples
         --------
@@ -277,7 +308,7 @@ class ErosionModel(object):
             runoff_generator=runoff_generator,
             boundary_handlers=bh_dict,
             output_writers=output_writers,
-            **params
+            **params,
         )
 
     @classmethod
@@ -299,9 +330,12 @@ class ErosionModel(object):
         flow_accumulator_kwargs=None,
         boundary_handlers=None,
         output_writers=None,
+        output_default_netcdf=True,
         output_interval=None,
         save_first_timestep=True,
-        output_prefix="terrainbento_output",
+        save_last_timestep=True,
+        output_prefix="terrainbento-output",
+        output_dir=_DEFAULT_OUTPUT_DIR,
         fields=None,
     ):
         """
@@ -346,18 +380,54 @@ class ErosionModel(object):
             module for valid options.
         output_writers : dictionary of output writers.
             Classes or functions used to write incremental output (e.g. make a
-            diagnostic plot). These should be passed in a dictionary with two
-            keys: "class" and "function". The value associated with each of
-            these should be a list containing the uninstantiated output
-            writers. See the Jupyter notebook examples for more details.
+            diagnostic plot). There are two formats for the dictionary entries:
+
+            1. ("Old style") Items can have a key of "class" or "function"
+               and a value that is a list of uninstantiated output classes
+               or a list of output functions, respectively. All output
+               writers defined this way will use the **output_interval**
+               argument provided to the ErosionModel constructor.
+            2. ("New style") Items can have a key of any unique string
+               representing the output writer's name and a value that is a
+               dictionary containing the uninstantiated class and any
+               arguments. The dictionary follows the format:
+
+               .. code-block:: python
+
+                  {
+                    'class' : MyWriter,
+                    'args' : [], # optional
+                    'kwargs' : {}, # optional
+                    }
+
+               where `args` and `kwargs` are passed to the constructor for
+               `MyWriter`. All new style output writers must be a child
+               class of GenericOutputWriter. The ErosionModel reference is
+               automatically prepended to args.
+
+            The two formats can be present simultaneously. See the Jupyter
+            notebook examples for more details.
+        output_default_netcdf : bool, optional
+            Indicates whether the erosion model should automatically create a
+            simple netcdf output writer which behaves identical to the built-in
+            netcdf writer from older terrainbento versions. Uses the
+            'output_interval' argument as the output interval. Defaults to True.
         output_interval : float, optional
-            Default is the Clock's stop time.
+            The time between output calls for old-style output writers and the
+            default netcdf writer. Default is the Clock's stop time.
         save_first_timestep : bool, optional
-            Indicates whether model output should be saved at time zero.  Default is
-            True.
+            Indicates whether model output should be saved at time zero (the
+            initial conditions). This affects old and new style output writers.
+            Default is True.
+        save_last_timestep : bool, optional
+            Indicates that the last output time must be at the clock stop time.
+            This affects old and new style output writers. Defaults to True.
         output_prefix : str, optional
-            String prefix for names of output netCDF files. Default is
-            ``"terrainbento_output"``.
+            String prefix for names of all output files. Default is
+            ``"terrainbento-output"``.
+        output_dir : string, optional
+            Directory that output should be saved to. Defaults to an "output"
+            directory in the current directory.
         fields : list, optional
             List of field names to write as netCDF output. Default is to only
             write out "topographic__elevation".
@@ -400,7 +470,9 @@ class ErosionModel(object):
 
         # save output_information
         self.save_first_timestep = save_first_timestep
-        self._out_file_name = output_prefix
+        self.save_last_timestep = save_last_timestep
+        self._output_prefix = output_prefix
+        self.output_dir = output_dir
         self.output_fields = fields
         self._output_files = []
         if output_interval is None:
@@ -448,14 +520,14 @@ class ErosionModel(object):
                 self.grid,
                 routing="D4",
                 depression_finder=depression_finder,
-                **flow_accumulator_kwargs
+                **flow_accumulator_kwargs,
             )
         else:
             self.flow_accumulator = FlowAccumulator(
                 self.grid,
                 flow_director=flow_director,
                 depression_finder=depression_finder,
-                **flow_accumulator_kwargs
+                **flow_accumulator_kwargs,
             )
 
         if self.flow_accumulator.depression_finder is None:
@@ -469,13 +541,18 @@ class ErosionModel(object):
         _verify_boundary_handler(boundary_handlers)
         self.boundary_handlers = boundary_handlers
 
-        if "class" in output_writers:
-            instantiated_classes = []
-            for ow_class in output_writers["class"]:
-                instantiated_classes.append(ow_class(self))
-            output_writers["class"] = instantiated_classes
+        # Instantiate all the output writers and store in a list
+        self.all_output_writers = self._setup_output_writers(
+            output_writers,
+            output_default_netcdf,
+        )
 
-        self.output_writers = output_writers
+        # Keep track of when each writer needs to write next
+        self.active_output_times = {}  # {next time : [writers]}
+        self.sorted_output_times = []  # sorted list of the next output times
+        for ow_writer in self.all_output_writers:
+            first_time = ow_writer.advance_iter()
+            self._update_output_times(ow_writer, first_time, None)
 
     def _verify_fields(self, required_fields):
         """Verify all required fields are present."""
@@ -485,11 +562,207 @@ class ErosionModel(object):
                     "Required field {field} not present.".format(field=field)
                 )
 
+    def _setup_output_writers(self, output_writers, output_default_netcdf):
+        """Convert all output writers to the new style and instantiate output
+        writer classes.
+
+        Parameters
+        ----------
+        output_writers : dictionary of output writers.
+            Classes or functions used to write incremental output (e.g. make a
+            diagnostic plot). There are two formats for the dictionary entries:
+
+            1) ("Old style") Items can have a key of "class" or "function"
+               and a value that is a list of uninstantiated output classes
+               or a list of output functions, respectively. All output
+               writers defined this way will use the **output_interval**
+               argument provided to the ErosionModel constructor.
+            2) ("New style") Items can have a key of any unique string
+               representing the output writer's name and a value that is a
+               dictionary containing the uninstantiated class and any
+               arguments. The dictionary follows the format: {
+                    'class' : MyWriter,
+                    'args' : [], # optional
+                    'kwargs' : {}, # optional
+                    }
+               where `args` and `kwargs` are passed to the constructor for
+               `MyWriter`. All new style output writers must be a child
+               class of GenericOutputWriter. The ErosionModel reference is
+               automatically prepended to args.
+
+            The two formats can be present simultaneously. See the Jupyter
+            notebook examples for more details.
+
+        output_default_netcdf : bool, optional
+            Indicates whether the erosion model should automatically create a
+            simple netcdf output writer which behaves identical to the built-in
+            netcdf writer from older terrainbento versions. Uses the
+            'output_interval' argument as the output interval. Defaults to True.
+
+        Returns
+        -------
+        instantiated_output_writers : list of GenericOutputWriter objects
+            A list of instantiated output writers all based on the
+            GenericOutputWriter.
+
+        Notes
+        -----
+        All classes and functions provided in the 'class' and 'function'
+        entries in the output_writer dictionary will be given to an adapter
+        class for StaticIntervalOutputWriter so that they can be used with the
+        new framework. All of theses writers will use `output_interval`.
+
+        """
+
+        # Note: I can't guarantee that the names will stay unique. I need to
+        # convert the 'class' and 'function' writers to the new style and there
+        # is a non-zero chance the user happens to use a name for the new style
+        # that has the same name that I give the converted writers. These names
+        # are used for output filenames, so I don't want to use anything ugly.
+        # Hence why I return a list instead of another dictionary.
+
+        # Add a default netcdf writer if desired.
+        assert isinstance(output_default_netcdf, bool)
+        if output_default_netcdf:
+            output_writers["simple-netcdf"] = {
+                "class": OWSimpleNetCDF,
+                "args": [self.output_fields],
+                "kwargs": {
+                    "intervals": self.output_interval,
+                    "add_id": True,
+                    "output_dir": self.output_dir,
+                },
+            }
+
+        instantiated_writers = []
+        for name in output_writers:
+            if name == "class":
+                # Old style class output writers. Give information to an
+                # adapter for instantiating as a static interval writer.
+                for ow_class in output_writers["class"]:
+                    new_writer = StaticIntervalOutputClassAdapter(
+                        model=self,
+                        output_interval=self.output_interval,
+                        ow_class=ow_class,
+                        save_first_timestep=self.save_first_timestep,
+                        save_last_timestep=self.save_last_timestep,
+                        output_dir=self.output_dir,
+                    )
+                    # new_name = new_writer.name
+                    # assert new_name not in instantiated_writers, \
+                    #        f"Output writer '{name}' already exists"
+                    instantiated_writers.append(new_writer)
+
+            elif name == "function":
+                # Old style function output writers. Give information to an
+                # adapter for instantiating as a static interval writer.
+                for ow_function in output_writers["function"]:
+                    new_writer = StaticIntervalOutputFunctionAdapter(
+                        model=self,
+                        output_interval=self.output_interval,
+                        ow_function=ow_function,
+                        save_first_timestep=self.save_first_timestep,
+                        save_last_timestep=self.save_last_timestep,
+                        output_dir=self.output_dir,
+                    )
+                    instantiated_writers.append(new_writer)
+
+            else:
+                # New style output writer class
+                writer_dict = output_writers[name]
+                assert isinstance(
+                    writer_dict, dict
+                ), "The new style output writer entry must be a dictionary"
+                assert "class" in writer_dict, "".join(
+                    [
+                        f"New style output writer {name} must have a 'class'",
+                        "entry",
+                    ]
+                )
+                ow_class = writer_dict["class"]
+                ow_args = writer_dict.get("args", [self])
+                ow_kwargs = writer_dict.get("kwargs", {})
+
+                # Prepend a reference to the model to the args (if not there)
+                if ow_args and ow_args[0] is not self:
+                    ow_args = [self] + ow_args
+                elif ow_args is None:  # pragma: no cover
+                    ow_args = [self]
+
+                # Add some kwargs if they were not already provided
+                defaults = {
+                    "name": name,
+                    "save_first_timestep": self.save_first_timestep,
+                    "save_last_timestep": self.save_last_timestep,
+                    "output_dir": self.output_dir,
+                }
+                if issubclass(ow_class, StaticIntervalOutputWriter):
+                    if "times" not in ow_kwargs:
+                        # Using a static interval writer and no times provided,
+                        # use the output_interval as a default interval.
+                        defaults["intervals"] = self.output_interval
+                defaults.update(ow_kwargs)
+                ow_kwargs = defaults
+
+                new_writer = ow_class(*ow_args, **ow_kwargs)
+                instantiated_writers.append(new_writer)
+
+        return instantiated_writers
+
+    # Attributes
     @property
     def model_time(self):
         """Return current time of model integration in model time units."""
         return self._model_time
 
+    @property
+    def next_output_time(self):
+        """Return the next output time in model time units. If there are no
+        more active output writers, return np.inf instead."""
+        if self.sorted_output_times:
+
+            return self.sorted_output_times[0]
+        else:
+            return np.inf
+
+    @property
+    def output_prefix(self):
+        """ Model prefix for output filenames. """
+        return self._output_prefix
+
+    @property
+    def _out_file_name(self):
+        """(Deprecated) Get the filename model prefix. Used to get the netcdf
+        filename base."""
+        warnings.warn(
+            " ".join(
+                [
+                    "ErosionModel's _out_file_name is no longer available.",
+                    "Getting _output_prefix instead, but may not behave as expected.",
+                    "Please use the 'output_prefix' argument in the constructor.",
+                ]
+            ),
+            DeprecationWarning,
+        )
+        return self._output_prefix
+
+    @_out_file_name.setter
+    def _out_file_name(self, prefix):
+        """(Deprecated) Set the filename model prefix. Used to set the netcdf
+        filename base."""
+        warnings.warn(
+            " ".join(
+                [
+                    "ErosionModel's _out_file_name is no longer available.",
+                    "Setting _output_prefix instead, but may not behave as expected.",
+                    "Please use the 'output_prefix' argument in the constructor.",
+                ]
+            ),
+            DeprecationWarning,
+        )
+        self._output_prefix = prefix
+
+    # Model run methods
     def calculate_cumulative_change(self):
         """Calculate cumulative node-by-node changes in elevation."""
         self.grid.at_node["cumulative_elevation_change"][:] = (
@@ -506,26 +779,6 @@ class ErosionModel(object):
         self.precipitator.run_one_step(step)
         self.runoff_generator.run_one_step(step)
         self.flow_accumulator.run_one_step()
-
-    def write_output(self):
-        """Write output to file as a netCDF.
-
-        Filenames will have the value of ``"output_filename"`` from the
-        input file or parameter dictionary as the first part of the file
-        name and the model run iteration as the second part of the
-        filename.
-        """
-        self.calculate_cumulative_change()
-        filename = self._out_file_name + str(self.iteration).zfill(4) + ".nc"
-        self._output_files.append(filename)
-        if isinstance(self.grid, RasterModelGrid):
-            write_raster_netcdf(
-                filename, self.grid, names=self.output_fields, format="NETCDF4"
-            )
-        else:
-            to_netcdf(self.grid, filename, format="NETCDF4")
-
-        self.run_output_writers()
 
     def finalize__run_one_step(self, step):
         """Finalize run_one_step method.
@@ -574,24 +827,29 @@ class ErosionModel(object):
 
         The model will run for the duration indicated by the input file
         or dictionary parameter ``"stop"``, at a time step specified by
-        the parameter ``"step"``, and create ouput at intervals of
-        ``"output_duration"``.
+        the parameter ``"step"``, and create ouput at intervals specified by
+        the individual output writers.
         """
         self._itters = []
 
         if self.save_first_timestep:
             self.iteration = 0
             self._itters.append(0)
+            self.calculate_cumulative_change()
             self.write_output()
         self.iteration = 1
         time_now = self._model_time
         while time_now < self.clock.stop:
             next_run_pause = min(
-                time_now + self.output_interval, self.clock.stop
+                # time_now + self.output_interval, self.clock.stop,
+                self.next_output_time,
+                self.clock.stop,
             )
+            assert next_run_pause > time_now
             self.run_for(self.clock.step, next_run_pause - time_now)
             time_now = self._model_time
             self._itters.append(self.iteration)
+            self.calculate_cumulative_change()
             self.write_output()
             self.iteration += 1
 
@@ -621,15 +879,6 @@ class ErosionModel(object):
         if self.runoff_generator.runoff_proportion != 1.0:
             raise ValueError("The model must use a runoff_proportion of 1.0.")
 
-    def run_output_writers(self):
-        """Run all output writers."""
-        if "class" in self.output_writers:
-            for ow_class in self.output_writers["class"]:
-                ow_class.run_one_step()
-        if "function" in self.output_writers:
-            for ow_function in self.output_writers["function"]:
-                ow_function(self)
-
     def update_boundary_conditions(self, step):
         """Run all boundary handlers forward by step.
 
@@ -641,6 +890,117 @@ class ErosionModel(object):
         # Run each of the baselevel handlers.
         for name in self.boundary_handlers:
             self.boundary_handlers[name].run_one_step(step)
+
+    # Output methods
+    def write_output(self):
+        """Run output writers if it is the correct model time.  """
+
+        # assert that the model has not passed the next output time.
+        assert self._model_time <= self.next_output_time, "".join(
+            [
+                f"Model time (t={self._model_time}) has passed the next ",
+                f"output time (t={self.next_output_time})",
+            ]
+        )
+
+        if self._model_time == self.next_output_time:
+            # The current model time matches the next output time
+            current_time = self.sorted_output_times.pop(0)
+            current_writers = self.active_output_times.pop(current_time)
+            for ow_writer in current_writers:
+                # Run all the output writers associated with this time.
+                ow_writer.run_one_step()
+                next_time = ow_writer.advance_iter()
+                self._update_output_times(ow_writer, next_time, current_time)
+
+    def _update_output_times(self, ow_writer, new_time, current_time):
+        """Private method to update the dictionary of active output writers
+        and the sorted list of next output times.
+
+        Parameters
+        ----------
+        ow_writer : GenericOutputWriter object
+            The output writer that has just finished writing output and advanced
+            it's time iterator.
+        new_time : float
+            The next time that the output writer will need to write output.
+        current_time : float
+            The current model time.
+
+        Notes
+        -----
+        This function enforces that output times align with model steps. If an
+        output writer returns a next_time that is in between model steps, then
+        the output time is delayed to the following step and a warning is
+        generated. This function may generate skip warnings if the subsequent
+        next times are less than the delayed step time.
+
+        """
+        if new_time is None:
+            # The output writer has exhausted all of it's output times.
+            # Do not add it back to the active dict/list
+            return
+
+        model_step = self.clock.step
+        if current_time is not None:
+            try:
+                assert new_time > current_time
+            except AssertionError:
+                warnings.warn(
+                    "".join(
+                        [
+                            f"The output writer {ow_writer.name} is providing a ",
+                            "next time that is less than or equal to the current ",
+                            "time. Possibly because the previous time was in ",
+                            "between steps, delaying the output until now. ",
+                            "Skipping ahead.",
+                        ]
+                    )
+                )
+                for n_skips in range(10):
+                    # Allow 10 attempts to skip
+                    new_time = ow_writer.advance_iter()
+                    if new_time is None:
+                        # iterator exhausted. No more processing needed
+                        return
+                    elif new_time > current_time:
+                        break
+                else:
+                    # Could not find a suitable next_time
+                    raise AssertionError(
+                        "".join(
+                            [
+                                "Output writer failed to return a next time greater ",
+                                "than the current time after several attempts.",
+                            ]
+                        )
+                    )
+
+        # See if the new output time aligns with the model step.
+        if (new_time % model_step) != 0.0:
+            warnings.warn(
+                "".join(
+                    [
+                        f"Output writer {ow_writer.name} is requesting a ",
+                        "time that is not divisible by the model step. ",
+                        "Delaying output to the following step.\n",
+                        f"Output time = {new_time}\n",
+                        f"Model step = {model_step}\n",
+                        f"Remainder = {new_time % model_step}\n\n",
+                    ]
+                )
+            )
+            new_time = np.ceil(new_time / model_step) * model_step
+
+        # Add the writer to the active_output_times dict
+        if new_time in self.active_output_times:
+            # New time is already in the active_output_times dictionary
+            self.active_output_times[new_time].append(ow_writer)
+        else:
+            # New time is not in the active_output_times dictionary
+            # Add it to the dict and resort the output times list
+            self.active_output_times[new_time] = [ow_writer]
+            self.sorted_output_times = sorted(self.active_output_times)
 
     def to_xarray_dataset(
         self,
@@ -668,7 +1028,7 @@ class ErosionModel(object):
         """
         # open all files as a xarray dataset
         ds = xr.open_mfdataset(
-            self._output_files,
+            self.get_output(extension="nc"),
             concat_dim="nt",
             engine="netcdf4",
             combine="nested",
@@ -736,16 +1096,163 @@ class ErosionModel(object):
         ds.to_netcdf(filename, engine="netcdf4", format="NETCDF4")
         ds.close()
 
+    def _format_extension_and_writer_args(self, extension, writer):
+        """Private method to parse the extension and writer arguments for the
+        **remove_output** and **get_output** functions.
+
+        Parameters
+        ----------
+        extension : string or list of strings or None
+            Specify the type(s) of files to look for.
+        writer : GenericOutputWriter instance or list of instances or string or list of strings or None
+            Specify which output writers to look at either by the writer's
+            handle or by the writer's name.
+
+        Returns
+        -------
+        extension_list : list of strings
+            List of strings representing the types of files to look for. Can
+            return [None] indicating all files.
+        writer_list : list of GenericOutputWriters
+            List of GenericOutputWriter instances to look at. Can
+            return [None] indicating all output writers should be looked at.
+        """
+
+        extension_list = None
+        writer_list = None
+
+        if isinstance(writer, GenericOutputWriter):
+            # Writer argument is an object, convert to a list
+            writer_list = [writer]
+        elif isinstance(writer, str):
+            # Writer argument is the name of the writer, get object
+            writer_list = self.get_output_writer(writer)
+        elif isinstance(writer, list):
+            # Writer argument is a list
+            writer_list = []
+            # Check what is in the list
+            for i, w in enumerate(writer):
+                if isinstance(w, GenericOutputWriter):
+                    writer_list.append(w)
+                elif isinstance(w, str):
+                    # Item is a name, replace with the object
+                    found_writers = self.get_output_writer(w)
+                    writer_list += found_writers
+                else:  # pragma: no cover
+                    raise TypeError(f"Unrecognized writer argument. {w}")
+        elif writer is None:
+            # Default to all writers
+            writer_list = self.all_output_writers
+        else:  # pragma: no cover
+            raise TypeError(f"Unrecognized writer argument. {writer}")
+
+        if isinstance(extension, str):
+            # Extension argument is a string
+            extension_list = [extension]
+        elif isinstance(extension, list):
+            # Extension argument is a list of strings
+            extension_list = extension
+            assert all([isinstance(e, str) for e in extension_list])
+        elif extension is None:
+            # Default to all extensions
+            extension_list = [None]
+        else:  # pragma: no cover
+            raise TypeError(f"Unrecognized extension argument. {extension}")
+
+        return extension_list, writer_list
+
     def remove_output_netcdfs(self):
-        """Remove all netCDF files written by a model run."""
-        try:
-            for f in self._output_files:
-                os.remove(f)
-        except WindowsError:  # pragma: no cover
-            print(
-                "The Windows OS is picky about file-locks and did not permit "
-                "terrainbento to remove the netcdf files."
-            )  # pragma: no cover
+        """Remove netcdf output files written during a model run. Only works
+        for new style writers including the default netcdf writer."""
+        self.remove_output(extension="nc")
+
+    def remove_output(self, extension=None, writer=None):
+        """Remove files written by new style writers during a model
+        run. Does not work for old style writers which have no way to report
+        what they have written. Can specify types of files and/or writers.
+
+        To do: allow 'writer' to be a string for the name of the writer?
+
+        Parameters
+        ----------
+        extension : string or list of strings, optional
+            Specify what type(s) of files should be deleted. Defaults to None
+            which deletes all file types. Don't include a leading period.
+        writer : GenericOutputWriter instance or list of instances or string or list of strings or None
+            Specify if the files should come from certain output writers either
+            by the writer's handle or by the writer's name. Defaults to
+            deleting files from all writers.
+
+        """
+
+        lists = self._format_extension_and_writer_args(extension, writer)
+        extension_list, writer_list = lists
+
+        for ow in writer_list:
+            assert ow is not None
+            for ext in extension_list:
+                assert ext is None or isinstance(ext, str)
+                if ext and ext[0] == ".":
+                    ext = ext[1:]  # ignore leading period if present
+                ow.delete_output_files(ext)
+
+    def get_output(self, extension=None, writer=None):
+        """Get a list of filepaths for files written by new style writers
+        during a model run. Does not work for old style writers which have no
+        way to report what they have written.  Can specify types of files
+        and/or writers.
+
+        Parameters
+        ----------
+        extension : string or list of strings, optional
+            Specify what type(s) of files should be returned. Defaults to None
+            which returns all file types. Don't include a leading period.
+        writer : GenericOutputWriter instance or list of instances or string or list of strings or None
+            Specify if the files should come from certain output writers either
+            by the writer's handle or by the writer's name. Defaults to
+            returning files from all writers.
+
+        Returns
+        -------
+        filepaths : list of strings
+            A list of filepath strings that match the desired extensions and
+            writers.
+        """
+
+        lists = self._format_extension_and_writer_args(extension, writer)
+        extension_list, writer_list = lists
+
+        output_list = []
+        for ow in writer_list:
+            assert ow is not None
+            for ext in extension_list:
+                assert ext is None or isinstance(ext, str)
+                output_list += ow.get_output_filepaths(ext)
+
+        return output_list
+
+    def get_output_writer(self, name):
+        """Get the references for object writer(s) from the writer's name.
+
+        Parameters
+        ----------
+        name : string
+            The name of the output writer to look for. Can match multiple
+            writers.
+
+        Returns
+        -------
+        matches : list of GenericOutputWriter objects
+            The list of any GenericOutputWriter whose name contains the
+            argument name string. Will return an empty list if there are no
+            matches.
+
+        """
+        matches = []
+        for ow in self.all_output_writers:
+            if name in ow.name:
+                matches.append(ow)
+        return matches
 
 
 def main():  # pragma: no cover
@@ -760,5 +1267,5 @@ def main():  # pragma: no cover
     erosion_model.run()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
