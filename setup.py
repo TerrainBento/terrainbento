@@ -16,15 +16,6 @@ setup(
     long_description_content_type="text/markdown",
     zip_safe=False,
     packages=find_packages(),
-    install_requires=[
-        "scipy",
-        "numpy",
-        "jupyter",
-        "holoviews",
-        "pandas",
-        "xarray",
-        "dask[complete]",
-        "landlab>=2.0.0b4",
-    ],
+    install_requires=open("requirements.txt", "r").read().splitlines(),
     package_data={"": ["tests/*txt", "data/*txt", "data/*asc", "data/*nc"]},
 )

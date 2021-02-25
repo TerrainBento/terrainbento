@@ -1,3 +1,5 @@
+dask[array]
 jupyter
 holoviews
+nbformat
 pandas
