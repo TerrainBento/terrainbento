@@ -53,5 +53,5 @@ jobs:
       - name: Test jupyter notebooks
         run: |
           python -c 'import terrainbento; print(terrainbento.__version__)'
-          pip install -r requirements_notebooks.txt
+          pip install -r requirements-notebooks.txt
           pytest notebooks --run-notebook -vvv
