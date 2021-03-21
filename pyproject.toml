@@ -23,22 +23,13 @@ markers = [
     "notebook: marks tests as notebook (deselect with '-m \"not notebook\"')"
 ]
 
-[versioneer]
-vcs = git
-style = pep440
-versionfile_source = terrainbento/_version.py
-versionfile_build = terrainbento/_version.py
-tag_prefix =
-parentdir_prefix = terrainbento-
 
-[coverage:report]
+[tool.coverage.report]
 exclude_lines =
       pragma: no cover
       if __name__ == .__main__.
 omit =
     setup.py
-    versioneer.py
-    terrainbento/_version.py
     terrainbento/model_template/__init__.py
     terrainbento/model_template/model_template.py
     terrainbento/utilities/file_compare.py
