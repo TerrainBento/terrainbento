@@ -55,11 +55,9 @@ lint: ## check style with flake8
 	flake8 tests
 
 pretty: ## reformat files to make them look pretty
-	find terrainbento -name '*.py' | xargs isort
-	find tests -name '*.py' | xargs isort
-	black setup.py terrainbento tests --line-length=79
-	docformatter --in-place terrainbento/*/*.py
-
+	find terrainbento tests -name '*.py' | xargs isort
+	black setup.py terrainbento tests
+		
 test: ## run tests quickly with the default Python
 	pytest -n4
 

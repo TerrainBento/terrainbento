@@ -163,9 +163,7 @@ class BasicDdVs(ErosionModel):
         self._Kdx = hydraulic_conductivity * self.grid.dx
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
-            "node", "water_erosion_rule__threshold"
-        )
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.threshold_value
 
         # Instantiate a FastscapeEroder component
@@ -180,9 +178,7 @@ class BasicDdVs(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = (
-            water_erosion_rule__thresh_depth_derivative
-        )
+        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
@@ -259,15 +255,11 @@ class BasicDdVs(ErosionModel):
         # we want the threshold to stay at its initial value rather than
         # getting smaller.
         cum_ero = self.grid.at_node["cumulative_elevation_change"]
-        cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
-        )
+        cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero
         )
-        self.threshold[
-            self.threshold < self.threshold_value
-        ] = self.threshold_value
+        self.threshold[self.threshold < self.threshold_value] = self.threshold_value
 
         # Do some erosion (but not on the flooded nodes)
         # (if we're varying K through time, update that first)

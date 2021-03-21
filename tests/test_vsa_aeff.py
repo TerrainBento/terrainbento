@@ -5,12 +5,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import (
-    BasicDdVs,
-    BasicHyVs,
-    BasicVs,
-    NotCoreNodeBaselevelHandler,
-)
+from terrainbento import BasicDdVs, BasicHyVs, BasicVs, NotCoreNodeBaselevelHandler
 
 
 @pytest.mark.parametrize("Model", [BasicVs, BasicDdVs, BasicHyVs])
@@ -48,9 +43,7 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
         / grid_2.at_node["rainfall__flux"][0]
     )
 
-    A_eff_predicted = actual_areas * np.exp(
-        -(-alpha * actual_slopes) / actual_areas
-    )
+    A_eff_predicted = actual_areas * np.exp(-(-alpha * actual_slopes) / actual_areas)
 
     # assert aeff internally calculated correclty
     assert_array_almost_equal(

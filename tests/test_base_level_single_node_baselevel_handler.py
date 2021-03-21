@@ -53,9 +53,7 @@ def test_outlet_lowering_object_bad_file():
     mg.add_zeros("node", "topographic__elevation")
 
     with pytest.raises(ValueError):
-        SingleNodeBaselevelHandler(
-            mg, outlet_id=0, lowering_file_path="foo.txt"
-        )
+        SingleNodeBaselevelHandler(mg, outlet_id=0, lowering_file_path="foo.txt")
 
 
 def test_outlet_lowering_rate_no_scaling_bedrock():
@@ -108,9 +106,7 @@ def test_outlet_lowering_object_no_scaling_bedrock():
 
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
-    bh = SingleNodeBaselevelHandler(
-        mg, outlet_id=node_id, lowering_file_path=file
-    )
+    bh = SingleNodeBaselevelHandler(mg, outlet_id=node_id, lowering_file_path=file)
     for _ in range(241):
         bh.run_one_step(10)
 
@@ -128,9 +124,7 @@ def test_outlet_lowering_object_no_scaling():
     z = mg.add_zeros("node", "topographic__elevation")
     node_id = 27
     file = os.path.join(_TEST_DATA_DIR, "outlet_history.txt")
-    bh = SingleNodeBaselevelHandler(
-        mg, outlet_id=node_id, lowering_file_path=file
-    )
+    bh = SingleNodeBaselevelHandler(mg, outlet_id=node_id, lowering_file_path=file)
     for _ in range(241):
         bh.run_one_step(10)
 

@@ -3,9 +3,7 @@ import pytest
 from terrainbento import BasicDdHy, BasicHy, BasicHyRt, BasicHySt, BasicHyVs
 
 
-@pytest.mark.parametrize(
-    "Model", [BasicHy, BasicHySt, BasicDdHy, BasicHyVs, BasicHyRt]
-)
+@pytest.mark.parametrize("Model", [BasicHy, BasicHySt, BasicDdHy, BasicHyVs, BasicHyRt])
 def test_porosity_error(
     clock_simple,
     grid_1,

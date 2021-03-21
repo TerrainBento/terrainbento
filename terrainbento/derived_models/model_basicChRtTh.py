@@ -13,10 +13,7 @@ Landlab components used:
     4. `TaylorNonLinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/taylor_nonlinear_hillslope_flux.html>`_
 """
 
-from landlab.components import (
-    StreamPowerSmoothThresholdEroder,
-    TaylorNonLinearDiffuser,
-)
+from landlab.components import StreamPowerSmoothThresholdEroder, TaylorNonLinearDiffuser
 
 from terrainbento.base_class import TwoLithologyErosionModel
 

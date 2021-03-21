@@ -168,9 +168,7 @@ def test_two_class_writers(clock_08, almost_default_grid):
         water_erodibility=0.0,
         regolith_transport_parameter=0.0,
         boundary_handlers={"NotCoreNodeBaselevelHandler": ncnblh},
-        output_writers={
-            "class": [output_writer_class_a, output_writer_class_b]
-        },
+        output_writers={"class": [output_writer_class_a, output_writer_class_b]},
     )
     model.run()
 

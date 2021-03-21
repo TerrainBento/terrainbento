@@ -235,9 +235,7 @@ def test_out_of_phase_interval_warns(clock_08, almost_default_grid):
         )
         assert next_run_pause > time_now
         print(f"Iteration {model.iteration:05d} Model time {model.model_time}")
-        print(
-            f"  Run for {next_run_pause - time_now}, (step = {model.clock.step})"
-        )
+        print(f"  Run for {next_run_pause - time_now}, (step = {model.clock.step})")
         model.run_for(model.clock.step, next_run_pause - time_now)
         time_now = model._model_time
         model._itters.append(model.iteration)
@@ -361,9 +359,7 @@ def test_out_of_phase_interval_fails(clock_08, almost_default_grid):
         )
         assert next_run_pause > time_now
         print(f"Iteration {model.iteration:05d} Model time {model.model_time}")
-        print(
-            f"  Run for {next_run_pause - time_now}, (step = {model.clock.step})"
-        )
+        print(f"  Run for {next_run_pause - time_now}, (step = {model.clock.step})")
         model.run_for(model.clock.step, next_run_pause - time_now)
         time_now = model._model_time
         model._itters.append(model.iteration)
@@ -381,9 +377,7 @@ def test_out_of_phase_interval_fails(clock_08, almost_default_grid):
     assert model.model_time == 1.00 and model.next_output_time == 2.0
 
     # time_iter returns 1.02, which triggers skips and eventually fails
-    with pytest.warns(UserWarning) as all_warnings, pytest.raises(
-        AssertionError
-    ):
+    with pytest.warns(UserWarning) as all_warnings, pytest.raises(AssertionError):
         run_one_iteration()
     ignored_warnings = [RuntimeWarning]
     for warn_info in all_warnings:

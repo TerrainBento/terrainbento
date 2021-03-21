@@ -286,9 +286,7 @@ class ErosionModel(object):
         )
 
         # runoff_generator
-        runoff_params = params.pop(
-            "runoff_generator", _DEFAULT_RUNOFF_GENERATOR
-        )
+        runoff_params = params.pop("runoff_generator", _DEFAULT_RUNOFF_GENERATOR)
         runoff_generator = _setup_precipitator_or_runoff(
             grid, runoff_params, _SUPPORTED_RUNOFF_GENERATORS
         )
@@ -464,9 +462,7 @@ class ErosionModel(object):
 
         self.grid.add_zeros("node", "cumulative_elevation_change")
 
-        self.grid.add_field(
-            "node", "initial_topographic__elevation", self.z.copy()
-        )
+        self.grid.add_field("node", "initial_topographic__elevation", self.z.copy())
 
         # save output_information
         self.save_first_timestep = save_first_timestep
@@ -502,9 +498,7 @@ class ErosionModel(object):
             runoff_generator = SimpleRunoff(self.grid)
         else:
             if isinstance(runoff_generator, _VALID_RUNOFF_GENERATORS) is False:
-                raise ValueError(
-                    "Provide value for runoff_generator not valid."
-                )
+                raise ValueError("Provide value for runoff_generator not valid.")
         self.runoff_generator = runoff_generator
 
         ###################################################################
@@ -863,15 +857,11 @@ class ErosionModel(object):
         are the default versions.
         """
         if isinstance(self.precipitator, UniformPrecipitator) is False:
-            raise ValueError(
-                "This model must be run with a UniformPrecipitator."
-            )
+            raise ValueError("This model must be run with a UniformPrecipitator.")
 
         if vsa_precip is False:
             if self.precipitator._rainfall_flux != 1:
-                raise ValueError(
-                    "This model must use a rainfall__flux value of 1.0."
-                )
+                raise ValueError("This model must use a rainfall__flux value of 1.0.")
 
         # if isinstance(self.runoff_generator, SimpleRunoff) is False:
         #     raise ValueError("This model must be run with SimpleRunoff.")

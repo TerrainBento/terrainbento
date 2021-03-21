@@ -66,9 +66,7 @@ def test_simple_precip_changer(
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
     model.run_one_step(1.0)
-    assert_array_almost_equal(
-        model.eroder.K, K * precip_testing_factor, decimal=5
-    )
+    assert_array_almost_equal(model.eroder.K, K * precip_testing_factor, decimal=5)
 
 
 @pytest.mark.parametrize(
@@ -99,12 +97,8 @@ def test_rock_till_precip_changer(
     model = Model(**params)
     model._update_erodibility_field()
 
-    assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
-    )
-    assert (
-        np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
-    )
+    assert np.array_equiv(model.eroder.K[model.grid.core_nodes[:8]], Kt) is True
+    assert np.array_equiv(model.eroder.K[model.grid.core_nodes[10:]], Kr) is True
 
     assert "PrecipChanger" in model.boundary_handlers
     model.run_one_step(1.0)
