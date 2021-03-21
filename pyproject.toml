@@ -25,14 +25,18 @@ markers = [
 
 
 [tool.coverage.report]
-exclude_lines =
-      pragma: no cover
-      if __name__ == .__main__.
-omit =
-    setup.py
-    terrainbento/model_template/__init__.py
-    terrainbento/model_template/model_template.py
-    terrainbento/utilities/file_compare.py
+exclude_lines = [
+      "pragma: no cover",
+      "if __name__ == .__main__."
+      ]
+
+omit = [
+    "setup.py",
+    "terrainbento/model_template/__init__.py",
+    "terrainbento/model_template/model_template.py",
+    "terrainbento/utilities/file_compare.py"
+    ]
+
 
 [tool.isort]
 multi_line_output = 3
