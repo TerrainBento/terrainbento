@@ -5,4 +5,4 @@ holoviews
 pandas
 xarray
 dask[complete]
-landlab>=2.0.0b4
+landlab>=2.3
