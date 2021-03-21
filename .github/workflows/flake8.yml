@@ -23,4 +23,4 @@ jobs:
       - name: Lint
         run: |
           pip install flake8
-          flake8 landlab tests
+          flake8 terrainbento tests
