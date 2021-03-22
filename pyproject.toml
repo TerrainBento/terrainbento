@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [metadata]
-version = attr: src.VERSION
+version =  2.0.0
 name = terrainbento
 description = TerrainBento suite of landscape evolution models
 url = https://github.com/TerrainBento/terrainbento/

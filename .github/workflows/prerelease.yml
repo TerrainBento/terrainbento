@@ -60,7 +60,8 @@ jobs:
         run: |
           conda install mamba
           mamba install --file=requirements.txt
-          python setup.py bdist_wheel
+          pip install -q build
+          python -m build
 
       - name: Build source distribution
         if: matrix.os == 'ubuntu-latest'

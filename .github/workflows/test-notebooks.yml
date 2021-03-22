@@ -46,8 +46,10 @@ jobs:
 
       - name: Build and install package
         run: |
-          pip install -e .
-
+          pip install -q build
+          python -m build
+          pip install *.whl
+          
       - name: Install testing dependencies
         run: mamba install --file=requirements-testing.txt -c conda-forge
 
