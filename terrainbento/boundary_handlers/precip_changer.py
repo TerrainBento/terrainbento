@@ -232,9 +232,7 @@ def _scale_fac(pmean, c):
 
 def _check_intermittency_value(rainfall_intermittency_factor):
     """Check that rainfall_intermittency_factor is >= 0 and <=1."""
-    if (rainfall_intermittency_factor < 0.0) or (
-        rainfall_intermittency_factor > 1.0
-    ):
+    if (rainfall_intermittency_factor < 0.0) or (rainfall_intermittency_factor > 1.0):
         raise ValueError(
             (
                 "The PrecipChanger rainfall_intermittency_factor has a "
@@ -444,9 +442,7 @@ class PrecipChanger(object):
         )
 
         self.starting_daily_mean_depth = rainfall__mean_rate
-        self.mean_depth_rate_of_change = (
-            rainfall__mean_rate_time_rate_of_change
-        )
+        self.mean_depth_rate_of_change = rainfall__mean_rate_time_rate_of_change
 
         self.rainfall__shape_factor = rainfall__shape_factor
         self.infilt_cap = infiltration_capacity
@@ -477,9 +473,7 @@ class PrecipChanger(object):
         :math:`f_0(p)` is the Weibull distribution representing the probability
         distribution of daily precipitation intensity at model run onset.
         """
-        lam = _scale_fac(
-            self.starting_daily_mean_depth, self.rainfall__shape_factor
-        )
+        lam = _scale_fac(self.starting_daily_mean_depth, self.rainfall__shape_factor)
         psi, _ = quad(
             _integrand,
             self.infilt_cap,
@@ -510,12 +504,10 @@ class PrecipChanger(object):
 
             # calculate and return updated values
             frac_wet_days = (
-                self.starting_frac_wet_days
-                + self.frac_wet_days_rate_of_change * time
+                self.starting_frac_wet_days + self.frac_wet_days_rate_of_change * time
             )
             mean_depth = (
-                self.starting_daily_mean_depth
-                + self.mean_depth_rate_of_change * time
+                self.starting_daily_mean_depth + self.mean_depth_rate_of_change * time
             )
 
             _check_intermittency_value(frac_wet_days)

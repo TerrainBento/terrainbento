@@ -18,9 +18,7 @@ def test_defaults(clock_simple, grid_1):
 
 
 def test_init_record_opt_true(clock_simple, grid_1):
-    model = StochasticErosionModel(
-        clock=clock_simple, grid=grid_1, record_rain=True
-    )
+    model = StochasticErosionModel(clock=clock_simple, grid=grid_1, record_rain=True)
     assert model.record_rain is True
     assert isinstance(model.rain_record, dict)
     fields = [
@@ -62,12 +60,8 @@ def test_run_stochastic_opt_true(clock_04, grid_0):
     assert model.opt_stochastic_duration is True
     model.run_for(model.clock.step, 400 * model.clock.step)
 
-    rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(
-        decimals=5
-    )
-    event_duration = np.asarray(model.rain_record["event_duration"]).round(
-        decimals=5
-    )
+    rainfall_rate = np.asarray(model.rain_record["rainfall_rate"]).round(decimals=5)
+    event_duration = np.asarray(model.rain_record["event_duration"]).round(decimals=5)
 
     dry_times = event_duration[rainfall_rate == 0]
     wet_times = event_duration[rainfall_rate > 0]
@@ -277,13 +271,9 @@ def test_run_opt_false_with_changer(clock_06, grid_1, precip_defaults):
     model.run_for(model.clock.step, model.clock.stop)
     assert "PrecipChanger" in model.boundary_handlers
 
-    predicted_intermittency = params[
-        "rainfall_intermittency_factor"
-    ] + precip_defaults[
+    predicted_intermittency = params["rainfall_intermittency_factor"] + precip_defaults[
         "daily_rainfall__intermittency_factor_time_rate_of_change"
-    ] * (
-        model.clock.stop - model.clock.step
-    )
+    ] * (model.clock.stop - model.clock.step)
 
     predicted_intensity = params["rainfall__mean_rate"] + precip_defaults[
         "rainfall__mean_rate_time_rate_of_change"
@@ -408,14 +398,10 @@ def test_finalize_opt_duration_stochastic_false(clock_07, grid_1):
     model.finalize()
 
     # assert that these are correct
-    truth_file = os.path.join(
-        _TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt"
-    )
+    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_storm_sequence.txt")
     assert filecmp("storm_sequence.txt", truth_file) is True
 
-    truth_file = os.path.join(
-        _TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt"
-    )
+    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_false_exceedance_summary.txt")
     assert filecmp("exceedance_summary.txt", truth_file) is True
 
     os.remove("storm_sequence.txt")
@@ -445,9 +431,7 @@ def test_finalize_opt_duration_stochastic_true(clock_07, grid_1):
     model.finalize()
 
     # assert that these are correct
-    truth_file = os.path.join(
-        _TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt"
-    )
+    truth_file = os.path.join(_TEST_DATA_DIR, "opt_dur_true_storm_sequence.txt")
     assert filecmp("storm_sequence.txt", truth_file) is True
 
     os.remove("storm_sequence.txt")

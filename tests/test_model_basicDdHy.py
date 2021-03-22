@@ -9,9 +9,7 @@ from terrainbento import BasicDdHy, NotCoreNodeBaselevelHandler
 
 @pytest.mark.parametrize("threshold", [0.0, 0.00001])
 @pytest.mark.parametrize("m_sp,n_sp", [(1.0 / 3, 2.0 / 3.0), (0.5, 1.0)])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("solver", ["basic", "adaptive"])
 def test_stream_DdHy(
     clock_simple,

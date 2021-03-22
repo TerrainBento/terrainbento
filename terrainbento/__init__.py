@@ -9,12 +9,8 @@ precipiation to runoff and Boundary condition handlers are helper classes that
 have been designed to modify model boundary conditions during a model run.
 """
 
-from ._version import get_versions
-from .base_class import (
-    ErosionModel,
-    StochasticErosionModel,
-    TwoLithologyErosionModel,
-)
+import pkg_resources
+from .base_class import ErosionModel, StochasticErosionModel, TwoLithologyErosionModel
 from .boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
@@ -116,5 +112,5 @@ __all__ = [
 ]
 
 
-__version__ = get_versions()["version"]
-del get_versions
+__version__ = pkg_resources.get_distribution("terrainbento").version
+del pkg_resources

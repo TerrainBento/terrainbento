@@ -69,7 +69,5 @@ def test_diffusion_only(clock_08, grid_4_smaller):
     actual_depth = model.grid.at_node["soil__depth"][15]
     assert_array_almost_equal(actual_depth, predicted_depth, decimal=2)
 
-    actual_slope = np.abs(
-        model.grid.at_node["topographic__steepest_slope"][20]
-    )
+    actual_slope = np.abs(model.grid.at_node["topographic__steepest_slope"][20])
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=1)

@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[metadata]
+version = 2.0
+name = "terrainbento"
+description = "TerrainBento suite of landscape evolution models"
+url = "https://github.com/TerrainBento/terrainbento/"
+author = "The TerrainBento Team"
+author_email = "barnhark@colorado.edu"
+long_description = file: README.md
+license = "MIT"
+
+[options]
+zip_safe = false
+packages = find:
+install_requires = file: requirements.txt
+
+[options.package_data]
+* = tests/*txt, data/*txt, data/*asc, data/*nc
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["notebooks", "terrainbento", "tests"]
+norecursedirs = [".*", "*.egg*", "build", "dist", "examples"]
+addopts = """
+  --ignore setup.py
+  --tb native
+  --strict
+  --durations 16
+  --doctest-modules
+  -vvv
+"""
+doctest_optionflags = [
+  "NORMALIZE_WHITESPACE",
+  "IGNORE_EXCEPTION_DETAIL",
+  "ALLOW_UNICODE"
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "notebook: marks tests as notebook (deselect with '-m \"not notebook\"')"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+      "pragma: no cover",
+      "if __name__ == .__main__."
+      ]
+
+omit = [
+    "setup.py",
+    "terrainbento/model_template/__init__.py",
+    "terrainbento/model_template/model_template.py",
+    "terrainbento/utilities/file_compare.py"
+    ]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+combine_as_imports = true
+line_length = 88

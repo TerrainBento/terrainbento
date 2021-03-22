@@ -21,12 +21,8 @@ test_i = 20
 @pytest.mark.parametrize("Model", [BasicRt, BasicChRt, BasicRtSa])
 @pytest.mark.parametrize("m_sp", [1.0 / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2.0 / 3.0, 1.0])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
-@pytest.mark.parametrize(
-    "flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
+@pytest.mark.parametrize("flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"])
 def test_rock_till_steady_no_precip_changer(
     clock_simple,
     grid_2,
@@ -63,16 +59,14 @@ def test_rock_till_steady_no_precip_changer(
         if i % test_i == 0:
             try:
                 # construct actual and predicted slopes
-                actual_slopes = model.grid.at_node[
-                    "topographic__steepest_slope"
-                ]
+                actual_slopes = model.grid.at_node["topographic__steepest_slope"]
                 actual_areas = model.grid.at_node["surface_water__discharge"]
-                rock_predicted_slopes = (
-                    U / (Kr * (actual_areas ** m_sp))
-                ) ** (1.0 / n_sp)
-                till_predicted_slopes = (
-                    U / (Kt * (actual_areas ** m_sp))
-                ) ** (1.0 / n_sp)
+                rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (
+                    1.0 / n_sp
+                )
+                till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (
+                    1.0 / n_sp
+                )
 
                 # assert actual and predicted slopes are the same for rock and till
                 # portions.
@@ -95,12 +89,8 @@ def test_rock_till_steady_no_precip_changer(
 @pytest.mark.parametrize("Model", [BasicRtTh, BasicChRtTh])
 @pytest.mark.parametrize("m_sp", [1.0 / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [1.0])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
-@pytest.mark.parametrize(
-    "flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
+@pytest.mark.parametrize("flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"])
 def test_rock_till_steady_no_precip_changer_ChRtTh(
     clock_simple,
     Model,
@@ -138,16 +128,14 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
         if i % test_i == 0:
             try:
                 # construct actual and predicted slopes
-                actual_slopes = model.grid.at_node[
-                    "topographic__steepest_slope"
-                ]
+                actual_slopes = model.grid.at_node["topographic__steepest_slope"]
                 actual_areas = model.grid.at_node["surface_water__discharge"]
-                rock_predicted_slopes = (
-                    U / (Kr * (actual_areas ** m_sp))
-                ) ** (1.0 / n_sp)
-                till_predicted_slopes = (
-                    U / (Kt * (actual_areas ** m_sp))
-                ) ** (1.0 / n_sp)
+                rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (
+                    1.0 / n_sp
+                )
+                till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (
+                    1.0 / n_sp
+                )
 
                 # assert actual and predicted slopes are the same for rock and till
                 # portions.
@@ -167,17 +155,11 @@ def test_rock_till_steady_no_precip_changer_ChRtTh(
                 pass
 
 
-@pytest.mark.parametrize(
-    "Model", [Basic, BasicCv, BasicCh, BasicChSa, BasicSa]
-)
+@pytest.mark.parametrize("Model", [Basic, BasicCv, BasicCh, BasicChSa, BasicSa])
 @pytest.mark.parametrize("m_sp", [1.0 / 3, 0.5, 0.75, 0.25])
 @pytest.mark.parametrize("n_sp", [2.0 / 3.0, 1.0])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
-@pytest.mark.parametrize(
-    "flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
+@pytest.mark.parametrize("flow_director", ["FlowDirectorSteepest", "FlowDirectorD8"])
 def test_detachment_steady_no_precip_changer(
     clock_simple,
     grid_1,
@@ -210,16 +192,10 @@ def test_detachment_steady_no_precip_changer(
         if i % test_i == 0:
             try:
                 # construct actual and predicted slopes
-                actual_slopes = model.grid.at_node[
-                    "topographic__steepest_slope"
-                ]
+                actual_slopes = model.grid.at_node["topographic__steepest_slope"]
                 actual_areas = model.grid.at_node["surface_water__discharge"]
                 predicted_slopes = (
-                    U
-                    / (
-                        params["water_erodibility"]
-                        * (actual_areas ** params["m_sp"])
-                    )
+                    U / (params["water_erodibility"] * (actual_areas ** params["m_sp"]))
                 ) ** (1.0 / params["n_sp"])
 
                 # assert actual and predicted slopes are the same.

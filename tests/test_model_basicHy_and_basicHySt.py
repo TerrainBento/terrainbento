@@ -12,9 +12,7 @@ from terrainbento import BasicHy, BasicHySt, NotCoreNodeBaselevelHandler
     [(BasicHy, "water_erodibility"), (BasicHySt, "water_erodibility")],
 )
 @pytest.mark.parametrize("m_sp,n_sp", [(1.0 / 3, 2.0 / 3.0), (0.5, 1.0)])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("solver", ["basic", "adaptive"])
 def test_channel_erosion(
     clock_simple,

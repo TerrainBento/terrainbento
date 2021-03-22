@@ -1,11 +1,6 @@
 import pytest
 
-from terrainbento import (
-    BasicSt,
-    RandomPrecipitator,
-    SimpleRunoff,
-    UniformPrecipitator,
-)
+from terrainbento import BasicSt, RandomPrecipitator, SimpleRunoff, UniformPrecipitator
 
 
 def test_not_UniformPrecipitator(grid_1, clock_simple):

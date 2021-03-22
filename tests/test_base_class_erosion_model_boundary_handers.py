@@ -15,9 +15,7 @@ from terrainbento.boundary_handlers import (
 
 
 @pytest.mark.parametrize("keyword", ["BasicSt", "NotCoreNodeBaselevelHandler"])
-def test_bad_boundary_condition_string(
-    clock_simple, almost_default_grid, keyword
-):
+def test_bad_boundary_condition_string(clock_simple, almost_default_grid, keyword):
     params = {
         "grid": almost_default_grid,
         "clock": clock_simple,
@@ -36,9 +34,7 @@ def test_bad_boundary_condition_yaml(bad_handler_yaml, tmpdir):
             ErosionModel.from_file("./params.yaml")
 
 
-def test_single_node_blh_with_closed_boundaries(
-    clock_simple, simple_square_grid
-):
+def test_single_node_blh_with_closed_boundaries(clock_simple, simple_square_grid):
     snblh = SingleNodeBaselevelHandler(
         simple_square_grid,
         modify_outlet_node=False,
@@ -105,9 +101,7 @@ def test_generic_bch(clock_simple, simple_square_grid):
 
     dzdt = -(model.grid.x_of_node + model.grid.y_of_node)
     truth_z = -1.0 * dzdt * step
-    assert_array_equal(
-        model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes]
-    )
+    assert_array_equal(model.z[model.grid.core_nodes], truth_z[model.grid.core_nodes])
 
 
 def test_capture_node(clock_simple, simple_square_grid):

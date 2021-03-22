@@ -86,9 +86,7 @@ def test_parameters(clock_simple):
                 {
                     "fields": {
                         "node": {
-                            "topographic__elevation": {
-                                "constant": [{"value": 0.0}]
-                            }
+                            "topographic__elevation": {"constant": [{"value": 0.0}]}
                         }
                     }
                 },

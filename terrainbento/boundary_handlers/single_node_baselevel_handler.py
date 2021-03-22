@@ -166,9 +166,7 @@ class SingleNodeBaselevelHandler(object):
                     outlet_elevation = (
                         scaling_factor * elev_change_df[:, 1]
                     ) + model_start_elevation
-                    self.outlet_elevation_obj = interp1d(
-                        time, outlet_elevation
-                    )
+                    self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
                     self._outlet_start_z = model_start_elevation
                     self._outlet_effective_z = model_start_elevation
@@ -215,9 +213,7 @@ class SingleNodeBaselevelHandler(object):
         if self.outlet_elevation_obj is None:
 
             # calculate lowering amount and subtract
-            self.z[self.nodes_to_lower] += (
-                self.prefactor * self.lowering_rate * step
-            )
+            self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * step
 
             # if bedrock__elevation exists as a field, lower it also
 
@@ -229,9 +225,9 @@ class SingleNodeBaselevelHandler(object):
 
             if self.modify_outlet_id is False:
                 for key in self._outlet_start_values.keys():
-                    self.grid.at_node[key][
-                        self.outlet_id
-                    ] = self._outlet_start_values[key]
+                    self.grid.at_node[key][self.outlet_id] = self._outlet_start_values[
+                        key
+                    ]
 
         # if there is an outlet elevation object
         else:

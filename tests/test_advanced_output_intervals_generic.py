@@ -6,10 +6,7 @@ import os.path
 
 import pytest
 
-from terrainbento.output_writers import (
-    GenericOutputWriter,
-    OutputIteratorSkipWarning,
-)
+from terrainbento.output_writers import GenericOutputWriter, OutputIteratorSkipWarning
 
 
 # Helper classes and functions
@@ -157,9 +154,7 @@ def test_times_iter_max_recursion(clock08_model):
     writer.advance_iter()
 
     # Advance to the second item, which triggers the recursion chain
-    with pytest.warns(OutputIteratorSkipWarning), pytest.raises(
-        RecursionError
-    ):
+    with pytest.warns(OutputIteratorSkipWarning), pytest.raises(RecursionError):
         # Note: order of 'with' statement matters. Failures from 'warns' won't
         # pass through 'raises' correctly if order reversed.
         writer.advance_iter()

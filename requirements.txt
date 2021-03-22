@@ -1,0 +1,8 @@
+scipy
+numpy
+jupyter
+holoviews
+pandas
+xarray
+dask[complete]
+landlab>=2.3
