@@ -1,7 +1,7 @@
 name: terrainbento-dev
- channels:
-   - conda-forge
- dependencies:
+channels:
+ - conda-forge
+dependencies:
  - python
  - black
  - flake8
