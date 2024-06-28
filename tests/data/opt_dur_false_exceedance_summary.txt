@@ -1,5 +1,5 @@
 Section 1: Distribution Description
-Scale Factor: 0.664639300459
+Scale Factor: 0.6646393004594834
 Shape Factor: 0.6
 Intermittency Factor: 0.1
 Number of wet days per year: 37
