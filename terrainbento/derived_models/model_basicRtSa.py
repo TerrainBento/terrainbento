@@ -195,8 +195,8 @@ class BasicRtSa(TwoLithologyErosionModel):
         # Instantiate diffusion and weathering components
         self.weatherer = ExponentialWeatherer(
             self.grid,
-            soil_production__maximum_rate=soil_production__maximum_rate,
-            soil_production__decay_depth=soil_production__decay_depth,
+            soil_production_maximum_rate=soil_production__maximum_rate,
+            soil_production_decay_depth=soil_production__decay_depth,
         )
 
         self.diffuser = DepthDependentDiffuser(
