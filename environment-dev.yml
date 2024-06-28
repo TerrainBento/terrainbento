@@ -17,3 +17,4 @@ dependencies:
  - holoviews
  - pandas
  - dask[complete]
+ - zest.releaser

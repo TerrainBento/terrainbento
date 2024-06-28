@@ -9,7 +9,6 @@ precipiation to runoff and Boundary condition handlers are helper classes that
 have been designed to modify model boundary conditions during a model run.
 """
 
-from ._version import get_versions
 from .base_class import (
     ErosionModel,
     StochasticErosionModel,
@@ -114,7 +113,3 @@ __all__ = [
     "StaticIntervalOutputFunctionAdapter",
     "OWSimpleNetCDF",
 ]
-
-
-__version__ = get_versions()["version"]
-del get_versions
