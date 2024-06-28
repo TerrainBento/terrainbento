@@ -30,7 +30,7 @@ def test_channel_erosion(
     sp_crit_sed = 0
     H_star = 0.1
     soil_transport_decay_depth = 1
-    soil_production__maximum_rate = 0
+    soil_production__maximum_rate = 1e-7
     soil_production__decay_depth = 0.5
     # construct dictionary. note that D is turned off here
     params = {

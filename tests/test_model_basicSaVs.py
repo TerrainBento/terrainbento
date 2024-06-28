@@ -27,7 +27,7 @@ def test_detachment_steady_no_precip_changer(
         "depression_finder": depression_finder,
         "m_sp": m_sp,
         "n_sp": n_sp,
-        "soil_production__maximum_rate": 0.0,
+        "soil_production__maximum_rate": 1e-7,
         "boundary_handlers": {"NotCoreNodeBaselevelHandler": ncnblh},
     }
     # construct and run model
