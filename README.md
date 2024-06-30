@@ -135,7 +135,7 @@ To install the terrainbento source code version of terrainbento we recommend cre
 ```
 git clone https://github.com/TerrainBento/terrainbento.git
 cd terrainbento
-cconda env create -f environment-dev.yml
+conda env create -f environment-dev.yml
 conda activate terrainbento-dev
 python setup.py install
 ``` 
