@@ -1,12 +1,10 @@
 #! /usr/bin/env python
 
 from setuptools import setup, find_packages
-import versioneer
 
 setup(
     name="terrainbento",
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
+    version="2.1.0.dev0",
     description="TerrainBento suite of landscape evolution models",
     url="https://github.com/TerrainBento/terrainbento/",
     author="The TerrainBento Team",
