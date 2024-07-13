@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "terrainbento"
+description = "TerrainBento suite of landscape evolution models"
+authors = [
+  {name = "Katy Barnhart"},
+  {email = "barnhark@colorado.edu"},
+]
+keywords = [
+  "earth science",
+  "landlab",
+  "landscape evolution modeling",
+  "numerical modeling",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+requires-python = ">=3.10"
+dependencies = [
+  "landlab >=2.6",
+  "numpy >=1.20,<2",
+  "pyyaml",
+  "scipy",
+  "xarray >= 0.16",
+]
+dynamic = ["readme", "version"]
+
+[project.license]
+text = "MIT License"
+
+[project.urls]
+documentation = "https://terrainbento.readthedocs.io"
+repository = "https://github.com/TerrainBento/terrainbento"
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "flake8",
+  "isort",
+]
+testing = [
+  "coveralls",
+  "pytest",
+  "pytest-cov",
+  "pytest-datadir",
+]
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md", "LICENSE"], content-type = "text/markdown"}
+version = {attr = "terrainbento._version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["terrainbento*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+terrainbento = [
+  "tests/*txt",
+  "data/*txt",
+  "data/*asc",
+  "data/*nc",
+]
