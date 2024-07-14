@@ -8,7 +8,7 @@ types of spatially variable precipitation. Runoff-generators convert
 precipiation to runoff and Boundary condition handlers are helper classes that
 have been designed to modify model boundary conditions during a model run.
 """
-
+from ._version import __version__
 from .base_class import (
     ErosionModel,
     StochasticErosionModel,
@@ -112,4 +112,5 @@ __all__ = [
     "StaticIntervalOutputClassAdapter",
     "StaticIntervalOutputFunctionAdapter",
     "OWSimpleNetCDF",
+    "__version__",
 ]
