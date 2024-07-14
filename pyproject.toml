@@ -68,14 +68,6 @@ include = ["terrainbento*"]
 [tool.setuptools]
 include-package-data = true
 
-[tool.setuptools.package-data]
-terrainbento = [
-  "tests/*txt",
-  "data/*txt",
-  "data/*asc",
-  "data/*nc",
-]
-
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = ["notebooks", "terrainbento", "tests"]
