@@ -46,9 +46,7 @@ repository = "https://github.com/TerrainBento/terrainbento"
 
 [project.optional-dependencies]
 dev = [
-  "black",
-  "flake8",
-  "isort",
+  "nox",
 ]
 testing = [
   "coveralls",
