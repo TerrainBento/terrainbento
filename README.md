@@ -137,12 +137,12 @@ git clone https://github.com/TerrainBento/terrainbento.git
 cd terrainbento
 conda env create -f environment-dev.yml
 conda activate terrainbento-dev
-python setup.py install
+pip install .
 ``` 
 
 #### A note to developers
 
-If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and replace `python setup.py install` with `python setup.py develop`. If you have any questions, please contact us by making an Issue.
+If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and create an editable install with `pip install -e .`. If you have any questions, please contact us by making an Issue.
 
 
 ## How to cite

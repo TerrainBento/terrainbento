@@ -1,0 +1,8 @@
+include CODE_OF_CONDUCT.md
+include terrainbento_standard_names.csv
+
+recursive-include tests/data *
+
+recursive-exclude docs *
+recursive-exclude notebooks *
+recursive-exclude scripts *
