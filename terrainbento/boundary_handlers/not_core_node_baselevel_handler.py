@@ -81,11 +81,11 @@ class NotCoreNodeBaselevelHandler(object):
         >>> mg.set_watershed_boundary_condition_outlet_id(
         ...     0, mg.at_node["topographic__elevation"], -9999.)
         >>> print(z.reshape(mg.shape))
-        [[ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]]
+        [[0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]]
 
         Now import the **NotCoreNodeBaselevelHandler** and instantiate.
 
@@ -124,11 +124,11 @@ class NotCoreNodeBaselevelHandler(object):
         ...                                 lowering_rate = -0.1)
         >>> bh.run_one_step(10.0)
         >>> print(z.reshape(mg.shape))
-        [[ 0.  0.  0.  0.  0.]
-         [ 0.  1.  1.  1.  0.]
-         [ 0.  1.  1.  1.  0.]
-         [ 0.  1.  1.  1.  0.]
-         [ 0.  0.  0.  0.  0.]]
+        [[0. 0. 0. 0. 0.]
+         [0. 1. 1. 1. 0.]
+         [0. 1. 1. 1. 0.]
+         [0. 1. 1. 1. 0.]
+         [0. 0. 0. 0. 0.]]
 
         More complex baselevel histories can be provided with a
         ``lowering_file_path``.

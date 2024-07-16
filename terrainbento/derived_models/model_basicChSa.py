@@ -144,6 +144,14 @@ class BasicChSa(ErosionModel):
         Construct the model.
 
         >>> model = BasicChSa(clock, grid)
+        DEPRECATION WARNING
+        ===================
+        <BLANKLINE>
+        Use of linear_diffusivity is deprecated, because the
+        name is misleading: it is actually a velocity;
+        diffusivity is obtained by multiplying by soil
+        transport decay depth. Use soil_transport_velocity
+        instead.
 
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
