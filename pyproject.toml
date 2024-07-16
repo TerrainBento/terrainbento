@@ -49,6 +49,11 @@ repository = "https://github.com/TerrainBento/terrainbento"
 dev = [
   "nox",
 ]
+build = [
+  "build",
+  "twine",
+  "zest.releaser"
+]
 notebooks = [
   "holoviews",
   "matplotlib",

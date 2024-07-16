@@ -38,6 +38,49 @@ def test(session: nox.Session) -> None:
         session.run("coverage", "report", "--ignore-errors", "--show-missing")
 
 
+@nox.session
+def build(session: nox.Session) -> None:
+    """Build source and binary distributions."""
+    session.install(".[build]")
+    session.run("python", "-m", "build", "--outdir", PATH["dist"])
+    session.run("twine", "check", PATH["dist"] / "*")
+
+
+@nox.session
+def release(session):
+    """Tag, build and publish a new release to PyPI."""
+    session.install(".[build]")
+    session.run("fullrelease")
+
+
+@nox.session(name="testpypi")
+def publish_testpypi(session):
+    """Upload package to TestPyPI."""
+    build(session)
+    session.run(
+        "twine",
+        "upload",
+        "--skip-existing",
+        "--repository-url",
+        "https://test.pypi.org/legacy/",
+        PATH["dist"] / "*",
+    )
+
+
+@nox.session(name="pypi")
+def publish_pypi(session):
+    """Upload package to PyPI."""
+    build(session)
+    session.run(
+        "twine",
+        "upload",
+        "--skip-existing",
+        "--repository-url",
+        "https://upload.pypi.org/legacy/",
+        PATH["dist"] / "*",
+    )
+
+
 @nox.session(python=False)
 def clean(session):
     """Remove virtual environments, build files, and caches."""
