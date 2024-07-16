@@ -67,11 +67,11 @@ class GenericFuncBaselevelHandler(object):
         >>> mg.set_watershed_boundary_condition_outlet_id(
         ...     0, mg.at_node["topographic__elevation"], -9999.)
         >>> print(z.reshape(mg.shape))
-        [[ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]]
+        [[0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]]
 
         Now import the **GenericFuncBaselevelHandler** and instantiate.
 
