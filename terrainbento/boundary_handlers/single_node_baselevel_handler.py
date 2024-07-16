@@ -74,11 +74,11 @@ class SingleNodeBaselevelHandler(object):
         >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> print(z.reshape(mg.shape))
-        [[ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]
-         [ 0.  0.  0.  0.  0.]]
+        [[0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 0.]]
 
         Now import the **SingleNodeBaselevelHandler** and instantiate.
 
