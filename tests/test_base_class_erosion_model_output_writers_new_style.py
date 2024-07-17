@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 
 # This file has tests for the new style output writers.

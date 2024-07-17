@@ -462,7 +462,7 @@ class GenericOutputWriter:
                 self.vprint(f"Deleting {filepath}")
                 try:
                     os.remove(filepath)
-                except WindowsError:  # pragma: no cover
+                except OSError:  # pragma: no cover
                     print(
                         "The Windows OS is picky about file-locks and did "
                         "not permit terrainbento to remove the netcdf files."

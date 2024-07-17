@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicDdRt** model program.
 
@@ -86,7 +85,7 @@ class BasicDdRt(TwoLithologyErosionModel):
         water_erosion_rule__thresh_depth_derivative=0.0,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

@@ -1,11 +1,10 @@
-# coding: utf8
 # !/usr/env/python
 """
 **CaptureNodeBaselevelHandler** implements "external" stream capture.
 """
 
 
-class CaptureNodeBaselevelHandler(object):
+class CaptureNodeBaselevelHandler:
     """Turn a closed boundary node into an open, lowering, boundary node.
 
     A **CaptureNodeBaselevelHandler** turns a given node into an open boundary

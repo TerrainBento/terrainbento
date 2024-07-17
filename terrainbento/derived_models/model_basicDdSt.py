@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicDdSt** model program.
 
@@ -81,7 +80,7 @@ class BasicDdSt(StochasticErosionModel):
         infiltration_capacity=1.0,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

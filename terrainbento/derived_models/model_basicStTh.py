@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicStTh** model program.
 
@@ -62,7 +61,7 @@ class BasicStTh(StochasticErosionModel):
         infiltration_capacity=1.0,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

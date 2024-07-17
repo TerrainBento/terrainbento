@@ -1,7 +1,7 @@
 """terrainbento **UniformPrecipitator**."""
 
 
-class UniformPrecipitator(object):
+class UniformPrecipitator:
     """Generate uniform precipitation.
 
     UniformPrecipitator populates the at-node field "rainfall__flux" with a

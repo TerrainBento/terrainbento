@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento Model **BasicSt** program.
 
@@ -57,7 +56,7 @@ class BasicSt(StochasticErosionModel):
         infiltration_capacity=1.0,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance
@@ -187,10 +186,8 @@ def main():  # pragma: no cover
         infile = sys.argv[1]
     except IndexError:
         print(
-            (
-                "To run a terrainbento model from the command line you must "
-                "include input file name on command line"
-            )
+            "To run a terrainbento model from the command line you must "
+            "include input file name on command line"
         )
         sys.exit(1)
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # terrainbento documentation build configuration file, created by
 # sphinx-quickstart on Tue Mar  6 11:22:35 2018.

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento model **BasicHySa** program.
 
@@ -95,7 +94,7 @@ class BasicHySa(ErosionModel):
         sp_crit_sed=0,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

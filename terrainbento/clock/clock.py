@@ -3,7 +3,7 @@
 import yaml
 
 
-class Clock(object):
+class Clock:
     """terrainbento clock."""
 
     @classmethod
@@ -34,7 +34,7 @@ class Clock(object):
         10.0
         """
         try:
-            with open(filelike, "r") as f:
+            with open(filelike) as f:
                 params = yaml.safe_load(f)
         except TypeError:
             params = yaml.safe_load(filelike)

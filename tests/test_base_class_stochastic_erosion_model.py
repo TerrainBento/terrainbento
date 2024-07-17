@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 import os
 
@@ -77,7 +76,7 @@ def test_run_stochastic_opt_true(clock_04, grid_0):
         decimal=1,
     )
 
-    avg_storm_depth = np.sum((rainfall_rate * event_duration)) / len(wet_times)
+    avg_storm_depth = np.sum(rainfall_rate * event_duration) / len(wet_times)
 
     np.testing.assert_array_almost_equal(
         avg_storm_depth, params["mean_storm_depth"], decimal=1
@@ -127,7 +126,7 @@ def test_run_stochastic_opt_false(clock_05, grid_1):
         is True
     )
 
-    avg_storm_depth = np.sum((rainfall_rate * event_duration)) / len(wet_times)
+    avg_storm_depth = np.sum(rainfall_rate * event_duration) / len(wet_times)
 
     np.testing.assert_array_almost_equal(
         avg_storm_depth, params["rainfall__mean_rate"], decimal=1

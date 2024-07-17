@@ -1,9 +1,8 @@
-# coding: utf8
 # !/usr/env/python
 """**GenericFuncBaselevelHandler** modifies elevation for not-core nodes."""
 
 
-class GenericFuncBaselevelHandler(object):
+class GenericFuncBaselevelHandler:
     """Control the elevation of all nodes that are not core nodes.
 
     The **GenericFuncBaselevelHandler** controls the elevation of all nodes on

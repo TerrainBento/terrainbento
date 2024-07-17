@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicRt** model program.
 

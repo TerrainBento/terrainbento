@@ -1,7 +1,7 @@
 """terrainbento **SimpleRunoff**."""
 
 
-class SimpleRunoff(object):
+class SimpleRunoff:
     """Generate runoff proportional to precipitation.
 
     **SimpleRunoff** populates the field "water__unit_flux_in" with a value

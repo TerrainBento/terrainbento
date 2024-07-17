@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """Base class for common functions of terrainbento stochastic erosion
 models."""
@@ -82,7 +81,7 @@ class StochasticErosionModel(ErosionModel):
 
     .. math::
 
-        R = P - I (1 - \exp ( -P / I ))
+        R = P - I (1 - \\exp ( -P / I ))
 
     where :math:`I` is the soil infiltration capacity. At the sub-grid scale, soil
     infiltration capacity is assumed to have an exponential distribution of which
@@ -286,7 +285,7 @@ class StochasticErosionModel(ErosionModel):
             )
 
             if isinstance(self.number_of_sub_time_steps, (int, np.integer)) is False:
-                raise ValueError(("number_of_sub_time_steps must be of type integer."))
+                raise ValueError("number_of_sub_time_steps must be of type integer.")
 
             self.n_sub_steps = self.number_of_sub_time_steps
 
@@ -517,15 +516,11 @@ class StochasticErosionModel(ErosionModel):
             exceedance_file.write("Scale Factor: " + str(self.scale_factor) + "\n")
             exceedance_file.write("Shape Factor: " + str(self.shape_factor) + "\n")
             exceedance_file.write(
-                (
-                    "Intermittency Factor: "
-                    + str(self.rainfall_intermittency_factor)
-                    + "\n"
-                )
+                "Intermittency Factor: "
+                + str(self.rainfall_intermittency_factor)
+                + "\n"
             )
-            exceedance_file.write(
-                ("Number of wet days per year: " + str(nwet) + "\n\n")
-            )
+            exceedance_file.write("Number of wet days per year: " + str(nwet) + "\n\n")
             message_text = (
                 "The scale factor that describes this distribution is "
                 + "calculated based on a provided value for the mean wet day rainfall."
@@ -536,7 +531,7 @@ class StochasticErosionModel(ErosionModel):
             exceedance_file.write("\n")
 
             exceedance_file.write(
-                ("This provided value was:\n" + str(self.rainfall__mean_rate) + "\n")
+                "This provided value was:\n" + str(self.rainfall__mean_rate) + "\n"
             )
 
             # calculate the predictions for 10, 25, and 100 year event based on
@@ -576,13 +571,11 @@ class StochasticErosionModel(ErosionModel):
 
             for i in range(len(daily_distribution_exceedance_probabilities)):
                 exceedance_file.write(
-                    (
-                        "Expected value for the wet day total of the "
-                        + str(event_intervals[i])
-                        + " year event is: "
-                        + str(np.round(expected_rainfall[i], decimals=3))
-                        + "\n"
-                    )
+                    "Expected value for the wet day total of the "
+                    + str(event_intervals[i])
+                    + " year event is: "
+                    + str(np.round(expected_rainfall[i], decimals=3))
+                    + "\n"
                 )
 
             # get rainfall record and filter out time without any rain
@@ -692,21 +685,19 @@ class StochasticErosionModel(ErosionModel):
                 max_expected_val = expected_rainfall[i] + t_statistic * event_std[i]
 
                 exceedance_file.write(
-                    (
-                        "Expected range for the wet day total of the "
-                        + str(event_intervals[i])
-                        + " year event is: ("
-                        + str(np.round(min_expected_val, decimals=3))
-                        + ", "
-                        + str(np.round(max_expected_val, decimals=3))
-                        + ")\n"
-                    )
+                    "Expected range for the wet day total of the "
+                    + str(event_intervals[i])
+                    + " year event is: ("
+                    + str(np.round(min_expected_val, decimals=3))
+                    + ", "
+                    + str(np.round(max_expected_val, decimals=3))
+                    + ")\n"
                 )
             # next, calculate the emperical exceedance values, if a sufficient record
             # exists.
 
             # inititialize a container for the maximum yearly precipitation.
-            maximum_yearly_precipitation = np.nan * np.zeros((num_effective_years))
+            maximum_yearly_precipitation = np.nan * np.zeros(num_effective_years)
             for yi in range(num_effective_years):
 
                 # identify the starting and ending index coorisponding to the
@@ -745,13 +736,11 @@ class StochasticErosionModel(ErosionModel):
             for i in range(len(event_percentiles)):
 
                 exceedance_file.write(
-                    (
-                        "Estimated value for the wet day total of the "
-                        + str(np.round(event_intervals[i], decimals=3))
-                        + " year event is: "
-                        + str(np.round(event_magnitudes[i], decimals=3))
-                        + "\n"
-                    )
+                    "Estimated value for the wet day total of the "
+                    + str(np.round(event_intervals[i], decimals=3))
+                    + " year event is: "
+                    + str(np.round(event_magnitudes[i], decimals=3))
+                    + "\n"
                 )
 
 

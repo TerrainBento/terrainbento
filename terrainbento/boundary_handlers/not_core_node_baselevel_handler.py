@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """**NotCoreNodeBaselevelHandler** modifies elevation for not-core nodes."""
 
@@ -8,7 +7,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 
 
-class NotCoreNodeBaselevelHandler(object):
+class NotCoreNodeBaselevelHandler:
     """Control the elevation of all nodes that are not core nodes.
 
     The **NotCoreNodeBaselevelHandler** controls the elevation of all nodes on
@@ -154,10 +153,8 @@ class NotCoreNodeBaselevelHandler(object):
 
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(
-                (
-                    "NotCoreNodeBaselevelHandler requires one of "
-                    "lowering_rate and lowering_file_path"
-                )
+                "NotCoreNodeBaselevelHandler requires one of "
+                "lowering_rate and lowering_file_path"
             )
         else:
             if lowering_rate is None:
@@ -187,23 +184,19 @@ class NotCoreNodeBaselevelHandler(object):
                     self.lowering_rate = None
                 else:
                     raise ValueError(
-                        (
-                            "The lowering_file_path provided "
-                            "to NotCoreNodeBaselevelHandler does not "
-                            "exist."
-                        )
+                        "The lowering_file_path provided "
+                        "to NotCoreNodeBaselevelHandler does not "
+                        "exist."
                     )
             elif lowering_file_path is None:
                 self.lowering_rate = lowering_rate
                 self.outlet_elevation_obj = None
             else:
                 raise ValueError(
-                    (
-                        "Both an lowering_rate and a "
-                        "lowering_file_path have been provided "
-                        "to NotCoreNodeBaselevelHandler. Please provide "
-                        "only one."
-                    )
+                    "Both an lowering_rate and a "
+                    "lowering_file_path have been provided "
+                    "to NotCoreNodeBaselevelHandler. Please provide "
+                    "only one."
                 )
 
     def run_one_step(self, step):

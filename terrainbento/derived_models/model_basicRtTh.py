@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicRtTh** model program.
 
@@ -85,7 +84,7 @@ class BasicRtTh(TwoLithologyErosionModel):
         water_erosion_rule_lower__threshold=1.0,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

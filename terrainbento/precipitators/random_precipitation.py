@@ -3,7 +3,7 @@
 import numpy as np
 
 
-class RandomPrecipitator(object):
+class RandomPrecipitator:
     """Generate random precipitation.
 
     **RandomPrecipitator** populates the at-node field "rainfall__flux" with

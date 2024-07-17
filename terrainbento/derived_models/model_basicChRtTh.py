@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicChRtTh** model program.
 
@@ -89,7 +88,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         number_of_taylor_terms=7,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

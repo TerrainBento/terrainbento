@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 
 import pytest
@@ -116,7 +115,7 @@ def test_string(tmpdir, inputs_yaml):
         with open("params.yaml", "w") as fp:
             fp.write(inputs_yaml)
 
-        with open("./params.yaml", "r") as f:
+        with open("./params.yaml") as f:
             contents = f.read()
 
     em = ErosionModel.from_file(contents)
@@ -138,7 +137,7 @@ def test_string_D8(tmpdir, inputs_D8_yaml):
         with open("params.yaml", "w") as fp:
             fp.write(inputs_D8_yaml)
 
-        with open("./params.yaml", "r") as f:
+        with open("./params.yaml") as f:
             contents = f.read()
 
     em = ErosionModel.from_file(contents)

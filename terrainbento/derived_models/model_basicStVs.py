@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento Model **BasicStVs** program.
 
@@ -73,7 +72,7 @@ class BasicStVs(StochasticErosionModel):
         hydraulic_conductivity=0.1,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

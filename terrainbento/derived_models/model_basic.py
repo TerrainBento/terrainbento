@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **Basic** model program.
 
@@ -185,10 +184,8 @@ def main():  # pragma: no cover
         infile = sys.argv[1]
     except IndexError:
         print(
-            (
-                "To run a terrainbento model from the command line you must "
-                "include input file name on command line"
-            )
+            "To run a terrainbento model from the command line you must "
+            "include input file name on command line"
         )
         sys.exit(1)
 

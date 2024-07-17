@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento model **BasicDdVs** program.
 
@@ -83,7 +82,7 @@ class BasicDdVs(ErosionModel):
         hydraulic_conductivity=0.1,
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 r""" **PrecipChanger** changes precipitation frequency and intensity over time.
 
@@ -234,11 +233,9 @@ def _check_intermittency_value(rainfall_intermittency_factor):
     """Check that rainfall_intermittency_factor is >= 0 and <=1."""
     if (rainfall_intermittency_factor < 0.0) or (rainfall_intermittency_factor > 1.0):
         raise ValueError(
-            (
-                "The PrecipChanger rainfall_intermittency_factor has a "
-                "value of less than zero or greater than one. "
-                "This is invalid."
-            )
+            "The PrecipChanger rainfall_intermittency_factor has a "
+            "value of less than zero or greater than one. "
+            "This is invalid."
         )
 
 
@@ -246,10 +243,8 @@ def _check_mean_depth(mean_depth):
     """Check that mean depth is >= 0."""
     if mean_depth < 0:
         raise ValueError(
-            (
-                "The PrecipChanger mean depth has a "
-                "value of less than zero. This is invalid."
-            )
+            "The PrecipChanger mean depth has a "
+            "value of less than zero. This is invalid."
         )
 
 
@@ -257,14 +252,12 @@ def _check_infiltration_capacity(infiltration_capacity):
     """Check that infiltration_capacity >= 0."""
     if infiltration_capacity < 0:
         raise ValueError(
-            (
-                "The PrecipChanger infiltration_capacity has a "
-                "value of less than zero. This is invalid."
-            )
+            "The PrecipChanger infiltration_capacity has a "
+            "value of less than zero. This is invalid."
         )
 
 
-class PrecipChanger(object):
+class PrecipChanger:
     """Handle time varying precipitation.
 
     The **PrecipChanger** handles time-varying precipitation by changing the

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """**SingleNodeBaselevelHandler** changes elevation for a boundary node."""
 import os
@@ -9,7 +8,7 @@ from scipy.interpolate import interp1d
 _OTHER_FIELDS = ["bedrock__elevation", "lithology_contact__elevation"]
 
 
-class SingleNodeBaselevelHandler(object):
+class SingleNodeBaselevelHandler:
     """Control the elevation of a single open boundary node.
 
     The **SingleNodeBaselevelHandler** controls the elevation of a single open
@@ -129,10 +128,8 @@ class SingleNodeBaselevelHandler(object):
 
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(
-                (
-                    "SingleNodeBaselevelHandler requires one of "
-                    "lowering_rate and lowering_file_path"
-                )
+                "SingleNodeBaselevelHandler requires one of "
+                "lowering_rate and lowering_file_path"
             )
         else:
             if lowering_rate is None:
@@ -169,23 +166,19 @@ class SingleNodeBaselevelHandler(object):
                     self._outlet_effective_z = model_start_elevation
                 else:
                     raise ValueError(
-                        (
-                            "The lowering_file_path provided "
-                            "to SingleNodeBaselevelHandler does not "
-                            "exist."
-                        )
+                        "The lowering_file_path provided "
+                        "to SingleNodeBaselevelHandler does not "
+                        "exist."
                     )
             elif lowering_file_path is None:
                 self.lowering_rate = lowering_rate
                 self.outlet_elevation_obj = None
             else:
                 raise ValueError(
-                    (
-                        "Both an lowering_rate and a "
-                        "lowering_file_path have been provided "
-                        "to SingleNodeBaselevelHandler. Please provide "
-                        "only one."
-                    )
+                    "Both an lowering_rate and a "
+                    "lowering_file_path have been provided "
+                    "to SingleNodeBaselevelHandler. Please provide "
+                    "only one."
                 )
 
     def run_one_step(self, step):

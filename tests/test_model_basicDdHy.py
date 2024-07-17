@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 import numpy as np
 import pytest

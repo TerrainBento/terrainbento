@@ -106,9 +106,9 @@ def test_rock_till_precip_changer(
 
     assert_array_almost_equal(
         model.eroder.K[model.grid.core_nodes[:8]],
-        Kt * precip_testing_factor * np.ones((8)),
+        Kt * precip_testing_factor * np.ones(8),
     )
     assert_array_almost_equal(
         model.eroder.K[model.grid.core_nodes[10:]],
-        Kr * precip_testing_factor * np.ones((9)),
+        Kr * precip_testing_factor * np.ones(9),
     )

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 
 # This file has tests for the old style output writers to ensure backwards
@@ -43,7 +42,7 @@ def output_writer_function_b(model):
         f.write(str(minimum_elevation))
 
 
-class output_writer_class_a(object):
+class output_writer_class_a:
     def __init__(self, model):
         self.model = model
         self.change = model.grid.at_node["cumulative_elevation_change"]
@@ -56,7 +55,7 @@ class output_writer_class_a(object):
             f.write(str(average_change))
 
 
-class output_writer_class_b(object):
+class output_writer_class_b:
     def __init__(self, model):
         self.model = model
         self.change = model.grid.at_node["cumulative_elevation_change"]

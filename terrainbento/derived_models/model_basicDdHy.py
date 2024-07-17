@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicDdHy** model program.
 
@@ -84,7 +83,7 @@ class BasicDdHy(ErosionModel):
         solver="basic",
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance

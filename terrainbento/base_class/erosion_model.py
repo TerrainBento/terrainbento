@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """Base class for common functions of all terrainbento erosion models."""
 
@@ -78,22 +77,18 @@ def _verify_boundary_handler(handler):
 
     if bad_name:
         raise ValueError(
-            (
-                "Only supported boundary condition handlers are "
-                "permitted. These include: {valid}".format(
-                    valid="\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
-                )
+            "Only supported boundary condition handlers are "
+            "permitted. These include: {valid}".format(
+                valid="\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
             )
         )
 
     if bad_instance:
         raise ValueError(
-            (
-                "An invalid instance of "
-                + name
-                + " was passed as a boundary handler."
-                + str(handler)
-            )
+            "An invalid instance of "
+            + name
+            + " was passed as a boundary handler."
+            + str(handler)
         )
 
 
@@ -132,7 +127,7 @@ def _setup_boundary_handlers(grid, name, params):
     return boundary_handler
 
 
-class ErosionModel(object):
+class ErosionModel:
     """Base class providing common functionality for terrainbento models.
 
     An **ErosionModel** is the skeleton for the models of terrain evolution in
@@ -194,7 +189,7 @@ class ErosionModel(object):
             contents = file_like.read()
         except AttributeError:  # was a str
             if os.path.isfile(file_like):
-                with open(file_like, "r") as fp:
+                with open(file_like) as fp:
                     contents = fp.read()
             else:
                 contents = file_like  # not tested
@@ -553,9 +548,7 @@ class ErosionModel(object):
         """Verify all required fields are present."""
         for field in required_fields:
             if field not in self.grid.at_node:
-                raise ValueError(
-                    "Required field {field} not present.".format(field=field)
-                )
+                raise ValueError(f"Required field {field} not present.")
 
     def _setup_output_writers(self, output_writers, output_default_netcdf):
         """Convert all output writers to the new style and instantiate output

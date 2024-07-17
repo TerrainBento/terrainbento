@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento Model **BasicHySt** program.
 
@@ -71,7 +70,7 @@ class BasicHySt(StochasticErosionModel):
         solver="basic",
         **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance
