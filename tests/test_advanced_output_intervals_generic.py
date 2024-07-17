@@ -6,10 +6,7 @@ import os.path
 
 import pytest
 
-from terrainbento.output_writers import (
-    GenericOutputWriter,
-    OutputIteratorSkipWarning,
-)
+from terrainbento.output_writers import GenericOutputWriter, OutputIteratorSkipWarning
 
 
 # Helper classes and functions

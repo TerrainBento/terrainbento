@@ -15,11 +15,7 @@ Landlab components used:
 """
 
 import numpy as np
-from landlab.components import (
-    DepthDependentDiffuser,
-    ExponentialWeatherer,
-    Space,
-)
+from landlab.components import DepthDependentDiffuser, ExponentialWeatherer, Space
 
 from terrainbento.base_class import ErosionModel
 

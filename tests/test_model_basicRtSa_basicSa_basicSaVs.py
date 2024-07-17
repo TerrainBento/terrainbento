@@ -2,12 +2,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
-from terrainbento import (
-    BasicRtSa,
-    BasicSa,
-    BasicSaVs,
-    NotCoreNodeBaselevelHandler,
-)
+from terrainbento import BasicRtSa, BasicSa, BasicSaVs, NotCoreNodeBaselevelHandler
 
 _RT_params = {"water_erodibility_lower": 0, "water_erodibility_upper": 0}
 _OTHER_params = {"water_erodibility": 0}

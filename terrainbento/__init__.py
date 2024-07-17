@@ -10,11 +10,7 @@ have been designed to modify model boundary conditions during a model run.
 """
 
 from ._version import __version__
-from .base_class import (
-    ErosionModel,
-    StochasticErosionModel,
-    TwoLithologyErosionModel,
-)
+from .base_class import ErosionModel, StochasticErosionModel, TwoLithologyErosionModel
 from .boundary_handlers import (
     CaptureNodeBaselevelHandler,
     GenericFuncBaselevelHandler,
