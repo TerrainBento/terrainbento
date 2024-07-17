@@ -18,7 +18,6 @@ class OWSimpleNetCDF(StaticIntervalOutputWriter):
         name="simple-netCDF",
         **static_interval_kwargs,
     ):
-
         """A simple output writer which generates netCDF files at uniform
         intervals. Mimics the built-in netCDF writing code in older versions of
         terrainbento.
@@ -62,7 +61,7 @@ class OWSimpleNetCDF(StaticIntervalOutputWriter):
         self.output_fields = output_fields
 
     def run_one_step(self):
-        """ Write output to file as a netCDF.  """
+        """Write output to file as a netCDF."""
         filename_prefix = self.filename_prefix
         filename = f"{filename_prefix}.nc"
         filepath = os.path.join(self.output_dir, filename)

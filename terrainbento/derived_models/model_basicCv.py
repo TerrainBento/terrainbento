@@ -59,7 +59,7 @@ class BasicCv(ErosionModel):
         regolith_transport_parameter=0.1,
         climate_factor=0.5,
         climate_constant_date=0.0,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

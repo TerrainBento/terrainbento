@@ -61,7 +61,7 @@ class StaticIntervalOutputClassAdapter(StaticIntervalOutputWriter):
         self.ow_class = ow_class(model)
 
     def run_one_step(self):
-        """ Call the old-style class's output function. """
+        """Call the old-style class's output function."""
         self.ow_class.run_one_step()
 
 
@@ -120,5 +120,5 @@ class StaticIntervalOutputFunctionAdapter(StaticIntervalOutputWriter):
         self.ow_function = ow_function
 
     def run_one_step(self):
-        """ Call the old-style output function. """
+        """Call the old-style output function."""
         self.ow_function(self.model)

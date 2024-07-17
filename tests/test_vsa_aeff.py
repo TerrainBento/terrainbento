@@ -48,9 +48,7 @@ def test_Aeff(clock_simple, grid_2, K, U, Model):
         / grid_2.at_node["rainfall__flux"][0]
     )
 
-    A_eff_predicted = actual_areas * np.exp(
-        -(-alpha * actual_slopes) / actual_areas
-    )
+    A_eff_predicted = actual_areas * np.exp(-(-alpha * actual_slopes) / actual_areas)
 
     # assert aeff internally calculated correclty
     assert_array_almost_equal(

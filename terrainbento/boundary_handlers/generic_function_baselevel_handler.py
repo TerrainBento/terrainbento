@@ -32,10 +32,8 @@ class GenericFuncBaselevelHandler(object):
         self,
         grid,
         modify_core_nodes=False,
-        function=lambda grid, t: (
-            0 * grid.x_of_node + 0 * grid.y_of_node + 0 * t
-        ),
-        **kwargs
+        function=lambda grid, t: (0 * grid.x_of_node + 0 * grid.y_of_node + 0 * t),
+        **kwargs,
     ):
         """
         Parameters

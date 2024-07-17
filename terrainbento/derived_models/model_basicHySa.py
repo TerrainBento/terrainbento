@@ -97,7 +97,7 @@ class BasicHySa(ErosionModel):
         soil_transport_decay_depth=0.5,
         sp_crit_br=0,
         sp_crit_sed=0,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -287,9 +287,7 @@ class BasicHySa(ErosionModel):
             if np.any(np.isnan(self.grid.at_node[f])) or np.any(
                 np.isinf(self.grid.at_node[f])
             ):
-                raise SystemExit(
-                    "terrainbento ModelHySa: Model became unstable"
-                )
+                raise SystemExit("terrainbento ModelHySa: Model became unstable")
 
 
 def main():  # pragma: no cover

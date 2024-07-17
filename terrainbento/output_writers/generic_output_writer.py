@@ -145,17 +145,17 @@ class GenericOutputWriter:
     # Attributes
     @property
     def model(self):
-        """ The model reference. """
+        """The model reference."""
         return self._model
 
     @property
     def id(self):
-        """ The output writer's unique id number. """
+        """The output writer's unique id number."""
         return self._id
 
     @property
     def name(self):
-        """ The output writer's name. """
+        """The output writer's name."""
         return self._name
 
     @property
@@ -179,7 +179,7 @@ class GenericOutputWriter:
 
     @property
     def output_dir(self):
-        """ Output directory """
+        """Output directory"""
         return self._output_dir
 
     @property
@@ -390,14 +390,14 @@ class GenericOutputWriter:
 
     # Methods to override
     def run_one_step(self):
-        r""" The function which actually writes data to files or the screen. """
+        r"""The function which actually writes data to files or the screen."""
         raise NotImplementedError(
             "The inheriting class needs to implement this function."
         )
 
     # File management
     def make_filepath(self, filename):
-        """ Join the output directory to a filename. """
+        """Join the output directory to a filename."""
         return os.path.join(self.output_dir, filename)
 
     def is_file_registered(self, filepath):
@@ -505,6 +505,6 @@ class GenericOutputWriter:
         return return_filepaths
 
     def vprint(self, msg):
-        """ Print output to the standard output stream if in verbose mode. """
+        """Print output to the standard output stream if in verbose mode."""
         if self._verbose:
             print(msg)

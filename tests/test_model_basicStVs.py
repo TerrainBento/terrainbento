@@ -15,9 +15,7 @@ def test_bad_transmiss(grid_2, clock_simple):
         BasicStVs(**params)
 
 
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("m_sp,n_sp", [(1, 1)])
 def test_steady_without_stochastic_duration(
     clock_simple, depression_finder, U, K, grid_2, m_sp, n_sp
@@ -53,7 +51,5 @@ def test_steady_without_stochastic_duration(
     ic = model.grid.core_nodes[1:-1]  # "inner" core nodes
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
-    predicted_slopes = (U / (K * (actual_areas ** m_sp))) ** (1.0 / n_sp)
-    assert_array_almost_equal(
-        actual_slopes[ic], predicted_slopes[ic], decimal=4
-    )
+    predicted_slopes = (U / (K * (actual_areas**m_sp))) ** (1.0 / n_sp)
+    assert_array_almost_equal(actual_slopes[ic], predicted_slopes[ic], decimal=4)

@@ -68,7 +68,7 @@ class BasicThVs(ErosionModel):
         regolith_transport_parameter=0.1,
         hydraulic_conductivity=0.1,
         water_erosion_rule__threshold=0.01,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

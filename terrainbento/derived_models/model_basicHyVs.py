@@ -76,7 +76,7 @@ class BasicHyVs(ErosionModel):
         fraction_fines=0.5,
         hydraulic_conductivity=0.1,
         solver="basic",
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

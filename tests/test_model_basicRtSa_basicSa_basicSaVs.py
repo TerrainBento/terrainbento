@@ -59,12 +59,10 @@ def test_diffusion_only(clock_simple, grid_4_smaller, Model, water_params):
 
     half_domain = np.arange(0, max(domain) / 2.0 + dx, dx)
 
-    one_minus_h_hstar = 1 - np.exp(
-        -predicted_depth / soil_transport_decay_depth
-    )
+    one_minus_h_hstar = 1 - np.exp(-predicted_depth / soil_transport_decay_depth)
 
     half_domain_z = (
-        -(half_domain ** 2)
+        -(half_domain**2)
         * U
         / (
             regolith_transport_parameter
@@ -74,9 +72,7 @@ def test_diffusion_only(clock_simple, grid_4_smaller, Model, water_params):
         )
     )
 
-    steady_z_profile = np.concatenate(
-        (np.flipud(half_domain_z), half_domain_z[1:])
-    )
+    steady_z_profile = np.concatenate((np.flipud(half_domain_z), half_domain_z[1:]))
 
     predicted_profile = steady_z_profile - np.min(steady_z_profile)
 
@@ -94,17 +90,11 @@ def test_diffusion_only(clock_simple, grid_4_smaller, Model, water_params):
             try:
                 # test steady state soil depthf
                 actual_depth = model.grid.at_node["soil__depth"][14]
-                assert_array_almost_equal(
-                    actual_depth, predicted_depth, decimal=2
-                )
+                assert_array_almost_equal(actual_depth, predicted_depth, decimal=2)
 
                 # test steady state slope
-                actual_profile = model.grid.at_node["topographic__elevation"][
-                    11:22
-                ]
-                assert_array_almost_equal(
-                    actual_profile, predicted_profile, decimal=1
-                )
+                actual_profile = model.grid.at_node["topographic__elevation"][11:22]
+                assert_array_almost_equal(actual_profile, predicted_profile, decimal=1)
 
                 # if pass, then break.
                 break

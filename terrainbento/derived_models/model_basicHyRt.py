@@ -81,7 +81,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         solver="basic",
         settling_velocity=0.001,
         fraction_fines=0.5,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

@@ -167,9 +167,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
                         ]
                     )
                 )
-            assert all(
-                i > 0 for i in intervals
-            ), "Intervals must be positive number(s)"
+            assert all(i > 0 for i in intervals), "Intervals must be positive number(s)"
 
             if self._intervals_repeat:
                 # The intervals list should repeat until the end of the model
@@ -181,9 +179,7 @@ class StaticIntervalOutputWriter(GenericOutputWriter):
                 # Create an iterator that steps through a list of output times
                 # calculated by accumulating the list of output intervals. Make
                 # sure they are floats.
-                times_iter = (
-                    float(i) for i in itertools.accumulate(intervals)
-                )
+                times_iter = (float(i) for i in itertools.accumulate(intervals))
 
         else:
             raise NotImplementedError(

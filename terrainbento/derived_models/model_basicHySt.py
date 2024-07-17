@@ -69,7 +69,7 @@ class BasicHySt(StochasticErosionModel):
         infiltration_capacity=1.0,
         fraction_fines=0.5,
         solver="basic",
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

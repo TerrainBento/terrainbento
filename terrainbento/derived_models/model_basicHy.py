@@ -62,7 +62,7 @@ class BasicHy(ErosionModel):
         settling_velocity=0.001,
         fraction_fines=0.5,
         solver="basic",
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

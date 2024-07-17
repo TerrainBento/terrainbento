@@ -52,7 +52,7 @@ def clock08_model(clock_08):
 
 # Test basic properties and attributes
 def test_id(clock08_model):
-    """ Test that the id generator is working correctly. """
+    """Test that the id generator is working correctly."""
 
     class OutputA(GenericOutputWriter):
         def __init__(self, model):
@@ -138,7 +138,7 @@ def test_clock_required():
     ],
 )
 def test_times_iter_bad_iterator(clock08_model, times_iter, error_type):
-    """ Test that the correct errors are thrown for bad iterators. """
+    """Test that the correct errors are thrown for bad iterators."""
     writer = GenericOutputWriter(clock08_model)
     writer.register_times_iter(times_iter)
 
@@ -157,9 +157,7 @@ def test_times_iter_max_recursion(clock08_model):
     writer.advance_iter()
 
     # Advance to the second item, which triggers the recursion chain
-    with pytest.warns(OutputIteratorSkipWarning), pytest.raises(
-        RecursionError
-    ):
+    with pytest.warns(OutputIteratorSkipWarning), pytest.raises(RecursionError):
         # Note: order of 'with' statement matters. Failures from 'warns' won't
         # pass through 'raises' correctly if order reversed.
         writer.advance_iter()
@@ -282,7 +280,7 @@ def test_times_iter_max_recursion(clock08_model):
 def test_times_iter_correct_no_skip_warnings(
     clock08_model, times_ints, save_first, save_last, output_ints
 ):
-    """ Test that the times iterator can be added and advanced correctly. """
+    """Test that the times iterator can be added and advanced correctly."""
     times_iter = iter(to_floats(times_ints))
     output_times = to_floats(output_ints)
     previous_times = generate_previous_list(output_times)
@@ -412,7 +410,7 @@ def test_times_iter_infinite_iter(clock08_model):
 
 # Test Files
 def test_output_files(clock08_model):
-    """ Test that the file tracking functions are working correctly. """
+    """Test that the file tracking functions are working correctly."""
 
     class OutputA(GenericOutputWriter):
         def __init__(self, model):

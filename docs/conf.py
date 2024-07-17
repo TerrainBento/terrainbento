@@ -136,7 +136,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "terrainbento"
-copyright = str(date.today().year) + u", The TerrainBento Team"
+copyright = str(date.today().year) + ", The TerrainBento Team"
 author = "The TerrainBento Team"
 
 # The version info for the project you"re documenting, acts as replacement for

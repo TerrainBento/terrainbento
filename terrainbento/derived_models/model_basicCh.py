@@ -59,7 +59,7 @@ class BasicCh(ErosionModel):
         regolith_transport_parameter=0.1,
         critical_slope=0.3,
         number_of_taylor_terms=11,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

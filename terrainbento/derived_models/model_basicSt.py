@@ -55,7 +55,7 @@ class BasicSt(StochasticErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         infiltration_capacity=1.0,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

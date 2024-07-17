@@ -90,7 +90,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         water_erosion_rule_lower__threshold=1.0,
         critical_slope=0.3,
         number_of_taylor_terms=7,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

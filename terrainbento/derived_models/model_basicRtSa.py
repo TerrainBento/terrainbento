@@ -102,7 +102,7 @@ class BasicRtSa(TwoLithologyErosionModel):
         soil_production__maximum_rate=0.001,
         soil_production__decay_depth=0.5,
         soil_transport_decay_depth=0.5,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

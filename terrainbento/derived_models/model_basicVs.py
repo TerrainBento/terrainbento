@@ -64,7 +64,7 @@ class BasicVs(ErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         hydraulic_conductivity=0.1,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

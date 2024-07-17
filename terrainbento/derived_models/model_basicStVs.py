@@ -71,7 +71,7 @@ class BasicStVs(StochasticErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         hydraulic_conductivity=0.1,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -180,9 +180,9 @@ class BasicStVs(StochasticErosionModel):
         pa = self.rain_rate * self.grid.at_node["drainage_area"]
 
         # slope > 0
-        active_nodes = np.where(
-            self.grid.at_node["topographic__steepest_slope"] > 0.0
-        )[0]
+        active_nodes = np.where(self.grid.at_node["topographic__steepest_slope"] > 0.0)[
+            0
+        ]
 
         # Transmissivity x lambda x slope = subsurface discharge capacity
         tls = (

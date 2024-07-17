@@ -24,7 +24,7 @@ class CaptureNodeBaselevelHandler(object):
         capture_stop_time=None,
         capture_incision_rate=-0.01,
         post_capture_incision_rate=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

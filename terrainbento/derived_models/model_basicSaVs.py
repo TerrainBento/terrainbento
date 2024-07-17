@@ -86,7 +86,7 @@ class BasicSaVs(ErosionModel):
         soil_production__decay_depth=0.5,
         soil_transport_decay_depth=0.5,
         hydraulic_conductivity=0.1,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters

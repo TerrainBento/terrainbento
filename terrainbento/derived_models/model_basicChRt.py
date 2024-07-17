@@ -73,12 +73,7 @@ class BasicChRt(TwoLithologyErosionModel):
     ]
 
     def __init__(
-        self,
-        clock,
-        grid,
-        critical_slope=0.3,
-        number_of_taylor_terms=7,
-        **kwargs
+        self, clock, grid, critical_slope=0.3, number_of_taylor_terms=7, **kwargs
     ):
         """
         Parameters
