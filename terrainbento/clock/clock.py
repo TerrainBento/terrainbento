@@ -18,11 +18,13 @@ class Clock(object):
         --------
         >>> from io import StringIO
         >>> from terrainbento import Clock
-        >>> filelike = StringIO('''
+        >>> filelike = StringIO(
+        ...     '''
         ... start: 0
         ... step: 10
         ... stop: 100
-        ... ''')
+        ... '''
+        ... )
         >>> clock = Clock.from_file(filelike)
         >>> clock.start
         0.0

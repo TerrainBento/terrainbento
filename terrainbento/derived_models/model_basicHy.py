@@ -109,7 +109,7 @@ class BasicHy(ErosionModel):
         >>> from landlab.values import random
         >>> from terrainbento import Clock, BasicHy
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
@@ -119,7 +119,7 @@ class BasicHy(ErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
 

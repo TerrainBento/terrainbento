@@ -75,7 +75,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         >>> from landlab.values import random
         >>> from terrainbento import Clock, BasicStVs
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.

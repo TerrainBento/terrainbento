@@ -137,7 +137,7 @@ class BasicChSa(ErosionModel):
         >>> from landlab.values import constant
         >>> from terrainbento import Clock, BasicChSa
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = constant(grid, "topographic__elevation", value=1.0)
         >>> _ = constant(grid, "soil__depth", value=1.0)
 

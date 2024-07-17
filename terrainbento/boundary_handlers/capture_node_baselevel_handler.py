@@ -54,12 +54,15 @@ class CaptureNodeBaselevelHandler(object):
         >>> from landlab import RasterModelGrid
         >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
-        >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
-        ...                                        left_is_closed=True,
-        ...                                        right_is_closed=True,
-        ...                                        top_is_closed=True)
+        >>> mg.set_closed_boundaries_at_grid_edges(
+        ...     bottom_is_closed=True,
+        ...     left_is_closed=True,
+        ...     right_is_closed=True,
+        ...     top_is_closed=True,
+        ... )
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node["topographic__elevation"], -9999.)
+        ...     0, mg.at_node["topographic__elevation"], -9999.0
+        ... )
         >>> print(z.reshape(mg.shape))
         [[0. 0. 0. 0. 0.]
          [0. 0. 0. 0. 0.]
@@ -69,16 +72,18 @@ class CaptureNodeBaselevelHandler(object):
 
         Now import the **CaptureNodeBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_handlers import (
-        ...                                       CaptureNodeBaselevelHandler)
-        >>> bh = CaptureNodeBaselevelHandler(mg,
-        ...                                  capture_node = 3,
-        ...                                  capture_incision_rate = -3.0,
-        ...                                  capture_start_time = 10,
-        ...                                  capture_stop_time = 20,
-        ...                                  post_capture_incision_rate = -0.1)
+        >>> from terrainbento.boundary_handlers import CaptureNodeBaselevelHandler
+        >>> bh = CaptureNodeBaselevelHandler(
+        ...     mg,
+        ...     capture_node=3,
+        ...     capture_incision_rate=-3.0,
+        ...     capture_start_time=10,
+        ...     capture_stop_time=20,
+        ...     post_capture_incision_rate=-0.1,
+        ... )
         >>> for _ in range(10):
         ...     bh.run_one_step(1)
+        ...
 
         The capture has not yet started, so we should expect that the
         topography is still all zeros.
@@ -95,6 +100,7 @@ class CaptureNodeBaselevelHandler(object):
 
         >>> for _ in range(10):
         ...     bh.run_one_step(1)
+        ...
         >>> print(z.reshape(mg.shape))
         [[  0.   0.   0. -30.   0.]
          [  0.   0.   0.   0.   0.]
@@ -110,6 +116,7 @@ class CaptureNodeBaselevelHandler(object):
 
         >>> for _ in range(10):
         ...     bh.run_one_step(1)
+        ...
         >>> print(z.reshape(mg.shape))
         [[  0.   0.   0. -31.   0.]
          [  0.   0.   0.   0.   0.]

@@ -166,7 +166,8 @@ class ErosionModel(object):
         Examples
         --------
         >>> from io import StringIO
-        >>> filelike = StringIO('''
+        >>> filelike = StringIO(
+        ...     '''
         ... grid:
         ...   RasterModelGrid:
         ...     - [4, 5]
@@ -178,7 +179,8 @@ class ErosionModel(object):
         ... clock:
         ...   step: 1
         ...   stop: 200
-        ... ''')
+        ... '''
+        ... )
         >>> model = ErosionModel.from_file(filelike)
         >>> model.clock.step
         1.0
@@ -233,10 +235,10 @@ class ErosionModel(object):
                .. code-block:: python
 
                    {
-                    'class' : MyWriter,
-                    'args' : [], # optional
-                    'kwargs' : {}, # optional
-                    }
+                       "class": MyWriter,
+                       "args": [],  # optional
+                       "kwargs": {},  # optional
+                   }
 
                where `args` and `kwargs` are passed to the constructor for
                `MyWriter`. `MyWriter` must be a child class of
@@ -391,11 +393,11 @@ class ErosionModel(object):
 
                .. code-block:: python
 
-                  {
-                    'class' : MyWriter,
-                    'args' : [], # optional
-                    'kwargs' : {}, # optional
-                    }
+                   {
+                       "class": MyWriter,
+                       "args": [],  # optional
+                       "kwargs": {},  # optional
+                   }
 
                where `args` and `kwargs` are passed to the constructor for
                `MyWriter`. All new style output writers must be a child

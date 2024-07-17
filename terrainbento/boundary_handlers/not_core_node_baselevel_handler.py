@@ -74,12 +74,15 @@ class NotCoreNodeBaselevelHandler(object):
         >>> from landlab import RasterModelGrid
         >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
-        >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
-        ...                                        left_is_closed=True,
-        ...                                        right_is_closed=True,
-        ...                                        top_is_closed=True)
+        >>> mg.set_closed_boundaries_at_grid_edges(
+        ...     bottom_is_closed=True,
+        ...     left_is_closed=True,
+        ...     right_is_closed=True,
+        ...     top_is_closed=True,
+        ... )
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node["topographic__elevation"], -9999.)
+        ...     0, mg.at_node["topographic__elevation"], -9999.0
+        ... )
         >>> print(z.reshape(mg.shape))
         [[0. 0. 0. 0. 0.]
          [0. 0. 0. 0. 0.]
@@ -89,11 +92,10 @@ class NotCoreNodeBaselevelHandler(object):
 
         Now import the **NotCoreNodeBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_handlers import (
-        ...                                      NotCoreNodeBaselevelHandler)
-        >>> bh = NotCoreNodeBaselevelHandler(mg,
-        ...                                 modify_core_nodes = False,
-        ...                                 lowering_rate = -0.1)
+        >>> from terrainbento.boundary_handlers import NotCoreNodeBaselevelHandler
+        >>> bh = NotCoreNodeBaselevelHandler(
+        ...     mg, modify_core_nodes=False, lowering_rate=-0.1
+        ... )
         >>> bh.run_one_step(10.0)
 
         We should expect that the boundary nodes (except for node 0) will all
@@ -111,17 +113,19 @@ class NotCoreNodeBaselevelHandler(object):
 
         >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
-        >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
-        ...                                        left_is_closed=True,
-        ...                                        right_is_closed=True,
-        ...                                        top_is_closed=True)
+        >>> mg.set_closed_boundaries_at_grid_edges(
+        ...     bottom_is_closed=True,
+        ...     left_is_closed=True,
+        ...     right_is_closed=True,
+        ...     top_is_closed=True,
+        ... )
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node["topographic__elevation"], -9999.)
-        >>> from terrainbento.boundary_handlers import (
-        ...                                        NotCoreNodeBaselevelHandler)
-        >>> bh = NotCoreNodeBaselevelHandler(mg,
-        ...                                 modify_core_nodes = True,
-        ...                                 lowering_rate = -0.1)
+        ...     0, mg.at_node["topographic__elevation"], -9999.0
+        ... )
+        >>> from terrainbento.boundary_handlers import NotCoreNodeBaselevelHandler
+        >>> bh = NotCoreNodeBaselevelHandler(
+        ...     mg, modify_core_nodes=True, lowering_rate=-0.1
+        ... )
         >>> bh.run_one_step(10.0)
         >>> print(z.reshape(mg.shape))
         [[0. 0. 0. 0. 0.]

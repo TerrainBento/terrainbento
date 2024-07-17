@@ -82,11 +82,8 @@ class SingleNodeBaselevelHandler(object):
 
         Now import the **SingleNodeBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_handlers import (
-        ...                                         SingleNodeBaselevelHandler)
-        >>> bh = SingleNodeBaselevelHandler(mg,
-        ...                                 outlet_id = 0,
-        ...                                 lowering_rate = -0.1)
+        >>> from terrainbento.boundary_handlers import SingleNodeBaselevelHandler
+        >>> bh = SingleNodeBaselevelHandler(mg, outlet_id=0, lowering_rate=-0.1)
         >>> bh.run_one_step(10.0)
 
         We should expect that node 0 has lowered by one, to an elevation of -1.

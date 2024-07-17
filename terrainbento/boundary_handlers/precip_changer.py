@@ -346,13 +346,15 @@ class PrecipChanger(object):
         Now import the **PrecipChanger** and instantiate.
 
         >>> from terrainbento.boundary_handlers import PrecipChanger
-        >>> bh = PrecipChanger(mg,
-        ...    daily_rainfall__intermittency_factor = 0.3,
-        ...    daily_rainfall__intermittency_factor_time_rate_of_change = 0.01,
-        ...    rainfall__mean_rate = 3.0,
-        ...    rainfall__mean_rate_time_rate_of_change = 0.2,
-        ...    rainfall__shape_factor = 0.65,
-        ...    infiltration_capacity = 0)
+        >>> bh = PrecipChanger(
+        ...     mg,
+        ...     daily_rainfall__intermittency_factor=0.3,
+        ...     daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+        ...     rainfall__mean_rate=3.0,
+        ...     rainfall__mean_rate_time_rate_of_change=0.2,
+        ...     rainfall__shape_factor=0.65,
+        ...     infiltration_capacity=0,
+        ... )
 
         We can get the current precipitation parameters
 
