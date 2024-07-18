@@ -1,9 +1,8 @@
-# coding: utf8
 # !/usr/env/python
 """**GenericFuncBaselevelHandler** modifies elevation for not-core nodes."""
 
 
-class GenericFuncBaselevelHandler(object):
+class GenericFuncBaselevelHandler:
     """Control the elevation of all nodes that are not core nodes.
 
     The **GenericFuncBaselevelHandler** controls the elevation of all nodes on
@@ -32,10 +31,8 @@ class GenericFuncBaselevelHandler(object):
         self,
         grid,
         modify_core_nodes=False,
-        function=lambda grid, t: (
-            0 * grid.x_of_node + 0 * grid.y_of_node + 0 * t
-        ),
-        **kwargs
+        function=lambda grid, t: (0 * grid.x_of_node + 0 * grid.y_of_node + 0 * t),
+        **kwargs,
     ):
         """
         Parameters
@@ -60,12 +57,15 @@ class GenericFuncBaselevelHandler(object):
         >>> from landlab import RasterModelGrid
         >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
-        >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
-        ...                                        left_is_closed=True,
-        ...                                        right_is_closed=True,
-        ...                                        top_is_closed=True)
+        >>> mg.set_closed_boundaries_at_grid_edges(
+        ...     bottom_is_closed=True,
+        ...     left_is_closed=True,
+        ...     right_is_closed=True,
+        ...     top_is_closed=True,
+        ... )
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node["topographic__elevation"], -9999.)
+        ...     0, mg.at_node["topographic__elevation"], -9999.0
+        ... )
         >>> print(z.reshape(mg.shape))
         [[0. 0. 0. 0. 0.]
          [0. 0. 0. 0. 0.]
@@ -75,12 +75,11 @@ class GenericFuncBaselevelHandler(object):
 
         Now import the **GenericFuncBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_handlers import (
-        ...                                       GenericFuncBaselevelHandler)
-        >>> my_func = lambda grid, t:-(grid.x_of_node + grid.y_of_node + (0*t))
-        >>> bh = GenericFuncBaselevelHandler(mg,
-        ...                                  modify_core_nodes = False,
-        ...                                   function=my_func)
+        >>> from terrainbento.boundary_handlers import GenericFuncBaselevelHandler
+        >>> my_func = lambda grid, t: -(grid.x_of_node + grid.y_of_node + (0 * t))
+        >>> bh = GenericFuncBaselevelHandler(
+        ...     mg, modify_core_nodes=False, function=my_func
+        ... )
         >>> bh.run_one_step(10.0)
 
         We should expect that the boundary nodes (except for node 0) will all
@@ -102,17 +101,20 @@ class GenericFuncBaselevelHandler(object):
         >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
         >>> b = mg.add_zeros("node", "bedrock__elevation")
-        >>> b -= 10.
-        >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
-        ...                                        left_is_closed=True,
-        ...                                        right_is_closed=True,
-        ...                                        top_is_closed=True)
+        >>> b -= 10.0
+        >>> mg.set_closed_boundaries_at_grid_edges(
+        ...     bottom_is_closed=True,
+        ...     left_is_closed=True,
+        ...     right_is_closed=True,
+        ...     top_is_closed=True,
+        ... )
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node["topographic__elevation"], -9999.)
+        ...     0, mg.at_node["topographic__elevation"], -9999.0
+        ... )
         >>> my_func = lambda grid, t: -(grid.x_of_node + grid.y_of_node)
-        >>> bh = GenericFuncBaselevelHandler(mg,
-        ...                                 modify_core_nodes = True,
-        ...                                 function=my_func)
+        >>> bh = GenericFuncBaselevelHandler(
+        ...     mg, modify_core_nodes=True, function=my_func
+        ... )
         >>> bh.run_one_step(10.0)
         >>> print(z.reshape(mg.shape))
         [[  0.   0.   0.   0.   0.]

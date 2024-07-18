@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **Basic** model program.
 
@@ -49,7 +48,7 @@ class Basic(ErosionModel):
         n_sp=1.0,
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -86,7 +85,7 @@ class Basic(ErosionModel):
         >>> from landlab.values import random
         >>> from terrainbento import Clock, Basic
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
@@ -96,7 +95,7 @@ class Basic(ErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
 
@@ -185,10 +184,8 @@ def main():  # pragma: no cover
         infile = sys.argv[1]
     except IndexError:
         print(
-            (
-                "To run a terrainbento model from the command line you must "
-                "include input file name on command line"
-            )
+            "To run a terrainbento model from the command line you must "
+            "include input file name on command line"
         )
         sys.exit(1)
 

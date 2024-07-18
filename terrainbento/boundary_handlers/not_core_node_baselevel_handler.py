@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """**NotCoreNodeBaselevelHandler** modifies elevation for not-core nodes."""
 
@@ -8,7 +7,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 
 
-class NotCoreNodeBaselevelHandler(object):
+class NotCoreNodeBaselevelHandler:
     """Control the elevation of all nodes that are not core nodes.
 
     The **NotCoreNodeBaselevelHandler** controls the elevation of all nodes on
@@ -36,7 +35,7 @@ class NotCoreNodeBaselevelHandler(object):
         lowering_rate=None,
         lowering_file_path=None,
         model_end_elevation=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -74,12 +73,15 @@ class NotCoreNodeBaselevelHandler(object):
         >>> from landlab import RasterModelGrid
         >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
-        >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
-        ...                                        left_is_closed=True,
-        ...                                        right_is_closed=True,
-        ...                                        top_is_closed=True)
+        >>> mg.set_closed_boundaries_at_grid_edges(
+        ...     bottom_is_closed=True,
+        ...     left_is_closed=True,
+        ...     right_is_closed=True,
+        ...     top_is_closed=True,
+        ... )
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node["topographic__elevation"], -9999.)
+        ...     0, mg.at_node["topographic__elevation"], -9999.0
+        ... )
         >>> print(z.reshape(mg.shape))
         [[0. 0. 0. 0. 0.]
          [0. 0. 0. 0. 0.]
@@ -89,11 +91,10 @@ class NotCoreNodeBaselevelHandler(object):
 
         Now import the **NotCoreNodeBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_handlers import (
-        ...                                      NotCoreNodeBaselevelHandler)
-        >>> bh = NotCoreNodeBaselevelHandler(mg,
-        ...                                 modify_core_nodes = False,
-        ...                                 lowering_rate = -0.1)
+        >>> from terrainbento.boundary_handlers import NotCoreNodeBaselevelHandler
+        >>> bh = NotCoreNodeBaselevelHandler(
+        ...     mg, modify_core_nodes=False, lowering_rate=-0.1
+        ... )
         >>> bh.run_one_step(10.0)
 
         We should expect that the boundary nodes (except for node 0) will all
@@ -111,17 +112,19 @@ class NotCoreNodeBaselevelHandler(object):
 
         >>> mg = RasterModelGrid((5, 5))
         >>> z = mg.add_zeros("node", "topographic__elevation")
-        >>> mg.set_closed_boundaries_at_grid_edges(bottom_is_closed=True,
-        ...                                        left_is_closed=True,
-        ...                                        right_is_closed=True,
-        ...                                        top_is_closed=True)
+        >>> mg.set_closed_boundaries_at_grid_edges(
+        ...     bottom_is_closed=True,
+        ...     left_is_closed=True,
+        ...     right_is_closed=True,
+        ...     top_is_closed=True,
+        ... )
         >>> mg.set_watershed_boundary_condition_outlet_id(
-        ...     0, mg.at_node["topographic__elevation"], -9999.)
-        >>> from terrainbento.boundary_handlers import (
-        ...                                        NotCoreNodeBaselevelHandler)
-        >>> bh = NotCoreNodeBaselevelHandler(mg,
-        ...                                 modify_core_nodes = True,
-        ...                                 lowering_rate = -0.1)
+        ...     0, mg.at_node["topographic__elevation"], -9999.0
+        ... )
+        >>> from terrainbento.boundary_handlers import NotCoreNodeBaselevelHandler
+        >>> bh = NotCoreNodeBaselevelHandler(
+        ...     mg, modify_core_nodes=True, lowering_rate=-0.1
+        ... )
         >>> bh.run_one_step(10.0)
         >>> print(z.reshape(mg.shape))
         [[0. 0. 0. 0. 0.]
@@ -150,10 +153,8 @@ class NotCoreNodeBaselevelHandler(object):
 
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(
-                (
-                    "NotCoreNodeBaselevelHandler requires one of "
-                    "lowering_rate and lowering_file_path"
-                )
+                "NotCoreNodeBaselevelHandler requires one of "
+                "lowering_rate and lowering_file_path"
             )
         else:
             if lowering_rate is None:
@@ -166,9 +167,7 @@ class NotCoreNodeBaselevelHandler(object):
                     time = elev_change_df[:, 0]
                     elev_change = elev_change_df[:, 1]
 
-                    model_start_elevation = np.mean(
-                        self.z[self.nodes_to_lower]
-                    )
+                    model_start_elevation = np.mean(self.z[self.nodes_to_lower])
 
                     if model_end_elevation is None:
                         self.scaling_factor = 1.0
@@ -178,34 +177,26 @@ class NotCoreNodeBaselevelHandler(object):
                         ) / np.abs(elev_change[0] - elev_change[-1])
 
                     outlet_elevation = (
-                        self.scaling_factor
-                        * self.prefactor
-                        * elev_change_df[:, 1]
+                        self.scaling_factor * self.prefactor * elev_change_df[:, 1]
                     ) + model_start_elevation
 
-                    self.outlet_elevation_obj = interp1d(
-                        time, outlet_elevation
-                    )
+                    self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
                 else:
                     raise ValueError(
-                        (
-                            "The lowering_file_path provided "
-                            "to NotCoreNodeBaselevelHandler does not "
-                            "exist."
-                        )
+                        "The lowering_file_path provided "
+                        "to NotCoreNodeBaselevelHandler does not "
+                        "exist."
                     )
             elif lowering_file_path is None:
                 self.lowering_rate = lowering_rate
                 self.outlet_elevation_obj = None
             else:
                 raise ValueError(
-                    (
-                        "Both an lowering_rate and a "
-                        "lowering_file_path have been provided "
-                        "to NotCoreNodeBaselevelHandler. Please provide "
-                        "only one."
-                    )
+                    "Both an lowering_rate and a "
+                    "lowering_file_path have been provided "
+                    "to NotCoreNodeBaselevelHandler. Please provide "
+                    "only one."
                 )
 
     def run_one_step(self, step):
@@ -231,9 +222,7 @@ class NotCoreNodeBaselevelHandler(object):
         if self.outlet_elevation_obj is None:
 
             # calculate lowering amount and subtract
-            self.z[self.nodes_to_lower] += (
-                self.prefactor * self.lowering_rate * step
-            )
+            self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * step
 
             # if bedrock__elevation exists as a field, lower it also
             other_fields = [
@@ -254,9 +243,7 @@ class NotCoreNodeBaselevelHandler(object):
             # bedrock elevation exists, and must be done before the topography
             # is lowered
             mean_z = np.mean(self.z[self.nodes_to_lower])
-            self.topo_change = mean_z - self.outlet_elevation_obj(
-                self.model_time
-            )
+            self.topo_change = mean_z - self.outlet_elevation_obj(self.model_time)
 
             other_fields = [
                 "bedrock__elevation",
@@ -264,9 +251,7 @@ class NotCoreNodeBaselevelHandler(object):
             ]
             for of in other_fields:
                 if of in self.grid.at_node:
-                    self.grid.at_node[of][
-                        self.nodes_to_lower
-                    ] -= self.topo_change
+                    self.grid.at_node[of][self.nodes_to_lower] -= self.topo_change
 
             # lower topography
             self.z[self.nodes_to_lower] -= self.topo_change

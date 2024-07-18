@@ -1,7 +1,7 @@
 """terrainbento **UniformPrecipitator**."""
 
 
-class UniformPrecipitator(object):
+class UniformPrecipitator:
     """Generate uniform precipitation.
 
     UniformPrecipitator populates the at-node field "rainfall__flux" with a
@@ -14,7 +14,7 @@ class UniformPrecipitator(object):
     --------
     >>> from landlab import RasterModelGrid
     >>> from terrainbento import UniformPrecipitator
-    >>> grid = RasterModelGrid((5,5))
+    >>> grid = RasterModelGrid((5, 5))
     >>> precipitator = UniformPrecipitator(grid, rainfall_flux=3.4)
     >>> grid.at_node["rainfall__flux"].reshape(grid.shape)
     array([[3.4, 3.4, 3.4, 3.4, 3.4],

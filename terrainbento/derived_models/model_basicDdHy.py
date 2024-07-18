@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicDdHy** model program.
 
@@ -82,9 +81,9 @@ class BasicDdHy(ErosionModel):
         settling_velocity=0.001,
         fraction_fines=0.5,
         solver="basic",
-        **kwargs
+        **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance
@@ -135,7 +134,7 @@ class BasicDdHy(ErosionModel):
         >>> from landlab.values import random
         >>> from terrainbento import Clock, BasicDdHy
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
@@ -145,7 +144,7 @@ class BasicDdHy(ErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
         """
@@ -167,9 +166,7 @@ class BasicDdHy(ErosionModel):
         self.sp_crit = water_erosion_rule__threshold
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
-            "node", "water_erosion_rule__threshold"
-        )
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.sp_crit  # starting value
 
         # Instantiate an ErosionDeposition component
@@ -186,9 +183,7 @@ class BasicDdHy(ErosionModel):
         )
 
         # Get the parameter for rate of threshold increase with erosion depth
-        self.thresh_change_per_depth = (
-            water_erosion_rule__thresh_depth_derivative
-        )
+        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
 
         # Instantiate a LinearDiffuser component
         self.diffuser = LinearDiffuser(
@@ -227,12 +222,8 @@ class BasicDdHy(ErosionModel):
 
         # Calculate cumulative erosion and update threshold
         cum_ero = self.grid.at_node["cumulative_elevation_change"]
-        cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
-        )
-        self.threshold[:] = self.sp_crit - (
-            self.thresh_change_per_depth * cum_ero
-        )
+        cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
+        self.threshold[:] = self.sp_crit - (self.thresh_change_per_depth * cum_ero)
         self.threshold[self.threshold < self.sp_crit] = self.sp_crit
 
         # Do some erosion (but not on the flooded nodes)

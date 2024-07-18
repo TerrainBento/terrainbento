@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicSa** model program.
 
@@ -83,7 +82,7 @@ class BasicSa(ErosionModel):
         soil_production__maximum_rate=0.001,
         soil_production__decay_depth=0.5,
         soil_transport_decay_depth=0.5,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -126,7 +125,7 @@ class BasicSa(ErosionModel):
         >>> from landlab.values import random
         >>> from terrainbento import Clock, BasicSa
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
         >>> _ = random(grid, "soil__depth")
 
@@ -137,7 +136,7 @@ class BasicSa(ErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
 

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicHyRt** model program.
 
@@ -81,7 +80,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         solver="basic",
         settling_velocity=0.001,
         fraction_fines=0.5,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -135,9 +134,9 @@ class BasicHyRt(TwoLithologyErosionModel):
         >>> from landlab.values import random, constant
         >>> from terrainbento import Clock, BasicHyRt
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
-        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.0)
 
         Construct the model.
 
@@ -146,7 +145,7 @@ class BasicHyRt(TwoLithologyErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
         """

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 
 import pytest
@@ -162,9 +161,7 @@ def test_correct_input_plain(clock08_model, intervals, times, output_times):
         (None, [0, 1.0, 2.0, 3.0], [0, 1, 2, 3, None]),  # List of float times
     ],
 )
-def test_correct_input_with_firststep(
-    clock08_model, intervals, times, output_times
-):
+def test_correct_input_with_firststep(clock08_model, intervals, times, output_times):
     """
     Test that needing output on the first step works.
     """
@@ -220,9 +217,7 @@ def test_correct_input_with_firststep(
         ),  # List intervals jumps stop time
     ],
 )
-def test_correct_input_with_laststep(
-    clock08_model, intervals, times, output_times
-):
+def test_correct_input_with_laststep(clock08_model, intervals, times, output_times):
     """
     Test that needing output on the last step works.
     """

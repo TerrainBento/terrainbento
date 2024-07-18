@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicChRtTh** model program.
 
@@ -13,10 +12,7 @@ Landlab components used:
     4. `TaylorNonLinearDiffuser <https://landlab.readthedocs.io/en/master/reference/components/taylor_nonlinear_hillslope_flux.html>`_
 """
 
-from landlab.components import (
-    StreamPowerSmoothThresholdEroder,
-    TaylorNonLinearDiffuser,
-)
+from landlab.components import StreamPowerSmoothThresholdEroder, TaylorNonLinearDiffuser
 
 from terrainbento.base_class import TwoLithologyErosionModel
 
@@ -90,9 +86,9 @@ class BasicChRtTh(TwoLithologyErosionModel):
         water_erosion_rule_lower__threshold=1.0,
         critical_slope=0.3,
         number_of_taylor_terms=7,
-        **kwargs
+        **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance
@@ -145,9 +141,9 @@ class BasicChRtTh(TwoLithologyErosionModel):
         >>> from landlab.values import random, constant
         >>> from terrainbento import Clock, BasicChRtTh
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
-        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.0)
 
         Construct the model.
 
@@ -156,7 +152,7 @@ class BasicChRtTh(TwoLithologyErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
         """

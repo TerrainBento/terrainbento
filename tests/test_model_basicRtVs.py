@@ -5,9 +5,7 @@ from terrainbento import BasicRtVs, NotCoreNodeBaselevelHandler
 
 
 @pytest.mark.parametrize("m_sp,n_sp", [(1.0 / 3, 2.0 / 3.0), (0.5, 1.0)])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 def test_steady_Kss_no_precip_changer(
     clock_simple, grid_2, U, Kr, Kt, m_sp, n_sp, depression_finder
 ):
@@ -38,15 +36,11 @@ def test_steady_Kss_no_precip_changer(
 
     actual_slopes = model.grid.at_node["topographic__steepest_slope"]
     actual_areas = model.grid.at_node["surface_water__discharge"]
-    rock_predicted_slopes = (U / (Kr * (actual_areas ** m_sp))) ** (1.0 / n_sp)
-    till_predicted_slopes = (U / (Kt * (actual_areas ** m_sp))) ** (1.0 / n_sp)
+    rock_predicted_slopes = (U / (Kr * (actual_areas**m_sp))) ** (1.0 / n_sp)
+    till_predicted_slopes = (U / (Kt * (actual_areas**m_sp))) ** (1.0 / n_sp)
 
     # assert actual and predicted slopes are the same for rock and till.
-    assert_array_almost_equal(
-        actual_slopes[22:37], rock_predicted_slopes[22:37]
-    )
+    assert_array_almost_equal(actual_slopes[22:37], rock_predicted_slopes[22:37])
 
     # assert actual and predicted slopes are the same for rock and till.
-    assert_array_almost_equal(
-        actual_slopes[82:97], till_predicted_slopes[82:97]
-    )
+    assert_array_almost_equal(actual_slopes[82:97], till_predicted_slopes[82:97])

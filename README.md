@@ -71,7 +71,7 @@ params = {
     "water_erodibility" : 0.001,
     "m_sp" : 0.5,
     "n_sp" : 1.0,
-    "regolith_transport_parameter" : 0.2,           
+    "regolith_transport_parameter" : 0.2,
          }
 
 model = Basic.from_dict(params)
@@ -138,7 +138,7 @@ cd terrainbento
 conda env create -f environment-dev.yml
 conda activate terrainbento-dev
 pip install .
-``` 
+```
 
 #### A note to developers
 

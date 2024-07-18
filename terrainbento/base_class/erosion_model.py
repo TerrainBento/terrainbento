@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """Base class for common functions of all terrainbento erosion models."""
 
@@ -78,22 +77,18 @@ def _verify_boundary_handler(handler):
 
     if bad_name:
         raise ValueError(
-            (
-                "Only supported boundary condition handlers are "
-                "permitted. These include: {valid}".format(
-                    valid="\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
-                )
+            "Only supported boundary condition handlers are "
+            "permitted. These include: {valid}".format(
+                valid="\n".join(_SUPPORTED_BOUNDARY_HANDLERS)
             )
         )
 
     if bad_instance:
         raise ValueError(
-            (
-                "An invalid instance of "
-                + name
-                + " was passed as a boundary handler."
-                + str(handler)
-            )
+            "An invalid instance of "
+            + name
+            + " was passed as a boundary handler."
+            + str(handler)
         )
 
 
@@ -132,8 +127,7 @@ def _setup_boundary_handlers(grid, name, params):
     return boundary_handler
 
 
-class ErosionModel(object):
-
+class ErosionModel:
     """Base class providing common functionality for terrainbento models.
 
     An **ErosionModel** is the skeleton for the models of terrain evolution in
@@ -167,7 +161,8 @@ class ErosionModel(object):
         Examples
         --------
         >>> from io import StringIO
-        >>> filelike = StringIO('''
+        >>> filelike = StringIO(
+        ...     '''
         ... grid:
         ...   RasterModelGrid:
         ...     - [4, 5]
@@ -179,7 +174,8 @@ class ErosionModel(object):
         ... clock:
         ...   step: 1
         ...   stop: 200
-        ... ''')
+        ... '''
+        ... )
         >>> model = ErosionModel.from_file(filelike)
         >>> model.clock.step
         1.0
@@ -193,7 +189,7 @@ class ErosionModel(object):
             contents = file_like.read()
         except AttributeError:  # was a str
             if os.path.isfile(file_like):
-                with open(file_like, "r") as fp:
+                with open(file_like) as fp:
                     contents = fp.read()
             else:
                 contents = file_like  # not tested
@@ -234,10 +230,10 @@ class ErosionModel(object):
                .. code-block:: python
 
                    {
-                    'class' : MyWriter,
-                    'args' : [], # optional
-                    'kwargs' : {}, # optional
-                    }
+                       "class": MyWriter,
+                       "args": [],  # optional
+                       "kwargs": {},  # optional
+                   }
 
                where `args` and `kwargs` are passed to the constructor for
                `MyWriter`. `MyWriter` must be a child class of
@@ -286,9 +282,7 @@ class ErosionModel(object):
         )
 
         # runoff_generator
-        runoff_params = params.pop(
-            "runoff_generator", _DEFAULT_RUNOFF_GENERATOR
-        )
+        runoff_params = params.pop("runoff_generator", _DEFAULT_RUNOFF_GENERATOR)
         runoff_generator = _setup_precipitator_or_runoff(
             grid, runoff_params, _SUPPORTED_RUNOFF_GENERATORS
         )
@@ -394,11 +388,11 @@ class ErosionModel(object):
 
                .. code-block:: python
 
-                  {
-                    'class' : MyWriter,
-                    'args' : [], # optional
-                    'kwargs' : {}, # optional
-                    }
+                   {
+                       "class": MyWriter,
+                       "args": [],  # optional
+                       "kwargs": {},  # optional
+                   }
 
                where `args` and `kwargs` are passed to the constructor for
                `MyWriter`. All new style output writers must be a child
@@ -464,9 +458,7 @@ class ErosionModel(object):
 
         self.grid.add_zeros("node", "cumulative_elevation_change")
 
-        self.grid.add_field(
-            "node", "initial_topographic__elevation", self.z.copy()
-        )
+        self.grid.add_field("node", "initial_topographic__elevation", self.z.copy())
 
         # save output_information
         self.save_first_timestep = save_first_timestep
@@ -502,9 +494,7 @@ class ErosionModel(object):
             runoff_generator = SimpleRunoff(self.grid)
         else:
             if isinstance(runoff_generator, _VALID_RUNOFF_GENERATORS) is False:
-                raise ValueError(
-                    "Provide value for runoff_generator not valid."
-                )
+                raise ValueError("Provide value for runoff_generator not valid.")
         self.runoff_generator = runoff_generator
 
         ###################################################################
@@ -558,9 +548,7 @@ class ErosionModel(object):
         """Verify all required fields are present."""
         for field in required_fields:
             if field not in self.grid.at_node:
-                raise ValueError(
-                    "Required field {field} not present.".format(field=field)
-                )
+                raise ValueError(f"Required field {field} not present.")
 
     def _setup_output_writers(self, output_writers, output_default_netcdf):
         """Convert all output writers to the new style and instantiate output
@@ -727,7 +715,7 @@ class ErosionModel(object):
 
     @property
     def output_prefix(self):
-        """ Model prefix for output filenames. """
+        """Model prefix for output filenames."""
         return self._output_prefix
 
     @property
@@ -863,15 +851,11 @@ class ErosionModel(object):
         are the default versions.
         """
         if isinstance(self.precipitator, UniformPrecipitator) is False:
-            raise ValueError(
-                "This model must be run with a UniformPrecipitator."
-            )
+            raise ValueError("This model must be run with a UniformPrecipitator.")
 
         if vsa_precip is False:
             if self.precipitator._rainfall_flux != 1:
-                raise ValueError(
-                    "This model must use a rainfall__flux value of 1.0."
-                )
+                raise ValueError("This model must use a rainfall__flux value of 1.0.")
 
         # if isinstance(self.runoff_generator, SimpleRunoff) is False:
         #     raise ValueError("This model must be run with SimpleRunoff.")
@@ -893,7 +877,7 @@ class ErosionModel(object):
 
     # Output methods
     def write_output(self):
-        """Run output writers if it is the correct model time.  """
+        """Run output writers if it is the correct model time."""
 
         # assert that the model has not passed the next output time.
         assert self._model_time <= self.next_output_time, "".join(

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicRtTh** model program.
 
@@ -83,9 +82,9 @@ class BasicRtTh(TwoLithologyErosionModel):
         grid,
         water_erosion_rule_upper__threshold=1.0,
         water_erosion_rule_lower__threshold=1.0,
-        **kwargs
+        **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance
@@ -133,9 +132,9 @@ class BasicRtTh(TwoLithologyErosionModel):
         >>> from landlab.values import random, constant
         >>> from terrainbento import Clock, BasicRtTh
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
-        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.)
+        >>> _ = constant(grid, "lithology_contact__elevation", value=-10.0)
 
         Construct the model.
 
@@ -144,7 +143,7 @@ class BasicRtTh(TwoLithologyErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
 

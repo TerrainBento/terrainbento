@@ -43,7 +43,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         n_sp=1.0,
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -75,7 +75,7 @@ class ModelTemplate(ErosionModel):  # The model must inherit from either
         >>> from landlab.values import random
         >>> from terrainbento import Clock, BasicStVs
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
@@ -136,10 +136,8 @@ def main():  # pragma: no cover
         infile = sys.argv[1]
     except IndexError:
         print(
-            (
-                "To run a terrainbento model from the command line you must "
-                "include input file name on command line"
-            )
+            "To run a terrainbento model from the command line you must "
+            "include input file name on command line"
         )
         sys.exit(1)
 

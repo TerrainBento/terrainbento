@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento Model **BasicStVs** program.
 
@@ -71,9 +70,9 @@ class BasicStVs(StochasticErosionModel):
         water_erodibility=0.0001,
         regolith_transport_parameter=0.1,
         hydraulic_conductivity=0.1,
-        **kwargs
+        **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance
@@ -111,7 +110,7 @@ class BasicStVs(StochasticErosionModel):
         >>> from landlab.values import random
         >>> from terrainbento import Clock, BasicStVs
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
         >>> _ = random(grid, "soil__depth")
 
@@ -122,7 +121,7 @@ class BasicStVs(StochasticErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
 
@@ -180,9 +179,9 @@ class BasicStVs(StochasticErosionModel):
         pa = self.rain_rate * self.grid.at_node["drainage_area"]
 
         # slope > 0
-        active_nodes = np.where(
-            self.grid.at_node["topographic__steepest_slope"] > 0.0
-        )[0]
+        active_nodes = np.where(self.grid.at_node["topographic__steepest_slope"] > 0.0)[
+            0
+        ]
 
         # Transmissivity x lambda x slope = subsurface discharge capacity
         tls = (

@@ -12,7 +12,7 @@ enhanced by `@alexmitchell`_.
 Note: The output writer classes require that the output time points specified
 line up with the model timesteps as specified by the Clock. If the timepoints
 do not line up, warnings are raised the first four times an output time is
-skipped. On the fifth time an error is raised. 
+skipped. On the fifth time an error is raised.
 
 .. toctree::
 

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 r""" **PrecipChanger** changes precipitation frequency and intensity over time.
 
@@ -232,15 +231,11 @@ def _scale_fac(pmean, c):
 
 def _check_intermittency_value(rainfall_intermittency_factor):
     """Check that rainfall_intermittency_factor is >= 0 and <=1."""
-    if (rainfall_intermittency_factor < 0.0) or (
-        rainfall_intermittency_factor > 1.0
-    ):
+    if (rainfall_intermittency_factor < 0.0) or (rainfall_intermittency_factor > 1.0):
         raise ValueError(
-            (
-                "The PrecipChanger rainfall_intermittency_factor has a "
-                "value of less than zero or greater than one. "
-                "This is invalid."
-            )
+            "The PrecipChanger rainfall_intermittency_factor has a "
+            "value of less than zero or greater than one. "
+            "This is invalid."
         )
 
 
@@ -248,10 +243,8 @@ def _check_mean_depth(mean_depth):
     """Check that mean depth is >= 0."""
     if mean_depth < 0:
         raise ValueError(
-            (
-                "The PrecipChanger mean depth has a "
-                "value of less than zero. This is invalid."
-            )
+            "The PrecipChanger mean depth has a "
+            "value of less than zero. This is invalid."
         )
 
 
@@ -259,14 +252,12 @@ def _check_infiltration_capacity(infiltration_capacity):
     """Check that infiltration_capacity >= 0."""
     if infiltration_capacity < 0:
         raise ValueError(
-            (
-                "The PrecipChanger infiltration_capacity has a "
-                "value of less than zero. This is invalid."
-            )
+            "The PrecipChanger infiltration_capacity has a "
+            "value of less than zero. This is invalid."
         )
 
 
-class PrecipChanger(object):
+class PrecipChanger:
     """Handle time varying precipitation.
 
     The **PrecipChanger** handles time-varying precipitation by changing the
@@ -291,7 +282,7 @@ class PrecipChanger(object):
         m_sp=0.5,
         precipchanger_start_time=0,
         precipchanger_stop_time=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -348,13 +339,15 @@ class PrecipChanger(object):
         Now import the **PrecipChanger** and instantiate.
 
         >>> from terrainbento.boundary_handlers import PrecipChanger
-        >>> bh = PrecipChanger(mg,
-        ...    daily_rainfall__intermittency_factor = 0.3,
-        ...    daily_rainfall__intermittency_factor_time_rate_of_change = 0.01,
-        ...    rainfall__mean_rate = 3.0,
-        ...    rainfall__mean_rate_time_rate_of_change = 0.2,
-        ...    rainfall__shape_factor = 0.65,
-        ...    infiltration_capacity = 0)
+        >>> bh = PrecipChanger(
+        ...     mg,
+        ...     daily_rainfall__intermittency_factor=0.3,
+        ...     daily_rainfall__intermittency_factor_time_rate_of_change=0.01,
+        ...     rainfall__mean_rate=3.0,
+        ...     rainfall__mean_rate_time_rate_of_change=0.2,
+        ...     rainfall__shape_factor=0.65,
+        ...     infiltration_capacity=0,
+        ... )
 
         We can get the current precipitation parameters
 
@@ -444,9 +437,7 @@ class PrecipChanger(object):
         )
 
         self.starting_daily_mean_depth = rainfall__mean_rate
-        self.mean_depth_rate_of_change = (
-            rainfall__mean_rate_time_rate_of_change
-        )
+        self.mean_depth_rate_of_change = rainfall__mean_rate_time_rate_of_change
 
         self.rainfall__shape_factor = rainfall__shape_factor
         self.infilt_cap = infiltration_capacity
@@ -477,9 +468,7 @@ class PrecipChanger(object):
         :math:`f_0(p)` is the Weibull distribution representing the probability
         distribution of daily precipitation intensity at model run onset.
         """
-        lam = _scale_fac(
-            self.starting_daily_mean_depth, self.rainfall__shape_factor
-        )
+        lam = _scale_fac(self.starting_daily_mean_depth, self.rainfall__shape_factor)
         psi, _ = quad(
             _integrand,
             self.infilt_cap,
@@ -510,12 +499,10 @@ class PrecipChanger(object):
 
             # calculate and return updated values
             frac_wet_days = (
-                self.starting_frac_wet_days
-                + self.frac_wet_days_rate_of_change * time
+                self.starting_frac_wet_days + self.frac_wet_days_rate_of_change * time
             )
             mean_depth = (
-                self.starting_daily_mean_depth
-                + self.mean_depth_rate_of_change * time
+                self.starting_daily_mean_depth + self.mean_depth_rate_of_change * time
             )
 
             _check_intermittency_value(frac_wet_days)

@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento model **BasicHySa** program.
 
@@ -15,11 +14,7 @@ Landlab components used:
 """
 
 import numpy as np
-from landlab.components import (
-    DepthDependentDiffuser,
-    ExponentialWeatherer,
-    Space,
-)
+from landlab.components import DepthDependentDiffuser, ExponentialWeatherer, Space
 
 from terrainbento.base_class import ErosionModel
 
@@ -97,9 +92,9 @@ class BasicHySa(ErosionModel):
         soil_transport_decay_depth=0.5,
         sp_crit_br=0,
         sp_crit_sed=0,
-        **kwargs
+        **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance
@@ -154,7 +149,7 @@ class BasicHySa(ErosionModel):
         >>> from landlab.values import random
         >>> from terrainbento import Clock, BasicHySa
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
         >>> _ = random(grid, "soil__depth")
 
@@ -165,7 +160,7 @@ class BasicHySa(ErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
 
@@ -287,9 +282,7 @@ class BasicHySa(ErosionModel):
             if np.any(np.isnan(self.grid.at_node[f])) or np.any(
                 np.isinf(self.grid.at_node[f])
             ):
-                raise SystemExit(
-                    "terrainbento ModelHySa: Model became unstable"
-                )
+                raise SystemExit("terrainbento ModelHySa: Model became unstable")
 
 
 def main():  # pragma: no cover

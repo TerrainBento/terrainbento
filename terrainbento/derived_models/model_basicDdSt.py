@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicDdSt** model program.
 
@@ -79,9 +78,9 @@ class BasicDdSt(StochasticErosionModel):
         water_erosion_rule__threshold=0.01,
         water_erosion_rule__thresh_depth_derivative=0.0,
         infiltration_capacity=1.0,
-        **kwargs
+        **kwargs,
     ):
-        """
+        r"""
         Parameters
         ----------
         clock : terrainbento Clock instance
@@ -123,7 +122,7 @@ class BasicDdSt(StochasticErosionModel):
         >>> from landlab.values import random
         >>> from terrainbento import Clock, BasicDdSt
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = random(grid, "topographic__elevation")
 
         Construct the model.
@@ -133,7 +132,7 @@ class BasicDdSt(StochasticErosionModel):
         Running the model with ``model.run()`` would create output, so here we
         will just run it one step.
 
-        >>> model.run_one_step(1.)
+        >>> model.run_one_step(1.0)
         >>> model.model_time
         1.0
 
@@ -149,9 +148,7 @@ class BasicDdSt(StochasticErosionModel):
         self.n = n_sp
         self.K = water_erodibility
         self.threshold_value = water_erosion_rule__threshold
-        self.thresh_change_per_depth = (
-            water_erosion_rule__thresh_depth_derivative
-        )
+        self.thresh_change_per_depth = water_erosion_rule__thresh_depth_derivative
         self.infilt = infiltration_capacity
 
         if float(self.n) != 1.0:
@@ -164,9 +161,7 @@ class BasicDdSt(StochasticErosionModel):
         self.flow_accumulator.run_one_step()
 
         # Create a field for the (initial) erosion threshold
-        self.threshold = self.grid.add_zeros(
-            "node", "water_erosion_rule__threshold"
-        )
+        self.threshold = self.grid.add_zeros("node", "water_erosion_rule__threshold")
         self.threshold[:] = self.threshold_value
 
         # Instantiate a FastscapeEroder component
@@ -188,15 +183,11 @@ class BasicDdSt(StochasticErosionModel):
     def update_threshold_field(self):
         """Update the threshold based on cumulative erosion depth."""
         cum_ero = self.grid.at_node["cumulative_elevation_change"]
-        cum_ero[:] = (
-            self.z - self.grid.at_node["initial_topographic__elevation"]
-        )
+        cum_ero[:] = self.z - self.grid.at_node["initial_topographic__elevation"]
         self.threshold[:] = self.threshold_value - (
             self.thresh_change_per_depth * cum_ero
         )
-        self.threshold[
-            self.threshold < self.threshold_value
-        ] = self.threshold_value
+        self.threshold[self.threshold < self.threshold_value] = self.threshold_value
 
     def _pre_water_erosion_steps(self):
         self.update_threshold_field()

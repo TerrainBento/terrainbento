@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # terrainbento documentation build configuration file, created by
 # sphinx-quickstart on Tue Mar  6 11:22:35 2018.
@@ -17,10 +16,11 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
 import sys
-
+from datetime import date
 from unittest.mock import MagicMock
+
+import terrainbento
 
 
 class Mock(MagicMock):
@@ -76,14 +76,10 @@ MOCK_MODULES = [
 
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
-import terrainbento
-
 # The short X.Y version.
 version = terrainbento.__version__
 # The full version, including alpha/beta/rc tags.
 release = terrainbento.__version__
-
-from datetime import date
 
 sys.path.insert(0, ".")
 
@@ -136,7 +132,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "terrainbento"
-copyright = str(date.today().year) + u", The TerrainBento Team"
+copyright = str(date.today().year) + ", The TerrainBento Team"
 author = "The TerrainBento Team"
 
 # The version info for the project you"re documenting, acts as replacement for

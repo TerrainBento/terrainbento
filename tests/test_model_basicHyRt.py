@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 import numpy as np
 import pytest
@@ -8,9 +7,7 @@ from terrainbento import BasicHyRt, NotCoreNodeBaselevelHandler
 
 
 @pytest.mark.parametrize("m_sp,n_sp", [(1.0 / 3, 2.0 / 3.0), (0.5, 1.0)])
-@pytest.mark.parametrize(
-    "depression_finder", [None, "DepressionFinderAndRouter"]
-)
+@pytest.mark.parametrize("depression_finder", [None, "DepressionFinderAndRouter"])
 @pytest.mark.parametrize("solver", ["basic"])
 def test_channel_erosion(
     clock_simple, grid_2, m_sp, n_sp, depression_finder, U, solver

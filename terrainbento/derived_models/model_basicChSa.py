@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """terrainbento **BasicChSa** model program.
 
@@ -89,7 +88,7 @@ class BasicChSa(ErosionModel):
         soil_production__maximum_rate=0.001,
         soil_production__decay_depth=0.5,
         soil_transport_decay_depth=0.5,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -137,7 +136,7 @@ class BasicChSa(ErosionModel):
         >>> from landlab.values import constant
         >>> from terrainbento import Clock, BasicChSa
         >>> clock = Clock(start=0, stop=100, step=1)
-        >>> grid = RasterModelGrid((5,5))
+        >>> grid = RasterModelGrid((5, 5))
         >>> _ = constant(grid, "topographic__elevation", value=1.0)
         >>> _ = constant(grid, "soil__depth", value=1.0)
 

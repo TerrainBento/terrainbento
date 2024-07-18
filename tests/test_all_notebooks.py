@@ -4,9 +4,7 @@ import tempfile
 
 import nbformat
 
-_TEST_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "notebooks")
-)
+_TEST_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "notebooks"))
 _EXCLUDE = []
 
 
@@ -48,7 +46,7 @@ def _notebook_run(path):
         nb = nbformat.read(
             fp.name,
             nbformat.current_nbformat,
-            #encoding="UTF-8"  # See below
+            # encoding="UTF-8"  # See below
             # If you are getting a TypeError because __init__ got an unexpected
             # keyword argument "encoding", it's probably because you are using
             # a version of python that is too advanced. This function call

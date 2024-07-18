@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 """**SingleNodeBaselevelHandler** changes elevation for a boundary node."""
 import os
@@ -9,7 +8,7 @@ from scipy.interpolate import interp1d
 _OTHER_FIELDS = ["bedrock__elevation", "lithology_contact__elevation"]
 
 
-class SingleNodeBaselevelHandler(object):
+class SingleNodeBaselevelHandler:
     """Control the elevation of a single open boundary node.
 
     The **SingleNodeBaselevelHandler** controls the elevation of a single open
@@ -33,7 +32,7 @@ class SingleNodeBaselevelHandler(object):
         lowering_rate=None,
         lowering_file_path=None,
         model_end_elevation=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -82,11 +81,8 @@ class SingleNodeBaselevelHandler(object):
 
         Now import the **SingleNodeBaselevelHandler** and instantiate.
 
-        >>> from terrainbento.boundary_handlers import (
-        ...                                         SingleNodeBaselevelHandler)
-        >>> bh = SingleNodeBaselevelHandler(mg,
-        ...                                 outlet_id = 0,
-        ...                                 lowering_rate = -0.1)
+        >>> from terrainbento.boundary_handlers import SingleNodeBaselevelHandler
+        >>> bh = SingleNodeBaselevelHandler(mg, outlet_id=0, lowering_rate=-0.1)
         >>> bh.run_one_step(10.0)
 
         We should expect that node 0 has lowered by one, to an elevation of -1.
@@ -132,10 +128,8 @@ class SingleNodeBaselevelHandler(object):
 
         if (lowering_file_path is None) and (lowering_rate is None):
             raise ValueError(
-                (
-                    "SingleNodeBaselevelHandler requires one of "
-                    "lowering_rate and lowering_file_path"
-                )
+                "SingleNodeBaselevelHandler requires one of "
+                "lowering_rate and lowering_file_path"
             )
         else:
             if lowering_rate is None:
@@ -166,31 +160,25 @@ class SingleNodeBaselevelHandler(object):
                     outlet_elevation = (
                         scaling_factor * elev_change_df[:, 1]
                     ) + model_start_elevation
-                    self.outlet_elevation_obj = interp1d(
-                        time, outlet_elevation
-                    )
+                    self.outlet_elevation_obj = interp1d(time, outlet_elevation)
                     self.lowering_rate = None
                     self._outlet_start_z = model_start_elevation
                     self._outlet_effective_z = model_start_elevation
                 else:
                     raise ValueError(
-                        (
-                            "The lowering_file_path provided "
-                            "to SingleNodeBaselevelHandler does not "
-                            "exist."
-                        )
+                        "The lowering_file_path provided "
+                        "to SingleNodeBaselevelHandler does not "
+                        "exist."
                     )
             elif lowering_file_path is None:
                 self.lowering_rate = lowering_rate
                 self.outlet_elevation_obj = None
             else:
                 raise ValueError(
-                    (
-                        "Both an lowering_rate and a "
-                        "lowering_file_path have been provided "
-                        "to SingleNodeBaselevelHandler. Please provide "
-                        "only one."
-                    )
+                    "Both an lowering_rate and a "
+                    "lowering_file_path have been provided "
+                    "to SingleNodeBaselevelHandler. Please provide "
+                    "only one."
                 )
 
     def run_one_step(self, step):
@@ -215,9 +203,7 @@ class SingleNodeBaselevelHandler(object):
         if self.outlet_elevation_obj is None:
 
             # calculate lowering amount and subtract
-            self.z[self.nodes_to_lower] += (
-                self.prefactor * self.lowering_rate * step
-            )
+            self.z[self.nodes_to_lower] += self.prefactor * self.lowering_rate * step
 
             # if bedrock__elevation exists as a field, lower it also
 
@@ -229,9 +215,9 @@ class SingleNodeBaselevelHandler(object):
 
             if self.modify_outlet_id is False:
                 for key in self._outlet_start_values.keys():
-                    self.grid.at_node[key][
-                        self.outlet_id
-                    ] = self._outlet_start_values[key]
+                    self.grid.at_node[key][self.outlet_id] = self._outlet_start_values[
+                        key
+                    ]
 
         # if there is an outlet elevation object
         else:

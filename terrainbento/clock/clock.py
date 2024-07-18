@@ -3,7 +3,7 @@
 import yaml
 
 
-class Clock(object):
+class Clock:
     """terrainbento clock."""
 
     @classmethod
@@ -18,11 +18,13 @@ class Clock(object):
         --------
         >>> from io import StringIO
         >>> from terrainbento import Clock
-        >>> filelike = StringIO('''
+        >>> filelike = StringIO(
+        ...     '''
         ... start: 0
         ... step: 10
         ... stop: 100
-        ... ''')
+        ... '''
+        ... )
         >>> clock = Clock.from_file(filelike)
         >>> clock.start
         0.0
@@ -32,7 +34,7 @@ class Clock(object):
         10.0
         """
         try:
-            with open(filelike, "r") as f:
+            with open(filelike) as f:
                 params = yaml.safe_load(f)
         except TypeError:
             params = yaml.safe_load(filelike)
@@ -108,8 +110,7 @@ class Clock(object):
             self.step = float(step)
         except ValueError:
             msg = (
-                "Clock: Required parameter *step* is "
-                "not compatible with type float."
+                "Clock: Required parameter *step* is " "not compatible with type float."
             )
             raise ValueError(msg)
 
@@ -117,8 +118,7 @@ class Clock(object):
             self.stop = float(stop)
         except ValueError:
             msg = (
-                "Clock: Required parameter *stop* is "
-                "not compatible with type float."
+                "Clock: Required parameter *stop* is " "not compatible with type float."
             )
             raise ValueError(msg)
 

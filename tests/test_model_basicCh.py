@@ -1,4 +1,3 @@
-# coding: utf8
 # !/usr/env/python
 
 import numpy as np
@@ -44,7 +43,5 @@ def test_diffusion_only(clock_09, grid_4):
         model.run_one_step(clock_09.step)
 
     # Compare actual and predicted slopes
-    actual_slope = np.abs(
-        model.grid.at_node["topographic__steepest_slope"][39]
-    )
+    actual_slope = np.abs(model.grid.at_node["topographic__steepest_slope"][39])
     assert_array_almost_equal(actual_slope, predicted_slope, decimal=2)
