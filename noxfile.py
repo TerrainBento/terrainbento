@@ -38,6 +38,24 @@ def test(session: nox.Session) -> None:
         session.run("coverage", "report", "--ignore-errors", "--show-missing")
 
 
+@nox.session(name="build-docs")
+def build_docs(session: nox.Session) -> None:
+    """Build the docs."""
+    session.install(".[docs]")
+
+    PATH["build"].mkdir(exist_ok=True)
+    session.run(
+        "sphinx-build",
+        "-b",
+        "html",
+        "-W",
+        "--keep-going",
+        PATH["docs"],
+        PATH["build"] / "html",
+    )
+    session.log(f"Generated docs at {PATH['build'] / 'html'!s}")
+
+
 @nox.session
 def lint(session: nox.Session) -> None:
     """Look for lint."""
@@ -91,9 +109,8 @@ def publish_pypi(session):
 @nox.session(python=False)
 def clean(session):
     """Remove virtual environments, build files, and caches."""
-    shutil.rmtree("build", ignore_errors=True)
-    shutil.rmtree("dist", ignore_errors=True)
-    shutil.rmtree("docs/build", ignore_errors=True)
+    shutil.rmtree(PATH["build"], ignore_errors=True)
+    shutil.rmtree(PATH["dist"], ignore_errors=True)
     shutil.rmtree(f"{PROJECT}.egg-info", ignore_errors=True)
     shutil.rmtree(".pytest_cache", ignore_errors=True)
     shutil.rmtree(".venv", ignore_errors=True)
@@ -110,4 +127,4 @@ def clean(session):
 def nuke(session):
     """Clean and also remove the .nox/ directory."""
     clean(session)
-    shutil.rmtree(".nox", ignore_errors=True)
+    shutil.rmtree(PATH["nox"], ignore_errors=True)

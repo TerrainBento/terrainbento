@@ -125,7 +125,7 @@ autodoc_mock_imports = ["landlab", "numpy", "scipy", "yaml"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = [".rst", ".md"]
-source_suffix = ".rst"
+source_suffix = {".rst": "restructuredtext"}
 
 # The master toctree document.
 master_doc = "index"
@@ -287,6 +287,6 @@ epub_exclude_files = ["search.html"]
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/2.7", None),
-    "numpy": ("http://docs.scipy.org/doc/numpy/", None),
-    "landlab": ("http://landlab.readthedocs.io/en/release/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "landlab": ("https://landlab.readthedocs.io/en/latest/", None),
 }
