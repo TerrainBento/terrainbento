@@ -125,7 +125,7 @@ autodoc_mock_imports = ["landlab", "numpy", "scipy", "yaml"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = [".rst", ".md"]
-source_suffix = ".rst"
+source_suffix = {'.rst': 'restructuredtext'}
 
 # The master toctree document.
 master_doc = "index"
