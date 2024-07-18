@@ -39,6 +39,13 @@ def test(session: nox.Session) -> None:
 
 
 @nox.session
+def lint(session: nox.Session) -> None:
+    """Look for lint."""
+    session.install("pre-commit")
+    session.run("pre-commit", "run", "--all-files")
+
+
+@nox.session
 def build(session: nox.Session) -> None:
     """Build source and binary distributions."""
     session.install(".[build]")
