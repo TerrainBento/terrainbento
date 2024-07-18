@@ -53,7 +53,7 @@ def build_docs(session: nox.Session) -> None:
         PATH["docs"],
         PATH["build"] / "html",
     )
-    session.log(f"generated docs at {PATH['build'] / 'html'!s}")
+    session.log(f"Generated docs at {PATH['build'] / 'html'!s}")
 
 
 @nox.session
