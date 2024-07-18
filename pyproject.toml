@@ -56,12 +56,12 @@ build = [
 ]
 notebooks = [
   "holoviews",
+  "jupyter",
   "matplotlib",
   "pandas",
 ]
 testing = [
   "coveralls",
-  "jupyter",
   "pytest",
   "pytest-cov",
   "pytest-datadir",
