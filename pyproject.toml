@@ -66,6 +66,10 @@ testing = [
   "pytest-cov",
   "pytest-datadir",
 ]
+docs = [
+  "sphinx",
+  "sphinx_rtd_theme"
+]
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.md", "LICENSE"], content-type = "text/markdown"}
