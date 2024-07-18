@@ -109,8 +109,8 @@ def publish_pypi(session):
 @nox.session(python=False)
 def clean(session):
     """Remove virtual environments, build files, and caches."""
-    shutil.rmtree("build", ignore_errors=True)
-    shutil.rmtree("dist", ignore_errors=True)
+    shutil.rmtree(PATH["build"], ignore_errors=True)
+    shutil.rmtree(PATH["dist"], ignore_errors=True)
     shutil.rmtree(f"{PROJECT}.egg-info", ignore_errors=True)
     shutil.rmtree(".pytest_cache", ignore_errors=True)
     shutil.rmtree(".venv", ignore_errors=True)
@@ -127,4 +127,4 @@ def clean(session):
 def nuke(session):
     """Clean and also remove the .nox/ directory."""
     clean(session)
-    shutil.rmtree(".nox", ignore_errors=True)
+    shutil.rmtree(PATH["nox"], ignore_errors=True)
