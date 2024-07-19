@@ -22,7 +22,7 @@ PYTHON_VERSION = "3.12"
 @nox.session(python=PYTHON_VERSION)
 def test(session: nox.Session) -> None:
     """Run the tests."""
-    session.install(".[testing,notebooks]")
+    session.install(".[testing]")
 
     args = [
         "--cov",
@@ -36,6 +36,23 @@ def test(session: nox.Session) -> None:
 
     if "CI" not in os.environ:
         session.run("coverage", "report", "--ignore-errors", "--show-missing")
+
+
+@nox.session(name="test-notebooks", python=PYTHON_VERSION)
+def test_notebooks(session: nox.Session) -> None:
+    """Test the notebooks."""
+    session.install(".[testing,notebooks]")
+    session.install("nbmake")
+
+    args = [
+        "notebooks",
+        "--nbmake",
+        "--nbmake-kernel=python3",
+        "--nbmake-timeout=3000",
+        "-vvv",
+    ] + session.posargs
+
+    session.run("pytest", *args)
 
 
 @nox.session(name="build-docs")
