@@ -1,6 +1,7 @@
 import os
 import pathlib
 import shutil
+import tomllib
 from itertools import chain
 
 import nox
@@ -14,6 +15,7 @@ PATH = {
     "docs": ROOT / "docs",
     "notebooks": ROOT / "notebooks",
     "nox": pathlib.Path(".nox"),
+    "requirements": ROOT / "requirements-extra",
     "root": ROOT,
 }
 PYTHON_VERSION = "3.12"
@@ -78,6 +80,24 @@ def lint(session: nox.Session) -> None:
     """Look for lint."""
     session.install("pre-commit")
     session.run("pre-commit", "run", "--all-files")
+
+
+@nox.session(name="sync-requirements", python=PYTHON_VERSION)
+def sync_requirements(session: nox.Session) -> None:
+    """Sync requirements files with pyproject.toml."""
+    with open(ROOT / "pyproject.toml", "rb") as fp:
+        pyproject = tomllib.load(fp)
+
+    requirements = pyproject["project"]["dependencies"]
+    with open("requirements.txt", "w") as fp:
+        fp.write(f"{os.linesep.join(sorted(requirements))}\n")
+
+    PATH["requirements"].mkdir(exist_ok=True)
+    extras = pyproject["project"]["optional-dependencies"]
+    for extra in extras.keys():
+        with open(PATH["requirements"] / f"requirements-{extra}.txt", "w") as fp:
+            fp.write(f"# requirements: {extra}\n")
+            fp.write(f"{os.linesep.join(sorted(extras[extra]))}\n")
 
 
 @nox.session
