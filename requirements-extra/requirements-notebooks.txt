@@ -1,0 +1,5 @@
+# requirements: notebooks
+holoviews
+jupyter
+matplotlib
+pandas
