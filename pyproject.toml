@@ -48,6 +48,7 @@ repository = "https://github.com/TerrainBento/terrainbento"
 [project.optional-dependencies]
 dev = [
   "nox",
+  "tomllib",
 ]
 build = [
   "build",
