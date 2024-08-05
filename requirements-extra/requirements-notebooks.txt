@@ -1,4 +1,3 @@
-# requirements: notebooks
 holoviews
 jupyter
 matplotlib

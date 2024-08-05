@@ -1,4 +1,3 @@
-# requirements: build
 build
 twine
 zest.releaser
