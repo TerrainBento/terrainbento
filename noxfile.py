@@ -1,7 +1,6 @@
 import os
 import pathlib
 import shutil
-import tomllib
 from itertools import chain
 
 import nox
@@ -85,6 +84,8 @@ def lint(session: nox.Session) -> None:
 @nox.session(name="sync-requirements", python=PYTHON_VERSION)
 def sync_requirements(session: nox.Session) -> None:
     """Sync requirements files with pyproject.toml."""
+    import tomllib
+
     with open(ROOT / "pyproject.toml", "rb") as fp:
         pyproject = tomllib.load(fp)
 
