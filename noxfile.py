@@ -91,12 +91,9 @@ def sync_requirements(session: nox.Session) -> None:
     with open(ROOT / "pyproject.toml", "rb") as fp:
         pyproject = tomllib.load(fp)
 
-    requirements = pyproject["project"]["dependencies"]
-    _write_dependencies("requirements.txt", requirements)
-
-    extras = pyproject["project"]["optional-dependencies"]
-    for group, dependencies in extras.items():
-        _write_dependencies(PATH["requirements"] / f"requirements-{group}.txt", dependencies)
+    _write_dependencies("requirements.txt", pyproject["project"]["dependencies"])
+    for group, packages in pyproject["project"]["optional-dependencies"].items():
+        _write_dependencies(PATH["requirements"] / f"requirements-{group}.txt", packages)
 
 
 def _write_dependencies(filename, dependencies):
