@@ -86,6 +86,8 @@ def sync_requirements(session: nox.Session) -> None:
     """Sync requirements files with pyproject.toml."""
     import tomllib
 
+    PATH["requirements"].mkdir(exist_ok=True)
+
     with open(ROOT / "pyproject.toml", "rb") as fp:
         pyproject = tomllib.load(fp)
 
@@ -93,12 +95,11 @@ def sync_requirements(session: nox.Session) -> None:
     with open("requirements.txt", "w") as fp:
         fp.write(f"{os.linesep.join(sorted(requirements))}\n")
 
-    PATH["requirements"].mkdir(exist_ok=True)
     extras = pyproject["project"]["optional-dependencies"]
-    for extra in extras.keys():
-        with open(PATH["requirements"] / f"requirements-{extra}.txt", "w") as fp:
-            fp.write(f"# requirements: {extra}\n")
-            fp.write(f"{os.linesep.join(sorted(extras[extra]))}\n")
+    for group, dependencies in extras.items():
+        with open(PATH["requirements"] / f"requirements-{group}.txt", "w") as fp:
+            fp.write(f"# requirements: {group}\n")
+            fp.write(f"{os.linesep.join(sorted(dependencies))}\n")
 
 
 @nox.session
