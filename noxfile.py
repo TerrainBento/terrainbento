@@ -93,7 +93,9 @@ def sync_requirements(session: nox.Session) -> None:
 
     _write_dependencies("requirements.txt", pyproject["project"]["dependencies"])
     for group, packages in pyproject["project"]["optional-dependencies"].items():
-        _write_dependencies(PATH["requirements"] / f"requirements-{group}.txt", packages)
+        _write_dependencies(
+            PATH["requirements"] / f"requirements-{group}.txt", packages
+        )
 
 
 def _write_dependencies(filename, dependencies):
