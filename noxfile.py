@@ -14,6 +14,7 @@ PATH = {
     "docs": ROOT / "docs",
     "notebooks": ROOT / "notebooks",
     "nox": pathlib.Path(".nox"),
+    "requirements": ROOT / "requirements-extra",
     "root": ROOT,
 }
 PYTHON_VERSION = "3.12"
@@ -78,6 +79,28 @@ def lint(session: nox.Session) -> None:
     """Look for lint."""
     session.install("pre-commit")
     session.run("pre-commit", "run", "--all-files")
+
+
+@nox.session(name="sync-requirements", python=PYTHON_VERSION)
+def sync_requirements(session: nox.Session) -> None:
+    """Sync requirements files with pyproject.toml."""
+    import tomllib
+
+    PATH["requirements"].mkdir(exist_ok=True)
+
+    with open(ROOT / "pyproject.toml", "rb") as fp:
+        pyproject = tomllib.load(fp)
+
+    _write_dependencies("requirements.txt", pyproject["project"]["dependencies"])
+    for group, packages in pyproject["project"]["optional-dependencies"].items():
+        _write_dependencies(
+            PATH["requirements"] / f"requirements-{group}.txt", packages
+        )
+
+
+def _write_dependencies(filename, dependencies):
+    with open(filename, "w") as fp:
+        fp.write(f"{os.linesep.join(sorted(dependencies))}\n")
 
 
 @nox.session

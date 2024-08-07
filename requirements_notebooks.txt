@@ -1,3 +1,0 @@
-jupyter
-holoviews
-pandas
