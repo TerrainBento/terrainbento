@@ -1,20 +1,10 @@
-name: terrainbento-dev
-channels:
- - conda-forge
+name: bento
 dependencies:
- - python
- - black
- - flake8
- - isort
- - pytest
- - pytest-cov
- - scipy
- - numpy
- - xarray
- - dask
- - landlab>=2.0.1
- - jupyter
- - holoviews
- - pandas
- - dask[complete]
- - zest.releaser
+- pip
+- pip:
+  - -r requirements.txt
+  - -r requirements-extra/requirements-build.txt
+  - -r requirements-extra/requirements-dev.txt
+  - -r requirements-extra/requirements-docs.txt
+  - -r requirements-extra/requirements-notebooks.txt
+  - -r requirements-extra/requirements-testing.txt
