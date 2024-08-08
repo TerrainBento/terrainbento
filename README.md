@@ -1,10 +1,10 @@
 | Thing | Badge |
 | :---: | :---: |
-| CI Status | [![Build Status](https://travis-ci.org/TerrainBento/terrainbento.svg?branch=master)](https://travis-ci.org/TerrainBento/terrainbento) [![Build status](https://ci.appveyor.com/api/projects/status/kwwpjifg8vrwe51x/branch/master?svg=true)](https://ci.appveyor.com/project/kbarnhart/terrainbento/branch/master) |
+| CI Status | [![Test](https://github.com/TerrainBento/terrainbento/actions/workflows/test.yml/badge.svg)](https://github.com/TerrainBento/terrainbento/actions/workflows/test.yml) |
 | Coverage | [![Coverage Status](https://coveralls.io/repos/github/TerrainBento/terrainbento/badge.svg?branch=master)](https://coveralls.io/github/TerrainBento/terrainbento?branch=master) |
 | Docs | [![Documentation Status](https://readthedocs.org/projects/terrainbento/badge/?version=latest)](http://terrainbento.readthedocs.io/en/latest/?badge=latest) |
+| Notebooks | [![Notebooks](https://github.com/TerrainBento/terrainbento/actions/workflows/test-notebooks.yml/badge.svg)](https://github.com/TerrainBento/terrainbento/actions/workflows/test-notebooks.yml) |
 | License | [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) |
-| Health | [![Code Health](https://landscape.io/github/TerrainBento/terrainbento/master/landscape.svg?style=flat)](https://landscape.io/github/TerrainBento/terrainbento/master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7fcb775a6c3044cda4429ed1c1dac2e8)](https://www.codacy.com/app/katy.barnhart/terrainbento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TerrainBento/terrainbento&amp;utm_campaign=Badge_Grade) |
 | Style | [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black) |
 | DOI | [![DOI](https://zenodo.org/badge/123941145.svg)](https://zenodo.org/badge/latestdoi/123941145) |
 | Conda Recipe | [![Conda Recipe](https://img.shields.io/badge/recipe-terrainbento-green.svg)](https://anaconda.org/conda-forge/terrainbento) |
@@ -109,7 +109,8 @@ with imageio.get_writer("terrainbento_example.gif", mode="I") as writer:
 
 ## Installation instructions
 
-Before installing terrainbento you will need a python distribution. We recommend that you use the [Anaconda python distribution](https://www.anaconda.com/download/). Unless you have a specific reason to want Python 2.7 we strongly suggest that you install Python 3.7 (or the current 3.* version provided by Anaconda).
+Before installing terrainbento you will need a Python distribution. We recommend that you use the [Anaconda python distribution](https://www.anaconda.com/download/).
+We strongly suggest that you install the current 3.* version of Python.
 
 To install the release version of terrainbento (this is probably what you want) we support conda and pip package management.
 
@@ -136,13 +137,29 @@ To install the terrainbento source code version of terrainbento we recommend cre
 git clone https://github.com/TerrainBento/terrainbento.git
 cd terrainbento
 conda env create -f environment-dev.yml
-conda activate terrainbento-dev
+conda activate terrainbento_dev
 pip install .
 ```
 
-#### A note to developers
+#### Notes for developers
 
-If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and create an editable install with `pip install -e .`. If you have any questions, please contact us by making an Issue.
+If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and create an editable install with:
+```bash
+pip install -e .
+```
+
+We use [nox](https://nox.thea.codes/en/stable/) for most project tasks in terrainbento.
+Install nox and list the available sessions with:
+```bash
+pip install -e ".[dev]"
+nox --list
+```
+To use nox to run the terrainbento tests, for example, call the _test_ session:
+```bash
+nox -s test
+```
+
+If you have any questions, please contact us by making an [issue](https://github.com/TerrainBento/terrainbento/issues).
 
 
 ## How to cite

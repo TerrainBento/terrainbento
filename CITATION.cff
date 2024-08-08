@@ -1,0 +1,41 @@
+# This CITATION.cff file was generated with cffinit.
+# https://citation-file-format.github.io/cff-initializer-javascript
+
+cff-version: 1.2.0
+title: Terrainbento
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Katherine R.
+    family-names: Barnhart
+    orcid: 'https://orcid.org/0000-0001-5682-455X'
+  - given-names: Rachel C.
+    family-names: Glade
+    orcid: 'https://orcid.org/0000-0002-0345-1953'
+  - given-names: Charles M.
+    family-names: Shobe
+    orcid: 'https://orcid.org/0000-0003-3015-1283'
+  - given-names: Gregory E.
+    family-names: Tucker
+    orcid: 'https://orcid.org/0000-0003-0364-5800'
+identifiers:
+  - type: doi
+    value: 10.5194/gmd-12-1267-2019
+  - type: url
+    value: 'https://doi.org/10.5194/gmd-12-1267-2019'
+repository-code: 'https://github.com/TerrainBento/terrainbento'
+url: 'https://terrainbento.readthedocs.io'
+abstract: >-
+  A modular landscape evolution modeling package built on
+  top of the Landlab Toolkit.
+keywords:
+  - earth science
+  - landlab
+  - landscape evolution modeling
+  - numerical modeling
+license: MIT
+commit: c34afe2
+version: v2.0.0
+date-released: '2020-05-08'
