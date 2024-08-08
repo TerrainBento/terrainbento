@@ -1,4 +1,4 @@
-name: bento
+name: terrainbento_dev
 dependencies:
 - pip
 - pip:
