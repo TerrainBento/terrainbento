@@ -29,7 +29,7 @@ repository-code: 'https://github.com/TerrainBento/terrainbento'
 url: 'https://terrainbento.readthedocs.io'
 abstract: >-
   A modular landscape evolution modeling package built on
-  top of the Landlab Toolkit. 
+  top of the Landlab Toolkit.
 keywords:
   - earth science
   - landlab
