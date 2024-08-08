@@ -141,9 +141,25 @@ conda activate terrainbento_dev
 pip install .
 ```
 
-#### A note to developers
+#### Notes for developers
 
-If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and create an editable install with `pip install -e .`. If you have any questions, please contact us by making an Issue.
+If you plan to develop with terrainbento, please fork terrainbento, clone the forked repository, and create an editable install with:
+```bash
+pip install -e .
+```
+
+We use [nox](https://nox.thea.codes/en/stable/) for most project tasks in terrainbento.
+Install nox and list the available sessions with:
+```bash
+pip install -e ".[dev]"
+nox --list
+```
+To use nox to run the terrainbento tests, for example, call the _test_ session:
+```bash
+nox -s test
+```
+
+If you have any questions, please contact us by making an [issue](https://github.com/TerrainBento/terrainbento/issues).
 
 
 ## How to cite
