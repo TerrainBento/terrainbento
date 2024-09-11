@@ -36,6 +36,6 @@ keywords:
   - landscape evolution modeling
   - numerical modeling
 license: MIT
-commit: c34afe2
-version: v2.0.0
-date-released: '2020-05-08'
+commit: cbf9d93
+version: v2.0.1
+date-released: '2024-09-11'
